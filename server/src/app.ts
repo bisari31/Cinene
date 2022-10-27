@@ -1,0 +1,31 @@
+import express from 'express';
+import dotenv from 'dotenv';
+import mongoose from 'mongoose';
+import morgan from 'morgan';
+import cookieParser from 'cookie-parser';
+
+import authRouter from './routes/auth';
+
+dotenv.config();
+const app = express();
+
+const PORT = process.env.PORT;
+const DB_URI = process.env.DB_URI!;
+
+mongoose.connect(DB_URI, { dbName: 'test' }, (err) => {
+  if (err) console.log(err);
+  console.log('db 연결 성공');
+});
+
+app.use(cookieParser());
+app.use(express.json());
+app.use(morgan('dev'));
+app.use('/auth', authRouter);
+
+app.use((req, res) => {
+  res.status(404).send('not found');
+});
+
+app.listen(PORT, () => {
+  console.log(PORT, '번 PORT on!');
+});
