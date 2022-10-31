@@ -8,6 +8,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import store from 'states';
 import { Provider } from 'react-redux';
+import { RecoilRoot } from 'recoil';
 import reportWebVitals from './reportWebVitals';
 import App from './App';
 
@@ -22,11 +23,11 @@ root.render(
     <ThemeProvider theme={theme}>
       <GlobalStyle />
       <QueryClientProvider client={queryClient}>
-        <Provider store={store}>
+        <RecoilRoot>
           <BrowserRouter>
             <App />
           </BrowserRouter>
-        </Provider>
+        </RecoilRoot>
         <ReactQueryDevtools />
       </QueryClientProvider>
     </ThemeProvider>

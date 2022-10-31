@@ -1,6 +1,10 @@
+import { userIdState } from 'atom/user';
 import axios from 'axios';
 import useInput from 'hooks/useInput';
-import { Link, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import { login, register } from 'services/auth';
 import styled from 'styled-components';
 
 interface IProps {
@@ -13,6 +17,8 @@ export default function Form({ type }: IProps) {
   const [password, onChangePassword] = useInput();
   const [passwordCheck, onChangePasswordCheck] = useInput();
 
+  const [userId, setUserId] = useRecoilState(userIdState);
+
   const navigate = useNavigate();
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -20,13 +26,15 @@ export default function Form({ type }: IProps) {
     const body = { email, nickname, password };
     try {
       if (type === 'login') {
-        const { data } = await axios.post('/auth/login', body);
-        console.log(data);
+        const data = await login(body);
+        setUserId(data.user._id);
+        localStorage.setItem('auth', data.user._id);
         navigate('/');
       } else {
-        if (password !== passwordCheck)
+        if (password !== passwordCheck) {
           return console.log('패스워드가 다릅니다 .');
-        const { data } = await axios.post('/auth/create', body);
+        }
+        const data = await register(body);
         console.log(data);
         navigate('/login');
       }
@@ -40,6 +48,7 @@ export default function Form({ type }: IProps) {
   const onClick = () => {
     console.log('머임');
   };
+
   return (
     <FormWrapper>
       <form action="" onSubmit={onSubmit}>
@@ -85,7 +94,8 @@ export default function Form({ type }: IProps) {
 const FormWrapper = styled.div`
   align-items: center;
   display: flex;
-  height: ${({ theme }) => `calc(100vh -  ${theme.config.header})`};
+  height: ${({ theme }) =>
+    `calc(100vh -  ${theme.config.header} - ${theme.config.main_margin_top})`};
   justify-content: center;
   form {
     flex: 1;
@@ -104,10 +114,13 @@ const FormWrapper = styled.div`
         padding: 0 1em;
       }
       button {
-        background-color: ${({ theme }) => theme.colors.blue};
+        background-color: ${({ theme }) => theme.colors.gray500};
         border: none;
         border-radius: ${({ theme }) => theme.config.border};
         color: #fff;
+        &:hover {
+          background-color: ${({ theme }) => theme.colors.black};
+        }
       }
       input,
       button {

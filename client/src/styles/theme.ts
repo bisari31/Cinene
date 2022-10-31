@@ -17,9 +17,10 @@ const config = {
   padding: '0 1em',
   tabletHeight: '100px',
   laptopHeight: '70px',
-  header: '50px',
+  header: '70px',
   border: '6px',
   border2: '3px',
+  main_margin_top: '20px',
 };
 
 const device = {
