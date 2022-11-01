@@ -1,23 +1,23 @@
-import { userIdState } from 'atom/user';
 import axios from 'axios';
 import useInput from 'hooks/useInput';
-import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState, useSetRecoilState } from 'recoil';
-import { login, register } from 'services/auth';
+import { useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
+
+import { userIdState } from 'atom/user';
+import { login, register } from 'services/auth';
 
 interface IProps {
   type: 'login' | 'register';
 }
 
-export default function Form({ type }: IProps) {
+export default function UserForm({ type }: IProps) {
   const [email, onChangeEmail] = useInput();
   const [nickname, onChangeNickname] = useInput();
   const [password, onChangePassword] = useInput();
   const [passwordCheck, onChangePasswordCheck] = useInput();
 
-  const [userId, setUserId] = useRecoilState(userIdState);
+  const setUserId = useSetRecoilState(userIdState);
 
   const navigate = useNavigate();
 
@@ -50,7 +50,7 @@ export default function Form({ type }: IProps) {
   };
 
   return (
-    <FormWrapper>
+    <UserFormWrapper>
       <form action="" onSubmit={onSubmit}>
         <div>
           <label htmlFor="">이메일</label>
@@ -87,11 +87,11 @@ export default function Form({ type }: IProps) {
           )}
         </div>
       </form>
-    </FormWrapper>
+    </UserFormWrapper>
   );
 }
 
-const FormWrapper = styled.div`
+const UserFormWrapper = styled.div`
   align-items: center;
   display: flex;
   height: ${({ theme }) =>

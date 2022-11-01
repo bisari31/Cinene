@@ -1,10 +1,10 @@
-import Form from 'components/Form';
+import UserForm from 'components/UserForm';
 import styled from 'styled-components';
 
 export default function LoginPage() {
   return (
     <LoginPageWrapper>
-      <Form type="login" />
+      <UserForm type="login" />
     </LoginPageWrapper>
   );
 }

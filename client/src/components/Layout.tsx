@@ -9,11 +9,9 @@ import { auth, logout } from 'services/auth';
 
 export default function Layout() {
   const [userId, setUserId] = useRecoilState(userIdState);
-  const { pathname } = useLocation();
+  const { data } = useQuery(['auth', userId], auth);
 
-  const { data, refetch } = useQuery(['auth', userId], auth);
-
-  const onClickLogout = async () => {
+  const onClickLogout = () => {
     logout().then(() => {
       setUserId('');
       localStorage.removeItem('auth');
@@ -21,13 +19,13 @@ export default function Layout() {
   };
 
   useEffect(() => {
+    console.log(data);
+  });
+
+  useEffect(() => {
     const item = localStorage.getItem('auth');
     if (item) setUserId(item);
   }, []);
-
-  useEffect(() => {
-    console.log('render');
-  });
 
   return (
     <LayoutWrapper>

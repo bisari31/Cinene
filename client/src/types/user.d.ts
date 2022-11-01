@@ -4,5 +4,5 @@ interface IUser {
   nickname: string;
   password: string;
   token: string;
-  createdAt: Date;
+  createdAt: string;
 }

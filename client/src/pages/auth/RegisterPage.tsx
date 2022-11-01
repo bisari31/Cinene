@@ -1,10 +1,10 @@
-import Form from 'components/Form';
+import UserForm from 'components/UserForm';
 import styled from 'styled-components';
 
 export default function RegisterPage() {
   return (
     <RegisterPageWrapper>
-      <Form type="register" />
+      <UserForm type="register" />
     </RegisterPageWrapper>
   );
 }
