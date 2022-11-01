@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 
 import authRouter from './routes/auth';
+import postsRouter from './routes/posts';
 
 dotenv.config();
 const app = express();
@@ -21,6 +22,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(morgan('dev'));
 app.use('/auth', authRouter);
+app.use('/posts', postsRouter);
 
 app.use((req, res) => {
   res.status(404).send('not found');

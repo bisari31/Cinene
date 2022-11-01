@@ -58,7 +58,8 @@ userSchema.methods.generateToken = async function () {
 userSchema.statics.findByToken = async function (token: string, cb) {
   try {
     const id = jwt.verify(token, `${PRIVATE_KEY}`);
-    const user = await this.findOne({ id, token });
+    const user = await this.findOne({ _id: id, token });
+    if (!user) return cb(true);
     cb(null, user);
   } catch (err) {
     cb(true);

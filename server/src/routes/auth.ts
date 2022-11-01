@@ -7,7 +7,7 @@ import { authenticate, AuthRequest } from './middleware';
 const saltRounds = 12;
 const router = Router();
 
-router.post('/create', async (req, res) => {
+router.post('/register', async (req, res) => {
   try {
     const checkEmail = await User.findOne({ email: req.body.email });
     const checkNickname = await User.findOne({ nickname: req.body.nickname });
@@ -54,7 +54,8 @@ router.post('/login', async function (req, res) {
   }
 });
 
-router.get('/logout', (req, res) => {
+router.get('/logout', authenticate, async (req: AuthRequest, res) => {
+  await User.findByIdAndUpdate({ _id: req.user?._id }, { token: '' });
   res.clearCookie('auth').json({ sucess: true });
 });
 

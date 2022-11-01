@@ -11,7 +11,10 @@ export const authenticate = (
   next: NextFunction,
 ) => {
   User.findByToken(req.cookies.auth, (err, user) => {
-    if (err) return res.status(200).send({ isLoggedIn: false });
+    if (err)
+      return res
+        .status(200)
+        .send({ isLoggedIn: false, message: '로그인 하셈요' });
     req.user = user;
     next();
   });
