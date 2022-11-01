@@ -29,4 +29,48 @@ router.get('/', async (req, res) => {
   }
 });
 
+router.get('/:id', async (req, res) => {
+  try {
+    const post = await Post.findOne({ numId: req.params.id }).populate(
+      'writer',
+    );
+    if (!post) throw new Error('데이터가 없습니다.');
+    res.json(post);
+  } catch (err) {
+    res.status(400).send({ success: false, err: err.message });
+  }
+});
+
+router.delete('/:id', authenticate, async (req, res) => {
+  try {
+    const post = await Post.findOneAndDelete({
+      numId: req.params.id,
+      writer: req.body.id,
+    });
+    if (!post) throw new Error('삭제 실패');
+    res.json({ success: true, post });
+  } catch (err) {
+    res.status(400).send({ success: false, message: err.message });
+  }
+});
+
+router.put('/:id', authenticate, async (req, res) => {
+  try {
+    const post = await Post.findOneAndUpdate(
+      {
+        numId: req.params.id,
+        writer: req.body.userId,
+      },
+      {
+        title: req.body.title,
+        body: req.body.body,
+      },
+    );
+    if (!post) throw new Error('변경 실패');
+    res.json(post);
+  } catch (err) {
+    res.status(400).json({ success: false, message: err.message });
+  }
+});
+
 export default router;
