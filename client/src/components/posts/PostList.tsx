@@ -1,22 +1,23 @@
 import { useQuery } from 'react-query';
-import { getPosts } from 'services/posts';
 import styled from 'styled-components';
+
+import { getPosts } from 'services/posts';
+
 import PostItem from './PostItem';
 
 export default function PostList() {
   const { data } = useQuery(['posts'], getPosts);
 
-  console.log(data);
   return (
     <PostListWrapper>
       <ul>
-        <ListHeader>
-          <NumWrapper>글 번호</NumWrapper>
+        <StyeldList>
+          <NumWrapper>번호</NumWrapper>
           <TitleWrapper>제목</TitleWrapper>
           <NicknameWrapper>닉네임</NicknameWrapper>
           <DaysWrapper>작성일</DaysWrapper>
           <ViewsWrapper>조회수</ViewsWrapper>
-        </ListHeader>
+        </StyeldList>
         {data?.map((item) => (
           <PostItem key={item._id} post={item} />
         ))}
@@ -25,12 +26,15 @@ export default function PostList() {
   );
 }
 
-const PostListWrapper = styled.div``;
+const PostListWrapper = styled.div`
+  ul {
+    font-size: 14px;
+  }
+`;
 
-const ListHeader = styled.li`
+export const StyeldList = styled.li`
   border-bottom: 1px solid ${({ theme }) => theme.colors.gray100};
   display: flex;
-  font-size: 14px;
   font-weight: 500;
   padding: 1em 0.5em;
   div {

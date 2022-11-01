@@ -16,6 +16,7 @@ export default function App() {
         <Route index path="/register" element={<RegisterPage />} />
         <Route index path="/post/write" element={<PostWritePage />} />
         <Route index path="/post/:id" element={<PostDetailPage />} />
+        <Route index path="/post/:id/modify" element={<PostDetailPage />} />
       </Route>
     </Routes>
   );

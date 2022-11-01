@@ -1,10 +1,11 @@
-import PostForm from 'components/posts/PostForm';
 import styled from 'styled-components';
+
+import PostForm from 'components/posts/PostForm';
 
 export default function PostWritePage() {
   return (
     <PostWritePageWrapper>
-      <PostForm />
+      <PostForm type="create" />
     </PostWritePageWrapper>
   );
 }

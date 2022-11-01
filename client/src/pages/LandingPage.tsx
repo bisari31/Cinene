@@ -1,6 +1,7 @@
-import PostList from 'components/posts/PostList';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+
+import PostList from 'components/posts/PostList';
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -8,6 +9,7 @@ export default function LandingPage() {
   const onClickPostUpload = () => {
     navigate('/post/write');
   };
+
   return (
     <LandingPageWrapper>
       <PostList />

@@ -15,35 +15,32 @@ interface IProps {
 }
 
 export default function PostItem({ post }: IProps) {
-  const changeCreatedAt = (date: string) => {
-    const now = dayjs().format('YY:MM:DD');
+  const changeCreatedAt = (date: string | undefined) => {
+    const now = dayjs().format('YYMMDD');
     const d = dayjs(date);
-    if (now === d.format('YY:MM:DD')) {
+    if (now === d.format('YYMMDD')) {
       return d.format('HH:mm');
     }
     return d.format('YYYY.MM.DD');
   };
-
   return (
     <PostItemWrapper>
-      <Link to={`post/${post.numId}`}>
-        <NumWrapper>{post.numId}</NumWrapper>
-        <TitleWrapper>{post.title}</TitleWrapper>
-        <NicknameWrapper>{post.writer.nickname}</NicknameWrapper>
-        <DaysWrapper>{changeCreatedAt(post.createdAt)}</DaysWrapper>
-        <ViewsWrapper>{post.views}</ViewsWrapper>
-      </Link>
+      <NumWrapper>{post.numId}</NumWrapper>
+      <TitleWrapper>
+        <Link to={`post/${post.numId}`}>{post.title}</Link>
+      </TitleWrapper>
+      <NicknameWrapper>{post.writer.nickname}</NicknameWrapper>
+      <DaysWrapper>{changeCreatedAt(post.createdAt)}</DaysWrapper>
+      <ViewsWrapper>{post.views}</ViewsWrapper>
     </PostItemWrapper>
   );
 }
 
 const PostItemWrapper = styled.li`
   border-bottom: 1px solid ${({ theme }) => theme.colors.gray100};
-  a {
-    padding: 1em 0.5em;
-    display: flex;
-    font-size: 15px;
-  }
+
+  display: flex;
+  padding: 1em 0.5em;
   div {
     display: flex;
   }
