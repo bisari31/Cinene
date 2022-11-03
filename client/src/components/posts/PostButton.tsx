@@ -17,15 +17,15 @@ function PostButton({ type, user, content, submit }: IProps) {
   };
 
   const handleRemove = async () => {
-    if (user?._id && content?.numId) {
-      const response = await deletePost(content.numId, user._id);
+    if (user?._id && content?._id) {
+      const response = await deletePost(content._id, user._id);
       navigate('/');
       console.log(response);
     }
   };
 
   const moveModifyPage = () => {
-    navigate(`post/${content?.numId}/modify`);
+    navigate(`post/${content?._id}/modify`);
   };
 
   return (

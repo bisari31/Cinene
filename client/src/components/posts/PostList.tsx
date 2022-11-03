@@ -7,7 +7,7 @@ import PostItem from './PostItem';
 
 export default function PostList() {
   const { data } = useQuery(['posts'], getPosts);
-  console.log('qwe');
+
   return (
     <PostListWrapper>
       <ul>

@@ -1,34 +1,52 @@
+import { useState } from 'react';
 import styled from 'styled-components';
+
 import { IComment } from 'types/comment';
+import { changeCreatedAt } from 'utils';
+import ReplyComment from './replyComment';
 
 interface IProps {
   data: IComment;
 }
 
 export default function CommentItem({ data }: IProps) {
+  const [showReplyComment, setShowReplyComment] = useState(false);
+
+  const handleChange = () => {
+    setShowReplyComment(!showReplyComment);
+  };
+
   return (
-    <CommentItemWrapper>
-      <div>
-        <p />
-      </div>
-      <div>
-        <NicknameWrapper>
-          <span className="comment_nickname">
-            <b>{data.writer.nickname}</b>
-          </span>
-          <span>{data.createdAt}</span>
-        </NicknameWrapper>
-        <ContentWrapper>
-          <span>{data.comment}</span>
-        </ContentWrapper>
-      </div>
-    </CommentItemWrapper>
+    <>
+      <CommentItemWrapper onClick={handleChange}>
+        <div>
+          <p />
+        </div>
+        <div>
+          <NicknameWrapper>
+            <span className="comment_nickname">
+              <b>{data.writer.nickname}</b>
+            </span>
+            <span>{changeCreatedAt(data.createdAt)}</span>
+          </NicknameWrapper>
+          <ContentWrapper>
+            <span>{data.comment}</span>
+          </ContentWrapper>
+        </div>
+      </CommentItemWrapper>
+      <div>{showReplyComment && <ReplyComment />}</div>
+    </>
   );
 }
 
 const CommentItemWrapper = styled.li`
   display: flex;
   padding: 1em;
+  &:hover {
+    cursor: pointer;
+    border-radius: 10px;
+    background-color: ${({ theme }) => theme.colors.gray50};
+  }
   & > div:first-of-type {
     background-color: ${({ theme }) => theme.colors.gray100};
     border-radius: 50%;
@@ -36,7 +54,7 @@ const CommentItemWrapper = styled.li`
     margin-right: 1em;
     width: 40px;
   }
-  & > div:last-of-type {
+  & > div:nth-child(2) {
     display: flex;
     flex-direction: column;
     justify-content: center;

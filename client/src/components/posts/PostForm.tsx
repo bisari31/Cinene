@@ -2,15 +2,13 @@ import styled from 'styled-components';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
-import { useMutation, useQuery } from 'react-query';
-import { useRecoilState } from 'recoil';
+import { useMutation } from 'react-query';
 
-import { auth } from 'services/auth';
 import { addPost, updatePost } from 'services/posts';
-import { userIdState } from 'atom/user';
 
 import { queryClient } from 'index';
 import Comment from 'components/comment';
+import { useAuthQuery } from 'hooks/useAuthQuery';
 import PostButton from './PostButton';
 
 export interface IPostFormProps {
@@ -19,26 +17,27 @@ export interface IPostFormProps {
 }
 
 export default function PostForm({ type, content }: IPostFormProps) {
-  const [userId, setUserId] = useRecoilState(userIdState);
-  const { mutate } = useMutation(updatePost, {
-    onSuccess: () => {
-      queryClient.invalidateQueries(['post', `${content?.numId}`]);
-      navigate(-1);
-    },
-  });
-  const { mutate: addPostMutate } = useMutation(addPost, {
-    onSuccess: () => {
-      // queryClient.invalidateQueries(['posts']);
-      navigate('/');
-    },
-  });
-  const { data } = useQuery(['auth', userId], auth);
   const [post, setPost] = useState({
     title: '',
     body: '',
   });
 
   const navigate = useNavigate();
+
+  const { data } = useAuthQuery();
+
+  const { mutate } = useMutation(updatePost, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['post', `${content?._id}`]);
+      navigate(-1);
+    },
+  });
+
+  const { mutate: addPostMutate } = useMutation(addPost, {
+    onSuccess: () => {
+      navigate('/');
+    },
+  });
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -54,7 +53,7 @@ export default function PostForm({ type, content }: IPostFormProps) {
     try {
       if (type === 'modify' && content && data)
         return mutate({
-          numId: content?.numId,
+          postId: content?._id,
           userId: data?.user._id,
           ...post,
         });
@@ -111,7 +110,7 @@ export default function PostForm({ type, content }: IPostFormProps) {
           onChange={handleChange}
         />
       </form>
-      {type === 'view' && <Comment postId={content?._id} userId={userId} />}
+      {type === 'view' && <Comment postId={content?._id} />}
       <PostButton
         type={type}
         user={data?.user}

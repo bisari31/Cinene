@@ -16,7 +16,7 @@ interface IPostsData {
 }
 
 interface IPostUpdateBody {
-  numId: number;
+  postId: string;
   userId: string;
   title: string;
   body: string;

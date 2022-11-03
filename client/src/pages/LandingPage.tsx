@@ -1,16 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { useQuery } from 'react-query';
-import { useRecoilValue } from 'recoil';
-
-import { userIdState } from 'atom/user';
-import { auth } from 'services/auth';
 
 import PostList from 'components/posts/PostList';
+import { useAuthQuery } from 'hooks/useAuthQuery';
 
 export default function LandingPage() {
-  const userId = useRecoilValue(userIdState);
-  const { data } = useQuery(['auth', userId], auth);
+  const { data } = useAuthQuery();
   const navigate = useNavigate();
 
   const onClickPostUpload = () => {

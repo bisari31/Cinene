@@ -4,6 +4,7 @@ const colors = {
   black: '#242426',
   blue: '#3184fe',
   red: '#de3a3a',
+  gray50: '#f2f2f2',
   gray100: '#e6e6e6',
   gray500: '#8f8e8f',
 };

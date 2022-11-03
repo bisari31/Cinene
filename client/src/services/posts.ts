@@ -15,7 +15,7 @@ export const addPost = async (post: { title: string; body: string }) => {
   return data;
 };
 
-export const deletePost = async (postId: number, userId: string) => {
+export const deletePost = async (postId: string, userId: string) => {
   try {
     const { data } = await axios.delete(`/posts/${postId}`, {
       data: { id: userId },
@@ -28,13 +28,9 @@ export const deletePost = async (postId: number, userId: string) => {
   }
 };
 
-export const updatePost = async (
-  body: IPostUpdateBody,
-  // userId: string,
-  // body: { title: string; body: string },
-) => {
+export const updatePost = async (body: IPostUpdateBody) => {
   try {
-    const { data } = await axios.put(`/posts/${body.numId}`, {
+    const { data } = await axios.put(`/posts/${body.postId}`, {
       ...body,
     });
     return data;

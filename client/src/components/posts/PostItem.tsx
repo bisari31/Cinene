@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import dayjs from 'dayjs';
+
+import { changeCreatedAt } from 'utils';
 
 import {
   DaysWrapper,
@@ -15,19 +16,11 @@ interface IProps {
 }
 
 export default function PostItem({ post }: IProps) {
-  const changeCreatedAt = (date?: string) => {
-    const now = dayjs().format('YYMMDD');
-    const d = dayjs(date);
-    if (now === d.format('YYMMDD')) {
-      return d.format('HH:mm');
-    }
-    return d.format('YYYY.MM.DD');
-  };
   return (
     <PostItemWrapper>
       <NumWrapper>{post.numId}</NumWrapper>
       <TitleWrapper>
-        <Link to={`post/${post.numId}`}>{post.title}</Link>
+        <Link to={`post/${post._id}`}>{post.title}</Link>
       </TitleWrapper>
       <NicknameWrapper>{post.writer.nickname}</NicknameWrapper>
       <DaysWrapper>{changeCreatedAt(post.createdAt)}</DaysWrapper>

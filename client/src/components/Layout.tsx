@@ -1,15 +1,15 @@
 import { useEffect } from 'react';
-import { useQuery } from 'react-query';
 import { Link, Outlet } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 import { userIdState } from 'atom/user';
-import { auth, logout } from 'services/auth';
+import { logout } from 'services/auth';
+import { useAuthQuery } from 'hooks/useAuthQuery';
 
 export default function Layout() {
   const [userId, setUserId] = useRecoilState(userIdState);
-  const { data } = useQuery(['auth', userId], auth);
+  const { data } = useAuthQuery(userId);
 
   const onClickLogout = () => {
     logout().then(() => {
@@ -19,12 +19,9 @@ export default function Layout() {
   };
 
   useEffect(() => {
-    console.log(data);
-  });
-
-  useEffect(() => {
     const item = localStorage.getItem('auth');
     if (item) setUserId(item);
+    console.log('이게 실행되나요?');
   }, []);
 
   return (
