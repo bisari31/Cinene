@@ -67,7 +67,7 @@ router.put('/:id', authenticate, async (req, res) => {
       },
     );
     if (!post) throw new Error('변경 실패');
-    res.json(post);
+    res.json({ success: true });
   } catch (err) {
     res.status(400).json({ success: false, message: err.message });
   }
