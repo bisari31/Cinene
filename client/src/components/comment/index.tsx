@@ -34,7 +34,7 @@ export default function CommentWrapper({ postId = '', userId }: IProps) {
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  margin-top: 3em;
+  margin-top: 2em;
   & > input {
     border: 1px solid ${({ theme }) => theme.colors.gray100};
     border-radius: ${({ theme }) => theme.config.border2};

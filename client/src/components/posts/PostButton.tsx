@@ -69,6 +69,7 @@ const PostButtonWrapper = styled.div`
   display: flex;
   flex: 1;
   justify-content: center;
+  margin-bottom: 5em;
   button {
     border: none;
     font-size: 14px;
