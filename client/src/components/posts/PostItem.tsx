@@ -15,7 +15,7 @@ interface IProps {
 }
 
 export default function PostItem({ post }: IProps) {
-  const changeCreatedAt = (date: string | undefined) => {
+  const changeCreatedAt = (date?: string) => {
     const now = dayjs().format('YYMMDD');
     const d = dayjs(date);
     if (now === d.format('YYMMDD')) {

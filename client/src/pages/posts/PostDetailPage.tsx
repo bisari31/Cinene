@@ -1,9 +1,10 @@
-import PostForm from 'components/posts/PostForm';
 import { useQuery } from 'react-query';
 import { useLocation, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { getPost } from 'services/posts';
+
+import PostForm from 'components/posts/PostForm';
 
 export default function PostDetailPage() {
   const location = useLocation();

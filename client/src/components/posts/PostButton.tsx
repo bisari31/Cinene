@@ -1,3 +1,4 @@
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -5,10 +6,11 @@ import { deletePost } from 'services/posts';
 import { IPostFormProps } from './PostForm';
 
 interface IProps extends IPostFormProps {
-  user: IUser | undefined;
+  user?: IUser;
+  submit: (e: React.MouseEvent) => Promise<void>;
 }
 
-export default function PostButton({ type, user, content }: IProps) {
+function PostButton({ type, user, content, submit }: IProps) {
   const navigate = useNavigate();
   const handleClose = () => {
     navigate(-1);
@@ -43,7 +45,7 @@ export default function PostButton({ type, user, content }: IProps) {
           <button type="button" onClick={handleClose}>
             취소
           </button>
-          <button type="submit" className="submit_btn">
+          <button type="button" className="submit_btn" onClick={submit}>
             등록
           </button>
         </>
@@ -53,7 +55,7 @@ export default function PostButton({ type, user, content }: IProps) {
           <button type="button" onClick={handleClose}>
             취소
           </button>
-          <button type="submit" className="submit_btn">
+          <button type="button" className="submit_btn" onClick={submit}>
             수정
           </button>
         </>
@@ -61,6 +63,7 @@ export default function PostButton({ type, user, content }: IProps) {
     </PostButtonWrapper>
   );
 }
+export default React.memo(PostButton);
 
 const PostButtonWrapper = styled.div`
   display: flex;

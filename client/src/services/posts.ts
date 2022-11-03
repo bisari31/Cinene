@@ -29,19 +29,18 @@ export const deletePost = async (postId: number, userId: string) => {
 };
 
 export const updatePost = async (
-  postId: number,
-  userId: string,
-  body: { title: string; body: string },
+  body: IPostUpdateBody,
+  // userId: string,
+  // body: { title: string; body: string },
 ) => {
   try {
-    const { data } = await axios.put(`/posts/${postId}`, {
-      userId,
+    const { data } = await axios.put(`/posts/${body.numId}`, {
       ...body,
     });
-    console.log(data);
+    return data;
   } catch (err) {
     if (axios.isAxiosError(err)) {
-      console.log(err.response?.data);
+      return err.response?.data;
     }
   }
 };

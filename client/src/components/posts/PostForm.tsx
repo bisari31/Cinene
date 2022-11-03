@@ -1,15 +1,16 @@
-/* eslint-disable react/require-default-props */
 import styled from 'styled-components';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { useRecoilState } from 'recoil';
 
 import { auth } from 'services/auth';
 import { addPost, updatePost } from 'services/posts';
 import { userIdState } from 'atom/user';
 
+import { queryClient } from 'index';
+import Comment from 'components/comment';
 import PostButton from './PostButton';
 
 export interface IPostFormProps {
@@ -19,6 +20,18 @@ export interface IPostFormProps {
 
 export default function PostForm({ type, content }: IPostFormProps) {
   const [userId, setUserId] = useRecoilState(userIdState);
+  const { mutate } = useMutation(updatePost, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['post', `${content?.numId}`]);
+      navigate(-1);
+    },
+  });
+  const { mutate: addPostMutate } = useMutation(addPost, {
+    onSuccess: () => {
+      // queryClient.invalidateQueries(['posts']);
+      navigate('/');
+    },
+  });
   const { data } = useQuery(['auth', userId], auth);
   const [post, setPost] = useState({
     title: '',
@@ -34,18 +47,18 @@ export default function PostForm({ type, content }: IPostFormProps) {
     setPost((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (
+    e: React.FormEvent<HTMLFormElement> | React.MouseEvent,
+  ) => {
     e.preventDefault();
     try {
-      if (type === 'modify') {
-        if (content && data) {
-          await updatePost(content?.numId, data.user._id, post);
-          return navigate(-1);
-        }
-      }
-      const response = await addPost(post);
-      navigate('/');
-      console.log(response);
+      if (type === 'modify' && content && data)
+        return mutate({
+          numId: content?.numId,
+          userId: data?.user._id,
+          ...post,
+        });
+      addPostMutate(post);
     } catch (err) {
       console.log(err);
     }
@@ -97,14 +110,20 @@ export default function PostForm({ type, content }: IPostFormProps) {
           value={post.body}
           onChange={handleChange}
         />
-        <PostButton type={type} user={data?.user} content={content} />
       </form>
+      {type === 'view' && <Comment postId={content?._id} userId={userId} />}
+      <PostButton
+        type={type}
+        user={data?.user}
+        content={content}
+        submit={handleSubmit}
+      />
     </PostFormWrapper>
   );
 }
 
 const PostFormWrapper = styled.article`
-  form {
+  & > form {
     display: flex;
     flex-direction: column;
     input {

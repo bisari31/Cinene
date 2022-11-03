@@ -1,3 +1,4 @@
+import { useRef, useEffect } from 'react';
 import axios from 'axios';
 import useInput from 'hooks/useInput';
 import { useNavigate } from 'react-router-dom';
@@ -6,6 +7,7 @@ import styled from 'styled-components';
 
 import { userIdState } from 'atom/user';
 import { login, register } from 'services/auth';
+import { useMutation } from 'react-query';
 
 interface IProps {
   type: 'login' | 'register';
@@ -17,19 +19,26 @@ export default function UserForm({ type }: IProps) {
   const [password, onChangePassword] = useInput();
   const [passwordCheck, onChangePasswordCheck] = useInput();
 
+  const { mutate } = useMutation(login, {
+    onSuccess: (data) => {
+      setUserId(data.user._id);
+      localStorage.setItem('auth', data.user._id);
+      navigate(-1);
+      console.log(data);
+    },
+  });
+
   const setUserId = useSetRecoilState(userIdState);
 
   const navigate = useNavigate();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const body = { email, nickname, password };
     try {
       if (type === 'login') {
-        const data = await login(body);
-        setUserId(data.user._id);
-        localStorage.setItem('auth', data.user._id);
-        navigate('/');
+        mutate(body);
       } else {
         if (password !== passwordCheck) {
           return console.log('패스워드가 다릅니다 .');
@@ -49,12 +58,21 @@ export default function UserForm({ type }: IProps) {
     console.log('머임');
   };
 
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
   return (
     <UserFormWrapper>
       <form action="" onSubmit={onSubmit}>
         <div>
           <label htmlFor="">이메일</label>
-          <input value={email} onChange={onChangeEmail} type="text" />
+          <input
+            value={email}
+            onChange={onChangeEmail}
+            type="text"
+            ref={inputRef}
+          />
         </div>
         {type === 'register' && (
           <div>

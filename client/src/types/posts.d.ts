@@ -14,3 +14,10 @@ interface IPostsData {
   posts: IPost[];
   success: boolean;
 }
+
+interface IPostUpdateBody {
+  numId: number;
+  userId: string;
+  title: string;
+  body: string;
+}
