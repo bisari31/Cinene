@@ -12,7 +12,7 @@ import PostButton from './PostButton';
 import PostHeader from './PostHeader';
 
 export interface IPostFormProps {
-  type: 'modify' | 'create' | 'view';
+  type: 'modify' | 'write' | 'view';
   content?: IPost;
 }
 

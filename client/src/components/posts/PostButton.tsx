@@ -40,7 +40,7 @@ function PostButton({ type, user, content, submit }: IProps) {
           </button>
         </>
       )}
-      {type === 'create' && user?._id && (
+      {type === 'write' && user?._id && (
         <>
           <button type="button" onClick={handleClose}>
             취소

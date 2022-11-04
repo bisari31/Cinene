@@ -31,9 +31,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
   try {
-    const post = await Post.findOne({ numId: req.params.id }).populate(
-      'writer',
-    );
+    const post = await Post.findOne({ _id: req.params.id }).populate('writer');
     if (!post) throw new Error('데이터가 없습니다.');
     res.json(post);
   } catch (err) {
@@ -44,7 +42,7 @@ router.get('/:id', async (req, res) => {
 router.delete('/:id', authenticate, async (req, res) => {
   try {
     const post = await Post.findOneAndDelete({
-      numId: req.params.id,
+      _id: req.params.id,
       writer: req.body.id,
     });
     if (!post) throw new Error('삭제 실패');
@@ -58,7 +56,7 @@ router.put('/:id', authenticate, async (req, res) => {
   try {
     const post = await Post.findOneAndUpdate(
       {
-        numId: req.params.id,
+        _id: req.params.id,
         writer: req.body.userId,
       },
       {
