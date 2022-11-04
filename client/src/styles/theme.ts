@@ -20,7 +20,6 @@ const config = {
   laptopHeight: '70px',
   header: '70px',
   border: '6px',
-  border2: '3px',
   main_margin_top: '20px',
 };
 
