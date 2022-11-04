@@ -112,7 +112,7 @@ const SideBar = styled.div`
     button {
       background-color: ${({ theme }) => theme.colors.gray500};
       border: none;
-      border-radius: ${({ theme }) => theme.config.border2};
+      border-radius: ${({ theme }) => theme.config.border};
       color: #fff;
       height: 30px;
       width: 80px;
