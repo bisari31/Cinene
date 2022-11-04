@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import dayjs from 'dayjs';
 import { useMutation } from 'react-query';
 
 import { addPost, updatePost } from 'services/posts';
@@ -10,6 +9,7 @@ import { queryClient } from 'index';
 import Comment from 'components/comment';
 import { useAuthQuery } from 'hooks/useAuthQuery';
 import PostButton from './PostButton';
+import PostHeader from './PostHeader';
 
 export interface IPostFormProps {
   type: 'modify' | 'create' | 'view';
@@ -23,7 +23,6 @@ export default function PostForm({ type, content }: IPostFormProps) {
   });
 
   const navigate = useNavigate();
-
   const { data } = useAuthQuery();
 
   const { mutate } = useMutation(updatePost, {
@@ -73,27 +72,8 @@ export default function PostForm({ type, content }: IPostFormProps) {
   }, [content, type]);
 
   return (
-    <PostFormWrapper>
-      {type === 'view' && (
-        <PostHeader>
-          <ImgWrapper>
-            <p />
-          </ImgWrapper>
-          <Details>
-            <div className="title_wrapper">
-              <span>
-                <b>{content?.writer.nickname}</b>
-              </span>
-            </div>
-            <div className="desc_wrapper">
-              <span>
-                {dayjs(content?.createdAt).format('YYYY.MM.DD HH:MM')}
-              </span>
-              <span>조회수: {content?.views}</span>
-            </div>
-          </Details>
-        </PostHeader>
-      )}
+    <PostFormWrapper isViewPage={type === 'view'}>
+      {type === 'view' && <PostHeader content={content} />}
       <form action="" onSubmit={handleSubmit}>
         <input
           readOnly={type === 'view'}
@@ -121,7 +101,7 @@ export default function PostForm({ type, content }: IPostFormProps) {
   );
 }
 
-const PostFormWrapper = styled.article`
+const PostFormWrapper = styled.article<{ isViewPage: boolean }>`
   & > form {
     display: flex;
     flex-direction: column;
@@ -135,52 +115,16 @@ const PostFormWrapper = styled.article`
 
     input,
     textarea {
-      border: 1px solid ${({ theme }) => theme.colors.gray100};
+      background-color: ${({ theme, isViewPage }) =>
+        isViewPage ? theme.colors.gray50 : 'none'};
+      border: ${({ theme, isViewPage }) =>
+        isViewPage ? 'none' : `1px solid ${theme.colors.gray100}`};
+      border-radius: ${({ theme }) => theme.config.border};
       padding: 1em;
-    }
-    input,
-    textarea,
-    button {
-      border-radius: ${({ theme }) => theme.config.border2};
-    }
-  }
-`;
-
-const PostHeader = styled.div`
-  border-radius: ${({ theme }) => theme.config.border2};
-  display: flex;
-  height: 50px;
-  margin-bottom: 1em;
-  padding: 0 1em;
-`;
-
-const ImgWrapper = styled.div`
-  align-items: center;
-  display: flex;
-  margin-right: 1em;
-  p {
-    background-color: ${({ theme }) => theme.colors.gray100};
-    border-radius: 50%;
-    height: 40px;
-    width: 40px;
-  }
-`;
-
-const Details = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  .title_wrapper {
-    b {
-      font-weight: 500;
-    }
-    font-size: 16px;
-  }
-  .desc_wrapper {
-    font-size: 12px;
-    margin-top: 0.3em;
-    span + span {
-      margin-left: 0.3em;
+      input,
+      textarea {
+        border-radius: ${({ theme }) => theme.config.border};
+      }
     }
   }
 `;
