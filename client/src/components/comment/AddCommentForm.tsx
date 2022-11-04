@@ -11,16 +11,20 @@ import { useParams } from 'react-router-dom';
 
 interface IProps {
   isNested?: boolean;
+  commentId?: string;
 }
 
-export default function AddCommentForm({ isNested = false }: IProps) {
+export default function AddCommentForm({
+  isNested = false,
+  commentId,
+}: IProps) {
   const [comment, setComment] = useState('');
   const userId = useRecoilValue(userIdState);
 
   const { id } = useParams();
 
   const { mutate } = useMutation(createComment, {
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries(['comment', id]);
       setComment('');
     },
@@ -40,6 +44,7 @@ export default function AddCommentForm({ isNested = false }: IProps) {
       comment,
       postId: id,
       writer: userId,
+      responseTo: commentId,
     };
     mutate(body);
   };
@@ -74,13 +79,13 @@ export default function AddCommentForm({ isNested = false }: IProps) {
 
 const Wrapper = styled.div`
   display: flex;
+  justify-content: flex-end;
   margin: 1.5em 0;
 `;
 
 const Form = styled.form<{ isNested: boolean }>`
   display: flex;
   flex-direction: row;
-  margin-left: auto;
   width: ${({ isNested }) => (isNested ? '95%' : '100%')};
   textarea {
     background-color: ${({ theme }) => theme.colors.gray50};

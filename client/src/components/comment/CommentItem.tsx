@@ -1,81 +1,79 @@
-import { useState } from 'react';
 import styled from 'styled-components';
-
 import { IComment } from 'types/comment';
 import { changeCreatedAt } from 'utils';
-import ReplyComment from './replyComment';
 
 interface IProps {
-  data: IComment;
+  comment: IComment;
+  handleShowReplyComment?: () => void;
+  isReply?: boolean;
 }
-
-export default function CommentItem({ data }: IProps) {
-  const [showReplyComment, setShowReplyComment] = useState(false);
-
-  const handleChange = () => {
-    setShowReplyComment(!showReplyComment);
-  };
-
+export default function CommentItem({
+  comment,
+  isReply = false,
+  handleShowReplyComment,
+}: IProps) {
   return (
-    <>
-      <CommentItemWrapper onClick={handleChange}>
-        <div>
-          <p />
-        </div>
-        <div>
-          <NicknameWrapper>
-            <span className="comment_nickname">
-              <b>{data.writer.nickname}</b>
-            </span>
-            <span>{changeCreatedAt(data.createdAt)}</span>
-          </NicknameWrapper>
-          <ContentWrapper>
-            <span>{data.comment}</span>
-          </ContentWrapper>
-        </div>
-      </CommentItemWrapper>
-      <div>{showReplyComment && <ReplyComment />}</div>
-    </>
+    <CommentItemWrapper isReply={isReply} onClick={handleShowReplyComment}>
+      <Avatar>
+        <p />
+      </Avatar>
+      <Content>
+        <NicknameWrapper>
+          <span>
+            <b>{comment.writer.nickname}</b>
+          </span>
+          <span>{changeCreatedAt(comment.createdAt)}</span>
+        </NicknameWrapper>
+        <ContentWrapper>
+          <span>{comment.comment}</span>
+        </ContentWrapper>
+      </Content>
+    </CommentItemWrapper>
   );
 }
 
-const CommentItemWrapper = styled.li`
+const CommentItemWrapper = styled.div<{ isReply: boolean }>`
   display: flex;
+  flex: 1;
+  margin-left: auto;
   padding: 1em;
+  width: ${({ isReply }) => (isReply ? '95%' : '100%')};
   &:hover {
-    cursor: pointer;
-    border-radius: 10px;
     background-color: ${({ theme }) => theme.colors.gray50};
+    border-radius: 10px;
+    cursor: pointer;
   }
-  & > div:first-of-type {
-    background-color: ${({ theme }) => theme.colors.gray100};
-    border-radius: 50%;
-    height: 40px;
-    margin-right: 1em;
-    width: 40px;
-  }
-  & > div:nth-child(2) {
+`;
+
+const Avatar = styled.div`
+  background-color: ${({ theme }) => theme.colors.gray100};
+  border-radius: 50%;
+  height: 40px;
+  margin-right: 1em;
+  width: 40px;
+`;
+const Content = styled.div`
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  span {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    span {
-      display: flex;
-      font-size: 13px;
-    }
+    font-size: 13px;
   }
 `;
 
 const NicknameWrapper = styled.div`
   align-items: center;
   display: flex;
-  .comment_nickname {
+  span + span {
+    margin-left: 1em;
+  }
+  span:first-of-type {
     b {
       font-size: 15px;
       font-weight: 500;
     }
-  }
-  span + span {
-    margin-left: 1em;
   }
   span:last-of-type {
     color: ${({ theme }) => theme.colors.gray500};

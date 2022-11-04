@@ -18,8 +18,9 @@ export const createComment = async (body: IBody) => {
   }
 };
 
-export const getComments = async (postId: string) => {
+export const getComments = async (postId: string | undefined) => {
   try {
+    if (!postId) return;
     const { data } = await axios.get<IComment[]>(`/comment/${postId}`);
     return data;
   } catch (err) {

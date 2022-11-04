@@ -1,26 +1,19 @@
-import { useQuery } from 'react-query';
 import styled from 'styled-components';
 
-import { getComments } from 'services/comment';
-import { IComment } from 'types/comment';
-
+import { useGetCommentsQuery } from 'hooks/useGetCommentsQuery';
 import AddCommentForm from './AddCommentForm';
-import CommentItem from './CommentItem';
+import CommentList from './CommentList';
 
-export interface IProps {
-  postId?: string;
-}
+type PostId = { postId: string | undefined };
 
-export default function CommentWrapper({ postId = '' }: IProps) {
-  const { data } = useQuery<IComment[]>(['comment', postId], () =>
-    getComments(postId),
-  );
+export default function CommentWrapper({ postId }: PostId) {
+  const { data } = useGetCommentsQuery(postId);
 
   return (
     <Wrapper>
       <ul>
         {data?.map((item) => (
-          <CommentItem key={item._id} data={item} />
+          <CommentList key={item._id} comment={item} />
         ))}
       </ul>
       <AddCommentForm />

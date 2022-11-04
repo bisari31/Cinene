@@ -6,4 +6,5 @@ export interface IComment {
   writer: IUser;
   __v: number;
   _id: string;
+  responseTo: string;
 }

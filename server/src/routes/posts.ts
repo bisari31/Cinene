@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import Comment from '../models/comment';
 import Post from '../models/post';
 import { authenticate, AuthRequest } from './middleware';
 
