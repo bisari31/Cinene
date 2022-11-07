@@ -6,10 +6,12 @@ interface IProps {
   comment: IComment;
   handleShowReplyComment?: () => void;
   isReply?: boolean;
+  replyCommentsNum?: number;
 }
 export default function CommentItem({
   comment,
   isReply = false,
+  replyCommentsNum,
   handleShowReplyComment,
 }: IProps) {
   return (
@@ -27,12 +29,20 @@ export default function CommentItem({
         <ContentWrapper>
           <span>{comment.comment}</span>
         </ContentWrapper>
+        <DisplayReplyComments hasReplyComments={!!replyCommentsNum}>
+          <span>
+            {replyCommentsNum
+              ? `${replyCommentsNum}개의 답글이 있습니다 `
+              : null}
+          </span>
+        </DisplayReplyComments>
       </Content>
     </CommentItemWrapper>
   );
 }
 
 const CommentItemWrapper = styled.div<{ isReply: boolean }>`
+  border-radius: 10px;
   display: flex;
   flex: 1;
   margin-left: auto;
@@ -82,4 +92,10 @@ const NicknameWrapper = styled.div`
 
 const ContentWrapper = styled.div`
   margin-top: 0.3em;
+`;
+
+const DisplayReplyComments = styled.div<{ hasReplyComments: boolean }>`
+  color: ${({ theme }) => theme.colors.gray500};
+  font-size: 12px;
+  margin-top: ${({ hasReplyComments }) => hasReplyComments && '1em'};
 `;

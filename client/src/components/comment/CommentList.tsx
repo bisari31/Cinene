@@ -1,4 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useGetCommentsQuery } from 'hooks/useGetCommentsQuery';
+import { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { IComment } from 'types/comment';
@@ -12,6 +14,10 @@ interface IProps {
 export default function CommentList({ comment }: IProps) {
   const [showReplyComment, setShowReplyComment] = useState(false);
 
+  const { id } = useParams();
+  const { data } = useGetCommentsQuery(id, comment._id);
+
+  console.log(data);
   const handleShowReplyComment = () => {
     setShowReplyComment(!showReplyComment);
   };
@@ -19,10 +25,11 @@ export default function CommentList({ comment }: IProps) {
   return (
     <CommentListWrapper>
       <CommentItem
+        replyCommentsNum={data?.length}
         comment={comment}
         handleShowReplyComment={handleShowReplyComment}
       />
-      {showReplyComment && <ReplyComment commentId={comment._id} />}
+      {showReplyComment && <ReplyComment data={data} commentId={comment._id} />}
     </CommentListWrapper>
   );
 }

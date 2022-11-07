@@ -1,12 +1,14 @@
-import { useGetCommentsQuery } from 'hooks/useGetCommentsQuery';
-import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
+import { IComment } from 'types/comment';
 import AddCommentForm from '../AddCommentForm';
 import CommentItem from '../CommentItem';
 
-export default function ReplyComment({ commentId }: { commentId: string }) {
-  const { id } = useParams();
-  const { data } = useGetCommentsQuery(id, commentId);
+interface IProps {
+  commentId: string;
+  data?: IComment[];
+}
+
+export default function ReplyComment({ commentId, data }: IProps) {
   return (
     <ReplyCommentWrapper>
       <ul>
