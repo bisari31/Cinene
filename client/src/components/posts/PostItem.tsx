@@ -18,11 +18,11 @@ interface IProps {
 export default function PostItem({ post }: IProps) {
   return (
     <PostItemWrapper commentsNum={post.commentsNum}>
-      <NumWrapper>{post.numId}</NumWrapper>
+      <NumWrapper>{post.seq}</NumWrapper>
       <TitleWrapper>
         <Link to={`post/${post._id}`}>
           {post.title}
-          {!!post.commentsNum && <em>[{post.commentsNum}]</em>}
+          {!!post.commentsNum && <span>[{post.commentsNum}]</span>}
         </Link>
       </TitleWrapper>
       <NicknameWrapper>{post.writer.nickname}</NicknameWrapper>
@@ -40,7 +40,7 @@ const PostItemWrapper = styled.li<{ commentsNum: number }>`
     display: flex;
   }
   a {
-    em {
+    span {
       color: ${({ theme }) => theme.colors.red};
       font-size: 12px;
       margin-left: 0.5em;

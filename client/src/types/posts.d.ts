@@ -1,7 +1,7 @@
 interface IPost {
   body: string;
   createdAt: string;
-  numId: number;
+  seq: number;
   title: string;
   updatedAt: string;
   views: number;

@@ -6,7 +6,9 @@ import { getPosts } from 'services/posts';
 import PostItem from './PostItem';
 
 export default function PostList() {
-  const { data } = useQuery(['posts'], getPosts);
+  const { data } = useQuery(['posts'], getPosts, {
+    refetchOnWindowFocus: false,
+  });
 
   return (
     <PostListWrapper>

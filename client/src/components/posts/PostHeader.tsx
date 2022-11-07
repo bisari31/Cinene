@@ -20,7 +20,7 @@ export default function PostHeader({ content }: IProps) {
         <div className="desc_wrapper">
           <span>{dayjs(content?.createdAt).format('YYYY.MM.DD HH:MM')}</span>
           <span>조회수: {content?.views}</span>
-          <span>댓글: 0</span>
+          <span>댓글: {content?.commentsNum}</span>
         </div>
       </Details>
     </PostHeaderWrapper>
