@@ -7,12 +7,12 @@ const router = Router();
 
 router.post('/write', authenticate, async (req: AuthRequest, res) => {
   try {
-    const postNum = await Post.findOne({}, { numId: 1, _id: 0 }).sort({
+    const postNum = await Post.findOne({}, { seq: 1, _id: 0 }).sort({
       _id: -1,
     });
     const post = await Post.create({
       writer: req.user?._id,
-      numId: !postNum?.numId ? 1 : postNum.numId + 1,
+      seq: !postNum?.seq ? 1 : postNum.seq + 1,
       ...req.body,
     });
     res.status(201).json({ success: true, post });
@@ -35,7 +35,8 @@ router.get('/:id', async (req, res) => {
   try {
     const post = await Post.findOne({ _id: req.params.id }).populate('writer');
     if (!post) throw new Error('데이터가 없습니다.');
-    res.json(post);
+    const newPost = await post?.addCountViews();
+    res.json(newPost);
   } catch (err) {
     res.status(400).send({ success: false, err: err.message });
   }

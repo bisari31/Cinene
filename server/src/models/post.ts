@@ -7,18 +7,19 @@ interface DBPost {
   updatedAt: Date;
   views: number;
   body: string;
-  numId: number;
+  seq: number;
   commentsNum: number;
 }
 
 interface DBPostMethods {
   addCountComments(): Promise<DBPost>;
+  addCountViews(): any;
 }
 interface DBPostModel extends Model<DBPost, {}, DBPostMethods> {}
 
 const postSchema = new Schema<DBPost>(
   {
-    numId: {
+    seq: {
       type: Number,
       default: 0,
     },
@@ -50,8 +51,23 @@ const postSchema = new Schema<DBPost>(
 );
 
 postSchema.methods.addCountComments = async function () {
-  this.commentsNum += 1;
-  return await this.save();
+  try {
+    this.commentsNum += 1;
+    const post = await this.save();
+    return post;
+  } catch (err) {
+    throw new Error('댓글 증가 실패');
+  }
+};
+
+postSchema.methods.addCountViews = async function () {
+  try {
+    this.views += 1;
+    const post = await this.save();
+    return post;
+  } catch (err) {
+    throw new Error('조회수 증가 실패');
+  }
 };
 
 const Post = model<DBPost, DBPostModel>('Post', postSchema);
