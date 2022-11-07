@@ -1,4 +1,4 @@
-import { model, ObjectId, Schema, Types } from 'mongoose';
+import { Model, model, ObjectId, Schema, Types } from 'mongoose';
 
 interface DBPost {
   writer: ObjectId;
@@ -8,7 +8,13 @@ interface DBPost {
   views: number;
   body: string;
   numId: number;
+  commentsNum: number;
 }
+
+interface DBPostMethods {
+  addCountComments(): Promise<DBPost>;
+}
+interface DBPostModel extends Model<DBPost, {}, DBPostMethods> {}
 
 const postSchema = new Schema<DBPost>(
   {
@@ -33,12 +39,21 @@ const postSchema = new Schema<DBPost>(
       type: Number,
       default: 0,
     },
+    commentsNum: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,
   },
 );
 
-const Post = model<DBPost>('Post', postSchema);
+postSchema.methods.addCountComments = async function () {
+  this.commentsNum += 1;
+  return await this.save();
+};
+
+const Post = model<DBPost, DBPostModel>('Post', postSchema);
 
 export default Post;

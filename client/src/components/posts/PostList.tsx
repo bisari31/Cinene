@@ -46,15 +46,6 @@ export const NumWrapper = styled.div`
 `;
 export const TitleWrapper = styled.div`
   flex: 1;
-  a {
-    &::after {
-      color: ${({ theme }) => theme.colors.red};
-      content: '[1]';
-      font-size: 12px;
-      font-weight: 500;
-      margin-left: 0.5em;
-    }
-  }
 `;
 export const NicknameWrapper = styled.div`
   flex-basis: 100px;

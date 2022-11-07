@@ -17,10 +17,13 @@ interface IProps {
 
 export default function PostItem({ post }: IProps) {
   return (
-    <PostItemWrapper>
+    <PostItemWrapper commentsNum={post.commentsNum}>
       <NumWrapper>{post.numId}</NumWrapper>
       <TitleWrapper>
-        <Link to={`post/${post._id}`}>{post.title}</Link>
+        <Link to={`post/${post._id}`}>
+          {post.title}
+          {!!post.commentsNum && <em>[{post.commentsNum}]</em>}
+        </Link>
       </TitleWrapper>
       <NicknameWrapper>{post.writer.nickname}</NicknameWrapper>
       <DaysWrapper>{changeCreatedAt(post.createdAt)}</DaysWrapper>
@@ -29,12 +32,18 @@ export default function PostItem({ post }: IProps) {
   );
 }
 
-const PostItemWrapper = styled.li`
+const PostItemWrapper = styled.li<{ commentsNum: number }>`
   border-bottom: 1px solid ${({ theme }) => theme.colors.gray100};
-
   display: flex;
   padding: 1em 0.5em;
   div {
     display: flex;
+  }
+  a {
+    em {
+      color: ${({ theme }) => theme.colors.red};
+      font-size: 12px;
+      margin-left: 0.5em;
+    }
   }
 `;

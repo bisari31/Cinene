@@ -1,5 +1,6 @@
 import { Request, Response, Router } from 'express';
 import Comment from '../models/comment';
+import Post from '../models/post';
 import { authenticate } from './middleware';
 
 const router = Router();
@@ -21,6 +22,8 @@ router.post(
     try {
       console.log(req.body);
       const comment = await Comment.create(req.body);
+      const postId = await Post.findOne({ _id: req.body.postId });
+      await postId?.addCountComments();
       const newComment = await Comment.findOne({ _id: comment._id }).populate(
         'writer',
       );

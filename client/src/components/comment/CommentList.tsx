@@ -17,7 +17,6 @@ export default function CommentList({ comment }: IProps) {
   const { id } = useParams();
   const { data } = useGetCommentsQuery(id, comment._id);
 
-  console.log(data);
   const handleShowReplyComment = () => {
     setShowReplyComment(!showReplyComment);
   };

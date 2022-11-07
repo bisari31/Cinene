@@ -8,6 +8,7 @@ interface IPost {
   writer: IUser;
   __v: number;
   _id: string;
+  commentsNum: number;
 }
 
 interface IPostsData {
