@@ -49,14 +49,12 @@ const SideMenuWrapper = styled.div`
     flex-direction: column;
     li + li {
       border-top: 1px solid ${({ theme }) => theme.colors.gray100};
-      margin: 0;
     }
     li {
       font-weight: 400;
       height: 100%;
       justify-content: center;
       width: 100%;
-
       &:hover {
         background-color: ${({ theme }) => theme.colors.gray50};
       }

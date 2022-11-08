@@ -41,12 +41,12 @@ export default function Layout() {
               </UserInfoList>
             ) : (
               <>
-                <li>
+                <LayoutList>
                   <Link to="/login">로그인</Link>
-                </li>
-                <li>
+                </LayoutList>
+                <LayoutList>
                   <Link to="/register">회원가입</Link>
-                </li>
+                </LayoutList>
               </>
             )}
           </ul>
@@ -91,12 +91,9 @@ const SideBar = styled.div`
     flex: 1;
 
     li {
-      font-size: 13px;
-      display: flex;
       align-items: center;
-    }
-    li + li {
-      margin-left: 2em;
+      display: flex;
+      font-size: 13px;
     }
   }
 `;
@@ -124,5 +121,11 @@ const UserInfoList = styled.li<{ showMemu: boolean }>`
   }
   &:hover {
     cursor: pointer;
+  }
+`;
+
+const LayoutList = styled.li`
+  &:last-child {
+    margin-left: 2em;
   }
 `;
