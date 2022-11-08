@@ -6,6 +6,7 @@ import LoginPage from 'pages/auth/LoginPage';
 import PostDetailPage from 'pages/posts/PostDetailPage';
 import PostWritePage from 'pages/posts/PostWritePage';
 import RegisterPage from 'pages/auth/RegisterPage';
+import MyPage from 'pages/MyPage';
 
 export default function App() {
   return (
@@ -17,6 +18,7 @@ export default function App() {
         <Route index path="/post/write" element={<PostWritePage />} />
         <Route index path="/post/:id" element={<PostDetailPage />} />
         <Route index path="/post/:id/modify" element={<PostDetailPage />} />
+        <Route index path="/mypage" element={<MyPage />} />
       </Route>
     </Routes>
   );

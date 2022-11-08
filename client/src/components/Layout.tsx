@@ -1,27 +1,25 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, Outlet } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 import { userIdState } from 'atom/user';
-import { logout } from 'services/auth';
 import { useAuthQuery } from 'hooks/useAuthQuery';
+import { ChevronDown } from 'assets';
+import SideMenu from './SideMenu';
 
 export default function Layout() {
+  const [showMemu, setShowMenu] = useState(false);
   const [userId, setUserId] = useRecoilState(userIdState);
   const { data } = useAuthQuery(userId);
 
-  const onClickLogout = () => {
-    logout().then(() => {
-      setUserId('');
-      localStorage.removeItem('auth');
-    });
+  const handleShowInfo = () => {
+    setShowMenu(!showMemu);
   };
 
   useEffect(() => {
     const item = localStorage.getItem('auth');
     if (item) setUserId(item);
-    console.log('이게 실행되나요?');
   }, []);
 
   return (
@@ -34,27 +32,20 @@ export default function Layout() {
         </LogoWrapper>
         <SideBar>
           <ul>
-            {!data?.user && (
+            {data?.user ? (
+              <UserInfoList onClick={handleShowInfo} showMemu={showMemu}>
+                <img src={`/${data?.user.img}`} alt="user_image" />
+                <span>{data?.user.nickname}</span>
+                <ChevronDown />
+                {showMemu && <SideMenu />}
+              </UserInfoList>
+            ) : (
               <>
                 <li>
                   <Link to="/login">로그인</Link>
                 </li>
                 <li>
                   <Link to="/register">회원가입</Link>
-                </li>
-              </>
-            )}
-            {data?.user && (
-              <>
-                <li>
-                  <Link to="/">
-                    <b>{data.user.nickname}</b>님 안녕하세요.
-                  </Link>
-                </li>
-                <li>
-                  <button onClick={onClickLogout} type="button">
-                    로그아웃
-                  </button>
                 </li>
               </>
             )}
@@ -101,24 +92,37 @@ const SideBar = styled.div`
 
     li {
       font-size: 13px;
-      b {
-        font-weight: 600;
-        margin-right: 0.2em;
-      }
+      display: flex;
+      align-items: center;
     }
     li + li {
       margin-left: 2em;
     }
-    button {
-      background-color: ${({ theme }) => theme.colors.gray500};
-      border: none;
-      border-radius: ${({ theme }) => theme.config.border};
-      color: #fff;
-      height: 30px;
-      width: 80px;
-      &:hover {
-        background-color: ${({ theme }) => theme.colors.black};
-      }
-    }
+  }
+`;
+
+const UserInfoList = styled.li<{ showMemu: boolean }>`
+  position: relative;
+  img {
+    object-fit: cover;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+  svg {
+    transform: ${({ showMemu }) =>
+      showMemu ? `rotate(180deg)` : `rotate(0deg)`};
+    transition: 0.5s ease;
+    stroke: ${({ theme }) => theme.colors.black};
+    stroke-width: 2.5;
+    width: 14px;
+  }
+  span {
+    font-weight: 500;
+    margin-left: 1em;
+    margin-right: 0.8em;
+  }
+  &:hover {
+    cursor: pointer;
   }
 `;
