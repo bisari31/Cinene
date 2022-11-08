@@ -5,4 +5,5 @@ interface IUser {
   password: string;
   token: string;
   createdAt: string;
+  img: string;
 }

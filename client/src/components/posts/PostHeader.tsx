@@ -9,7 +9,7 @@ export default function PostHeader({ content }: IProps) {
   return (
     <PostHeaderWrapper>
       <ImgWrapper>
-        <p />
+        <img src={`/${content?.writer.img}`} alt="user_image" />
       </ImgWrapper>
       <Details>
         <div className="title_wrapper">
@@ -38,10 +38,10 @@ const ImgWrapper = styled.div`
   align-items: center;
   display: flex;
   margin-right: 1em;
-  p {
-    background-color: ${({ theme }) => theme.colors.gray100};
+  img {
     border-radius: 50%;
     height: 40px;
+    object-fit: cover;
     width: 40px;
   }
 `;

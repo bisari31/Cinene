@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { IComment } from 'types/comment';
+
 import CommentItem from './CommentItem';
 import ReplyComment from './replyComment';
 

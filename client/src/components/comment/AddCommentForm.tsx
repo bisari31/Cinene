@@ -1,13 +1,13 @@
 import styled from 'styled-components';
 import { useState } from 'react';
 import { useMutation } from 'react-query';
+import { useRecoilValue } from 'recoil';
+import { useParams } from 'react-router-dom';
 
 import { createComment } from 'services/comment';
 
 import { queryClient } from 'index';
-import { useRecoilValue } from 'recoil';
 import { userIdState } from 'atom/user';
-import { useParams } from 'react-router-dom';
 
 interface IProps {
   isNested?: boolean;

@@ -10,7 +10,7 @@ interface IProps extends IPostFormProps {
   submit: (e: React.MouseEvent) => Promise<void>;
 }
 
-function PostButton({ type, user, content, submit }: IProps) {
+export default function PostButton({ type, user, content, submit }: IProps) {
   const navigate = useNavigate();
   const handleClose = () => {
     navigate(-1);
@@ -63,7 +63,6 @@ function PostButton({ type, user, content, submit }: IProps) {
     </PostButtonWrapper>
   );
 }
-export default React.memo(PostButton);
 
 const PostButtonWrapper = styled.div`
   display: flex;

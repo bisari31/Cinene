@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+
 import { IComment } from 'types/comment';
 import { changeCreatedAt } from 'utils';
 
@@ -17,7 +18,7 @@ export default function CommentItem({
   return (
     <CommentItemWrapper isReply={isReply} onClick={handleShowReplyComment}>
       <Avatar>
-        <p />
+        <img src={`/${comment.writer.img}`} alt="" />
       </Avatar>
       <Content>
         <NicknameWrapper>
@@ -56,11 +57,13 @@ const CommentItemWrapper = styled.div<{ isReply: boolean }>`
 `;
 
 const Avatar = styled.div`
-  background-color: ${({ theme }) => theme.colors.gray100};
-  border-radius: 50%;
-  height: 40px;
-  margin-right: 1em;
-  width: 40px;
+  img {
+    border-radius: 50%;
+    height: 40px;
+    margin-right: 1em;
+    object-fit: cover;
+    width: 40px;
+  }
 `;
 const Content = styled.div`
   display: flex;

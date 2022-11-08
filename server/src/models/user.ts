@@ -8,6 +8,7 @@ export interface DBUser {
   nickname: string;
   token: string;
   createdAt: Date;
+  img: string;
 }
 
 interface DBUserMethods {
@@ -37,6 +38,10 @@ const userSchema = new Schema<DBUser>(
     },
     token: {
       type: String,
+    },
+    img: {
+      type: String,
+      default: 'panda-g3d0df0196_640.jpg',
     },
   },
   {
