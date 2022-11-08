@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Link, Outlet } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
@@ -6,17 +6,13 @@ import styled from 'styled-components';
 import { userIdState } from 'atom/user';
 import { useAuthQuery } from 'hooks/useAuthQuery';
 import { ChevronDown } from 'assets';
+import useCheckedOutSide from 'hooks/useCheckedOutSide';
 import SideMenu from './SideMenu';
 
 export default function Layout() {
-  const [showMemu, setShowMenu] = useState(false);
   const [userId, setUserId] = useRecoilState(userIdState);
   const { data } = useAuthQuery(userId);
-
-  const handleShowInfo = () => {
-    setShowMenu(!showMemu);
-  };
-
+  const { ref, visible, handleChangeVisible } = useCheckedOutSide();
   useEffect(() => {
     const item = localStorage.getItem('auth');
     if (item) setUserId(item);
@@ -33,11 +29,11 @@ export default function Layout() {
         <SideBar>
           <ul>
             {data?.user ? (
-              <UserInfoList onClick={handleShowInfo} showMemu={showMemu}>
+              <UserInfoList onClick={handleChangeVisible} showMemu={visible}>
                 <img src={`/${data?.user.img}`} alt="user_image" />
                 <span>{data?.user.nickname}</span>
                 <ChevronDown />
-                {showMemu && <SideMenu />}
+                {visible && <SideMenu returnRef={ref} />}
               </UserInfoList>
             ) : (
               <>

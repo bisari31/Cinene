@@ -1,10 +1,15 @@
-import { userIdState } from 'atom/user';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
-import { logout } from 'services/auth';
 import styled from 'styled-components';
 
-export default function SideMenu() {
+import { logout } from 'services/auth';
+import { userIdState } from 'atom/user';
+
+interface IProps {
+  returnRef: React.RefObject<HTMLDivElement>;
+}
+
+export default function SideMenu({ returnRef }: IProps) {
   const setUserId = useSetRecoilState(userIdState);
   const navigate = useNavigate();
 
@@ -17,7 +22,7 @@ export default function SideMenu() {
   };
 
   return (
-    <SideMenuWrapper>
+    <SideMenuWrapper ref={returnRef}>
       <ul>
         <li>
           <Link to="/mypage">내 정보</Link>
