@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { userIdState } from 'atom/user';
 import { login, register } from 'services/auth';
 import { useMutation } from 'react-query';
+import Button from './common/Button';
 
 interface IProps {
   type: 'login' | 'register';
@@ -94,16 +95,21 @@ export default function UserForm({ type }: IProps) {
             />
           </div>
         )}
-        <div>
-          <button type="submit">
+        <ButtonWrapper>
+          <Button color="black" size="fullWidth" type="submit">
             {type === 'register' ? '회원가입' : '로그인'}
-          </button>
+          </Button>
           {type === 'login' && (
-            <button className="kakao_login_btn" type="button">
+            <Button
+              color="yellow"
+              size="fullWidth"
+              onClick={onClick}
+              type="button"
+            >
               카카오톡 로그인
-            </button>
+            </Button>
           )}
-        </div>
+        </ButtonWrapper>
       </form>
     </UserFormWrapper>
   );
@@ -130,18 +136,6 @@ const UserFormWrapper = styled.div`
         border: 1px solid ${({ theme }) => theme.colors.gray100};
         border-radius: ${({ theme }) => theme.config.border};
         padding: 0 1em;
-      }
-      button {
-        background-color: ${({ theme }) => theme.colors.gray500};
-        border: none;
-        border-radius: ${({ theme }) => theme.config.border};
-        color: #fff;
-        &:hover {
-          background-color: ${({ theme }) => theme.colors.black};
-        }
-      }
-      input,
-      button {
         height: 40px;
       }
     }
@@ -150,13 +144,14 @@ const UserFormWrapper = styled.div`
         margin-top: 1em;
       }
     }
-    div:last-child {
-      margin-top: 4em;
-      .kakao_login_btn {
-        background-color: #fdce00;
-        color: ${({ theme }) => theme.colors.black};
-        margin-top: 1.5em;
-      }
-    }
+  }
+`;
+
+const ButtonWrapper = styled.div`
+  & > button:nth-child(1) {
+    margin-top: 4em;
+  }
+  & > button:nth-child(2) {
+    margin-top: 2em;
   }
 `;

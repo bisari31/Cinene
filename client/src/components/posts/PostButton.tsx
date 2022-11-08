@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { deletePost } from 'services/posts';
+import Button from 'components/common/Button';
 import { IPostFormProps } from './PostForm';
 
 interface IProps extends IPostFormProps {
@@ -32,32 +33,52 @@ export default function PostButton({ type, user, content, submit }: IProps) {
     <PostButtonWrapper>
       {type === 'view' && user?._id === content?.writer._id && (
         <>
-          <button type="button" onClick={handleRemove}>
+          <Button
+            type="button"
+            color="gray100"
+            size="medium"
+            onClick={handleRemove}
+          >
             삭제
-          </button>
-          <button type="button" onClick={moveModifyPage} className="submit_btn">
+          </Button>
+          <Button
+            type="button"
+            color="black"
+            size="medium"
+            onClick={moveModifyPage}
+          >
             수정
-          </button>
+          </Button>
         </>
       )}
       {type === 'write' && user?._id && (
         <>
-          <button type="button" onClick={handleClose}>
+          <Button
+            type="button"
+            color="gray100"
+            size="medium"
+            onClick={handleClose}
+          >
             취소
-          </button>
-          <button type="button" className="submit_btn" onClick={submit}>
+          </Button>
+          <Button type="button" color="black" size="medium" onClick={submit}>
             등록
-          </button>
+          </Button>
         </>
       )}
       {type === 'modify' && user?._id === content?.writer._id && (
         <>
-          <button type="button" onClick={handleClose}>
+          <Button
+            type="button"
+            color="gray100"
+            size="medium"
+            onClick={handleClose}
+          >
             취소
-          </button>
-          <button type="button" className="submit_btn" onClick={submit}>
+          </Button>
+          <Button type="button" color="black" size="medium" onClick={submit}>
             수정
-          </button>
+          </Button>
         </>
       )}
     </PostButtonWrapper>
@@ -69,18 +90,7 @@ const PostButtonWrapper = styled.div`
   flex: 1;
   justify-content: center;
   margin-bottom: 5em;
-  button {
-    border: none;
-    font-size: 14px;
-    height: 50px;
-    margin-top: 4em;
-    width: 200px;
-    border-radius: ${({ theme }) => theme.config.border};
-  }
-  .submit_btn {
-    color: #fff;
-    background: ${({ theme }) => theme.colors.black};
-  }
+  margin-top: 4em;
   button + button {
     margin-left: 3em;
   }

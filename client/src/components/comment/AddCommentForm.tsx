@@ -8,6 +8,7 @@ import { createComment } from 'services/comment';
 
 import { queryClient } from 'index';
 import { userIdState } from 'atom/user';
+import Button from 'components/common/Button';
 
 interface IProps {
   isNested?: boolean;
@@ -71,7 +72,9 @@ export default function AddCommentForm({
           onChange={handleChangeComment}
           onKeyDown={checkEnterKey}
         />
-        <button type="submit">등록</button>
+        <Button type="submit" color="black" disable={!userId} size="small">
+          등록
+        </Button>
       </Form>
     </Wrapper>
   );
@@ -100,15 +103,7 @@ const Form = styled.form<{ isNested: boolean }>`
   }
 
   button {
-    align-items: center;
-    background-color: ${({ theme }) => theme.colors.black};
-    border: none;
-    border-radius: ${({ theme }) => theme.config.border};
-    color: #fff;
-    font-size: 13px;
     height: 100%;
-    justify-content: center;
     margin-left: 2em;
-    width: 100px;
   }
 `;
