@@ -33,7 +33,7 @@ export default function Layout() {
                 <img src={`/${data?.user.img}`} alt="user_image" />
                 <span>{data?.user.nickname}</span>
                 <ChevronDown />
-                {visible && <SideMenu returnRef={ref} />}
+                {visible && <SideMenu refElement={ref} />}
               </UserInfoList>
             ) : (
               <>

@@ -6,10 +6,10 @@ import { logout } from 'services/auth';
 import { userIdState } from 'atom/user';
 
 interface IProps {
-  returnRef: React.RefObject<HTMLDivElement>;
+  refElement: React.RefObject<HTMLDivElement>;
 }
 
-export default function SideMenu({ returnRef }: IProps) {
+export default function SideMenu({ refElement }: IProps) {
   const setUserId = useSetRecoilState(userIdState);
   const navigate = useNavigate();
 
@@ -22,7 +22,7 @@ export default function SideMenu({ returnRef }: IProps) {
   };
 
   return (
-    <SideMenuWrapper ref={returnRef}>
+    <SideMenuWrapper ref={refElement}>
       <ul>
         <li>
           <Link to="/mypage">내 정보</Link>
