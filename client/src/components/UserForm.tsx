@@ -9,6 +9,7 @@ import { userIdState } from 'atom/user';
 import { login, register } from 'services/auth';
 import { useMutation } from 'react-query';
 import Button from './common/Button';
+import Input from './common/Input';
 
 interface IProps {
   type: 'login' | 'register';
@@ -59,36 +60,32 @@ export default function UserForm({ type }: IProps) {
     console.log('머임');
   };
 
-  useEffect(() => {
-    inputRef.current?.focus();
-  }, []);
-
   return (
     <UserFormWrapper>
       <form action="" onSubmit={onSubmit}>
         <div>
           <label htmlFor="">이메일</label>
-          <input
+          <Input
             value={email}
             onChange={onChangeEmail}
             type="text"
-            ref={inputRef}
+            refElement={inputRef}
           />
         </div>
         {type === 'register' && (
           <div>
             <label htmlFor="">닉네임</label>
-            <input value={nickname} onChange={onChangeNickname} type="text" />
+            <Input value={nickname} onChange={onChangeNickname} type="text" />
           </div>
         )}
         <div>
           <label htmlFor="">비밀번호</label>
-          <input value={password} onChange={onChangePassword} type="password" />
+          <Input value={password} onChange={onChangePassword} type="password" />
         </div>
         {type === 'register' && (
           <div>
             <label htmlFor="">비밀번호 확인</label>
-            <input
+            <Input
               value={passwordCheck}
               onChange={onChangePasswordCheck}
               type="password"
@@ -131,12 +128,6 @@ const UserFormWrapper = styled.div`
         color: ${({ theme }) => theme.colors.gray500};
         font-size: 14px;
         margin-bottom: 0.5em;
-      }
-      input {
-        border: 1px solid ${({ theme }) => theme.colors.gray100};
-        border-radius: ${({ theme }) => theme.config.border};
-        padding: 0 1em;
-        height: 40px;
       }
     }
     div + div {
