@@ -1,14 +1,10 @@
-import { useQuery } from 'react-query';
 import styled from 'styled-components';
-
+import { useQuery } from 'react-query';
 import { getPosts } from 'services/posts';
-
 import PostItem from './PostItem';
 
 export default function PostList() {
-  const { data } = useQuery(['posts'], getPosts, {
-    refetchOnWindowFocus: false,
-  });
+  const { data } = useQuery(['posts'], getPosts);
 
   return (
     <PostListWrapper>
@@ -27,9 +23,8 @@ export default function PostList() {
     </PostListWrapper>
   );
 }
-
 const PostListWrapper = styled.div`
-  ul {
+  & > ul {
     font-size: 14px;
   }
 `;

@@ -6,8 +6,8 @@ import { useMutation } from 'react-query';
 import { addPost, updatePost } from 'services/posts';
 
 import { queryClient } from 'index';
-import Comment from 'components/comment';
 import { useAuthQuery } from 'hooks/useAuthQuery';
+import CommentWrapper from 'components/comment';
 import PostButton from './PostButton';
 import PostHeader from './PostHeader';
 
@@ -80,8 +80,8 @@ export default function PostForm({ type, content }: IPostFormProps) {
 
   return (
     <PostFormWrapper isViewPage={type === 'view'}>
-      {type === 'view' && <PostHeader content={content} />}
       <form action="" onSubmit={handleSubmit}>
+        {type === 'view' && <PostHeader content={content} />}
         <input
           readOnly={type === 'view'}
           type="text"
@@ -97,7 +97,7 @@ export default function PostForm({ type, content }: IPostFormProps) {
           onChange={handleChange}
         />
       </form>
-      {type === 'view' && <Comment postId={content?._id} />}
+      {type === 'view' && <CommentWrapper postId={content?._id} />}
       {auth?.isLoggedIn && (
         <PostButton
           type={type}

@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef } from 'react';
 import axios from 'axios';
 import useInput from 'hooks/useInput';
 import { useNavigate } from 'react-router-dom';
@@ -8,25 +8,22 @@ import styled from 'styled-components';
 import { userIdState } from 'atom/user';
 import { login, register } from 'services/auth';
 import { useMutation } from 'react-query';
-import Button from './common/Button';
 import Input from './common/Input';
+import Button from './common/Button';
 
 interface IProps {
   type: 'login' | 'register';
 }
-
-export default function UserForm({ type }: IProps) {
+export default function SignForm({ type }: IProps) {
   const [email, onChangeEmail] = useInput();
   const [nickname, onChangeNickname] = useInput();
   const [password, onChangePassword] = useInput();
   const [passwordCheck, onChangePasswordCheck] = useInput();
-
   const { mutate } = useMutation(login, {
     onSuccess: (data) => {
       setUserId(data.user._id);
       localStorage.setItem('auth', data.user._id);
       navigate(-1);
-      console.log(data);
     },
   });
 
@@ -55,13 +52,8 @@ export default function UserForm({ type }: IProps) {
       }
     }
   };
-
-  const onClick = () => {
-    console.log('머임');
-  };
-
   return (
-    <UserFormWrapper>
+    <SignFormWrapper>
       <form action="" onSubmit={onSubmit}>
         <div>
           <label htmlFor="">이메일</label>
@@ -94,25 +86,20 @@ export default function UserForm({ type }: IProps) {
         )}
         <ButtonWrapper>
           <Button color="black" size="fullWidth" type="submit">
-            {type === 'register' ? '회원가입' : '로그인'}
+            {type === 'login' ? '로그인' : '회원가입'}
           </Button>
           {type === 'login' && (
-            <Button
-              color="yellow"
-              size="fullWidth"
-              onClick={onClick}
-              type="button"
-            >
+            <Button color="yellow" size="fullWidth" type="button">
               카카오톡 로그인
             </Button>
           )}
         </ButtonWrapper>
       </form>
-    </UserFormWrapper>
+    </SignFormWrapper>
   );
 }
 
-const UserFormWrapper = styled.div`
+const SignFormWrapper = styled.div`
   align-items: center;
   display: flex;
   height: ${({ theme }) =>
@@ -137,7 +124,6 @@ const UserFormWrapper = styled.div`
     }
   }
 `;
-
 const ButtonWrapper = styled.div`
   & > button:nth-child(1) {
     margin-top: 4em;

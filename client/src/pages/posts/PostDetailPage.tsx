@@ -5,6 +5,8 @@ import styled from 'styled-components';
 import { getPost } from 'services/posts';
 
 import PostForm from 'components/posts/PostForm';
+import PostHeader from 'components/posts/PostHeader';
+import CommentWrapper from 'components/comment';
 
 export default function PostDetailPage() {
   const location = useLocation();
