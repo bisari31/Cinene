@@ -7,31 +7,28 @@ import Button from 'components/common/Button';
 import { IPostFormProps } from './PostForm';
 
 interface IProps extends IPostFormProps {
-  user?: IUser;
+  user: IUser;
   submit: (e: React.MouseEvent) => Promise<void>;
 }
 
 export default function PostButton({ type, user, content, submit }: IProps) {
+  const isOnwer = user?._id === content?.writer._id;
+
   const navigate = useNavigate();
   const handleClose = () => {
     navigate(-1);
   };
 
   const handleRemove = async () => {
-    if (user?._id && content?._id) {
-      const response = await deletePost(content._id, user._id);
+    if (content) {
+      await deletePost(content._id, user._id);
       navigate('/');
-      console.log(response);
     }
-  };
-
-  const moveModifyPage = () => {
-    navigate(`post/${content?._id}/modify`);
   };
 
   return (
     <PostButtonWrapper>
-      {type === 'view' && user?._id === content?.writer._id && (
+      {type === 'view' && isOnwer && (
         <>
           <Button
             type="button"
@@ -41,17 +38,12 @@ export default function PostButton({ type, user, content, submit }: IProps) {
           >
             삭제
           </Button>
-          <Button
-            type="button"
-            color="black"
-            size="medium"
-            onClick={moveModifyPage}
-          >
+          <Button type="submit" color="black" size="medium" onClick={submit}>
             수정
           </Button>
         </>
       )}
-      {type === 'write' && user?._id && (
+      {type === 'write' && (
         <>
           <Button
             type="button"
@@ -61,12 +53,12 @@ export default function PostButton({ type, user, content, submit }: IProps) {
           >
             취소
           </Button>
-          <Button type="button" color="black" size="medium" onClick={submit}>
+          <Button type="submit" color="black" size="medium" onClick={submit}>
             등록
           </Button>
         </>
       )}
-      {type === 'modify' && user?._id === content?.writer._id && (
+      {type === 'modify' && isOnwer && (
         <>
           <Button
             type="button"
@@ -76,7 +68,7 @@ export default function PostButton({ type, user, content, submit }: IProps) {
           >
             취소
           </Button>
-          <Button type="button" color="black" size="medium" onClick={submit}>
+          <Button type="submit" color="black" size="medium" onClick={submit}>
             수정
           </Button>
         </>

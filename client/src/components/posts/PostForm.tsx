@@ -23,7 +23,7 @@ export default function PostForm({ type, content }: IPostFormProps) {
   });
 
   const navigate = useNavigate();
-  const { data } = useAuthQuery();
+  const { data: auth } = useAuthQuery();
 
   const { mutate } = useMutation(updatePost, {
     onSuccess: () => {
@@ -50,13 +50,20 @@ export default function PostForm({ type, content }: IPostFormProps) {
   ) => {
     e.preventDefault();
     try {
-      if (type === 'modify' && content && data)
-        return mutate({
-          postId: content?._id,
-          userId: data?.user._id,
-          ...post,
-        });
-      addPostMutate(post);
+      switch (type) {
+        case 'modify':
+          return mutate({
+            postId: content?._id as string,
+            userId: auth?.user._id as string,
+            ...post,
+          });
+        case 'write':
+          return addPostMutate(post);
+        case 'view':
+          return navigate(`post/${content?._id}/modify`);
+        default:
+          return;
+      }
     } catch (err) {
       console.log(err);
     }
@@ -91,12 +98,14 @@ export default function PostForm({ type, content }: IPostFormProps) {
         />
       </form>
       {type === 'view' && <Comment postId={content?._id} />}
-      <PostButton
-        type={type}
-        user={data?.user}
-        content={content}
-        submit={handleSubmit}
-      />
+      {auth?.isLoggedIn && (
+        <PostButton
+          type={type}
+          user={auth?.user}
+          content={content}
+          submit={handleSubmit}
+        />
+      )}
     </PostFormWrapper>
   );
 }
