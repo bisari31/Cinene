@@ -5,7 +5,7 @@ import { changeCreatedAt } from 'utils';
 
 interface IProps {
   comment: IComment;
-  handleShowReplyComment?: () => void;
+  toggleReplyComment?: () => void;
   isReply?: boolean;
   replyCommentsNum?: number;
 }
@@ -13,10 +13,10 @@ export default function CommentItem({
   comment,
   isReply = false,
   replyCommentsNum,
-  handleShowReplyComment,
+  toggleReplyComment,
 }: IProps) {
   return (
-    <CommentItemWrapper isReply={isReply} onClick={handleShowReplyComment}>
+    <CommentItemWrapper isReply={isReply} onClick={toggleReplyComment}>
       <Avatar>
         <img src={`/${comment.writer.img}`} alt="" />
       </Avatar>

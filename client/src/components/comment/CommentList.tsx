@@ -18,7 +18,7 @@ export default function CommentList({ comment }: IProps) {
   const { id } = useParams();
   const { data } = useGetCommentsQuery(id, comment._id);
 
-  const handleShowReplyComment = () => {
+  const toggleReplyComment = () => {
     setShowReplyComment(!showReplyComment);
   };
 
@@ -27,7 +27,7 @@ export default function CommentList({ comment }: IProps) {
       <CommentItem
         replyCommentsNum={data?.length}
         comment={comment}
-        handleShowReplyComment={handleShowReplyComment}
+        toggleReplyComment={toggleReplyComment}
       />
       {showReplyComment && <ReplyComment data={data} commentId={comment._id} />}
     </CommentListWrapper>

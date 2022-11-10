@@ -25,7 +25,7 @@ export default function AddCommentForm({
   const { id } = useParams();
 
   const { mutate } = useMutation(createComment, {
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries(['comment', id]);
       setComment('');
     },
