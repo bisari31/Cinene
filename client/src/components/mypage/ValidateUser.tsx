@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -42,55 +42,61 @@ export default function ValidateUser() {
 
   return (
     <ValidateUserWrapper>
-      <input
-        type="password"
-        placeholder="비밀번호를 입력해 주세요."
-        value={value}
-        onChange={handleChangeValue}
-      />
-      <Button
-        onClick={handleChangeVisible}
-        disable={!validate}
-        type="button"
-        color="black"
-        size="large"
-      >
-        회원 탈퇴
-      </Button>
-      {visible && (
-        <CustomPortal
-          refElement={ref}
-          visible={animationState}
-          buttonText={['아니요', '네']}
-          closeFn={handleChangeVisible}
-          executeFn={handleDeleteUser}
+      <div>
+        <input
+          type="password"
+          placeholder="비밀번호를 입력해 주세요."
+          value={value}
+          onChange={handleChangeValue}
+        />
+        <Button
+          onClick={handleChangeVisible}
+          disable={!validate}
+          type="button"
           color="black"
+          size="large"
         >
-          정말 탈퇴하시겠습니까? 😭
-        </CustomPortal>
-      )}
+          회원 탈퇴
+        </Button>
+        {visible && (
+          <CustomPortal
+            refElement={ref}
+            visible={animationState}
+            buttonText={['아니요', '네']}
+            closeFn={handleChangeVisible}
+            executeFn={handleDeleteUser}
+            color="black"
+          >
+            정말 탈퇴하시겠습니까? 😭
+          </CustomPortal>
+        )}
+      </div>
     </ValidateUserWrapper>
   );
 }
 
-const ValidateUserWrapper = styled.div`
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  input {
-    margin-top: 5em;
-    border: 1px solid ${({ theme }) => theme.colors.gray100};
-  }
-  button {
-    margin-top: 5em;
-  }
+const ValidateUserWrapper = styled.section`
+  ${({ theme }) => css`
+    padding: 5em;
+    & > div {
+      align-items: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    input {
+      border: 1px solid ${theme.colors.gray100};
+    }
+    button {
+      margin-top: 5em;
+    }
 
-  input,
-  button {
-    border-radius: ${({ theme }) => theme.config.border};
-    height: 40px;
-    padding: 0 1em;
-    width: 350px;
-  }
+    input,
+    button {
+      border-radius: ${theme.config.border};
+      height: 40px;
+      padding: 0 1em;
+      width: 350px;
+    }
+  `}
 `;
