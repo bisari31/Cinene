@@ -6,12 +6,32 @@ import { useAuthQuery } from 'hooks/useAuthQuery';
 import { ChevronDown } from 'assets';
 import useCheckedOutSide from 'hooks/useCheckedOutSide';
 import SideMenu from 'components/header/SideMenu';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import Button from 'components/common/Button';
+import CustomPortal from 'components/common/Portal';
+import { logout } from 'services/auth';
 
 export default function AuthMenu() {
   const [userId, setUserId] = useRecoilState(userIdState);
   const { data } = useAuthQuery(userId);
   const { ref, visible, handleChangeVisible } = useCheckedOutSide();
+  const {
+    ref: logoutRef,
+    visible: visibleLogout,
+    animationState: logoutState,
+    handleChangeVisible: handleVisibleLogout,
+  } = useCheckedOutSide(300);
+
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    handleVisibleLogout();
+    logout().then(() => {
+      localStorage.removeItem('auth');
+      setUserId('');
+      navigate('/');
+    });
+  };
 
   useEffect(() => {
     const item = localStorage.getItem('auth');
@@ -22,12 +42,14 @@ export default function AuthMenu() {
     <AuthFormWrapper>
       <SideBar>
         <ul>
-          {data?.user ? (
+          {data?.isLoggedIn ? (
             <UserInfoList onClick={handleChangeVisible} showMemu={visible}>
               <img src={`/${data?.user.img}`} alt="user_image" />
               <span>{data?.user.nickname}</span>
               <ChevronDown />
-              {visible && <SideMenu refElement={ref} />}
+              {visible && (
+                <SideMenu onClick={handleVisibleLogout} refElement={ref} />
+              )}
             </UserInfoList>
           ) : (
             <>
@@ -41,6 +63,30 @@ export default function AuthMenu() {
           )}
         </ul>
       </SideBar>
+      {visibleLogout && (
+        <CustomPortal
+          message="정말 로그아웃 하시겠습니까? 😰"
+          visible={logoutState}
+          refElement={logoutRef}
+        >
+          <Button
+            onClick={handleVisibleLogout}
+            type="button"
+            size="fullWidth"
+            color="gray100"
+          >
+            아니요
+          </Button>
+          <Button
+            onClick={handleLogout}
+            type="button"
+            size="fullWidth"
+            color="black"
+          >
+            로그아웃
+          </Button>
+        </CustomPortal>
+      )}
     </AuthFormWrapper>
   );
 }

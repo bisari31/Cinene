@@ -1,26 +1,12 @@
-import { Link, useNavigate } from 'react-router-dom';
-import { useSetRecoilState } from 'recoil';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-
-import { logout } from 'services/auth';
-import { userIdState } from 'atom/user';
 
 interface IProps {
   refElement: React.RefObject<HTMLDivElement>;
+  onClick: () => void;
 }
 
-export default function SideMenu({ refElement }: IProps) {
-  const setUserId = useSetRecoilState(userIdState);
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    logout().then(() => {
-      setUserId('');
-      localStorage.removeItem('auth');
-      navigate('/');
-    });
-  };
-
+export default function SideMenu({ refElement, ...rest }: IProps) {
   return (
     <SideMenuWrapper ref={refElement}>
       <ul>
@@ -28,7 +14,7 @@ export default function SideMenu({ refElement }: IProps) {
           <Link to="/mypage">내 정보</Link>
         </li>
         <li>
-          <button type="button" onClick={handleLogout}>
+          <button type="button" {...rest}>
             로그아웃
           </button>
         </li>
