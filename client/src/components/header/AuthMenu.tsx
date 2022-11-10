@@ -2,6 +2,7 @@ import styled, { css } from 'styled-components';
 import { useEffect } from 'react';
 import { useRecoilState } from 'recoil';
 import { Link, useNavigate } from 'react-router-dom';
+import { lighten, darken } from 'polished';
 
 import { userIdState } from 'atom/user';
 import { useAuthQuery } from 'hooks/useAuthQuery';
@@ -99,29 +100,31 @@ const SideBar = styled.div`
 `;
 
 const UserInfoList = styled.li<{ showMemu: boolean }>`
-  position: relative;
-  img {
-    object-fit: cover;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-  }
-  svg {
-    transform: ${({ showMemu }) =>
-      showMemu ? `rotate(180deg)` : `rotate(0deg)`};
-    transition: 0.5s ease;
-    stroke: ${({ theme }) => theme.colors.black};
-    stroke-width: 2.5;
-    width: 14px;
-  }
-  span {
-    font-weight: 500;
-    margin-left: 1em;
-    margin-right: 0.8em;
-  }
-  &:hover {
-    cursor: pointer;
-  }
+  ${({ theme, showMemu }) => css`
+    display: flex;
+    position: relative;
+    img {
+      border-radius: 50%;
+      height: 40px;
+      object-fit: cover;
+      width: 40px;
+    }
+    svg {
+      stroke: ${theme.colors.black};
+      stroke-width: 2.5;
+      transform: ${showMemu ? `rotate(180deg)` : `rotate(0deg)`};
+      transition: 0.5s ease;
+      width: 14px;
+    }
+    span {
+      font-weight: 500;
+      margin-left: 1em;
+      margin-right: 0.8em;
+    }
+    &:hover {
+      cursor: pointer;
+    }
+  `}
 `;
 
 const LayoutList = styled.li`
@@ -130,19 +133,25 @@ const LayoutList = styled.li`
     height: 35px;
     justify-content: center;
     width: 90px;
-    a {
-      font-weight: 400;
-      font-size: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      height: 100%;
-    }
     &:last-child {
       background-color: ${theme.colors.black};
       color: #fff;
       margin-left: 0.5em;
+      :hover {
+        background-color: ${lighten(0.1, theme.colors.black)};
+      }
+      :active {
+        background-color: ${darken(0.1, theme.colors.black)};
+      }
+    }
+    a {
+      align-items: center;
+      display: flex;
+      font-size: 12px;
+      font-weight: 400;
+      height: 100%;
+      justify-content: center;
+      width: 100%;
     }
   `}
 `;
