@@ -98,7 +98,7 @@ const MessageWrapper = styled.div`
   flex: 1;
   justify-content: center;
   p {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     font-weight: 500;
     text-align: center;
   }
