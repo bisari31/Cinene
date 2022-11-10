@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { changeCreatedAt } from 'utils';
 
@@ -33,17 +33,19 @@ export default function PostItem({ post }: IProps) {
 }
 
 const PostItemWrapper = styled.li<{ commentsNum: number }>`
-  border-bottom: 1px solid ${({ theme }) => theme.colors.gray100};
-  display: flex;
-  padding: 1em 0.5em;
-  div {
+  ${({ theme }) => css`
+    border-bottom: ${`1px solid ${theme.colors.gray100}`};
     display: flex;
-  }
-  a {
-    span {
-      color: ${({ theme }) => theme.colors.red};
-      font-size: 12px;
-      margin-left: 0.5em;
+    padding: 1em 0.5em;
+    div {
+      display: flex;
     }
-  }
+    a {
+      span {
+        color: ${theme.colors.red};
+        font-size: 12px;
+        margin-left: 0.5em;
+      }
+    }
+  `}
 `;

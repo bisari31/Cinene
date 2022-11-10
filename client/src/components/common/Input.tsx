@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 interface IProps {
   placeholder?: string;
@@ -34,9 +34,11 @@ export default function Input({
 }
 
 const InputWrapper = styled.input`
-  border: 1px solid ${({ theme }) => theme.colors.gray100};
-  border-radius: ${({ theme }) => theme.config.border};
-  height: 40px;
-  padding: 0 1em;
-  width: 100%;
+  ${({ theme }) => css`
+    border: 1px solid ${theme.colors.gray100};
+    border-radius: ${theme.config.border};
+    height: 40px;
+    padding: 0 1em;
+    width: 100%;
+  `}
 `;

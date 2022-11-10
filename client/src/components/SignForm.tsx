@@ -3,7 +3,7 @@ import axios from 'axios';
 import useInput from 'hooks/useInput';
 import { useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { userIdState } from 'atom/user';
 import { login, register } from 'services/auth';
@@ -100,29 +100,30 @@ export default function SignForm({ type }: IProps) {
 }
 
 const SignFormWrapper = styled.div`
-  align-items: center;
-  display: flex;
-  height: ${({ theme }) =>
-    `calc(100vh -  ${theme.config.header} - ${theme.config.main_margin_top})`};
-  justify-content: center;
-  form {
-    flex: 1;
-    max-width: 400px;
-    div {
-      display: flex;
-      flex-direction: column;
-      label {
-        color: ${({ theme }) => theme.colors.gray500};
-        font-size: 14px;
-        margin-bottom: 0.5em;
+  ${({ theme }) => css`
+    align-items: center;
+    display: flex;
+    height: ${`calc(100vh -  ${theme.config.header} - ${theme.config.main_margin_top})`};
+    justify-content: center;
+    form {
+      flex: 1;
+      max-width: 400px;
+      div {
+        display: flex;
+        flex-direction: column;
+        label {
+          color: ${theme.colors.gray500};
+          font-size: 14px;
+          margin-bottom: 0.5em;
+        }
+      }
+      div + div {
+        label {
+          margin-top: 1em;
+        }
       }
     }
-    div + div {
-      label {
-        margin-top: 1em;
-      }
-    }
-  }
+  `}
 `;
 const ButtonWrapper = styled.div`
   & > button:nth-child(1) {

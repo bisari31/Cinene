@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from 'react-query';
@@ -111,29 +111,29 @@ export default function PostForm({ type, content }: IPostFormProps) {
 }
 
 const PostFormWrapper = styled.article<{ isViewPage: boolean }>`
-  & > form {
-    display: flex;
-    flex-direction: column;
-    input {
-      height: 40px;
-    }
-    textarea {
-      margin-top: 2em;
-      resize: none;
-    }
+  ${({ theme, isViewPage }) => css`
+    & > form {
+      display: flex;
+      flex-direction: column;
+      input {
+        height: 40px;
+      }
+      textarea {
+        margin-top: 2em;
+        resize: none;
+      }
 
-    input,
-    textarea {
-      background-color: ${({ theme, isViewPage }) =>
-        isViewPage ? theme.colors.gray50 : 'none'};
-      border: ${({ theme, isViewPage }) =>
-        isViewPage ? 'none' : `1px solid ${theme.colors.gray100}`};
-      border-radius: ${({ theme }) => theme.config.border};
-      padding: 1em;
       input,
       textarea {
-        border-radius: ${({ theme }) => theme.config.border};
+        background-color: ${isViewPage ? theme.colors.gray50 : 'none'};
+        border: ${isViewPage ? 'none' : `1px solid ${theme.colors.gray100}`};
+        border-radius: ${theme.config.border};
+        padding: 1em;
+        input,
+        textarea {
+          border-radius: ${theme.config.border};
+        }
       }
     }
-  }
+  `}
 `;
