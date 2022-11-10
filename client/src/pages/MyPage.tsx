@@ -1,17 +1,14 @@
-import UserInfo from 'components/userInfo';
-import ValidateUser from 'components/userInfo/ValidateUser';
+import Categories from 'components/mypage/Categories';
+import UserInfoHeader from 'components/mypage/UserInfoHeader';
+import ValidateUser from 'components/mypage/ValidateUser';
 import styled from 'styled-components';
-import Categories from 'components/userInfo/Categories';
 
 export default function MyPage() {
   return (
     <MypageWrapper>
-      <UserInfo>
-        <Categories />
-        <article>
-          <ValidateUser />
-        </article>
-      </UserInfo>
+      <UserInfoHeader />
+      <Categories />
+      <ValidateUser />
     </MypageWrapper>
   );
 }
