@@ -1,15 +1,19 @@
 import { RefObject } from 'react';
 import ReactDOM from 'react-dom';
+import { ColorsKey } from 'styles/theme';
 import Modal from './Modal';
 
 interface PorTalProps {
   children: React.ReactNode;
 }
 
-interface IProps extends PorTalProps {
-  message: string;
-  visible: boolean;
+export interface IModalProps extends PorTalProps {
   refElement: RefObject<HTMLDivElement>;
+  visible: boolean;
+  buttonText: string[];
+  color: ColorsKey;
+  closeFn: () => void;
+  executeFn?: () => void;
 }
 
 function Portal({ children }: PorTalProps) {
@@ -19,13 +23,23 @@ function Portal({ children }: PorTalProps) {
 
 export default function CustomPortal({
   children,
-  message,
   visible,
   refElement,
-}: IProps) {
+  buttonText,
+  color,
+  closeFn,
+  executeFn,
+}: IModalProps) {
   return (
     <Portal>
-      <Modal message={message} visible={visible} refElement={refElement}>
+      <Modal
+        closeFn={closeFn}
+        color={color}
+        buttonText={buttonText}
+        visible={visible}
+        refElement={refElement}
+        executeFn={executeFn}
+      >
         {children}
       </Modal>
     </Portal>

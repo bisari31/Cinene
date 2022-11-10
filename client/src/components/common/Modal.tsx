@@ -1,25 +1,42 @@
 import styled, { keyframes } from 'styled-components';
-
-interface IProps {
-  message: string;
-  refElement: React.RefObject<HTMLDivElement>;
-  children: React.ReactNode;
-  visible: boolean;
-}
+import Button from './Button';
+import { IModalProps } from './Portal';
 
 export default function Modal({
-  message,
   refElement,
   children,
   visible,
-}: IProps) {
+  color,
+  buttonText,
+  closeFn,
+  executeFn,
+}: IModalProps) {
   return (
     <OutSide>
       <ModalWrapper visible={visible} ref={refElement}>
         <MessageWrapper>
-          <p>{message}</p>
+          <p>{children}</p>
         </MessageWrapper>
-        <BtnWrapper>{children}</BtnWrapper>
+        <BtnWrapper>
+          <Button
+            type="button"
+            size="fullWidth"
+            color={buttonText.length === 2 ? 'gray100' : color}
+            onClick={buttonText.length === 2 ? closeFn : executeFn}
+          >
+            {buttonText[0]}
+          </Button>
+          {buttonText.length === 2 && (
+            <Button
+              type="button"
+              size="fullWidth"
+              color={color}
+              onClick={executeFn}
+            >
+              {buttonText[1]}
+            </Button>
+          )}
+        </BtnWrapper>
       </ModalWrapper>
     </OutSide>
   );
@@ -81,7 +98,7 @@ const MessageWrapper = styled.div`
   flex: 1;
   justify-content: center;
   p {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     font-weight: 500;
     text-align: center;
   }

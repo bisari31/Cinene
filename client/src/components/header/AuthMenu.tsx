@@ -1,15 +1,16 @@
 import styled from 'styled-components';
 import { useEffect } from 'react';
 import { useRecoilState } from 'recoil';
+import { Link, useNavigate } from 'react-router-dom';
+
 import { userIdState } from 'atom/user';
 import { useAuthQuery } from 'hooks/useAuthQuery';
-import { ChevronDown } from 'assets';
 import useCheckedOutSide from 'hooks/useCheckedOutSide';
-import SideMenu from 'components/header/SideMenu';
-import { Link, useNavigate } from 'react-router-dom';
-import Button from 'components/common/Button';
-import CustomPortal from 'components/common/Portal';
+import { ChevronDown } from 'assets';
 import { logout } from 'services/auth';
+
+import SideMenu from 'components/header/SideMenu';
+import CustomPortal from 'components/common/Portal';
 
 export default function AuthMenu() {
   const [userId, setUserId] = useRecoilState(userIdState);
@@ -65,26 +66,14 @@ export default function AuthMenu() {
       </SideBar>
       {visibleLogout && (
         <CustomPortal
-          message="정말 로그아웃 하시겠습니까? 😰"
+          color="black"
+          buttonText={['아니요', '로그아웃']}
           visible={logoutState}
           refElement={logoutRef}
+          closeFn={handleVisibleLogout}
+          executeFn={handleLogout}
         >
-          <Button
-            onClick={handleVisibleLogout}
-            type="button"
-            size="fullWidth"
-            color="gray100"
-          >
-            아니요
-          </Button>
-          <Button
-            onClick={handleLogout}
-            type="button"
-            size="fullWidth"
-            color="black"
-          >
-            로그아웃
-          </Button>
+          정말 로그아웃 하시겠습니까? 😰
         </CustomPortal>
       )}
     </AuthFormWrapper>

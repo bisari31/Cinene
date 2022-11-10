@@ -11,8 +11,7 @@ import useCheckedOutSide from 'hooks/useCheckedOutSide';
 import { userIdState } from 'atom/user';
 
 import Button from 'components/common/Button';
-import Portal from 'components/common/Portal';
-import Modal from 'components/common/Modal';
+import CustomPortal from 'components/common/Portal';
 
 export default function ValidateUser() {
   const setUserId = useSetRecoilState(userIdState);
@@ -59,30 +58,16 @@ export default function ValidateUser() {
         회원 탈퇴
       </Button>
       {visible && (
-        <Portal>
-          <Modal
-            refElement={ref}
-            message="정말 탈퇴하시겠습니까? 😰"
-            visible={animationState}
-          >
-            <Button
-              onClick={handleChangeVisible}
-              type="button"
-              color="gray100"
-              size="fullWidth"
-            >
-              아니요
-            </Button>
-            <Button
-              onClick={handleDeleteUser}
-              type="button"
-              color="black"
-              size="fullWidth"
-            >
-              네
-            </Button>
-          </Modal>
-        </Portal>
+        <CustomPortal
+          refElement={ref}
+          visible={animationState}
+          buttonText={['아니요', '네']}
+          closeFn={handleChangeVisible}
+          executeFn={handleDeleteUser}
+          color="black"
+        >
+          정말 탈퇴하시겠습니까? 😭
+        </CustomPortal>
       )}
     </ValidateUserWrapper>
   );
