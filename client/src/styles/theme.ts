@@ -1,9 +1,11 @@
 import { DefaultTheme } from 'styled-components';
 
 const colors = {
-  black: '#242426',
+  black: '#282828',
   blue: '#3184fe',
   red: '#de3a3a',
+  yellow: '#fdce00',
+  gray50: '#f2f2f2',
   gray100: '#e6e6e6',
   gray500: '#8f8e8f',
 };
@@ -17,12 +19,13 @@ const config = {
   padding: '0 1em',
   tabletHeight: '100px',
   laptopHeight: '70px',
-  header: '50px',
+  header: '70px',
   border: '6px',
-  border2: '3px',
+  main_margin_top: '20px',
 };
 
 const device = {
+  mobile: `(max-width: ${sizes.tablet})`,
   tablet: `(min-width: ${sizes.tablet})`,
   laptop: `(min-width: ${sizes.laptop})`,
 };

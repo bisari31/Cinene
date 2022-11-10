@@ -8,6 +8,7 @@ export interface DBUser {
   nickname: string;
   token: string;
   createdAt: Date;
+  img: string;
 }
 
 interface DBUserMethods {
@@ -38,6 +39,10 @@ const userSchema = new Schema<DBUser>(
     token: {
       type: String,
     },
+    img: {
+      type: String,
+      default: 'panda-g3d0df0196_640.jpg',
+    },
   },
   {
     timestamps: { createdAt: true, updatedAt: false },
@@ -58,7 +63,8 @@ userSchema.methods.generateToken = async function () {
 userSchema.statics.findByToken = async function (token: string, cb) {
   try {
     const id = jwt.verify(token, `${PRIVATE_KEY}`);
-    const user = await this.findOne({ id, token });
+    const user = await this.findOne({ _id: id, token });
+    if (!user) return cb(true);
     cb(null, user);
   } catch (err) {
     cb(true);
