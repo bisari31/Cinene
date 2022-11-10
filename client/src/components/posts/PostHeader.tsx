@@ -9,12 +9,12 @@ export default function PostHeader({ content }: IProps) {
   return (
     <PostHeaderWrapper>
       <ImgWrapper>
-        <img src={`/${content?.writer.img}`} alt="user_image" />
+        <img src={`/${content?.writer?.img}`} alt="user_image" />
       </ImgWrapper>
       <Details>
         <div className="title_wrapper">
           <span>
-            <b>{content?.writer.nickname}</b>
+            <b>{content?.writer?.nickname}</b>
           </span>
         </div>
         <div className="desc_wrapper">

@@ -14,10 +14,6 @@ export default function AuthMenu() {
   const { ref, visible, handleChangeVisible } = useCheckedOutSide();
 
   useEffect(() => {
-    console.log('qwe');
-  });
-
-  useEffect(() => {
     const item = localStorage.getItem('auth');
     if (item) setUserId(item);
   }, []);

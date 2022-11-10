@@ -25,7 +25,7 @@ export default function PostItem({ post }: IProps) {
           {!!post.commentsNum && <span>[{post.commentsNum}]</span>}
         </Link>
       </TitleWrapper>
-      <NicknameWrapper>{post.writer.nickname}</NicknameWrapper>
+      <NicknameWrapper>{post.writer?.nickname}</NicknameWrapper>
       <DaysWrapper>{changeCreatedAt(post.createdAt)}</DaysWrapper>
       <ViewsWrapper>{post.views}</ViewsWrapper>
     </PostItemWrapper>

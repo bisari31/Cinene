@@ -32,3 +32,8 @@ export const register = async (body: IBody) => {
   const { data } = await axios.post<ResponseData>('/auth/register', body);
   return data;
 };
+
+export const deleteUser = async () => {
+  const { data } = await axios.delete('/auth/user');
+  return data;
+};

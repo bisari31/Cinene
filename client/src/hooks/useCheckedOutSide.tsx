@@ -1,15 +1,24 @@
 import { useEffect, useState, useRef } from 'react';
 
-export default function useCheckedOutSide() {
+export default function useCheckedOutSide(sec = 0) {
   const [visible, setVisible] = useState(false);
+  const [animationState, setAnimationState] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const handleClickOutSide = (e: React.MouseEvent<HTMLDivElement> | Event) => {
     const target = e.target as HTMLDivElement;
-    if (visible && !ref.current?.contains(target)) setVisible(false);
+    if (visible && !ref.current?.contains(target)) handleChangeVisible();
   };
 
   const handleChangeVisible = () => {
-    setVisible(!visible);
+    if (visible) {
+      setAnimationState(false);
+      setTimeout(() => {
+        setVisible(false);
+      }, sec);
+    } else {
+      setAnimationState(true);
+      setVisible(true);
+    }
   };
 
   useEffect(() => {
@@ -19,5 +28,5 @@ export default function useCheckedOutSide() {
     };
   });
 
-  return { ref, visible, handleChangeVisible };
+  return { ref, visible, handleChangeVisible, animationState };
 }

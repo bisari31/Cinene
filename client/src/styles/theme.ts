@@ -25,6 +25,7 @@ const config = {
 };
 
 const device = {
+  mobile: `(max-width: ${sizes.tablet})`,
   tablet: `(min-width: ${sizes.tablet})`,
   laptop: `(min-width: ${sizes.laptop})`,
 };

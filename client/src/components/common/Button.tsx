@@ -74,17 +74,17 @@ const StyledButton = styled.button<IButtonProps>`
       height: ${sizes[size].height};
       width: ${sizes[size].width};
       &:hover {
-        background-color: ${disable && theme.colors.gray500};
         background-color: ${color.includes('gray')
           ? darken(0.1, theme.colors[color])
           : lighten(0.1, theme.colors[color])};
+        background-color: ${disable && theme.colors.gray500};
         cursor: ${disable ? 'not-allowed' : 'pointer'};
       }
       &:active {
-        background-color: ${disable && theme.colors.gray500};
         background-color: ${color.includes('gray')
           ? darken(0.2, theme.colors[color])
           : darken(0.1, theme.colors[color])};
+        background-color: ${disable && theme.colors.gray500};
       }
     `}
 `;
