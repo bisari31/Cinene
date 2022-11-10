@@ -4,6 +4,10 @@ import bcrypt from 'bcrypt';
 import User from '../models/user';
 import { authenticate, AuthRequest } from './middleware';
 
+interface UserDeleteAuthRequest extends AuthRequest {
+  body: { password: string };
+}
+
 const saltRounds = 12;
 const router = Router();
 
@@ -61,6 +65,37 @@ router.get('/logout', authenticate, async (req: AuthRequest, res) => {
 
 router.get('/', authenticate, (req: AuthRequest, res) => {
   res.send({ isLoggedIn: true, user: req.user });
+});
+
+router.post(
+  '/checkpassword',
+  authenticate,
+  async (req: UserDeleteAuthRequest, res) => {
+    try {
+      if (req.user) {
+        const result = await bcrypt.compare(
+          req.body.password,
+          req.user?.password,
+        );
+        return res.json(result);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  },
+);
+router.delete('/user', authenticate, async (req: AuthRequest, res) => {
+  try {
+    await User.deleteOne({ _id: req.user?._id });
+    res
+      .clearCookie('auth')
+      .status(200)
+      .json({ success: true, message: '유저 정보를 삭제하였습니다.' });
+  } catch (err) {
+    res
+      .status(400)
+      .json({ success: false, message: '유저 정보를 삭제하지 못했습니다.' });
+  }
 });
 
 export default router;
