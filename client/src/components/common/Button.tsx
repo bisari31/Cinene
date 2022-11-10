@@ -21,19 +21,23 @@ interface IButtonProps {
 const sizes = {
   small: {
     width: '80px',
-    height: '35px',
+    height: '2.7em',
+    fontSize: '0.8rem',
   },
   medium: {
     width: '200px',
-    height: '50px',
+    height: '3.8em',
+    fontSize: '0.8rem',
   },
   large: {
     width: '350px',
-    height: '40px',
+    height: '2.8rem',
+    fontSize: '0.8rem',
   },
   fullWidth: {
     width: '100%',
-    height: '40px',
+    height: '2.8rem',
+    fontSize: '0.8rem',
   },
 };
 
@@ -66,20 +70,21 @@ const StyledButton = styled.button<IButtonProps>`
       border: none;
       border-radius: ${theme.config.border};
       color: ${color === 'black' ? '#fff' : theme.colors.black};
+      font-size: ${sizes[size].fontSize};
       height: ${sizes[size].height};
       width: ${sizes[size].width};
       &:hover {
+        background-color: ${disable && theme.colors.gray500};
         background-color: ${color.includes('gray')
           ? darken(0.1, theme.colors[color])
           : lighten(0.1, theme.colors[color])};
-        background-color: ${disable && theme.colors.gray500};
         cursor: ${disable ? 'not-allowed' : 'pointer'};
       }
       &:active {
+        background-color: ${disable && theme.colors.gray500};
         background-color: ${color.includes('gray')
           ? darken(0.2, theme.colors[color])
           : darken(0.1, theme.colors[color])};
-        background-color: ${disable && theme.colors.gray500};
       }
     `}
 `;
