@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { useEffect } from 'react';
 import { useRecoilState } from 'recoil';
 import { Link, useNavigate } from 'react-router-dom';
@@ -125,7 +125,24 @@ const UserInfoList = styled.li<{ showMemu: boolean }>`
 `;
 
 const LayoutList = styled.li`
-  &:last-child {
-    margin-left: 2em;
-  }
+  ${({ theme }) => css`
+    border-radius: 7px;
+    height: 35px;
+    justify-content: center;
+    width: 90px;
+    a {
+      font-weight: 400;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+    }
+    &:last-child {
+      background-color: ${theme.colors.black};
+      color: #fff;
+      margin-left: 0.5em;
+    }
+  `}
 `;
