@@ -3,18 +3,22 @@ import dayjs from 'dayjs';
 import { useAuthQuery } from 'hooks/useAuthQuery';
 import styled, { css } from 'styled-components';
 
-export default function UserInfoHeader() {
+export default function UserProfile({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const { data } = useAuthQuery();
 
   return (
-    <UserInfoHeaderWrapper>
-      <UserWrapper>
-        <AvatarContainer>
+    <UserProfileWrapper>
+      <Section>
+        <Img>
           <img src={data?.user.img} alt="" />
           <button type="button">
             <Upload />
           </button>
-        </AvatarContainer>
+        </Img>
         <div>
           <h2>{data?.user.nickname}</h2>
           <h3>{data?.user.email}</h3>
@@ -25,16 +29,17 @@ export default function UserInfoHeader() {
             </span>
           </div>
         </div>
-      </UserWrapper>
-    </UserInfoHeaderWrapper>
+      </Section>
+      {children}
+    </UserProfileWrapper>
   );
 }
 
-const UserInfoHeaderWrapper = styled.section`
+const UserProfileWrapper = styled.div`
   margin-top: 5em;
 `;
 
-const UserWrapper = styled.article`
+const Section = styled.section`
   ${({ theme }) => css`
     align-items: center;
     display: flex;
@@ -68,7 +73,7 @@ const UserWrapper = styled.article`
   `}
 `;
 
-const AvatarContainer = styled.div`
+const Img = styled.div`
   ${({ theme }) => css`
     margin-right: 2em;
     position: relative;

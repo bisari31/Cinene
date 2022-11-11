@@ -11,16 +11,20 @@ import useCheckedOutSide from 'hooks/useCheckedOutSide';
 import { userIdState } from 'atom/user';
 
 import Button from 'components/common/Button';
-import CustomPortal from 'components/common/Portal';
+import Modal from 'components/common/Portal';
 
-export default function ValidateUser() {
+export default function ConfirmPassword() {
   const setUserId = useSetRecoilState(userIdState);
-  const navigate = useNavigate();
   const [value, handleChangeValue] = useInput();
   const [validate, setValidate] = useState(false);
+
   const deboounceValue = useDebounce(value, 150);
+
+  const navigate = useNavigate();
+
   const { ref, handleChangeVisible, visible, animationState } =
     useCheckedOutSide(300);
+
   const handleCheckPassword = async (password: string) => {
     const { data } = await axios.post('/auth/checkpassword', {
       password,
@@ -28,7 +32,7 @@ export default function ValidateUser() {
     return data;
   };
 
-  const handleDeleteUser = () => {
+  const handleClick = () => {
     deleteUser().then(() => {
       setUserId('');
       localStorage.removeItem('auth');
@@ -42,42 +46,43 @@ export default function ValidateUser() {
 
   return (
     <ValidateUserWrapper>
-      <div>
-        <input
-          type="password"
-          placeholder="비밀번호를 입력해 주세요."
-          value={value}
-          onChange={handleChangeValue}
-        />
-        <Button
-          onClick={handleChangeVisible}
-          disable={!validate}
-          type="button"
+      <input
+        type="password"
+        placeholder="비밀번호를 입력해 주세요."
+        value={value}
+        onChange={handleChangeValue}
+      />
+      <Button
+        onClick={handleChangeVisible}
+        disable={!validate}
+        type="button"
+        color="black"
+        size="large"
+      >
+        회원 탈퇴
+      </Button>
+      {visible && (
+        <Modal
+          refElement={ref}
+          visible={animationState}
+          buttonText={['아니요', '네']}
+          closeFn={handleChangeVisible}
+          executeFn={handleClick}
           color="black"
-          size="large"
         >
-          회원 탈퇴
-        </Button>
-        {visible && (
-          <CustomPortal
-            refElement={ref}
-            visible={animationState}
-            buttonText={['아니요', '네']}
-            closeFn={handleChangeVisible}
-            executeFn={handleDeleteUser}
-            color="black"
-          >
-            정말 탈퇴하시겠습니까? 😭
-          </CustomPortal>
-        )}
-      </div>
+          정말 탈퇴하시겠습니까? 😭
+        </Modal>
+      )}
     </ValidateUserWrapper>
   );
 }
 
-const ValidateUserWrapper = styled.section`
+const ValidateUserWrapper = styled.div`
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   ${({ theme }) => css`
-    padding: 5em;
     & > div {
       align-items: center;
       display: flex;
