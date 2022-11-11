@@ -6,7 +6,8 @@ interface ResponseData {
 }
 
 interface IBody {
-  email: string;
+  id?: string;
+  email?: string;
   password: string;
   nickname: string;
 }
@@ -34,6 +35,10 @@ export const register = async (body: IBody) => {
 };
 
 export const deleteUser = async () => {
-  const { data } = await axios.delete('/auth/user');
+  const { data } = await axios.delete('/auth/deleteUser');
+  return data;
+};
+export const updateUser = async (body: IBody) => {
+  const { data } = await axios.put('/auth/updateuser', body);
   return data;
 };

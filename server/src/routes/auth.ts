@@ -54,7 +54,7 @@ router.post('/login', async function (req, res) {
     }
     res.status(400).send({ success: false, message: '아이디가 없습니다.' });
   } catch (err) {
-    console.log(err);
+    res.status(400).send({ success: false, message: '서버 에러' });
   }
 });
 
@@ -68,7 +68,7 @@ router.get('/', authenticate, (req: AuthRequest, res) => {
 });
 
 router.post(
-  '/checkpassword',
+  '/checkPassword',
   authenticate,
   async (req: UserDeleteAuthRequest, res) => {
     try {
@@ -84,7 +84,7 @@ router.post(
     }
   },
 );
-router.delete('/user', authenticate, async (req: AuthRequest, res) => {
+router.delete('/deleteUser', authenticate, async (req: AuthRequest, res) => {
   try {
     await User.deleteOne({ _id: req.user?._id });
     res
@@ -95,6 +95,32 @@ router.delete('/user', authenticate, async (req: AuthRequest, res) => {
     res
       .status(400)
       .json({ success: false, message: '유저 정보를 삭제하지 못했습니다.' });
+  }
+});
+
+router.put('/updateUser', authenticate, async (req: AuthRequest, res) => {
+  try {
+    const user = await User.findOne({ _id: req.user?._id });
+    if (user) {
+      const result = await bcrypt.compare(req.body.password, user.password);
+      if (result) {
+        const newUser = await User.updateOne(
+          { _id: req.body.id },
+          { nickname: req.body.nickname },
+        );
+        console.log(newUser);
+        //   if (newUser) return res.send({ success: true, user: newUser });
+        //   return res.status(400).send({
+        //     success: false,
+        //     message: '닉네임이 이미 있습니다.',
+        //   });
+      }
+      // res
+      //   .status(400)
+      //   .send({ success: false, message: '비밀번호가 일치하지 않습니다.' });
+    }
+  } catch (err) {
+    res.status(400).json({ success: false, message: '서버 에러' });
   }
 });
 

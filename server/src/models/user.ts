@@ -13,6 +13,7 @@ export interface DBUser {
 
 interface DBUserMethods {
   generateToken(): Promise<DBUser>;
+  comparePassword(password: string): Promise<boolean>;
 }
 interface DBUserModel extends Model<DBUser, {}, DBUserMethods> {
   findByToken(
