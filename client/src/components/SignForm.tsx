@@ -55,34 +55,35 @@ export default function SignForm({ type }: IProps) {
   return (
     <SignFormWrapper>
       <form action="" onSubmit={onSubmit}>
-        <div>
-          <label htmlFor="">이메일</label>
+        <Input
+          label="이메일"
+          value={email}
+          onChange={onChangeEmail}
+          type="text"
+          refElement={inputRef}
+        />
+
+        {type === 'register' && (
           <Input
-            value={email}
-            onChange={onChangeEmail}
+            label="닉네임"
+            value={nickname}
+            onChange={onChangeNickname}
             type="text"
-            refElement={inputRef}
           />
-        </div>
-        {type === 'register' && (
-          <div>
-            <label htmlFor="">닉네임</label>
-            <Input value={nickname} onChange={onChangeNickname} type="text" />
-          </div>
         )}
-        <div>
-          <label htmlFor="">비밀번호</label>
-          <Input value={password} onChange={onChangePassword} type="password" />
-        </div>
+        <Input
+          label="비밀번호"
+          value={password}
+          onChange={onChangePassword}
+          type="password"
+        />
         {type === 'register' && (
-          <div>
-            <label htmlFor="">비밀번호 확인</label>
-            <Input
-              value={passwordCheck}
-              onChange={onChangePasswordCheck}
-              type="password"
-            />
-          </div>
+          <Input
+            label="비밀번호 확인"
+            value={passwordCheck}
+            onChange={onChangePasswordCheck}
+            type="password"
+          />
         )}
         <ButtonWrapper>
           <Button color="black" size="fullWidth" type="submit">
@@ -108,20 +109,6 @@ const SignFormWrapper = styled.div`
     form {
       flex: 1;
       max-width: 400px;
-      div {
-        display: flex;
-        flex-direction: column;
-        label {
-          color: ${theme.colors.gray500};
-          font-size: 14px;
-          margin-bottom: 0.5em;
-        }
-      }
-      div + div {
-        label {
-          margin-top: 1em;
-        }
-      }
     }
   `}
 `;
