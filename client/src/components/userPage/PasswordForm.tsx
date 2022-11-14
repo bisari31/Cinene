@@ -1,16 +1,17 @@
 import { useState, useEffect } from 'react';
-import Button from 'components/common/Button';
-import Input from 'components/common/Input';
-import useInput from 'hooks/useInput';
+import axios from 'axios';
 import { queryClient } from 'index';
-
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
-import { changePassword } from 'services/auth';
 import styled from 'styled-components';
-import axios from 'axios';
-import CustomModal from 'components/common/Portal';
+
+import { changePassword } from 'services/auth';
 import useCheckedOutSide from 'hooks/useCheckedOutSide';
+import useInput from 'hooks/useInput';
+
+import CustomModal from 'components/common/Portal';
+import Button from 'components/common/Button';
+import Input from 'components/common/Input';
 
 export default function PasswordForm() {
   const [disable, setDisable] = useState(false);
@@ -21,6 +22,7 @@ export default function PasswordForm() {
   const [confirmPassword, changeConfirmPassword] = useInput();
   const { ref, isVisible, changeVisible, animationState } = useCheckedOutSide();
   const navigate = useNavigate();
+
   const { mutate } = useMutation(changePassword, {
     onSuccess: () => {
       changeVisible();
@@ -32,6 +34,7 @@ export default function PasswordForm() {
       }
     },
   });
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const body = { currentPassword, newPassword };
@@ -39,7 +42,7 @@ export default function PasswordForm() {
   };
 
   const handleBlur = () => {
-    if (newPassword !== confirmPassword) {
+    if (confirmPassword && newPassword !== confirmPassword) {
       setNewPasswordError('비밀번호가 다릅니다.');
     } else {
       setNewPasswordError('');
@@ -47,18 +50,16 @@ export default function PasswordForm() {
   };
 
   useEffect(() => {
-    if (confirmPassword && newPassword && !newPaswordError) {
+    if (currentPassword && confirmPassword && newPassword && !newPaswordError) {
       setDisable(false);
     } else {
       setDisable(true);
     }
-  }, [
-    confirmPassword,
-    currentPassword,
-    newPassword,
-    newPaswordError,
-    passwordError,
-  ]);
+  }, [confirmPassword, newPassword, newPaswordError, currentPassword]);
+
+  useEffect(() => {
+    setPasswordError('');
+  }, [currentPassword]);
 
   return (
     <UserModifyWrapper>

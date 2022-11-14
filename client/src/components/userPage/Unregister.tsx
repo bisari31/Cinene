@@ -1,35 +1,36 @@
-import styled, { css } from 'styled-components';
-import { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 
-import { deleteUser } from 'services/auth';
+import { checkPassword, deleteUser } from 'services/auth';
 import useInput from 'hooks/useInput';
-import useDebounce from 'hooks/useDebounce';
 import useCheckedOutSide from 'hooks/useCheckedOutSide';
 import { userIdState } from 'atom/user';
 
 import Button from 'components/common/Button';
 import Modal from 'components/common/Portal';
+import Input from 'components/common/Input';
 
 export default function Unregister() {
   const setUserId = useSetRecoilState(userIdState);
-  const [value, handleChangeValue] = useInput();
-  const [validate, setValidate] = useState(false);
-
-  const deboounceValue = useDebounce(value, 150);
+  const [password, handleChange] = useInput();
+  const [errorMsg, setErrorMsg] = useState('');
 
   const navigate = useNavigate();
 
   const { ref, changeVisible, isVisible, animationState } =
     useCheckedOutSide(300);
 
-  const handleCheckPassword = async (password: string) => {
-    const { data } = await axios.post('/auth/checkpassword', {
-      password,
-    });
-    return data;
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      await checkPassword({ password });
+      changeVisible();
+    } catch (err) {
+      if (axios.isAxiosError(err)) setErrorMsg(err.response?.data.message);
+    }
   };
 
   const handleClick = () => {
@@ -41,26 +42,28 @@ export default function Unregister() {
   };
 
   useEffect(() => {
-    handleCheckPassword(deboounceValue).then((res) => setValidate(res));
-  }, [deboounceValue]);
+    setErrorMsg('');
+  }, [password]);
 
   return (
     <UnregisterWrapper>
-      <input
-        type="password"
-        placeholder="비밀번호를 입력해 주세요."
-        value={value}
-        onChange={handleChangeValue}
-      />
-      <Button
-        onClick={changeVisible}
-        disable={!validate}
-        type="button"
-        color="black"
-        size="large"
-      >
-        회원 탈퇴
-      </Button>
+      <form action="" onSubmit={handleSubmit}>
+        <Input
+          errorMessage={errorMsg}
+          type="password"
+          placeholder="비밀번호를 입력해 주세요."
+          value={password}
+          onChange={handleChange}
+        />
+        <Button
+          disable={!password.length || !!errorMsg}
+          type="submit"
+          color="black"
+          size="large"
+        >
+          회원 탈퇴
+        </Button>
+      </form>
       {isVisible && (
         <Modal
           refElement={ref}
@@ -82,26 +85,7 @@ const UnregisterWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  ${({ theme }) => css`
-    & > div {
-      align-items: center;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-    input {
-      border: 1px solid ${theme.colors.gray100};
-    }
-    button {
-      margin-top: 8em;
-    }
-
-    input,
-    button {
-      border-radius: ${theme.config.border};
-      height: 40px;
-      padding: 0 1em;
-      width: 350px;
-    }
-  `}
+  button {
+    margin-top: 8em;
+  }
 `;
