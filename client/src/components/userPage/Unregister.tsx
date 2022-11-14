@@ -13,7 +13,7 @@ import { userIdState } from 'atom/user';
 import Button from 'components/common/Button';
 import Modal from 'components/common/Portal';
 
-export default function ConfirmPassword() {
+export default function Unregister() {
   const setUserId = useSetRecoilState(userIdState);
   const [value, handleChangeValue] = useInput();
   const [validate, setValidate] = useState(false);
@@ -22,7 +22,7 @@ export default function ConfirmPassword() {
 
   const navigate = useNavigate();
 
-  const { ref, handleChangeVisible, visible, animationState } =
+  const { ref, changeVisible, isVisible, animationState } =
     useCheckedOutSide(300);
 
   const handleCheckPassword = async (password: string) => {
@@ -45,7 +45,7 @@ export default function ConfirmPassword() {
   }, [deboounceValue]);
 
   return (
-    <ValidateUserWrapper>
+    <UnregisterWrapper>
       <input
         type="password"
         placeholder="비밀번호를 입력해 주세요."
@@ -53,7 +53,7 @@ export default function ConfirmPassword() {
         onChange={handleChangeValue}
       />
       <Button
-        onClick={handleChangeVisible}
+        onClick={changeVisible}
         disable={!validate}
         type="button"
         color="black"
@@ -61,23 +61,23 @@ export default function ConfirmPassword() {
       >
         회원 탈퇴
       </Button>
-      {visible && (
+      {isVisible && (
         <Modal
           refElement={ref}
-          visible={animationState}
+          isVisible={animationState}
           buttonText={['아니요', '네']}
-          closeFn={handleChangeVisible}
+          closeFn={changeVisible}
           executeFn={handleClick}
           color="black"
         >
           정말 탈퇴하시겠습니까? 😭
         </Modal>
       )}
-    </ValidateUserWrapper>
+    </UnregisterWrapper>
   );
 }
 
-const ValidateUserWrapper = styled.div`
+const UnregisterWrapper = styled.div`
   align-items: center;
   display: flex;
   flex-direction: column;
@@ -93,7 +93,7 @@ const ValidateUserWrapper = styled.div`
       border: 1px solid ${theme.colors.gray100};
     }
     button {
-      margin-top: 5em;
+      margin-top: 8em;
     }
 
     input,

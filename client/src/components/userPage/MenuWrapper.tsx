@@ -2,15 +2,15 @@ import { useState } from 'react';
 import styled from 'styled-components';
 
 import UserMenu from './UserMenu';
-import ConfirmPassword from './ConfirmPassword';
+import Unregister from './Unregister';
 import UserDetail from './UserDetail';
-import UserModify from './UserModify';
+import PasswordForm from './PasswordForm';
 
-export default function UserContainer() {
+export default function MenuWrapper() {
   const [category, setCategory] = useState([
     { id: 0, text: '활동 내역', type: 'detail', isActive: true },
-    { id: 1, text: '정보 수정', type: 'modify', isActive: false },
-    { id: 2, text: '회원 탈퇴', type: 'delete', isActive: false },
+    { id: 1, text: '비밀번호 변경', type: 'changePassword', isActive: false },
+    { id: 2, text: '회원 탈퇴', type: 'unregister', isActive: false },
   ]);
   const [target, setTarget] = useState(category[0]);
 
@@ -29,27 +29,27 @@ export default function UserContainer() {
     switch (type) {
       case 'detail':
         return <UserDetail />;
-      case 'modify':
-        return <UserModify />;
-      case 'delete':
-        return <ConfirmPassword />;
+      case 'changePassword':
+        return <PasswordForm />;
+      case 'unregister':
+        return <Unregister />;
       default:
     }
   };
 
   return (
-    <UserContainerWrapper>
+    <Wrapper>
       <UserMenu
         target={target}
         category={category}
         onClick={handleChangeActive}
       />
       <article>{getComponent(target.type)}</article>
-    </UserContainerWrapper>
+    </Wrapper>
   );
 }
 
-const UserContainerWrapper = styled.section`
+const Wrapper = styled.section`
   article {
     padding: 5em;
   }

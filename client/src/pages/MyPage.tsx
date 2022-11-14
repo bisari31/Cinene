@@ -1,13 +1,13 @@
 import styled from 'styled-components';
 
-import UserContainer from 'components/userPage/UserContainer';
-import UserProfile from 'components/userPage/UserProfile';
+import MenuWrapper from 'components/UserPage/MenuWrapper';
+import UserProfile from 'components/UserPage/UserProfile';
 
 export default function MyPage() {
   return (
     <MypageWrapper>
       <UserProfile>
-        <UserContainer />
+        <MenuWrapper />
       </UserProfile>
     </MypageWrapper>
   );

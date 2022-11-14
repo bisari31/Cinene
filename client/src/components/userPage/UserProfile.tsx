@@ -1,6 +1,8 @@
 import { Upload } from 'assets';
+import Input from 'components/common/Input';
 import dayjs from 'dayjs';
 import { useAuthQuery } from 'hooks/useAuthQuery';
+import useInput from 'hooks/useInput';
 import styled, { css } from 'styled-components';
 
 export default function UserProfile({
@@ -9,6 +11,7 @@ export default function UserProfile({
   children: React.ReactNode;
 }) {
   const { data } = useAuthQuery();
+  const [nickname, changeNickname] = useInput(data?.user.nickname);
 
   return (
     <UserProfileWrapper>
@@ -20,7 +23,7 @@ export default function UserProfile({
           </button>
         </Img>
         <div>
-          <h2>{data?.user.nickname}</h2>
+          <Input type="text" disabled value={nickname} label="" />
           <h3>{data?.user.email}</h3>
           <div>
             <span>
