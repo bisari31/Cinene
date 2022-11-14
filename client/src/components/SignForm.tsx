@@ -1,91 +1,162 @@
-import { useRef } from 'react';
-import axios from 'axios';
-import useInput from 'hooks/useInput';
+import { useRef, useState, useEffect } from 'react';
+import axios, { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 import styled, { css } from 'styled-components';
 
+import useInput from 'hooks/useInput';
 import { userIdState } from 'atom/user';
 import { login, register } from 'services/auth';
 import { useMutation } from 'react-query';
 import Input from './common/Input';
 import Button from './common/Button';
 
+interface ILoginError {
+  err: AxiosError<{
+    success: boolean;
+    message: string;
+    type: 'email' | 'password' | 'nickname';
+  }>;
+}
+
 interface IProps {
   type: 'login' | 'register';
 }
+
 export default function SignForm({ type }: IProps) {
-  const [email, onChangeEmail] = useInput();
-  const [nickname, onChangeNickname] = useInput();
-  const [password, onChangePassword] = useInput();
-  const [passwordCheck, onChangePasswordCheck] = useInput();
+  const [email, handleChangeEmail] = useInput();
+  const [password, handleChangePassword] = useInput();
+  const [confirmPassword, handleChangeConfirmPassword] = useInput();
+  const [nickname, handleChangeNickname] = useInput();
+
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [nicknameError, setNicknameError] = useState('');
+  const [disable, setDisable] = useState(true);
+
+  const setUserId = useSetRecoilState(userIdState);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
+
   const { mutate } = useMutation(login, {
     onSuccess: (data) => {
       setUserId(data.user._id);
       localStorage.setItem('auth', data.user._id);
       navigate(-1);
     },
+    onError: (err: ILoginError) => {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.data.type === 'email') {
+          return setEmailError(err.response.data.message);
+        }
+        setPasswordError(err.response?.data.message);
+      }
+    },
   });
-
-  const setUserId = useSetRecoilState(userIdState);
-
-  const navigate = useNavigate();
-  const inputRef = useRef<HTMLInputElement>(null);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const body = { email, nickname, password };
     try {
-      if (type === 'login') {
-        mutate(body);
-      } else {
-        if (password !== passwordCheck) {
-          return console.log('패스워드가 다릅니다 .');
-        }
-        const data = await register(body);
-        console.log(data);
-        navigate('/login');
-      }
+      if (type === 'login') return mutate(body);
+      if (password !== confirmPassword)
+        return setPasswordError('비밀번호가 다릅니다.');
+      await register(body);
+      navigate('/login');
     } catch (err) {
       if (axios.isAxiosError(err)) {
-        console.log(err.response?.data);
+        if (err.response?.data.type === 'email') {
+          return setEmailError(err.response.data.message);
+        }
+        setNicknameError(err.response?.data.message);
       }
     }
   };
+
+  const handleBlurPassword = () => {
+    if ((password || confirmPassword) && confirmPassword !== password) {
+      setPasswordError('비밀번호가 다릅니다.');
+    } else {
+      setPasswordError('');
+    }
+  };
+
+  useEffect(() => {
+    if (type === 'login') {
+      if (email) setEmailError('');
+      if (password) setPasswordError('');
+    }
+    if (type === 'register') {
+      if (nickname) setNicknameError('');
+    }
+  }, [email, password, type, nickname]);
+
+  useEffect(() => {
+    if (
+      !email.length ||
+      emailError ||
+      passwordError ||
+      !confirmPassword.length ||
+      !nickname.length ||
+      nicknameError
+    )
+      return setDisable(true);
+    setDisable(false);
+  }, [
+    emailError,
+    passwordError,
+    nicknameError,
+    email,
+    nickname,
+    confirmPassword,
+  ]);
+
   return (
     <SignFormWrapper>
       <form action="" onSubmit={onSubmit}>
-        <div>
-          <label htmlFor="">이메일</label>
+        <Input
+          errorMessage={emailError}
+          label="이메일"
+          value={email}
+          onChange={handleChangeEmail}
+          type="text"
+          refElement={inputRef}
+        />
+
+        {type === 'register' && (
           <Input
-            value={email}
-            onChange={onChangeEmail}
+            label="닉네임"
+            errorMessage={nicknameError}
+            value={nickname}
+            onChange={handleChangeNickname}
             type="text"
-            refElement={inputRef}
           />
-        </div>
-        {type === 'register' && (
-          <div>
-            <label htmlFor="">닉네임</label>
-            <Input value={nickname} onChange={onChangeNickname} type="text" />
-          </div>
         )}
-        <div>
-          <label htmlFor="">비밀번호</label>
-          <Input value={password} onChange={onChangePassword} type="password" />
-        </div>
+        <Input
+          errorMessage={passwordError}
+          label="비밀번호"
+          onBlur={handleBlurPassword}
+          value={password}
+          onChange={handleChangePassword}
+          type="password"
+        />
         {type === 'register' && (
-          <div>
-            <label htmlFor="">비밀번호 확인</label>
-            <Input
-              value={passwordCheck}
-              onChange={onChangePasswordCheck}
-              type="password"
-            />
-          </div>
+          <Input
+            label="비밀번호 확인"
+            onBlur={handleBlurPassword}
+            errorMessage={passwordError}
+            value={confirmPassword}
+            onChange={handleChangeConfirmPassword}
+            type="password"
+          />
         )}
         <ButtonWrapper>
-          <Button color="black" size="fullWidth" type="submit">
+          <Button
+            color="black"
+            size="fullWidth"
+            type="submit"
+            disable={disable}
+          >
             {type === 'login' ? '로그인' : '회원가입'}
           </Button>
           {type === 'login' && (
@@ -108,26 +179,12 @@ const SignFormWrapper = styled.div`
     form {
       flex: 1;
       max-width: 400px;
-      div {
-        display: flex;
-        flex-direction: column;
-        label {
-          color: ${theme.colors.gray500};
-          font-size: 14px;
-          margin-bottom: 0.5em;
-        }
-      }
-      div + div {
-        label {
-          margin-top: 1em;
-        }
-      }
     }
   `}
 `;
 const ButtonWrapper = styled.div`
   & > button:nth-child(1) {
-    margin-top: 4em;
+    margin-top: 8em;
   }
   & > button:nth-child(2) {
     margin-top: 2em;

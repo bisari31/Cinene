@@ -37,7 +37,7 @@ router.post('/register', async (req, res) => {
   }
 });
 
-router.post('/login', async function (req, res) {
+router.post('/login', async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.email });
     if (user) {
@@ -52,9 +52,11 @@ router.post('/login', async function (req, res) {
         .status(400)
         .send({ success: false, message: '비밀번호가 일치하지 않습니다.' });
     }
-    res.status(400).send({ success: false, message: '아이디가 없습니다.' });
+    return res
+      .status(400)
+      .send({ success: false, message: '아이디가 없습니다.' });
   } catch (err) {
-    console.log(err);
+    res.status(400).send({ success: false, message: '서버 에러' });
   }
 });
 
@@ -68,7 +70,7 @@ router.get('/', authenticate, (req: AuthRequest, res) => {
 });
 
 router.post(
-  '/checkpassword',
+  '/checkPassword',
   authenticate,
   async (req: UserDeleteAuthRequest, res) => {
     try {
@@ -84,7 +86,7 @@ router.post(
     }
   },
 );
-router.delete('/user', authenticate, async (req: AuthRequest, res) => {
+router.delete('/deleteUser', authenticate, async (req: AuthRequest, res) => {
   try {
     await User.deleteOne({ _id: req.user?._id });
     res
@@ -95,6 +97,25 @@ router.delete('/user', authenticate, async (req: AuthRequest, res) => {
     res
       .status(400)
       .json({ success: false, message: '유저 정보를 삭제하지 못했습니다.' });
+  }
+});
+
+router.put('/changePassword', authenticate, async (req: AuthRequest, res) => {
+  try {
+    const result = await bcrypt.compare(
+      req.body.currentPassword,
+      req.user?.password as string,
+    );
+    if (!result) throw new Error('비밀번호가 일치하지 않습니다.');
+    const hash = await bcrypt.hash(req.body.newPassword, saltRounds);
+    const user = await User.findOneAndUpdate(
+      { _id: req.user?._id },
+      { password: hash },
+    );
+    if (!user) throw new Error('회원정보를 찾지 못했습니다.');
+    res.json({ success: true, message: '비밀번호 변경 완료' });
+  } catch (err) {
+    res.status(400).json({ success: false, message: err.message });
   }
 });
 

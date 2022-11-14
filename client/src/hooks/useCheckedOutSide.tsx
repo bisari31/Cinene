@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 
-export default function useCheckedOutSide(sec = 0) {
+export default function useCheckedOutSide(delay = 0) {
   const [visible, setVisible] = useState(false);
   const [animationState, setAnimationState] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -14,7 +14,7 @@ export default function useCheckedOutSide(sec = 0) {
       setAnimationState(false);
       setTimeout(() => {
         setVisible(false);
-      }, sec);
+      }, delay);
     } else {
       setAnimationState(true);
       setVisible(true);

@@ -21,7 +21,7 @@ function Portal({ children }: PorTalProps) {
   return ReactDOM.createPortal(children, modal);
 }
 
-export default function CustomPortal({
+export default function CustomModal({
   children,
   visible,
   refElement,

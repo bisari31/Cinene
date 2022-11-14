@@ -1,39 +1,34 @@
 import styled, { css } from 'styled-components';
-import { useState } from 'react';
 
-export default function Categories() {
-  const [categories, setCategories] = useState([
-    { id: 0, text: '활동 내역', isActive: true },
-    { id: 1, text: '정보 수정', isActive: false },
-    { id: 2, text: '회원 탈퇴', isActive: false },
-  ]);
-  const [target, setTarget] = useState(0);
+interface ICategory {
+  id: number;
+  text: string;
+  type: string;
+  isActive: boolean;
+}
 
-  const handleChangeActive = (id: number) => {
-    setCategories((prev) =>
-      prev.map((list) =>
-        list.id === id
-          ? { ...list, isActive: !list.isActive }
-          : { ...list, isActive: false },
-      ),
-    );
-    setTarget(id);
-  };
+interface IProps {
+  category: ICategory[];
+  onClick: (id: number) => void;
+  target: ICategory;
+}
+
+export default function UserMenu({ category, onClick, target }: IProps) {
   return (
-    <CategoriesWrapper>
-      {categories.map((list) => (
+    <Ul>
+      {category.map((list) => (
         <List key={list.id} isActive={list.isActive}>
-          <button onClick={() => handleChangeActive(list.id)} type="button">
+          <button onClick={() => onClick(list.id)} type="button">
             {list.text}
           </button>
         </List>
       ))}
-      <Slider target={target} />
-    </CategoriesWrapper>
+      <Slider target={target.id} />
+    </Ul>
   );
 }
 
-const CategoriesWrapper = styled.ul`
+const Ul = styled.ul`
   border-bottom: 1px solid ${({ theme }) => theme.colors.gray100};
   display: flex;
   flex-direction: row;

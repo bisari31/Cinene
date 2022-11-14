@@ -11,7 +11,7 @@ import { ChevronDown } from 'assets';
 import { logout } from 'services/auth';
 
 import SideMenu from 'components/header/SideMenu';
-import CustomPortal from 'components/common/Portal';
+import Modal from 'components/common/Portal';
 
 export default function AuthMenu() {
   const [userId, setUserId] = useRecoilState(userIdState);
@@ -66,7 +66,7 @@ export default function AuthMenu() {
         </ul>
       </SideBar>
       {visibleLogout && (
-        <CustomPortal
+        <Modal
           color="black"
           buttonText={['아니요', '로그아웃']}
           visible={logoutState}
@@ -75,7 +75,7 @@ export default function AuthMenu() {
           executeFn={handleLogout}
         >
           정말 로그아웃 하시겠습니까? 😰
-        </CustomPortal>
+        </Modal>
       )}
     </AuthFormWrapper>
   );
