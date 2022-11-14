@@ -37,7 +37,7 @@ router.post('/register', async (req, res) => {
   }
 });
 
-router.post('/login', async function (req, res) {
+router.post('/login', async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.email });
     if (user) {
@@ -52,7 +52,9 @@ router.post('/login', async function (req, res) {
         .status(400)
         .send({ success: false, message: '비밀번호가 일치하지 않습니다.' });
     }
-    res.status(400).send({ success: false, message: '아이디가 없습니다.' });
+    return res
+      .status(400)
+      .send({ success: false, message: '아이디가 없습니다.' });
   } catch (err) {
     res.status(400).send({ success: false, message: '서버 에러' });
   }
@@ -98,29 +100,22 @@ router.delete('/deleteUser', authenticate, async (req: AuthRequest, res) => {
   }
 });
 
-router.put('/updateUser', authenticate, async (req: AuthRequest, res) => {
+router.put('/changePassword', authenticate, async (req: AuthRequest, res) => {
   try {
-    const user = await User.findOne({ _id: req.user?._id });
-    if (user) {
-      const result = await bcrypt.compare(req.body.password, user.password);
-      if (result) {
-        const newUser = await User.updateOne(
-          { _id: req.body.id },
-          { nickname: req.body.nickname },
-        );
-        console.log(newUser);
-        //   if (newUser) return res.send({ success: true, user: newUser });
-        //   return res.status(400).send({
-        //     success: false,
-        //     message: '닉네임이 이미 있습니다.',
-        //   });
-      }
-      // res
-      //   .status(400)
-      //   .send({ success: false, message: '비밀번호가 일치하지 않습니다.' });
-    }
+    const result = await bcrypt.compare(
+      req.body.currentPassword,
+      req.user?.password as string,
+    );
+    if (!result) throw new Error('비밀번호가 일치하지 않습니다.');
+    const hash = await bcrypt.hash(req.body.newPassword, saltRounds);
+    const user = await User.findOneAndUpdate(
+      { _id: req.user?._id },
+      { password: hash },
+    );
+    if (!user) throw new Error('회원정보를 찾지 못했습니다.');
+    res.json({ success: true, message: '비밀번호 변경 완료' });
   } catch (err) {
-    res.status(400).json({ success: false, message: '서버 에러' });
+    res.status(400).json({ success: false, message: err.message });
   }
 });
 
