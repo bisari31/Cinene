@@ -40,21 +40,21 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.email });
-    if (user) {
-      const result = await bcrypt.compare(req.body.password, user.password);
-      if (result) {
-        const newUser = await user.generateToken();
-        return res
-          .cookie('auth', newUser.token)
-          .json({ success: true, user: newUser });
-      }
+    if (!user) {
       return res
         .status(400)
-        .send({ success: false, message: '비밀번호가 일치하지 않습니다.' });
+        .send({ success: false, type: 'email', message: '아이디가 없습니다.' });
     }
-    return res
-      .status(400)
-      .send({ success: false, message: '아이디가 없습니다.' });
+    const result = await bcrypt.compare(req.body.password, user.password);
+    if (!result) {
+      return res.status(400).send({
+        success: false,
+        type: 'password',
+        message: '비밀번호가 일치하지 않습니다.',
+      });
+    }
+    const newUser = await user.generateToken();
+    res.cookie('auth', newUser.token).json({ success: true, user: newUser });
   } catch (err) {
     res.status(400).send({ success: false, message: '서버 에러' });
   }
@@ -79,10 +79,11 @@ router.post(
           req.body.password,
           req.user?.password,
         );
-        return res.json(result);
+        if (!result) throw new Error('비밀번호가 다릅니다.');
+        return res.json({ success: true });
       }
     } catch (err) {
-      console.log(err);
+      res.status(400).send({ success: false, message: err.message });
     }
   },
 );
@@ -103,7 +104,7 @@ router.delete('/deleteUser', authenticate, async (req: AuthRequest, res) => {
 router.put('/changePassword', authenticate, async (req: AuthRequest, res) => {
   try {
     const result = await bcrypt.compare(
-      req.body.currentPassword,
+      req.body.password,
       req.user?.password as string,
     );
     if (!result) throw new Error('비밀번호가 일치하지 않습니다.');
@@ -116,6 +117,20 @@ router.put('/changePassword', authenticate, async (req: AuthRequest, res) => {
     res.json({ success: true, message: '비밀번호 변경 완료' });
   } catch (err) {
     res.status(400).json({ success: false, message: err.message });
+  }
+});
+
+router.put('/changeNickname', authenticate, async (req: AuthRequest, res) => {
+  try {
+    const user = await User.findOneAndUpdate(
+      { nickname: req.user?.nickname },
+      { nickname: req.body.nickname },
+    );
+    res.json({ success: true, user });
+  } catch (err) {
+    res
+      .status(400)
+      .json({ success: false, message: '닉네임이 이미 있습니다.' });
   }
 });
 
