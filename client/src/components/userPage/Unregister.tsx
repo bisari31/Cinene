@@ -6,7 +6,7 @@ import { useSetRecoilState } from 'recoil';
 
 import { checkPassword, deleteUser } from 'services/auth';
 import useInput from 'hooks/useInput';
-import useCheckedOutSide from 'hooks/useCheckedOutSide';
+import useClickedOutSide from 'hooks/useClickedOutSide';
 import { userIdState } from 'atom/user';
 
 import Button from 'components/common/Button';
@@ -21,7 +21,7 @@ export default function Unregister() {
   const navigate = useNavigate();
 
   const { ref, changeVisible, isVisible, animationState } =
-    useCheckedOutSide(300);
+    useClickedOutSide(300);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -59,7 +59,7 @@ export default function Unregister() {
           disable={!password.length || !!errorMsg}
           type="submit"
           color="black"
-          size="large"
+          size="fullWidth"
         >
           회원 탈퇴
         </Button>
@@ -83,8 +83,11 @@ export default function Unregister() {
 const UnregisterWrapper = styled.div`
   align-items: center;
   display: flex;
+  flex: 1;
   flex-direction: column;
-  justify-content: center;
+  form {
+    width: 100%;
+  }
   button {
     margin-top: 8em;
   }

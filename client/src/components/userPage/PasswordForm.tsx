@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { changePassword } from 'services/auth';
-import useCheckedOutSide from 'hooks/useCheckedOutSide';
+import useClickedOutSide from 'hooks/useClickedOutSide';
 import useInput from 'hooks/useInput';
 
 import CustomModal from 'components/common/Portal';
@@ -20,7 +20,7 @@ export default function PasswordForm() {
   const [currentPassword, changeCurrentPassword] = useInput();
   const [newPassword, changeNewPassword] = useInput();
   const [confirmPassword, changeConfirmPassword] = useInput();
-  const { ref, isVisible, changeVisible, animationState } = useCheckedOutSide();
+  const { ref, isVisible, changeVisible, animationState } = useClickedOutSide();
   const navigate = useNavigate();
 
   const { mutate } = useMutation(changePassword, {
@@ -37,7 +37,7 @@ export default function PasswordForm() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const body = { currentPassword, newPassword };
+    const body = { password: currentPassword, newPassword };
     mutate(body);
   };
 
@@ -107,12 +107,12 @@ export default function PasswordForm() {
 }
 
 const UserModifyWrapper = styled.div`
+  align-items: center;
   display: flex;
-  justify-content: center;
-  form {
-    width: 350px;
-    Button {
-      margin-top: 8em;
-    }
+  flex: 1;
+  flex-direction: column;
+
+  Button {
+    margin-top: 8em;
   }
 `;

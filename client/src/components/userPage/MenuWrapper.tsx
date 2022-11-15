@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import UserMenu from './UserMenu';
 import Unregister from './Unregister';
@@ -50,7 +50,19 @@ export default function MenuWrapper() {
 }
 
 const Wrapper = styled.section`
-  article {
-    padding: 5em;
-  }
+  ${({ theme }) => css`
+    article {
+      display: flex;
+      padding: 5em;
+      form {
+        max-width: 400px;
+        width: 100%;
+      }
+    }
+    @media ${theme.device.mobile} {
+      article {
+        padding: 3em 1em;
+      }
+    }
+  `}
 `;
