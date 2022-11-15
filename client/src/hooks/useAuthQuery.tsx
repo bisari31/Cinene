@@ -7,7 +7,10 @@ import { userIdState } from 'atom/user';
 
 export const useAuthQuery = (id?: string) => {
   const [userId, setUserId] = useRecoilState(userIdState);
-  const data = useQuery(['auth', userId], auth);
+  const data = useQuery(['auth', userId], auth, {
+    retry: 1,
+    refetchOnWindowFocus: false,
+  });
 
   useEffect(() => {
     if (id) {

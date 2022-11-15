@@ -1,26 +1,10 @@
 import { ChangeEvent, useState } from 'react';
 
-// interface ITypeObj {
-//   [index: string]: {
-//     msg: string;
-//     condition: unknown;
-//   };
-// }
-
-export default function useInput() {
-  const [input, setInput] = useState<string>('');
+export default function useInput(text = '') {
+  const [input, setInput] = useState<string>(text);
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setInput(e.currentTarget.value);
   };
 
-  // useEffect(() => {
-  //   if (input) {
-  //     if (typeObj[name].condition) return setErrMsg('');
-  //     setErrMsg(typeObj[name].msg);
-  //   } else {
-  //     setErrMsg('');
-  //   }
-  // }, [input, name]);
-
-  return [input, handleChange] as const;
+  return [input, handleChange, setInput] as const;
 }
