@@ -16,7 +16,7 @@ export default function ReplyComment({ commentId, data }: IProps) {
           <CommentItem key={comment._id} comment={comment} isReply />
         ))}
       </ul>
-      <AddCommentForm isNested commentId={commentId} />
+      <AddCommentForm commentId={commentId} isReply />
     </ReplyCommentWrapper>
   );
 }

@@ -6,7 +6,7 @@ import { lighten, darken } from 'polished';
 
 import { userIdState } from 'atom/user';
 import { useAuthQuery } from 'hooks/useAuthQuery';
-import useCheckedOutSide from 'hooks/useCheckedOutSide';
+import useClickedOutSide from 'hooks/useClickedOutSide';
 import { ChevronDown } from 'assets';
 import { logout } from 'services/auth';
 
@@ -16,18 +16,18 @@ import Modal from 'components/common/Portal';
 export default function AuthMenu() {
   const [userId, setUserId] = useRecoilState(userIdState);
   const { data } = useAuthQuery(userId);
-  const { ref, visible, handleChangeVisible } = useCheckedOutSide();
+  const { ref, isVisible, changeVisibility } = useClickedOutSide();
   const {
     ref: logoutRef,
-    visible: visibleLogout,
+    isVisible: isVisibleLogoutForm,
     animationState: logoutState,
-    handleChangeVisible: handleVisibleLogout,
-  } = useCheckedOutSide(300);
+    changeVisibility: changeVisibilityModal,
+  } = useClickedOutSide(300);
 
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    handleVisibleLogout();
+    changeVisibilityModal();
     logout().then(() => {
       localStorage.removeItem('auth');
       setUserId('');
@@ -45,12 +45,12 @@ export default function AuthMenu() {
       <SideBar>
         <ul>
           {data?.isLoggedIn ? (
-            <UserInfoList onClick={handleChangeVisible} showMemu={visible}>
-              <img src={`/${data?.user.img}`} alt="user_image" />
-              <span>{data?.user.nickname}</span>
+            <UserInfoList onClick={changeVisibility} showMemu={isVisible}>
+              <img src={`/${data.user?.img}`} alt="user_image" />
+              <span>{data.user?.nickname}</span>
               <ChevronDown />
-              {visible && (
-                <SideMenu onClick={handleVisibleLogout} refElement={ref} />
+              {isVisible && (
+                <SideMenu onClick={changeVisibilityModal} refElement={ref} />
               )}
             </UserInfoList>
           ) : (
@@ -65,13 +65,13 @@ export default function AuthMenu() {
           )}
         </ul>
       </SideBar>
-      {visibleLogout && (
+      {isVisibleLogoutForm && (
         <Modal
           color="black"
           buttonText={['아니요', '로그아웃']}
-          visible={logoutState}
+          isVisible={logoutState}
           refElement={logoutRef}
-          closeFn={handleVisibleLogout}
+          closeFn={changeVisibilityModal}
           executeFn={handleLogout}
         >
           정말 로그아웃 하시겠습니까? 😰

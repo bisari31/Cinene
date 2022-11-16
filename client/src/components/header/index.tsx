@@ -21,6 +21,7 @@ const HeaderWrapper = styled.header`
     display: flex;
     flex: 1;
     h1 {
+      color: ${({ theme }) => theme.colors.black};
       font-size: 20px;
       font-weight: 700;
     }

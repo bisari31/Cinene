@@ -28,7 +28,7 @@ export default function LandingPage() {
       <div>
         <Button
           color="black"
-          disable={!data?.isLoggedIn}
+          isDisabled={!data?.isLoggedIn}
           size="small"
           type="button"
           onClick={onClickPostUpload}

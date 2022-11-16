@@ -6,10 +6,10 @@ export default function useClickedOutSide(delay = 0) {
   const ref = useRef<HTMLDivElement>(null);
   const handleClickOutSide = (e: React.MouseEvent<HTMLDivElement> | Event) => {
     const target = e.target as HTMLDivElement;
-    if (isVisible && !ref.current?.contains(target)) changeVisible();
+    if (isVisible && !ref.current?.contains(target)) changeVisibility();
   };
 
-  const changeVisible = () => {
+  const changeVisibility = () => {
     if (isVisible) {
       setAnimationState(false);
       setTimeout(() => {
@@ -28,5 +28,5 @@ export default function useClickedOutSide(delay = 0) {
     };
   });
 
-  return { ref, isVisible, changeVisible, animationState };
+  return { ref, isVisible, changeVisibility, animationState };
 }

@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import styled, { css } from 'styled-components';
 import { ColorsKey } from 'styles/theme';
 import { lighten, darken } from 'polished';
@@ -7,7 +8,7 @@ type Size = 'small' | 'medium' | 'large' | 'fullWidth';
 interface IProps {
   size: Size;
   type: 'submit' | 'button';
-  disable?: boolean;
+  isDisabled?: boolean;
   color: ColorsKey;
   children: React.ReactNode;
   onClick?: (e: React.MouseEvent) => void | Promise<void>;
@@ -15,7 +16,7 @@ interface IProps {
 interface IButtonProps {
   color: ColorsKey;
   size: Size;
-  disable: boolean;
+  isDisabled: boolean;
 }
 
 const sizes = {
@@ -41,20 +42,21 @@ const sizes = {
   },
 };
 
-export default function Button({
+function Button({
   type,
   size,
-  disable = false,
+  isDisabled = false,
   color,
   children,
   ...rest
 }: IProps) {
+  console.log('render');
   return (
     <StyledButton
       color={color}
-      disable={disable}
+      isDisabled={isDisabled}
       type={type}
-      disabled={disable}
+      disabled={isDisabled}
       size={size}
       {...rest}
     >
@@ -63,10 +65,14 @@ export default function Button({
   );
 }
 
+export default memo(Button);
+
 const StyledButton = styled.button<IButtonProps>`
-  ${({ size, theme, color, disable }) =>
+  ${({ size, theme, color, isDisabled }) =>
     css`
-      background-color: ${disable ? theme.colors.gray500 : theme.colors[color]};
+      background-color: ${isDisabled
+        ? theme.colors.gray500
+        : theme.colors[color]};
       border: none;
       border-radius: ${theme.config.border};
       color: ${color === 'black' ? '#fff' : theme.colors.black};
@@ -77,14 +83,14 @@ const StyledButton = styled.button<IButtonProps>`
         background-color: ${color.includes('gray')
           ? darken(0.1, theme.colors[color])
           : lighten(0.1, theme.colors[color])};
-        background-color: ${disable && theme.colors.gray500};
-        cursor: ${disable ? 'not-allowed' : 'pointer'};
+        background-color: ${isDisabled && theme.colors.gray500};
+        cursor: ${isDisabled ? 'not-allowed' : 'pointer'};
       }
       &:active {
         background-color: ${color.includes('gray')
           ? darken(0.2, theme.colors[color])
           : darken(0.1, theme.colors[color])};
-        background-color: ${disable && theme.colors.gray500};
+        background-color: ${isDisabled && theme.colors.gray500};
       }
     `}
 `;

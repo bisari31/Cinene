@@ -9,11 +9,11 @@ interface PorTalProps {
 
 export interface IModalProps extends PorTalProps {
   refElement: RefObject<HTMLDivElement>;
-  visible: boolean;
+  isVisible: boolean;
   buttonText: string[];
   color: ColorsKey;
-  closeFn: () => void;
-  executeFn?: () => void;
+  closeFn?: () => void;
+  executeFn: () => void;
 }
 
 function Portal({ children }: PorTalProps) {
@@ -23,7 +23,7 @@ function Portal({ children }: PorTalProps) {
 
 export default function CustomModal({
   children,
-  visible,
+  isVisible,
   refElement,
   buttonText,
   color,
@@ -36,7 +36,7 @@ export default function CustomModal({
         closeFn={closeFn}
         color={color}
         buttonText={buttonText}
-        visible={visible}
+        isVisible={isVisible}
         refElement={refElement}
         executeFn={executeFn}
       >
