@@ -67,6 +67,7 @@ export default function PasswordForm() {
           errorMessage={passwordError}
         />
         <ConfirmPassword
+          placeholder="영문,숫자 포함 8~16자"
           type="edit"
           password={newPassword}
           setReturnError={setNewPasswordError}

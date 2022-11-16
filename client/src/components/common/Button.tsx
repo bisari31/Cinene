@@ -50,7 +50,6 @@ function Button({
   children,
   ...rest
 }: IProps) {
-  console.log('render');
   return (
     <StyledButton
       color={color}

@@ -9,6 +9,7 @@ interface IProps {
   label?: string;
   refElement?: React.RefObject<HTMLInputElement>;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur?: () => void;
   errorMessage?: string;
 }
 

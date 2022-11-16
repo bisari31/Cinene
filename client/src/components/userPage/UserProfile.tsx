@@ -8,6 +8,7 @@ import useInput from 'hooks/useInput';
 import { changeNickname } from 'services/auth';
 import useClickedOutSide from 'hooks/useClickedOutSide';
 import { queryClient } from 'index';
+import { nicknameRegx } from 'utils';
 
 import Input from 'components/common/Input';
 
@@ -41,7 +42,9 @@ export default function UserProfile({ children, user }: IProps) {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!isEditing) return changeVisibility();
-    if (!nickname) return setErrorMsg('닉네임을 입력해 주세요');
+    const result = nickname.match(nicknameRegx);
+    if (!result)
+      return setErrorMsg('닉네임이 올바르지 않습니다. (특수문자 제외 2~10자)');
     if (nickname === user?.nickname) return changeVisibility();
     mutate({ nickname });
   };

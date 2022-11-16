@@ -7,3 +7,13 @@ interface IUser {
   createdAt: string;
   img: string;
 }
+
+interface ILoginError {
+  response: {
+    data: {
+      success: boolean;
+      message: string;
+      type: 'email' | 'password' | 'nickname';
+    };
+  };
+}

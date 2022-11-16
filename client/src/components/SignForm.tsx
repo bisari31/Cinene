@@ -7,19 +7,10 @@ import { useMutation } from 'react-query';
 import useInput from 'hooks/useInput';
 import { userIdState } from 'atom/user';
 import { login, register } from 'services/auth';
+import { handleBlur } from 'utils';
 import Input from './common/Input';
 import Button from './common/Button';
 import ConfirmPassword from './common/ConfirmPassword';
-
-interface ILoginError {
-  response: {
-    data: {
-      success: boolean;
-      message: string;
-      type: 'email' | 'password' | 'nickname';
-    };
-  };
-}
 
 export default function SignForm({ type }: { type: 'login' | 'register' }) {
   const [email, handleChangeEmail] = useInput();
@@ -99,7 +90,9 @@ export default function SignForm({ type }: { type: 'login' | 'register' }) {
     <SignFormWrapper>
       <form action="" onSubmit={onSubmit}>
         <Input
+          onBlur={() => handleBlur(email, 'email', setEmailError)}
           errorMessage={emailError}
+          placeholder="이메일 주소"
           label="이메일"
           value={email}
           onChange={handleChangeEmail}
@@ -109,7 +102,9 @@ export default function SignForm({ type }: { type: 'login' | 'register' }) {
 
         {type === 'register' && (
           <Input
+            onBlur={() => handleBlur(nickname, 'nickname', setNicknameError)}
             label="닉네임"
+            placeholder="특수문자 제외 2~10자"
             errorMessage={nicknameError}
             value={nickname}
             onChange={handleChangeNickname}
@@ -120,12 +115,14 @@ export default function SignForm({ type }: { type: 'login' | 'register' }) {
           <Input
             errorMessage={passwordError}
             label="비밀번호"
+            placeholder="영문,숫자 포함 8~16자"
             value={password}
             onChange={handleChangePassword}
             type="password"
           />
         ) : (
           <ConfirmPassword
+            placeholder="영문,숫자 포함 8~16자"
             setReturnError={setSignupError}
             type="register"
             password={password}
