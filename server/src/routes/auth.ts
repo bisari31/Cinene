@@ -16,14 +16,10 @@ router.post('/register', async (req, res) => {
     const checkEmail = await User.findOne({ email: req.body.email });
     const checkNickname = await User.findOne({ nickname: req.body.nickname });
     if (checkEmail) {
-      return res
-        .status(400)
-        .json({ success: false, message: '중복된 아이디 입니다.' });
+      throw { type: 'email', message: '중복된 아이디 입니다.' };
     }
     if (checkNickname) {
-      return res
-        .status(400)
-        .json({ success: false, message: '중복된 닉네임 입니다.' });
+      throw { type: 'nickname', message: '중복된 닉네임 입니다.' };
     }
     const hash = await bcrypt.hash(req.body.password, saltRounds);
     const user = await User.create({
@@ -33,7 +29,7 @@ router.post('/register', async (req, res) => {
     });
     res.status(201).json({ success: true, user });
   } catch (err) {
-    console.log(err);
+    res.status(400).send({ success: false, ...err });
   }
 });
 
@@ -41,22 +37,19 @@ router.post('/login', async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.email });
     if (!user) {
-      return res
-        .status(400)
-        .send({ success: false, type: 'email', message: '아이디가 없습니다.' });
+      throw {
+        type: 'email',
+        message: '아이디가 없습니다.',
+      };
     }
     const result = await bcrypt.compare(req.body.password, user.password);
     if (!result) {
-      return res.status(400).send({
-        success: false,
-        type: 'password',
-        message: '비밀번호가 일치하지 않습니다.',
-      });
+      throw { type: 'password', message: '비밀번호가 일치하지 않습니다.' };
     }
     const newUser = await user.generateToken();
     res.cookie('auth', newUser.token).json({ success: true, user: newUser });
   } catch (err) {
-    res.status(400).send({ success: false, message: '서버 에러' });
+    res.status(400).send({ success: false, ...err });
   }
 });
 
@@ -87,6 +80,7 @@ router.post(
     }
   },
 );
+
 router.delete('/deleteUser', authenticate, async (req: AuthRequest, res) => {
   try {
     await User.deleteOne({ _id: req.user?._id });
