@@ -29,20 +29,20 @@ export default function UserProfile({ children, user }: IProps) {
   const { mutate } = useMutation(changeNickname, {
     onSuccess: (res) => {
       queryClient.invalidateQueries(['auth', `${res.user._id}`]);
-      changeVisible();
+      changeVisibility();
       setErrorMsg('');
     },
     onError: (err: IError) => setErrorMsg(err.response.data.message),
   });
   const [errorMsg, setErrorMsg] = useState('');
   const [nickname, handleChangeNickname, setNickname] = useInput();
-  const { ref, isVisible: isEditing, changeVisible } = useClickedOutSide();
+  const { ref, isVisible: isEditing, changeVisibility } = useClickedOutSide();
   const inputRef = useRef<HTMLInputElement>(null);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!isEditing) return changeVisible();
+    if (!isEditing) return changeVisibility();
     if (!nickname) return setErrorMsg('닉네임을 입력해 주세요');
-    if (nickname === user?.nickname) return changeVisible();
+    if (nickname === user?.nickname) return changeVisibility();
     mutate({ nickname });
   };
 

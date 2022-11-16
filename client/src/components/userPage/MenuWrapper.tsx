@@ -9,7 +9,7 @@ import PasswordForm from './PasswordForm';
 export default function MenuWrapper() {
   const [category, setCategory] = useState([
     { id: 0, text: '활동 내역', type: 'detail', isActive: true },
-    { id: 1, text: '비밀번호 변경', type: 'changePassword', isActive: false },
+    { id: 1, text: '비밀번호 변경', type: 'password', isActive: false },
     { id: 2, text: '회원 탈퇴', type: 'unregister', isActive: false },
   ]);
   const [target, setTarget] = useState(category[0]);
@@ -29,7 +29,7 @@ export default function MenuWrapper() {
     switch (type) {
       case 'detail':
         return <UserDetail />;
-      case 'changePassword':
+      case 'password':
         return <PasswordForm />;
       case 'unregister':
         return <Unregister />;

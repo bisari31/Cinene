@@ -17,17 +17,17 @@ export default function Unregister() {
   const setUserId = useSetRecoilState(userIdState);
   const [password, handleChange] = useInput();
   const [errorMsg, setErrorMsg] = useState('');
-
+  const [isDisabled, setIsDisabled] = useState(false);
   const navigate = useNavigate();
 
-  const { ref, changeVisible, isVisible, animationState } =
+  const { ref, changeVisibility, isVisible, animationState } =
     useClickedOutSide(300);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       await checkPassword({ password });
-      changeVisible();
+      changeVisibility();
     } catch (err) {
       if (axios.isAxiosError(err)) setErrorMsg(err.response?.data.message);
     }
@@ -45,6 +45,10 @@ export default function Unregister() {
     setErrorMsg('');
   }, [password]);
 
+  useEffect(() => {
+    setIsDisabled(!!errorMsg.length || !password.length);
+  }, [errorMsg, password]);
+
   return (
     <UnregisterWrapper>
       <form action="" onSubmit={handleSubmit}>
@@ -56,7 +60,7 @@ export default function Unregister() {
           onChange={handleChange}
         />
         <Button
-          disable={!password.length || !!errorMsg}
+          isDisabled={isDisabled}
           type="submit"
           color="black"
           size="fullWidth"
@@ -69,7 +73,7 @@ export default function Unregister() {
           refElement={ref}
           isVisible={animationState}
           buttonText={['아니요', '네']}
-          closeFn={changeVisible}
+          closeFn={changeVisibility}
           executeFn={handleClick}
           color="black"
         >
