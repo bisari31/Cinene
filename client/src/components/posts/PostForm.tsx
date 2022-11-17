@@ -34,7 +34,7 @@ export default function PostForm({ type, content }: IPostFormProps) {
 
   const { mutate: addPostMutate } = useMutation(addPost, {
     onSuccess: () => {
-      navigate('/');
+      navigate('/post');
     },
   });
 
@@ -60,7 +60,7 @@ export default function PostForm({ type, content }: IPostFormProps) {
         case 'write':
           return addPostMutate(post);
         case 'view':
-          return navigate(`post/${content?._id}/modify`);
+          return navigate(`./modify`);
         default:
           return;
       }

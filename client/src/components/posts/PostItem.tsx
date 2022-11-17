@@ -20,7 +20,7 @@ export default function PostItem({ post }: IProps) {
     <PostItemWrapper commentsNum={post.commentsNum}>
       <NumWrapper>{post.seq}</NumWrapper>
       <TitleWrapper>
-        <Link to={`post/${post._id}`}>
+        <Link to={`./${post._id}`}>
           {post.title}
           {!!post.commentsNum && <span>[{post.commentsNum}]</span>}
         </Link>

@@ -23,7 +23,7 @@ export default function PostButton({ type, user, content, submit }: IProps) {
   const handleRemove = async () => {
     if (content) {
       await deletePost(content._id, user._id);
-      navigate('/');
+      navigate('/post');
     }
   };
 

@@ -1,14 +1,17 @@
 import { Routes, Route } from 'react-router-dom';
 
+import AuthHoc from 'components/hoc';
+import NotFound from 'components/NotFound';
 import Layout from 'components/Layout';
+
 import LandingPage from 'pages/LandingPage';
 import LoginPage from 'pages/auth/LoginPage';
-import PostDetailPage from 'pages/posts/PostDetailPage';
-import PostWritePage from 'pages/posts/PostWritePage';
 import RegisterPage from 'pages/auth/RegisterPage';
+import PostPage from 'pages/posts/PostPage';
+import PostWritePage from 'pages/posts/PostWritePage';
+import PostDetailPage from 'pages/posts/PostDetailPage';
+
 import MyPage from 'pages/MyPage';
-import NotFound from 'components/NotFound';
-import AuthHoc from 'components/hoc';
 
 export default function App() {
   const AuthLoginPage = AuthHoc(LoginPage);
@@ -16,12 +19,14 @@ export default function App() {
   const AuthPostWritePage = AuthHoc(PostWritePage, true);
   const AuthPostModify = AuthHoc(PostDetailPage, true);
   const AuthMypage = AuthHoc(MyPage, true);
+
   return (
     <Routes>
       <Route element={<Layout />}>
         <Route index element={<LandingPage />} />
         <Route path="/login" element={<AuthLoginPage />} />
         <Route path="/register" element={<AuthRegisterPage />} />
+        <Route path="/post" element={<PostPage />} />
         <Route path="/post/write" element={<AuthPostWritePage />} />
         <Route path="/post/:id" element={<PostDetailPage />} />
         <Route path="/post/:id/modify" element={<AuthPostModify />} />
