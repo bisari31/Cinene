@@ -27,7 +27,9 @@ router.get('/', async (req, res) => {
     console.log(posts);
     res.status(201).json({ success: true, posts });
   } catch (err) {
-    console.log(err);
+    res
+      .status(400)
+      .send({ success: false, err: '게시글을 불러오지 못했습니다.' });
   }
 });
 

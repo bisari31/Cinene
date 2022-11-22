@@ -1,29 +1,20 @@
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-import PostList from 'components/posts/PostList';
 import { useAuthQuery } from 'hooks/useAuthQuery';
-import Button from 'components/common/Button';
-import axios from 'axios';
 
-export default function LandingPage() {
+import Button from 'components/common/Button';
+import PostList from 'components/posts/PostList';
+
+export default function PostPage() {
   const { data } = useAuthQuery();
   const navigate = useNavigate();
 
   const onClickPostUpload = () => {
-    navigate('/post/write');
+    navigate('./write');
   };
-
-  // useEffect(() => {
-  //   axios
-  //     .get(
-  //       `https://api.themoviedb.org/3/movie/76341?api_key=954b27683db193b3c5982c66787b3d39&language=ko`,
-  //     )
-  //     .then((res) => console.log(res));
-  // });
-
   return (
-    <LandingPageWrapper>
+    <PostPageWrapper>
       <PostList />
       <div>
         <Button
@@ -36,11 +27,11 @@ export default function LandingPage() {
           글쓰기
         </Button>
       </div>
-    </LandingPageWrapper>
+    </PostPageWrapper>
   );
 }
 
-const LandingPageWrapper = styled.div`
+const PostPageWrapper = styled.div`
   & > div:last-child {
     display: flex;
     justify-content: flex-end;

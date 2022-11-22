@@ -1,32 +1,32 @@
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
-export default function useCheckedOutSide(delay = 0) {
-  const [visible, setVisible] = useState(false);
+export default function useClickedOutSide(delay = 0) {
+  const [isVisible, setIsVisible] = useState(false);
   const [animationState, setAnimationState] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const handleClickOutSide = (e: React.MouseEvent<HTMLDivElement> | Event) => {
     const target = e.target as HTMLDivElement;
-    if (visible && !ref.current?.contains(target)) handleChangeVisible();
+    if (isVisible && !ref.current?.contains(target)) changeVisibility();
   };
 
-  const handleChangeVisible = () => {
-    if (visible) {
+  const changeVisibility = () => {
+    if (isVisible) {
       setAnimationState(false);
       setTimeout(() => {
-        setVisible(false);
+        setIsVisible(false);
       }, delay);
     } else {
       setAnimationState(true);
-      setVisible(true);
+      setIsVisible(true);
     }
   };
 
   useEffect(() => {
-    if (visible) document.addEventListener('mousedown', handleClickOutSide);
+    if (isVisible) document.addEventListener('mousedown', handleClickOutSide);
     return () => {
       document.removeEventListener('mousedown', handleClickOutSide);
     };
   });
 
-  return { ref, visible, handleChangeVisible, animationState };
+  return { ref, isVisible, changeVisibility, animationState };
 }

@@ -1,37 +1,98 @@
-import { Upload } from 'assets';
-import Input from 'components/common/Input';
+import { useState, useEffect, useRef } from 'react';
 import dayjs from 'dayjs';
-import { useAuthQuery } from 'hooks/useAuthQuery';
-import useInput from 'hooks/useInput';
+import { useMutation } from 'react-query';
 import styled, { css } from 'styled-components';
 
-export default function UserProfile({
-  children,
-}: {
+import { Edit, Upload } from 'assets';
+import useInput from 'hooks/useInput';
+import { changeNickname } from 'services/auth';
+import useClickedOutSide from 'hooks/useClickedOutSide';
+import { queryClient } from 'index';
+import { nicknameRegx } from 'utils';
+
+import Input from 'components/common/Input';
+
+interface IError {
+  response: {
+    data: {
+      success: boolean;
+      message: string;
+    };
+  };
+}
+
+interface IProps {
   children: React.ReactNode;
-}) {
-  const { data } = useAuthQuery();
-  const [nickname, changeNickname] = useInput(data?.user.nickname);
+  user?: IUser;
+}
+
+export default function UserProfile({ children, user }: IProps) {
+  const { mutate } = useMutation(changeNickname, {
+    onSuccess: (res) => {
+      queryClient.invalidateQueries(['auth', `${res.user._id}`]);
+      changeVisibility();
+      setErrorMsg('');
+    },
+    onError: (err: IError) => setErrorMsg(err.response.data.message),
+  });
+  const [errorMsg, setErrorMsg] = useState('');
+  const [nickname, handleChangeNickname, setNickname] = useInput();
+  const { ref, isVisible: isEditing, changeVisibility } = useClickedOutSide();
+  const inputRef = useRef<HTMLInputElement>(null);
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!isEditing) return changeVisibility();
+    const result = nickname.match(nicknameRegx);
+    if (!result)
+      return setErrorMsg('닉네임이 올바르지 않습니다. (특수문자 제외 2~10자)');
+    if (nickname === user?.nickname) return changeVisibility();
+    mutate({ nickname });
+  };
+
+  useEffect(() => {
+    setNickname(user?.nickname ?? '');
+  }, [setNickname, user]);
+
+  useEffect(() => {
+    if (!isEditing && user) {
+      setErrorMsg('');
+      setNickname(user.nickname);
+    }
+  }, [user, isEditing, setNickname]);
 
   return (
     <UserProfileWrapper>
       <Section>
-        <Img>
-          <img src={data?.user.img} alt="" />
+        <ImgWrapper>
+          <img src={user?.img} alt="profile" />
           <button type="button">
             <Upload />
           </button>
-        </Img>
-        <div>
-          <Input type="text" disabled value={nickname} label="" />
-          <h3>{data?.user.email}</h3>
+        </ImgWrapper>
+        <NicknameWrapper>
+          <div ref={ref}>
+            <Form isEditing={isEditing} onSubmit={handleSubmit}>
+              <Input
+                refElement={inputRef}
+                disabled={!isEditing}
+                errorMessage={errorMsg}
+                type="text"
+                value={nickname}
+                onChange={handleChangeNickname}
+              />
+              <button type="submit">
+                <Edit />
+              </button>
+            </Form>
+          </div>
+          <h3>{user?.email}</h3>
           <div>
             <span>
               가입일:
-              {dayjs(data?.user.createdAt).format(' YYYY년 MM월 DD일')}
+              {dayjs(user?.createdAt).format(' YYYY년 MM월 DD일')}
             </span>
           </div>
-        </div>
+        </NicknameWrapper>
       </Section>
       {children}
     </UserProfileWrapper>
@@ -43,42 +104,30 @@ const UserProfileWrapper = styled.div`
 `;
 
 const Section = styled.section`
-  ${({ theme }) => css`
+  align-items: center;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+
+  button {
     align-items: center;
+    border: none;
+    border-radius: 50%;
     display: flex;
-    flex-direction: row;
-    position: relative;
-    & > div:nth-child(2) {
-      h2 {
-        font-size: 30px;
-        font-weight: 500;
-      }
-      h3 {
-        color: ${theme.colors.gray500};
-        font-size: 18px;
-        margin-top: 1em;
-      }
-      div {
-        margin-top: 0.8em;
-        span {
-          color: ${theme.colors.gray500};
-          font-size: 13px;
-        }
-      }
-    }
-    @media ${theme.device.mobile} {
-      flex-direction: column;
-      & > div:nth-child(2) {
-        margin-top: 2em;
-        text-align: center;
-      }
-    }
-  `}
+    height: 35px;
+    justify-content: center;
+    width: 35px;
+  }
+  & > div:nth-child(2) {
+    margin-top: 2em;
+    text-align: center;
+  }
 `;
 
-const Img = styled.div`
+const ImgWrapper = styled.div`
   ${({ theme }) => css`
-    margin-right: 2em;
     position: relative;
     img {
       border-radius: 50%;
@@ -86,26 +135,81 @@ const Img = styled.div`
       object-fit: cover;
       width: 160px;
     }
-    button {
-      align-items: center;
+    & > button {
       background-color: ${theme.colors.black};
-      border: 2px solid #fff;
-      border-radius: 50%;
       bottom: 20px;
-      display: flex;
-      height: 35px;
-      justify-content: center;
       position: absolute;
       right: -5px;
-      width: 35px;
       svg {
         stroke: #fff;
         stroke-width: 1.5;
-        width: 20px;
       }
     }
-    @media ${theme.device.mobile} {
-      margin-right: 0;
+  `}
+`;
+
+const NicknameWrapper = styled.div`
+  ${({ theme }) => css`
+    h3 {
+      color: ${theme.colors.gray500};
+      font-size: 18px;
+      margin-top: 0.8em;
+    }
+    & > div:nth-child(3) {
+      margin-top: 0.8em;
+      span {
+        color: ${theme.colors.gray500};
+        display: inline-block;
+        font-size: 13px;
+      }
+    }
+  `}
+`;
+
+const Form = styled.form<{ isEditing: boolean }>`
+  ${({ theme, isEditing }) => css`
+    display: flex;
+    justify-content: center;
+    max-width: 350px;
+    position: relative;
+    div {
+      align-items: center;
+      flex-direction: column;
+      input {
+        width: 100%;
+        background: ${isEditing ? 'none' : theme.colors.gray50};
+        border: ${isEditing ? `2px solid ${theme.colors.blue}` : 'none'};
+        color: ${theme.colors.black};
+        font-size: 23px;
+        font-weight: 500;
+        margin: 0;
+        padding: 0 1.5em;
+        text-align: center;
+      }
+      input:hover {
+        cursor: pointer;
+      }
+    }
+    & > button {
+      align-items: center;
+      background: none;
+      border: none;
+      display: flex;
+      height: 35px;
+      position: absolute;
+      right: 0;
+      top: 2.5px;
+      width: 35px;
+      svg {
+        stroke: ${theme.colors.gray500};
+        stroke-width: 1.5;
+      }
+    }
+    button:hover {
+      svg {
+        stroke: ${theme.colors.blue};
+        stroke-width: 2;
+      }
     }
   `}
 `;

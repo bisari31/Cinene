@@ -13,9 +13,10 @@ interface IBody {
 }
 
 export const auth = async () => {
-  const { data } = await axios.get<{ isLoggedIn: boolean; user: IUser }>(
-    '/auth',
-  );
+  const { data } = await axios.get<{
+    isLoggedIn: boolean;
+    user: IUser;
+  }>('/auth');
   return data;
 };
 
@@ -38,7 +39,23 @@ export const deleteUser = async () => {
   const { data } = await axios.delete('/auth/deleteUser');
   return data;
 };
-export const updateUser = async (body: IBody) => {
-  const { data } = await axios.put('/auth/updateuser', body);
+export const changePassword = async (body: {
+  password: string;
+  newPassword: string;
+}) => {
+  const { data } = await axios.put<{ success: boolean; message: string }>(
+    '/auth/changePassword',
+    body,
+  );
+  return data;
+};
+
+export const checkPassword = async (body: { password: string }) => {
+  const { data } = await axios.post('/auth/checkpassword', body);
+  return data;
+};
+
+export const changeNickname = async (body: { nickname: string }) => {
+  const { data } = await axios.put<ResponseData>('/auth/changeNickname', body);
   return data;
 };

@@ -23,7 +23,7 @@ export default function UserMenu({ category, onClick, target }: IProps) {
           </button>
         </List>
       ))}
-      <Slider target={target.id} />
+      <Slider target={target.id} length={category.length} />
     </Ul>
   );
 }
@@ -34,7 +34,6 @@ const Ul = styled.ul`
   flex-direction: row;
   margin-top: 3em;
   position: relative;
-  width: 60%;
   @media ${({ theme }) => theme.device.mobile} {
     width: 100%;
   }
@@ -42,26 +41,35 @@ const Ul = styled.ul`
 
 const List = styled.li<{ isActive: boolean }>`
   ${({ theme, isActive }) => css`
-    flex: 1;
     font-size: 14px;
     text-align: center;
+    width: 200px;
     button {
       background: none;
       border: none;
       color: ${isActive ? theme.colors.black : theme.colors.gray500};
       font-weight: ${isActive ? 500 : 400};
       padding: 1em;
+      width: 100%;
+    }
+    @media ${theme.device.mobile} {
+      width: 100%;
     }
   `}
 `;
 
-const Slider = styled.div<{ target: number }>`
-  background-color: ${({ theme }) => theme.colors.black};
-  border-radius: 5px;
-  bottom: -1px;
-  height: 3px;
-  position: absolute;
-  transform: ${({ target }) => `translateX(calc(${target} * 100%))`};
-  transition: 0.35s ease;
-  width: calc(100% / 3);
+const Slider = styled.div<{ target: number; length: number }>`
+  ${({ target, length, theme }) => css`
+    background-color: ${theme.colors.black};
+    border-radius: 5px;
+    bottom: -1px;
+    height: 3px;
+    position: absolute;
+    transform: ${`translateX(calc(${target} * 100%))`};
+    transition: 0.35s ease;
+    width: ${`calc(600px / ${length})`};
+    @media ${theme.device.mobile} {
+      width: ${`calc(100% / ${length})`};
+    }
+  `}
 `;

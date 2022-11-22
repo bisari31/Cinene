@@ -8,6 +8,7 @@ const colors = {
   gray50: '#f2f2f2',
   gray100: '#e6e6e6',
   gray500: '#8f8e8f',
+  orange: '#f9690a',
 };
 
 const sizes = {

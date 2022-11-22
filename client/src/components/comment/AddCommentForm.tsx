@@ -11,14 +11,11 @@ import { userIdState } from 'atom/user';
 import Button from 'components/common/Button';
 
 interface IProps {
-  isNested?: boolean;
+  isReply?: boolean;
   commentId?: string;
 }
 
-export default function AddCommentForm({
-  isNested = false,
-  commentId,
-}: IProps) {
+export default function AddCommentForm({ isReply = false, commentId }: IProps) {
   const [comment, setComment] = useState('');
   const userId = useRecoilValue(userIdState);
 
@@ -63,7 +60,7 @@ export default function AddCommentForm({
 
   return (
     <Wrapper>
-      <Form action="" onSubmit={handleSubmitComment} isNested={isNested}>
+      <Form action="" onSubmit={handleSubmitComment} isReply={isReply}>
         <textarea
           disabled={!userId}
           placeholder={userId ? '댓글을 입력해 주세요' : '로그인이 필요합니다'}
@@ -72,7 +69,7 @@ export default function AddCommentForm({
           onChange={handleChangeComment}
           onKeyDown={checkEnterKey}
         />
-        <Button type="submit" color="black" disable={!userId} size="small">
+        <Button type="submit" color="black" isDisabled={!userId} size="small">
           등록
         </Button>
       </Form>
@@ -86,10 +83,10 @@ const Wrapper = styled.div`
   margin: 1.5em 0;
 `;
 
-const Form = styled.form<{ isNested: boolean }>`
+const Form = styled.form<{ isReply: boolean }>`
   display: flex;
   flex-direction: row;
-  width: ${({ isNested }) => (isNested ? '95%' : '100%')};
+  width: ${({ isReply }) => (isReply ? '95%' : '100%')};
   textarea {
     background-color: ${({ theme }) => theme.colors.gray50};
     border: none;

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import UserMenu from './UserMenu';
 import Unregister from './Unregister';
@@ -9,7 +9,7 @@ import PasswordForm from './PasswordForm';
 export default function MenuWrapper() {
   const [category, setCategory] = useState([
     { id: 0, text: '활동 내역', type: 'detail', isActive: true },
-    { id: 1, text: '비밀번호 변경', type: 'changePassword', isActive: false },
+    { id: 1, text: '비밀번호 변경', type: 'password', isActive: false },
     { id: 2, text: '회원 탈퇴', type: 'unregister', isActive: false },
   ]);
   const [target, setTarget] = useState(category[0]);
@@ -29,7 +29,7 @@ export default function MenuWrapper() {
     switch (type) {
       case 'detail':
         return <UserDetail />;
-      case 'changePassword':
+      case 'password':
         return <PasswordForm />;
       case 'unregister':
         return <Unregister />;
@@ -50,7 +50,19 @@ export default function MenuWrapper() {
 }
 
 const Wrapper = styled.section`
-  article {
-    padding: 5em;
-  }
+  ${({ theme }) => css`
+    article {
+      display: flex;
+      padding: 5em;
+      form {
+        max-width: 400px;
+        width: 100%;
+      }
+    }
+    @media ${theme.device.mobile} {
+      article {
+        padding: 3em 1em;
+      }
+    }
+  `}
 `;

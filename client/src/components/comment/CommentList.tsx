@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { IComment } from 'types/comment';
 
 import CommentItem from './CommentItem';
-import ReplyComment from './replyComment';
+import ReplyComment from './ReplyComment';
 
 interface IProps {
   comment: IComment;

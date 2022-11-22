@@ -6,7 +6,7 @@ import { useSetRecoilState } from 'recoil';
 
 import { checkPassword, deleteUser } from 'services/auth';
 import useInput from 'hooks/useInput';
-import useCheckedOutSide from 'hooks/useCheckedOutSide';
+import useClickedOutSide from 'hooks/useClickedOutSide';
 import { userIdState } from 'atom/user';
 
 import Button from 'components/common/Button';
@@ -17,17 +17,17 @@ export default function Unregister() {
   const setUserId = useSetRecoilState(userIdState);
   const [password, handleChange] = useInput();
   const [errorMsg, setErrorMsg] = useState('');
-
+  const [isDisabled, setIsDisabled] = useState(false);
   const navigate = useNavigate();
 
-  const { ref, changeVisible, isVisible, animationState } =
-    useCheckedOutSide(300);
+  const { ref, changeVisibility, isVisible, animationState } =
+    useClickedOutSide(300);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       await checkPassword({ password });
-      changeVisible();
+      changeVisibility();
     } catch (err) {
       if (axios.isAxiosError(err)) setErrorMsg(err.response?.data.message);
     }
@@ -45,6 +45,10 @@ export default function Unregister() {
     setErrorMsg('');
   }, [password]);
 
+  useEffect(() => {
+    setIsDisabled(!!errorMsg.length || !password.length);
+  }, [errorMsg, password]);
+
   return (
     <UnregisterWrapper>
       <form action="" onSubmit={handleSubmit}>
@@ -56,10 +60,10 @@ export default function Unregister() {
           onChange={handleChange}
         />
         <Button
-          disable={!password.length || !!errorMsg}
+          isDisabled={isDisabled}
           type="submit"
           color="black"
-          size="large"
+          size="fullWidth"
         >
           회원 탈퇴
         </Button>
@@ -69,7 +73,7 @@ export default function Unregister() {
           refElement={ref}
           isVisible={animationState}
           buttonText={['아니요', '네']}
-          closeFn={changeVisible}
+          closeFn={changeVisibility}
           executeFn={handleClick}
           color="black"
         >
@@ -83,8 +87,11 @@ export default function Unregister() {
 const UnregisterWrapper = styled.div`
   align-items: center;
   display: flex;
+  flex: 1;
   flex-direction: column;
-  justify-content: center;
+  form {
+    width: 100%;
+  }
   button {
     margin-top: 8em;
   }

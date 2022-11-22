@@ -1,31 +1,34 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { queryClient } from 'index';
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { queryClient } from 'index';
 import { changePassword } from 'services/auth';
-import useCheckedOutSide from 'hooks/useCheckedOutSide';
+import useClickedOutSide from 'hooks/useClickedOutSide';
 import useInput from 'hooks/useInput';
 
 import CustomModal from 'components/common/Portal';
 import Button from 'components/common/Button';
 import Input from 'components/common/Input';
+import ConfirmPassword from 'components/common/ConfirmPassword';
 
 export default function PasswordForm() {
-  const [disable, setDisable] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(false);
   const [passwordError, setPasswordError] = useState('');
-  const [newPaswordError, setNewPasswordError] = useState('');
   const [currentPassword, changeCurrentPassword] = useInput();
+
+  const [newPaswordError, setNewPasswordError] = useState(true);
   const [newPassword, changeNewPassword] = useInput();
-  const [confirmPassword, changeConfirmPassword] = useInput();
-  const { ref, isVisible, changeVisible, animationState } = useCheckedOutSide();
+
+  const { ref, isVisible, changeVisibility, animationState } =
+    useClickedOutSide();
   const navigate = useNavigate();
 
   const { mutate } = useMutation(changePassword, {
     onSuccess: () => {
-      changeVisible();
+      changeVisibility();
       queryClient.invalidateQueries(['auth']);
     },
     onError: (err) => {
@@ -37,29 +40,21 @@ export default function PasswordForm() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const body = { currentPassword, newPassword };
+    const body = { password: currentPassword, newPassword };
     mutate(body);
   };
-
-  const handleBlur = () => {
-    if (confirmPassword && newPassword !== confirmPassword) {
-      setNewPasswordError('비밀번호가 다릅니다.');
-    } else {
-      setNewPasswordError('');
-    }
-  };
-
-  useEffect(() => {
-    if (currentPassword && confirmPassword && newPassword && !newPaswordError) {
-      setDisable(false);
-    } else {
-      setDisable(true);
-    }
-  }, [confirmPassword, newPassword, newPaswordError, currentPassword]);
 
   useEffect(() => {
     setPasswordError('');
   }, [currentPassword]);
+
+  useEffect(() => {
+    if (currentPassword && !passwordError && !newPaswordError) {
+      setIsDisabled(false);
+    } else {
+      setIsDisabled(true);
+    }
+  }, [currentPassword, passwordError, newPaswordError]);
 
   return (
     <UserModifyWrapper>
@@ -71,23 +66,19 @@ export default function PasswordForm() {
           onChange={changeCurrentPassword}
           errorMessage={passwordError}
         />
-        <Input
-          label="변경 비밀번호"
-          type="password"
-          value={newPassword}
-          errorMessage={newPaswordError}
+        <ConfirmPassword
+          placeholder="영문,숫자 포함 8~16자"
+          type="edit"
+          password={newPassword}
+          setReturnError={setNewPasswordError}
           onChange={changeNewPassword}
-          onBlur={handleBlur}
         />
-        <Input
-          label="비밀번호 확인"
-          type="password"
-          value={confirmPassword}
-          onChange={changeConfirmPassword}
-          errorMessage={newPaswordError}
-          onBlur={handleBlur}
-        />
-        <Button disable={disable} color="black" size="fullWidth" type="submit">
+        <Button
+          isDisabled={isDisabled}
+          color="black"
+          size="fullWidth"
+          type="submit"
+        >
           비밀번호 변경
         </Button>
       </form>
@@ -107,12 +98,12 @@ export default function PasswordForm() {
 }
 
 const UserModifyWrapper = styled.div`
+  align-items: center;
   display: flex;
-  justify-content: center;
-  form {
-    width: 350px;
-    Button {
-      margin-top: 8em;
-    }
+  flex: 1;
+  flex-direction: column;
+
+  Button {
+    margin-top: 8em;
   }
 `;

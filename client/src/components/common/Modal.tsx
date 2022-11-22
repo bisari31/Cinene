@@ -5,7 +5,7 @@ import { IModalProps } from './Portal';
 export default function Modal({
   refElement,
   children,
-  visible,
+  isVisible,
   color,
   buttonText,
   closeFn,
@@ -13,7 +13,7 @@ export default function Modal({
 }: IModalProps) {
   return (
     <OutSide>
-      <ModalWrapper visible={visible} ref={refElement}>
+      <ModalWrapper isVisible={isVisible} ref={refElement}>
         <MessageWrapper>
           <p>{children}</p>
         </MessageWrapper>
@@ -80,8 +80,8 @@ const OutSide = styled.div`
   right: 0;
   top: 0;
 `;
-const ModalWrapper = styled.div<{ visible: boolean }>`
-  animation: ${({ visible }) => (visible ? slideFadeIn : slideFadeOut)} 0.5s
+const ModalWrapper = styled.div<{ isVisible: boolean }>`
+  animation: ${({ isVisible }) => (isVisible ? slideFadeIn : slideFadeOut)} 0.5s
     ease-out;
   background-color: #fff;
   border-radius: 15px;
