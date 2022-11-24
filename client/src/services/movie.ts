@@ -8,7 +8,7 @@ const params = { language: 'ko' };
 
 export const getPopularMovies = async () => {
   const { data } = await axios.get<IMovieData>(
-    `${API_URL}/trending/all/week?api_key=${API_KEY}`,
+    `${API_URL}/movie/popular?api_key=${API_KEY}`,
     {
       params,
     },
