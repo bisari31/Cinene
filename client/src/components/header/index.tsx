@@ -34,6 +34,9 @@ const Logo = styled.div`
     font-size: 20px;
     font-weight: 700;
   }
+  @media ${({ theme }) => theme.device.mobile} {
+    flex: 1;
+  }
 `;
 
 const Nav = styled.nav`
@@ -45,5 +48,8 @@ const Nav = styled.nav`
   }
   li + li {
     margin-left: 3em;
+  }
+  @media ${({ theme }) => theme.device.mobile} {
+    display: none;
   }
 `;

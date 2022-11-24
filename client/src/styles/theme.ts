@@ -18,9 +18,7 @@ const sizes = {
 
 const config = {
   padding: '0 1em',
-  tabletHeight: '100px',
-  laptopHeight: '70px',
-  header: '70px',
+  header: '90px',
   border: '6px',
   main_margin_top: '20px',
 };
