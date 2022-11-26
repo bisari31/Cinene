@@ -3,6 +3,7 @@ import styled, { css } from 'styled-components';
 
 import { IMAGE_URL } from 'services/movie';
 import { ChevronLeft, ChevronRight } from 'assets';
+import { Link } from 'react-router-dom';
 
 interface IProps {
   data: IMovies[] | undefined;
@@ -33,14 +34,14 @@ export default function Carousel({ data, infinity = true }: IProps) {
     const index = currentIndex + num;
     setCurrentIndex(index);
     if (index < 0 + 2) {
-      changeSlidesIndex(totalIndex - 2, 800);
+      changeOutsideIndex(totalIndex - 2, 800);
     } else if (index === totalIndex - 1) {
-      changeSlidesIndex(2, 800);
+      changeOutsideIndex(2, 800);
     }
     setStopAnimation(false);
   };
 
-  const changeSlidesIndex = (index: number, delay: number) => {
+  const changeOutsideIndex = (index: number, delay: number) => {
     setTimeout(() => {
       setStopAnimation(true);
       setCurrentIndex(index);
@@ -48,6 +49,10 @@ export default function Carousel({ data, infinity = true }: IProps) {
   };
 
   const newItems = infinity ? getNewItems() : data;
+
+  const handleClickDot = (index: number) => {
+    setCurrentIndex(index + 2);
+  };
 
   // useEffect(() => {
   //   const timer = setTimeout(() => handleSlide(1), 3000);
@@ -80,20 +85,33 @@ export default function Carousel({ data, infinity = true }: IProps) {
             key={item.id + index}
             isActive={index === currentIndex}
           >
-            <img
-              src={
-                item.backdrop_path
-                  ? `${IMAGE_URL}/original/${item.backdrop_path}`
-                  : 'https://blog.kakaocdn.net/dn/b8Kdun/btqCqM43uim/1sWJVkjEEy4LJMfR3mcqxK/img.jpg'
-              }
-              alt="movie_poster"
-            />
-            <div>
-              <span>{item.name || item.title}</span>
-            </div>
+            <Link to={`./media/${item.id}`}>
+              <img
+                src={
+                  item.backdrop_path
+                    ? `${IMAGE_URL}/original/${item.backdrop_path}`
+                    : 'https://blog.kakaocdn.net/dn/b8Kdun/btqCqM43uim/1sWJVkjEEy4LJMfR3mcqxK/img.jpg'
+                }
+                alt="movie_poster"
+              />
+              <div>
+                <span>{item.name || item.title}</span>
+              </div>
+            </Link>
           </Item>
         ))}
       </Items>
+      <Dots>
+        {data?.map((item, index) => (
+          <Dot
+            isActive={index + 2 === currentIndex}
+            key={item.id}
+            aria-label="dot"
+            type="button"
+            onClick={() => handleClickDot(index)}
+          />
+        ))}
+      </Dots>
       <button
         className="left_Btn"
         type="button"
@@ -120,7 +138,7 @@ const CarouselWrapper = styled.div`
     margin-bottom: 2em;
     overflow: hidden;
     position: relative;
-    button {
+    & > button {
       align-items: center;
       background-color: ${theme.colors.black};
       border: none;
@@ -176,21 +194,48 @@ const Item = styled.div<{ isActive: boolean }>`
     padding: 0 1em;
     position: relative;
     width: 1168px;
-    img {
+    a {
       border-radius: inherit;
-      filter: ${`brightness(${isActive ? '100%' : '30%'})`};
-      object-fit: cover;
       width: 100%;
-    }
-    div {
-      bottom: 3.5em;
-      display: ${!isActive && 'none'};
-      left: 4.5em;
-      position: absolute;
-      span {
-        color: #fff;
-        font-size: 2rem;
+      img {
+        border-radius: inherit;
+        filter: ${`brightness(${isActive ? '100%' : '30%'})`};
+        height: 100%;
+        object-fit: cover;
+        width: 100%;
       }
+      div {
+        bottom: 3.5em;
+        display: ${!isActive && 'none'};
+        left: 4.5em;
+        position: absolute;
+        span {
+          color: #fff;
+          font-size: 2rem;
+        }
+      }
+    }
+  `}
+`;
+
+const Dots = styled.div`
+  bottom: 1em;
+  display: flex;
+  left: 50%;
+  position: absolute;
+  transform: translateX(-50%);
+`;
+
+const Dot = styled.button<{ isActive: boolean }>`
+  ${({ isActive }) => css`
+    background-color: #fff;
+    border: none;
+    border-radius: 50%;
+    height: 9px;
+    opacity: ${isActive ? 1.0 : 0.3};
+    width: 9px;
+    & + & {
+      margin-left: 0.5em;
     }
   `}
 `;
