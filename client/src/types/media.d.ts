@@ -1,8 +1,11 @@
-interface IMovies {
+interface IMediaDetail {
   adult: boolean;
   backdrop_path: string;
   first_air_date?: string;
-  genre_ids: number[];
+  genre_ids: {
+    id: number;
+    name: string;
+  }[];
   id: number;
   original_language: string;
   original_title?: string;
@@ -19,9 +22,9 @@ interface IMovies {
   vote_count: number;
 }
 
-interface IMovieData {
+interface IMediaData {
   page: number;
-  results: IMovies[];
+  results: IMediaDetail[];
   total_pages: number;
   total_results: number;
 }

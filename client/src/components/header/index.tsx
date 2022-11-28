@@ -26,11 +26,15 @@ export default function Header() {
   );
 }
 
-const HeaderWrapper = styled.header``;
+const HeaderWrapper = styled.header`
+  max-width: 1280px;
+  position: absolute;
+  width: 100%;
+`;
 const Logo = styled.div`
   display: flex;
   h1 {
-    color: ${({ theme }) => theme.colors.black};
+    color: #fff;
     font-size: 20px;
     font-weight: 700;
   }

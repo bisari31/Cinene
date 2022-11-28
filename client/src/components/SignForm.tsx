@@ -132,7 +132,7 @@ export default function SignForm({ type }: { type: 'login' | 'register' }) {
         )}
         <ButtonWrapper>
           <Button
-            color="black"
+            color="purple"
             size="fullWidth"
             type="submit"
             isDisabled={isDisabled}

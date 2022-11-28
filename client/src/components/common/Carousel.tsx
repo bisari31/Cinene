@@ -1,12 +1,12 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import styled, { css } from 'styled-components';
 
-import { IMAGE_URL } from 'services/movie';
+import { IMAGE_URL } from 'services/media';
 import { ChevronLeft, ChevronRight } from 'assets';
 import { Link } from 'react-router-dom';
 
 interface IProps {
-  data: IMovies[] | undefined;
+  data: IMediaDetail[] | undefined;
   infinity?: boolean;
 }
 
@@ -85,7 +85,10 @@ export default function Carousel({ data, infinity = true }: IProps) {
             key={item.id + index}
             isActive={index === currentIndex}
           >
-            <Link to={`./media/${item.id}`}>
+            <Link
+              to={`./${item.media_type}/${item.id}`}
+              state={{ path: item.media_type, id: item.id }}
+            >
               <img
                 src={
                   item.backdrop_path

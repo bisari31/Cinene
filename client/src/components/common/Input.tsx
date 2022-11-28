@@ -71,7 +71,7 @@ const StyledInput = styled.input<{ isError: boolean }>`
     &:focus {
       border: ${isError
         ? `2px solid ${theme.colors.red}`
-        : `2px solid ${theme.colors.blue}`};
+        : `2px solid ${theme.colors.purple}`};
     }
   `}
 `;
