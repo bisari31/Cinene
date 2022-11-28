@@ -27,10 +27,11 @@ const GlobalStyle = createGlobalStyle`
   }
 
   body {
-    max-width:1200px;
+    max-width: 1280px;
+    width:100%;
     margin: 0 auto;
-    color: ${({ theme }) => theme.colors.black};
-  }
+    color: #fff;
+}
 `;
 
 export default GlobalStyle;

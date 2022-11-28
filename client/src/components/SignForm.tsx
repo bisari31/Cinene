@@ -113,6 +113,7 @@ export default function SignForm({ type }: { type: 'login' | 'register' }) {
         )}
         {type === 'login' ? (
           <Input
+            onBlur={() => handleBlur(password, 'password', setPasswordError)}
             errorMessage={passwordError}
             label="비밀번호"
             placeholder="영문,숫자 포함 8~16자"
@@ -131,7 +132,7 @@ export default function SignForm({ type }: { type: 'login' | 'register' }) {
         )}
         <ButtonWrapper>
           <Button
-            color="black"
+            color="purple"
             size="fullWidth"
             type="submit"
             isDisabled={isDisabled}

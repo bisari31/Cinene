@@ -10,12 +10,14 @@ interface IProps {
   type: 'submit' | 'button';
   isDisabled?: boolean;
   color: ColorsKey;
+  fontColor?: ColorsKey;
   children: React.ReactNode;
   onClick?: (e: React.MouseEvent) => void | Promise<void>;
 }
 interface IButtonProps {
   color: ColorsKey;
   size: Size;
+  fontColor: ColorsKey;
   isDisabled: boolean;
 }
 
@@ -46,12 +48,14 @@ function Button({
   type,
   size,
   isDisabled = false,
+  fontColor = 'white',
   color,
   children,
   ...rest
 }: IProps) {
   return (
     <StyledButton
+      fontColor={fontColor}
       color={color}
       isDisabled={isDisabled}
       type={type}
@@ -67,14 +71,14 @@ function Button({
 export default memo(Button);
 
 const StyledButton = styled.button<IButtonProps>`
-  ${({ size, theme, color, isDisabled }) =>
+  ${({ size, theme, color, isDisabled, fontColor }) =>
     css`
       background-color: ${isDisabled
         ? theme.colors.gray500
         : theme.colors[color]};
       border: none;
       border-radius: ${theme.config.border};
-      color: ${color === 'black' ? '#fff' : theme.colors.black};
+      color: ${fontColor};
       font-size: ${sizes[size].fontSize};
       height: ${sizes[size].height};
       width: ${sizes[size].width};

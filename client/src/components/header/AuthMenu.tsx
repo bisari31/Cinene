@@ -55,12 +55,12 @@ export default function AuthMenu() {
             </UserInfoList>
           ) : (
             <>
-              <LayoutList>
+              <SignMenu>
                 <Link to="/login">로그인</Link>
-              </LayoutList>
-              <LayoutList>
+              </SignMenu>
+              <SignMenu>
                 <Link to="/register">회원가입</Link>
-              </LayoutList>
+              </SignMenu>
             </>
           )}
         </ul>
@@ -100,7 +100,7 @@ const SideBar = styled.div`
 `;
 
 const UserInfoList = styled.li<{ showMemu: boolean }>`
-  ${({ theme, showMemu }) => css`
+  ${({ showMemu }) => css`
     display: flex;
     position: relative;
     img {
@@ -110,13 +110,14 @@ const UserInfoList = styled.li<{ showMemu: boolean }>`
       width: 40px;
     }
     svg {
-      stroke: ${theme.colors.black};
+      stroke: #fff;
       stroke-width: 2.5;
       transform: ${showMemu ? `rotate(180deg)` : `rotate(0deg)`};
       transition: 0.5s ease;
       width: 14px;
     }
     span {
+      color: #fff;
       font-weight: 500;
       margin-left: 1em;
       margin-right: 0.8em;
@@ -127,21 +128,22 @@ const UserInfoList = styled.li<{ showMemu: boolean }>`
   `}
 `;
 
-const LayoutList = styled.li`
+const SignMenu = styled.li`
   ${({ theme }) => css`
-    border-radius: 7px;
+    border-radius: 17.5px;
+    color: #fff;
     height: 35px;
     justify-content: center;
     width: 90px;
     &:last-child {
-      background-color: ${theme.colors.black};
+      background-color: ${theme.colors.purple};
       color: #fff;
       margin-left: 0.5em;
       :hover {
-        background-color: ${lighten(0.1, theme.colors.black)};
+        background-color: ${lighten(0.1, theme.colors.purple)};
       }
       :active {
-        background-color: ${darken(0.1, theme.colors.black)};
+        background-color: ${darken(0.1, theme.colors.purple)};
       }
     }
     a {

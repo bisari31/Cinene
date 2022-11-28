@@ -26,13 +26,20 @@ export default function Header() {
   );
 }
 
-const HeaderWrapper = styled.header``;
+const HeaderWrapper = styled.header`
+  max-width: 1280px;
+  position: absolute;
+  width: 100%;
+`;
 const Logo = styled.div`
   display: flex;
   h1 {
-    color: ${({ theme }) => theme.colors.black};
+    color: #fff;
     font-size: 20px;
     font-weight: 700;
+  }
+  @media ${({ theme }) => theme.device.mobile} {
+    flex: 1;
   }
 `;
 
@@ -45,5 +52,8 @@ const Nav = styled.nav`
   }
   li + li {
     margin-left: 3em;
+  }
+  @media ${({ theme }) => theme.device.mobile} {
+    display: none;
   }
 `;
