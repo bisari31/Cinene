@@ -1,14 +1,19 @@
 import { DefaultTheme } from 'styled-components';
 
 const colors = {
-  black: '#282828',
-  blue: '#3184fe',
   red: '#de3a3a',
+  purple: '#4e30ca',
+  blue: '#3184fe',
+  orange: '#f9690a',
   yellow: '#fdce00',
+  pink: '#dd3b5f',
+  navy: '#0f1319',
+  black: '#282828',
+  white: '#ffffff',
   gray50: '#f2f2f2',
   gray100: '#e6e6e6',
+  gray300: '#bbbbbb',
   gray500: '#8f8e8f',
-  orange: '#f9690a',
 };
 
 const sizes = {
@@ -18,9 +23,9 @@ const sizes = {
 
 const config = {
   padding: '0 1em',
-  header: '90px',
+  header: '70px',
   border: '6px',
-  main_margin_top: '20px',
+  main_margin_top: '0px',
 };
 
 const device = {
