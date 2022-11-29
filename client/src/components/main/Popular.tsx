@@ -1,37 +1,38 @@
 import { useState, useEffect } from 'react';
-import { useQueries, useQuery } from 'react-query';
-import { getMediaDetail, getTrendingMedia, IMAGE_URL } from 'services/media';
+import { useQuery } from 'react-query';
 import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
-import { ChevronLeft, ChevronRight, Star } from 'assets';
 import { lighten, darken } from 'polished';
+
+import { getMediaDetail, getTrendingMedia, IMAGE_URL } from 'services/media';
+import { ChevronLeft, ChevronRight, Star } from 'assets';
 
 export default function Popular() {
   const [viewIndex, setViewIndex] = useState(0);
-  const [currentMedia, setCurrentMedia] = useState<IMediaDetail>();
+  const [currentMedia, setCurrentMedia] = useState<IMediaResults>();
 
   const { data } = useQuery(['media', 'popular'], getTrendingMedia, {
     refetchOnWindowFocus: false,
     staleTime: 1000 * 60 * 60 * 24,
   });
 
-  const { data: detailData } = useQuery(['media', currentMedia?.id], () =>
-    getMediaDetail(currentMedia?.id, currentMedia?.media_type),
+  const { data: detailData } = useQuery(
+    ['media', 'details', currentMedia?.id],
+    () => getMediaDetail(currentMedia?.id, currentMedia?.media_type),
+    {
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      cacheTime: 1000 * 60 * 60 * 24,
+    },
   );
 
   const changeUppercase = (str: string | undefined) => {
     if (str) return str.charAt(0).toUpperCase() + str.slice(1);
   };
 
-  const sliceOverview = (str: string | undefined) => {
-    if (!str) return;
-    const maxLength = 150;
-    if (str.length > maxLength) return `${str.slice(0, maxLength)}...`;
-    return str;
-  };
-
   const sliceAverage = (num: number | undefined) => {
     if (num) return num.toFixed(1);
+    return 0;
   };
 
   const handleSlide = (index: number) => {
@@ -44,10 +45,16 @@ export default function Popular() {
   };
 
   useEffect(() => {
-    if (data) setCurrentMedia(data[viewIndex]);
+    if (data) {
+      setCurrentMedia(data[viewIndex]);
+    }
   }, [data, viewIndex]);
 
-  console.log(data);
+  useEffect(() => {
+    const slider = setTimeout(() => handleSlide(1), 10000);
+    return () => clearTimeout(slider);
+  });
+
   return (
     <PopularWrapper>
       <Item>
@@ -58,27 +65,32 @@ export default function Popular() {
         <div>
           <Category>
             <div>
-              <p>{changeUppercase(currentMedia?.media_type)}</p>
-            </div>
-            <div>
-              <p>{currentMedia?.release_date}</p>
-              {detailData?.genre_ids?.map((item) => (
-                <p key={item.id}>{item.name}</p>
-              ))}
-            </div>
-          </Category>
-          <Overview>
-            <div>
-              <p>{currentMedia?.name ?? currentMedia?.title}</p>
+              <div>
+                <p>{changeUppercase(currentMedia?.media_type)}</p>
+              </div>
               <div>
                 <Star />
                 <span>{sliceAverage(currentMedia?.vote_average)}</span>
               </div>
             </div>
-            <p>{sliceOverview(currentMedia?.overview)}</p>
+            <div>
+              <p>
+                {currentMedia?.release_date ?? currentMedia?.first_air_date}
+              </p>
+              {detailData?.genres.map((item) => (
+                <p key={item.id}>{item.name}</p>
+              ))}
+            </div>
+          </Category>
+          <Overview>
+            <p>{currentMedia?.name ?? currentMedia?.title}</p>
+            <p>{currentMedia?.overview}</p>
           </Overview>
           <ButtonWrapper>
-            <Link to={`/${currentMedia?.media_type}/${currentMedia?.id}`}>
+            <Link
+              to={`/${currentMedia?.media_type}/${currentMedia?.id}`}
+              state={{ path: currentMedia?.media_type, id: currentMedia?.id }}
+            >
               자세히 보기
             </Link>
             <button type="button" onClick={() => handleSlide(-1)}>
@@ -100,10 +112,10 @@ const Item = styled.div`
   ${({ theme }) => css`
     align-items: flex-end;
     display: flex;
-    height: 90vh;
+    height: 100vh;
     img {
       background-color: ${theme.colors.navy};
-      height: 90vh;
+      height: 100vh;
       left: 0;
       object-fit: cover;
       position: absolute;
@@ -124,9 +136,13 @@ const Item = styled.div`
 const Category = styled.div`
   ${({ theme }) => css`
     display: flex;
-    font-size: 0.8rem;
-    margin-bottom: 3em;
-    & > div:first-child {
+    & > div {
+      align-items: center;
+      display: flex;
+      font-size: 0.8rem;
+      margin-bottom: 3em;
+    }
+    & > div > div:first-child {
       p {
         align-items: center;
         background-color: ${theme.colors.pink};
@@ -139,67 +155,80 @@ const Category = styled.div`
       }
       margin-right: 1em;
     }
+    & > div > div:nth-child(2) {
+      align-items: center;
+      background-color: ${theme.colors.yellow};
+      border-radius: 100px;
+      display: flex;
+      height: 35px;
+      justify-content: center;
+      margin-right: 1em;
+      svg {
+        fill: ${theme.colors.black};
+        height: 20px;
+        margin-right: 0.2em;
+        stroke: none;
+        stroke-linecap: round;
+        width: 20px;
+      }
+      span {
+        color: ${theme.colors.black};
+        font-weight: 500;
+      }
+      width: 60px;
+    }
+
     & > div:nth-child(2) {
       align-items: center;
-      color: ${theme.colors.gray300};
+      color: ${theme.colors.gray100};
       display: flex;
-    p + p {
-      display: flex;
-      align-items: center;
+      flex-wrap: wrap;
+      line-height: 1.3;
+      p + p {
+        align-items: center;
+        display: flex;
         &::before {
-        content: '';
-        margin:0 0.5rem;
-        display: inline-block;
-        height:12px;
-        width:2px;
-        background-color: ${theme.colors.gray300};
+          background-color: ${theme.colors.gray100};
+          content: '';
+          display: inline-block;
+          height: 12px;
+          margin: 0 0.5rem;
+          width: 2px;
         }
       }
+    }
+    @media ${theme.device.mobile} {
+      flex-direction: column;
+      & > div {
+        margin-bottom: 1.5em;
+      }
+    }
   `}
 `;
 
 const Overview = styled.div`
-  ${({ theme }) => css`
-    display: flex;
-    flex-direction: column;
-    & > p:nth-child(2) {
-      color: #fff;
-      font-size: 0.9rem;
-      line-height: 1.6;
-      margin-top: 3em;
+  display: flex;
+  flex-direction: column;
+  & > p:first-child {
+    font-size: 2.5rem;
+    font-weight: 500;
+    line-height: 1.3;
+  }
+  & > p:nth-child(2) {
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 6;
+    color: ${({ theme }) => theme.colors.gray100};
+    display: -webkit-box;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-top: 3em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word;
+    @media ${({ theme }) => theme.device.mobile} {
+      margin-top: 2em;
     }
-    & > div {
-      align-items: center;
-      display: flex;
-      & > p {
-        font-size: 2.5rem;
-        font-weight: 500;
-        line-height: 1.3;
-      }
-      & > div {
-        align-items: center;
-        background-color: ${theme.colors.yellow};
-        border-radius: 3px;
-        display: flex;
-        height: 35px;
-        justify-content: center;
-        margin-left: 1.5em;
-        width: 85px;
-        svg {
-          fill: ${theme.colors.black};
-          height: 28px;
-          stroke: none;
-          width: 28px;
-          margin-right: 0.5em;
-        }
-        span {
-          color: ${theme.colors.black};
-          font-size: 1.5rem;
-          font-weight: 500;
-        }
-      }
-    }
-  `}
+  }
 `;
 
 const ButtonWrapper = styled.div`
@@ -207,6 +236,9 @@ const ButtonWrapper = styled.div`
     align-items: center;
     display: flex;
     margin-top: 3em;
+    @media ${theme.device.mobile} {
+      margin-top: 2em;
+    }
     a {
       align-items: center;
       background-color: ${theme.colors.purple};
@@ -235,6 +267,7 @@ const ButtonWrapper = styled.div`
         display: flex;
         height: 30px;
         stroke: #fff;
+        stroke-width: 1;
         width: 30px;
       }
       &:hover {
