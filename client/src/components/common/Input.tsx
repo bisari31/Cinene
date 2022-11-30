@@ -9,7 +9,6 @@ interface IProps {
   label?: string;
   refElement?: React.RefObject<HTMLInputElement>;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onBlur?: () => void;
   errorMessage?: string;
 }
 
@@ -53,25 +52,22 @@ const InputWrapper = styled.div`
       font-size: 14px;
     }
   `}
-  & + & {
-    margin-top: 2.5em;
-  }
 `;
 
 const StyledInput = styled.input<{ isError: boolean }>`
   ${({ theme, isError }) => css`
     border: ${isError
-      ? `2px solid ${theme.colors.red}`
+      ? `1px solid ${theme.colors.red}`
       : `1px solid ${theme.colors.gray100}`};
     border-radius: ${theme.config.border};
     height: 40px;
     margin-top: 0.5em;
-    padding: 0 1em;
+    padding: 1em;
     width: 100%;
     &:focus {
       border: ${isError
-        ? `2px solid ${theme.colors.red}`
-        : `2px solid ${theme.colors.purple}`};
+        ? `1px solid ${theme.colors.red}`
+        : `1px solid ${theme.colors.purple}`};
     }
   `}
 `;
@@ -79,8 +75,9 @@ const StyledInput = styled.input<{ isError: boolean }>`
 const ErrorMessage = styled.span`
   ${({ theme }) => css`
     color: ${theme.colors.red};
-    display: inline-block;
+    display: block;
     font-size: 14px;
-    margin-top: 1em;
+    height: 1.6em;
+    margin-top: 0.8em;
   `}
 `;

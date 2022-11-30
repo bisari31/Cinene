@@ -7,19 +7,29 @@ import { useMutation } from 'react-query';
 import useInput from 'hooks/useInput';
 import { userIdState } from 'atom/user';
 import { login, register } from 'services/auth';
-import { handleBlur } from 'utils';
 import Input from './common/Input';
 import Button from './common/Button';
 import ConfirmPassword from './common/ConfirmPassword';
 
 export default function SignForm({ type }: { type: 'login' | 'register' }) {
-  const [email, handleChangeEmail] = useInput();
-  const [password, handleChangePassword] = useInput();
-  const [nickname, handleChangeNickname] = useInput();
-
-  const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
-  const [nicknameError, setNicknameError] = useState('');
+  const {
+    input: email,
+    handleChange: handleChangeEmail,
+    errorMsg: emailError,
+    setErrorMsg: setEmailError,
+  } = useInput('email');
+  const {
+    input: password,
+    handleChange: handleChangePassword,
+    errorMsg: passwordError,
+    setErrorMsg: setPasswordError,
+  } = useInput('password');
+  const {
+    input: nickname,
+    handleChange: handleChangeNickname,
+    errorMsg: nicknameError,
+    setErrorMsg: setNicknameError,
+  } = useInput('nickname');
 
   const [signupError, setSignupError] = useState(true);
   const [isDisabled, setIsDisabled] = useState(true);
@@ -27,7 +37,6 @@ export default function SignForm({ type }: { type: 'login' | 'register' }) {
   const setUserId = useSetRecoilState(userIdState);
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
-
   const { mutate: loginMutate } = useMutation(login, {
     onSuccess: (data) => {
       setUserId(data.user._id);
@@ -74,23 +83,10 @@ export default function SignForm({ type }: { type: 'login' | 'register' }) {
     }
   }, [email, signupError, type, nickname, emailError, nicknameError]);
 
-  useEffect(() => {
-    setEmailError('');
-  }, [email]);
-
-  useEffect(() => {
-    setPasswordError('');
-  }, [password]);
-
-  useEffect(() => {
-    setNicknameError('');
-  }, [nickname]);
-
   return (
     <SignFormWrapper>
       <form action="" onSubmit={onSubmit}>
         <Input
-          onBlur={() => handleBlur(email, 'email', setEmailError)}
           errorMessage={emailError}
           placeholder="이메일 주소"
           label="이메일"
@@ -102,7 +98,6 @@ export default function SignForm({ type }: { type: 'login' | 'register' }) {
 
         {type === 'register' && (
           <Input
-            onBlur={() => handleBlur(nickname, 'nickname', setNicknameError)}
             label="닉네임"
             placeholder="특수문자 제외 2~10자"
             errorMessage={nicknameError}
@@ -113,7 +108,6 @@ export default function SignForm({ type }: { type: 'login' | 'register' }) {
         )}
         {type === 'login' ? (
           <Input
-            onBlur={() => handleBlur(password, 'password', setPasswordError)}
             errorMessage={passwordError}
             label="비밀번호"
             placeholder="영문,숫자 포함 8~16자"
@@ -125,6 +119,7 @@ export default function SignForm({ type }: { type: 'login' | 'register' }) {
           <ConfirmPassword
             placeholder="영문,숫자 포함 8~16자"
             setReturnError={setSignupError}
+            errorMessage={passwordError}
             type="register"
             password={password}
             onChange={handleChangePassword}
@@ -140,7 +135,12 @@ export default function SignForm({ type }: { type: 'login' | 'register' }) {
             {type === 'login' ? '로그인' : '회원가입'}
           </Button>
           {type === 'login' && (
-            <Button color="yellow" size="fullWidth" type="button">
+            <Button
+              color="yellow"
+              size="fullWidth"
+              type="button"
+              fontColor="black"
+            >
               카카오톡 로그인
             </Button>
           )}
@@ -154,18 +154,23 @@ const SignFormWrapper = styled.div`
   ${({ theme }) => css`
     align-items: center;
     display: flex;
-    height: ${`calc(100vh -  ${theme.config.header} - ${theme.config.main_margin_top})`};
+    height: ${`calc(100vh - ${theme.config.header})`};
     justify-content: center;
+    position: relative;
+    top: ${theme.config.header};
     form {
-      flex: 1;
+      background-color: rgba(255, 255, 255, 0.8);
+      border-radius: 25px;
       max-width: 400px;
+      padding: 3em;
+      width: 100%;
     }
   `}
 `;
 
 const ButtonWrapper = styled.div`
   & > button:nth-child(1) {
-    margin-top: 8em;
+    margin-top: 3.5em;
   }
   & > button:nth-child(2) {
     margin-top: 2em;

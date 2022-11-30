@@ -15,7 +15,7 @@ import Input from 'components/common/Input';
 
 export default function Unregister() {
   const setUserId = useSetRecoilState(userIdState);
-  const [password, handleChange] = useInput();
+  const { input: password, handleChange } = useInput();
   const [errorMsg, setErrorMsg] = useState('');
   const [isDisabled, setIsDisabled] = useState(false);
   const navigate = useNavigate();

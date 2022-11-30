@@ -17,10 +17,15 @@ import ConfirmPassword from 'components/common/ConfirmPassword';
 export default function PasswordForm() {
   const [isDisabled, setIsDisabled] = useState(false);
   const [passwordError, setPasswordError] = useState('');
-  const [currentPassword, changeCurrentPassword] = useInput();
+  const { input: currentPassword, handleChange: changeCurrentPassword } =
+    useInput();
 
   const [newPaswordError, setNewPasswordError] = useState(true);
-  const [newPassword, changeNewPassword] = useInput();
+  const {
+    input: newPassword,
+    handleChange: changeNewPassword,
+    errorMsg,
+  } = useInput();
 
   const { ref, isVisible, changeVisibility, animationState } =
     useClickedOutSide();
@@ -67,6 +72,7 @@ export default function PasswordForm() {
           errorMessage={passwordError}
         />
         <ConfirmPassword
+          errorMessage={errorMsg}
           placeholder="영문,숫자 포함 8~16자"
           type="edit"
           password={newPassword}

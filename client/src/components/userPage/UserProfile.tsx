@@ -8,7 +8,7 @@ import useInput from 'hooks/useInput';
 import { changeNickname } from 'services/auth';
 import useClickedOutSide from 'hooks/useClickedOutSide';
 import { queryClient } from 'index';
-import { nicknameRegx } from 'utils';
+import { nicknameRegx } from 'utils/regx';
 
 import Input from 'components/common/Input';
 
@@ -36,7 +36,11 @@ export default function UserProfile({ children, user }: IProps) {
     onError: (err: IError) => setErrorMsg(err.response.data.message),
   });
   const [errorMsg, setErrorMsg] = useState('');
-  const [nickname, handleChangeNickname, setNickname] = useInput();
+  const {
+    input: nickname,
+    handleChange: handleChangeNickname,
+    setInput: setNickname,
+  } = useInput();
   const { ref, isVisible: isEditing, changeVisibility } = useClickedOutSide();
   const inputRef = useRef<HTMLInputElement>(null);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

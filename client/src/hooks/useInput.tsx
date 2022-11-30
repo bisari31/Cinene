@@ -1,11 +1,26 @@
-import { ChangeEvent, useState, useCallback } from 'react';
+import { ChangeEvent, useState, useEffect } from 'react';
 
-export default function useInput(text = '') {
+import { regObj } from 'utils/regx';
+
+export default function useInput(
+  type: 'email' | 'nickname' | 'password' | null = null,
+  text = '',
+) {
   const [input, setInput] = useState<string>(text);
+  const [errorMsg, setErrorMsg] = useState<string>();
 
-  const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setInput(e.currentTarget.value);
-  }, []);
+  };
 
-  return [input, handleChange, setInput] as const;
+  useEffect(() => {
+    if (type && input) {
+      const result = input.match(regObj[type].regx);
+      if (!result) setErrorMsg(regObj[type].message);
+      else setErrorMsg('');
+    }
+    if (!input) setErrorMsg('');
+  }, [input, type]);
+
+  return { input, handleChange, setInput, errorMsg, setErrorMsg };
 }

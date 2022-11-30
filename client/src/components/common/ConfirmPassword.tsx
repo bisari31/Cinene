@@ -1,12 +1,12 @@
 import { useState, useEffect, memo } from 'react';
 
 import useInput from 'hooks/useInput';
-import { handleBlur } from 'utils';
 import Input from './Input';
 
 interface IProps {
   type: 'edit' | 'register';
   password: string;
+  errorMessage: string | undefined;
   placeholder?: string;
   setReturnError: React.Dispatch<React.SetStateAction<boolean>>;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -15,30 +15,34 @@ interface IProps {
 function ConfirmPassword({
   type,
   password,
+  errorMessage,
   setReturnError,
   onChange,
   placeholder = '',
 }: IProps) {
-  const [confirmPassword, handleChangeConfirmPassword] = useInput();
-  const [errorMessage, setErrorMessage] = useState('');
+  const {
+    input: confirmPassword,
+    handleChange: handleChangeConfirmPassword,
+    errorMsg,
+    setErrorMsg,
+  } = useInput('password');
 
   useEffect(() => {
     if (password && confirmPassword && confirmPassword !== password) {
-      setErrorMessage('비밀번호가 다릅니다.');
+      setErrorMsg('비밀번호가 다릅니다.');
     } else {
-      setErrorMessage('');
+      setErrorMsg('');
     }
-  }, [password, confirmPassword]);
+  }, [password, confirmPassword, setErrorMsg]);
 
   useEffect(() => {
-    if (password && confirmPassword && !errorMessage) setReturnError(false);
+    if (password && confirmPassword && !errorMsg) setReturnError(false);
     else setReturnError(true);
-  }, [password, confirmPassword, errorMessage, setReturnError]);
+  }, [password, confirmPassword, errorMsg, setReturnError]);
 
   return (
     <>
       <Input
-        onBlur={() => handleBlur(password, 'password', setErrorMessage)}
         placeholder={placeholder}
         label={type === 'edit' ? '변경 비밀번호' : '비밀번호'}
         type="password"
@@ -47,13 +51,12 @@ function ConfirmPassword({
         onChange={onChange}
       />
       <Input
-        onBlur={() => handleBlur(password, 'password', setErrorMessage)}
         placeholder={placeholder}
         label="비밀번호 확인"
         type="password"
         value={confirmPassword}
         onChange={handleChangeConfirmPassword}
-        errorMessage={errorMessage}
+        errorMessage={errorMsg}
       />
     </>
   );
