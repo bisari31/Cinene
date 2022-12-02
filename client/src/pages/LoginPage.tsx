@@ -29,21 +29,55 @@ export default function LoginPage() {
 
   return (
     <Wrapper>
-      <img src={`${IMAGE_URL}/original/${backdrop}`} alt="backdrop" />
-      <SignForm type={pathname} />
+      <div>
+        <img src={`${IMAGE_URL}/original/${backdrop}`} alt="backdrop" />
+      </div>
+      <div>
+        <SignForm type={pathname} />
+      </div>
     </Wrapper>
   );
 }
 
 const Wrapper = styled.div`
   ${({ theme }) => css`
-    img {
-      filter: brightness(50%);
+    align-items: center;
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    width: 100%;
+    & > div:first-child {
+      background-color: ${theme.colors.navy};
       height: 100vh;
       left: 0;
-      object-fit: cover;
       position: absolute;
+      top: 0;
       width: 100vw;
+      img {
+        display: none;
+      }
+    }
+    & > div:last-child {
+      border-radius: 35px;
+      max-width: 450px;
+      position: relative;
+      width: 100%;
+    }
+    @media ${theme.device.tablet} {
+      & > div:first-child {
+        img {
+          display: block;
+          filter: brightness(50%);
+          height: 100vh;
+          left: 0;
+          object-fit: cover;
+          position: absolute;
+          width: 100vw;
+        }
+      }
+      & > div:last-child {
+        background-color: ${theme.colors.navy};
+      }
     }
   `}
 `;
