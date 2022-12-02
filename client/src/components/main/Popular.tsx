@@ -4,25 +4,21 @@ import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { lighten, darken } from 'polished';
 
-import { getMediaDetail, getTrendingMedia, IMAGE_URL } from 'services/media';
+import { getMediaDetail, IMAGE_URL } from 'services/media';
 import { ChevronLeft, ChevronRight, Star } from 'assets';
+import useTrendingMediaQuery from 'hooks/useTrendingMediaQuery';
 
 export default function Popular() {
   const [viewIndex, setViewIndex] = useState(0);
   const [currentMedia, setCurrentMedia] = useState<IMediaResults>();
 
-  const { data } = useQuery(['media', 'popular'], getTrendingMedia, {
-    refetchOnWindowFocus: false,
-    staleTime: 1000 * 60 * 60 * 24,
-  });
+  const { data } = useTrendingMediaQuery();
 
   const { data: detailData } = useQuery(
     ['media', 'details', currentMedia?.id],
     () => getMediaDetail(currentMedia?.id, currentMedia?.media_type),
     {
-      refetchOnWindowFocus: false,
-      refetchOnMount: false,
-      cacheTime: 1000 * 60 * 60 * 24,
+      staleTime: 1000 * 60 * 60 * 24,
     },
   );
 
@@ -44,6 +40,30 @@ export default function Popular() {
     setViewIndex(newIndex);
   };
 
+  const getMediaTitle = () => {
+    if (currentMedia?.media_type === 'movie') return currentMedia.title;
+    return `${detailData?.name} ${
+      detailData?.seasons[detailData.seasons.length - 1].name
+    }`;
+  };
+
+  const getMediaOverview = () => {
+    if (currentMedia?.media_type === 'movie') return currentMedia.overview;
+    return (
+      detailData?.seasons[detailData.seasons.length - 1].overview ||
+      detailData?.overview
+    );
+  };
+
+  const getReleaseDate = () => {
+    if (currentMedia?.media_type === 'movie') return currentMedia.release_date;
+    return detailData?.seasons[detailData.seasons.length - 1].air_date;
+  };
+
+  const mediaRelease = getReleaseDate();
+  const mediaTitle = getMediaTitle();
+  const mediaOverview = getMediaOverview();
+
   useEffect(() => {
     if (data) {
       setCurrentMedia(data[viewIndex]);
@@ -56,12 +76,11 @@ export default function Popular() {
   });
 
   return (
-    <PopularWrapper>
+    <section>
+      <Background
+        src={`${IMAGE_URL}/original/${currentMedia?.backdrop_path}`}
+      />
       <Item>
-        <img
-          src={`${IMAGE_URL}/original/${currentMedia?.backdrop_path}`}
-          alt="backdrop"
-        />
         <div>
           <Category>
             <div>
@@ -74,17 +93,15 @@ export default function Popular() {
               </div>
             </div>
             <div>
-              <p>
-                {currentMedia?.release_date ?? currentMedia?.first_air_date}
-              </p>
+              <p>{mediaRelease}</p>
               {detailData?.genres.map((item) => (
                 <p key={item.id}>{item.name}</p>
               ))}
             </div>
           </Category>
           <Overview>
-            <p>{currentMedia?.name ?? currentMedia?.title}</p>
-            <p>{currentMedia?.overview}</p>
+            <p>{mediaTitle}</p>
+            <p>{mediaOverview}</p>
           </Overview>
           <ButtonWrapper>
             <Link
@@ -102,33 +119,44 @@ export default function Popular() {
           </ButtonWrapper>
         </div>
       </Item>
-    </PopularWrapper>
+    </section>
   );
 }
 
-const PopularWrapper = styled.section``;
+const Background = styled.div<{ src: string }>`
+  ${({ src }) => css`
+    background: ${`linear-gradient(
+        rgba(24, 25, 32, 0.5) 70vh,
+        rgba(24, 25, 32, 1) 100vh
+      ), url(${src}) center`};
+    background-size: cover;
+    height: 100vh;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: -1;
+  `}
+`;
 
 const Item = styled.div`
   ${({ theme }) => css`
     align-items: flex-end;
     display: flex;
-    height: 100vh;
-    img {
-      background-color: ${theme.colors.navy};
-      height: 100vh;
-      left: 0;
-      object-fit: cover;
-      position: absolute;
-      right: 0;
-      width: 100%;
-    }
+    height: 90vh;
     & > div {
+      bottom: 10%;
       display: flex;
       flex-direction: column;
       height: 500px;
-      justify-content: center;
+      justify-content: flex-end;
       position: relative;
-      width: 85%;
+      width: 90%;
+    }
+    @media ${theme.device.tablet} {
+      & > div {
+        width: 80%;
+      }
     }
   `}
 `;
@@ -136,17 +164,18 @@ const Item = styled.div`
 const Category = styled.div`
   ${({ theme }) => css`
     display: flex;
+    flex-direction: column;
     & > div {
       align-items: center;
       display: flex;
       font-size: 0.8rem;
-      margin-bottom: 3em;
+      margin-bottom: 1.5em;
     }
     & > div > div:first-child {
       p {
         align-items: center;
         background-color: ${theme.colors.pink};
-        border-radius: 100px;
+        border-radius: 10.5px;
         color: #fff;
         display: flex;
         height: 35px;
@@ -158,7 +187,7 @@ const Category = styled.div`
     & > div > div:nth-child(2) {
       align-items: center;
       background-color: ${theme.colors.yellow};
-      border-radius: 100px;
+      border-radius: 10.5px;
       display: flex;
       height: 35px;
       justify-content: center;
@@ -197,10 +226,11 @@ const Category = styled.div`
         }
       }
     }
-    @media ${theme.device.mobile} {
-      flex-direction: column;
+    @media ${theme.device.tablet} {
+      flex-direction: row;
+
       & > div {
-        margin-bottom: 1.5em;
+        margin-bottom: 3em;
       }
     }
   `}
@@ -221,12 +251,12 @@ const Overview = styled.div`
     display: -webkit-box;
     font-size: 0.9rem;
     line-height: 1.6;
-    margin-top: 3em;
+    margin-top: 2em;
     overflow: hidden;
     text-overflow: ellipsis;
     word-break: break-word;
-    @media ${({ theme }) => theme.device.mobile} {
-      margin-top: 2em;
+    @media ${({ theme }) => theme.device.tablet} {
+      margin-top: 3em;
     }
   }
 `;
@@ -235,14 +265,14 @@ const ButtonWrapper = styled.div`
   ${({ theme }) => css`
     align-items: center;
     display: flex;
-    margin-top: 3em;
-    @media ${theme.device.mobile} {
-      margin-top: 2em;
+    margin-top: 2em;
+    @media ${theme.device.tablet} {
+      margin-top: 3em;
     }
     a {
       align-items: center;
       background-color: ${theme.colors.purple};
-      border-radius: 100px;
+      border-radius: 12px;
       display: flex;
       font-size: 0.8rem;
       height: 40px;
@@ -259,7 +289,7 @@ const ButtonWrapper = styled.div`
     button {
       background-color: ${theme.colors.purple};
       border: none;
-      border-radius: 20px;
+      border-radius: 12px;
       height: 40px;
       margin-right: 1em;
       svg {
