@@ -32,7 +32,18 @@ interface IMediaResultsInDetail {
   genres: IGenre_ids[];
   homepage: string;
   id: number;
+  last_air_date?: string;
   imdb_id: string;
+  seasons: {
+    air_date: string;
+    episode_count: number;
+    id: number;
+    name: string;
+    overview: string;
+    poster_path: string;
+    season_number: number;
+  }[];
+  name?: string;
   original_language: string;
   original_title: string;
   overview: string;

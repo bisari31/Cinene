@@ -53,15 +53,15 @@ const Wrapper = styled.section`
   ${({ theme }) => css`
     article {
       display: flex;
-      padding: 5em;
+      padding: 3em 1em;
       form {
         max-width: 400px;
         width: 100%;
       }
     }
-    @media ${theme.device.mobile} {
+    @media ${theme.device.tablet} {
       article {
-        padding: 3em 1em;
+        padding: 5em;
       }
     }
   `}

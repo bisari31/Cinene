@@ -39,7 +39,7 @@ const sizes = {
   },
   fullWidth: {
     width: '100%',
-    height: '2.8rem',
+    height: '4.3em',
     fontSize: '0.8rem',
   },
 };

@@ -6,7 +6,7 @@ import { ChevronLeft, ChevronRight } from 'assets';
 import { Link } from 'react-router-dom';
 
 interface IProps {
-  data: IMediaDetail[] | undefined;
+  data: IMediaResults[] | undefined;
   infinity?: boolean;
 }
 

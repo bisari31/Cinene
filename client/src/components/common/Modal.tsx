@@ -21,7 +21,7 @@ export default function Modal({
           <Button
             type="button"
             size="fullWidth"
-            color={buttonText.length === 2 ? 'gray100' : color}
+            color={buttonText.length === 2 ? 'navy50' : color}
             onClick={buttonText.length === 2 ? closeFn : executeFn}
           >
             {buttonText[0]}
@@ -83,8 +83,9 @@ const OutSide = styled.div`
 const ModalWrapper = styled.div<{ isVisible: boolean }>`
   animation: ${({ isVisible }) => (isVisible ? slideFadeIn : slideFadeOut)} 0.5s
     ease-out;
-  background-color: #fff;
-  border-radius: 15px;
+  background-color: ${({ theme }) => theme.colors.navy};
+  border-radius: 30px;
+  /* box-shadow: 0px 4px 14px 3px rgba(0, 0, 0, 0.6); */
   display: flex;
   flex-direction: column;
   height: 30vh;

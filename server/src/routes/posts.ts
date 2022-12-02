@@ -24,7 +24,6 @@ router.post('/write', authenticate, async (req: AuthRequest, res) => {
 router.get('/', async (req, res) => {
   try {
     const posts = await Post.find().populate('writer').sort({ _id: -1 });
-    console.log(posts);
     res.status(201).json({ success: true, posts });
   } catch (err) {
     res

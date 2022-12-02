@@ -13,9 +13,7 @@ export const useAuthQuery = (id?: string) => {
   });
 
   useEffect(() => {
-    if (id) {
-      setUserId(id);
-    }
+    if (id) setUserId(id);
   }, [id, setUserId]);
 
   return data;

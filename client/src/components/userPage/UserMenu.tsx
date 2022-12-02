@@ -43,7 +43,7 @@ const List = styled.li<{ isActive: boolean }>`
   ${({ theme, isActive }) => css`
     font-size: 14px;
     text-align: center;
-    width: 200px;
+    width: 100%;
     button {
       background: none;
       border: none;
@@ -52,8 +52,8 @@ const List = styled.li<{ isActive: boolean }>`
       padding: 1em;
       width: 100%;
     }
-    @media ${theme.device.mobile} {
-      width: 100%;
+    @media ${theme.device.tablet} {
+      width: 200px;
     }
   `}
 `;
@@ -67,9 +67,9 @@ const Slider = styled.div<{ target: number; length: number }>`
     position: absolute;
     transform: ${`translateX(calc(${target} * 100%))`};
     transition: 0.35s ease;
-    width: ${`calc(600px / ${length})`};
-    @media ${theme.device.mobile} {
-      width: ${`calc(100% / ${length})`};
+    width: ${`calc(100% / ${length})`};
+    @media ${theme.device.tablet} {
+      width: ${`calc(600px / ${length})`};
     }
   `}
 `;

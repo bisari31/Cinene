@@ -22,7 +22,7 @@ export const getMediaDetail = async (
   type: string | undefined,
 ) => {
   if (!id && !type) return;
-  const { data } = await axios.get<IMediaDetail>(
+  const { data } = await axios.get<IMediaResultsInDetail>(
     `${API_URL}/${type}/${id}?${API_KEY}`,
     {
       params,
