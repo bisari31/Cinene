@@ -1,59 +1,40 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
 
+import { useRecoilValue } from 'recoil';
+import { showsBackgroundState } from 'atom/theme';
 import AuthMenu from './AuthMenu';
 
 export default function Header() {
+  const showsBackground = useRecoilValue(showsBackgroundState);
   return (
-    <HeaderWrapper>
+    <HeaderWrapper showsBackground={showsBackground}>
       <Logo>
         <h1>
-          <Link to="/">LOGO</Link>
+          <Link to="/">Cinene</Link>
         </h1>
       </Logo>
-      <Nav>
-        <ul>
-          <li>
-            <Link to="/">홈</Link>
-          </li>
-          <li>
-            <Link to="/post">게시판</Link>
-          </li>
-        </ul>
-      </Nav>
       <AuthMenu />
     </HeaderWrapper>
   );
 }
 
-const HeaderWrapper = styled.header`
-  max-width: 1280px;
-  position: absolute;
-  width: 100%;
+const HeaderWrapper = styled.header<{ showsBackground: boolean }>`
+  ${({ theme, showsBackground }) => css`
+    align-items: center;
+    background: ${showsBackground ? theme.colors.black : 'none'};
+    display: flex;
+    justify-content: space-between;
+  `};
 `;
+
 const Logo = styled.div`
   display: flex;
   h1 {
-    color: #fff;
     font-size: 20px;
     font-weight: 700;
   }
   @media ${({ theme }) => theme.device.mobile} {
     flex: 1;
-  }
-`;
-
-const Nav = styled.nav`
-  flex: 1;
-  font-size: 14px;
-  margin-left: 10em;
-  ul {
-    display: flex;
-  }
-  li + li {
-    margin-left: 3em;
-  }
-  @media ${({ theme }) => theme.device.mobile} {
-    display: none;
   }
 `;
