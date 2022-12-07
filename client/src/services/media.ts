@@ -30,3 +30,17 @@ export const getMediaDetail = async (
   );
   return data;
 };
+
+export const getMediaCredits = async (
+  id: number | undefined,
+  type: string | undefined,
+) => {
+  if (!id && !type) return;
+  const { data } = await axios.get<ICredits>(
+    `${API_URL}/${type}/${id}/credits?${API_KEY}`,
+    {
+      params,
+    },
+  );
+  return data;
+};
