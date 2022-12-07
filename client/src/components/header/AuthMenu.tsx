@@ -29,7 +29,6 @@ export default function AuthMenu() {
     logout().then(() => {
       localStorage.removeItem('auth');
       setUserId('');
-      navigate('/');
     });
   };
 

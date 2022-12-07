@@ -22,7 +22,7 @@ const sizes = {
   laptop: '1024px',
 };
 
-const config = {
+export const config = {
   padding: '0 1em',
   header: '70px',
   border: '16px',
