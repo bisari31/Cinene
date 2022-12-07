@@ -2,8 +2,8 @@ import styled from 'styled-components';
 
 import { useAuthQuery } from 'hooks/useAuthQuery';
 
-import MenuWrapper from 'components/UserPage/MenuWrapper';
-import UserProfile from 'components/UserPage/UserProfile';
+import MenuWrapper from 'components/user/MenuWrapper';
+import UserProfile from 'components/user/UserProfile';
 
 export default function MyPage() {
   const { data } = useAuthQuery();
