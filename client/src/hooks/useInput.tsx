@@ -1,6 +1,6 @@
 import { ChangeEvent, useState, useEffect } from 'react';
 
-import { regObj } from 'utils/regx';
+import { regexObj } from 'utils/regex';
 
 export default function useInput(
   type: 'email' | 'nickname' | 'password' | null = null,
@@ -15,8 +15,8 @@ export default function useInput(
 
   useEffect(() => {
     if (type && input) {
-      const result = input.match(regObj[type].regx);
-      if (!result) setErrorMsg(regObj[type].message);
+      const result = input.match(regexObj[type].regex);
+      if (!result) setErrorMsg(regexObj[type].message);
       else setErrorMsg('');
     }
     if (!input) setErrorMsg('');
