@@ -21,7 +21,6 @@ export const getMediaDetail = async (
   id: number | undefined,
   type: string | undefined,
 ) => {
-  if (!id && !type) return;
   const { data } = await axios.get<IMediaResultsInDetail>(
     `${API_URL}/${type}/${id}?${API_KEY}`,
     {
@@ -35,7 +34,6 @@ export const getMediaCredits = async (
   id: number | undefined,
   type: string | undefined,
 ) => {
-  if (!id && !type) return;
   const { data } = await axios.get<ICredits>(
     `${API_URL}/${type}/${id}/credits?${API_KEY}`,
     {
@@ -43,4 +41,30 @@ export const getMediaCredits = async (
     },
   );
   return data;
+};
+
+export const getSimilarMedia = async (
+  id: number | undefined,
+  type: string | undefined,
+) => {
+  const { data } = await axios.get<IMediaData>(
+    `${API_URL}/${type}/${id}/similar?${API_KEY}`,
+    {
+      params,
+    },
+  );
+  return data.results;
+};
+
+export const getVideos = async (
+  id: number | undefined,
+  type: string | undefined,
+) => {
+  const { data } = await axios.get<IVideos>(
+    `${API_URL}/${type}/${id}/videos?${API_KEY}`,
+    {
+      params,
+    },
+  );
+  return data.results[0];
 };
