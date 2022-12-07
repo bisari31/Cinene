@@ -1,46 +1,35 @@
 import { useEffect, useRef, useState } from 'react';
-import { useQuery } from 'react-query';
-import { useLocation, useParams } from 'react-router-dom';
-import { getMediaDetail, IMAGE_URL } from 'services/media';
 import styled, { css } from 'styled-components';
+import { useQuery } from 'react-query';
 
-interface LocationState {
-  state: {
-    path: string;
-    id: string;
-  };
-}
+import { getMediaDetail, IMAGE_URL } from 'services/media';
+import { config } from 'styles/theme';
+import { numberRegex } from 'utils/regex';
+
+import Actors from 'components/details/Actors';
+import Description from 'components/details/Description';
+import useCurrentPathName from 'hooks/useCurrentPathName';
 
 export default function DetailPage() {
   const [height, setHeight] = useState<number | undefined>();
-  const { state }: LocationState = useLocation();
   const ref = useRef<HTMLDivElement>(null);
-  const { data } = useQuery(
-    ['media', state.id],
-    () => getMediaDetail(+state.id, state.path),
-    {
-      onSuccess: (res) => {
-        console.log(res);
-      },
-      onError: (err) => {
-        console.log(err);
-      },
-    },
-  );
+  const { id, path } = useCurrentPathName();
+  const { data } = useQuery([path, id], () => getMediaDetail(id, path));
 
   useEffect(() => {
     if (ref) {
-      const clientHeight = ref.current?.clientHeight;
-      if (clientHeight && window.innerHeight > clientHeight) {
-        return setHeight(window.innerHeight);
+      if (ref.current && window.innerHeight < ref.current.offsetHeight) {
+        const HEADER = Number(config.header.match(numberRegex));
+        return setHeight(ref.current.scrollHeight + HEADER);
       }
-      setHeight(clientHeight);
+      setHeight(window.innerHeight);
     }
   }, [ref]);
 
   return (
-    <DetailPageWrapper height={height}>
+    <DetailPageWrapper>
       <Background
+        height={height}
         src={
           data?.backdrop_path
             ? `${IMAGE_URL}/original/${data?.backdrop_path}`
@@ -50,29 +39,29 @@ export default function DetailPage() {
         <div />
       </Background>
       <Content ref={ref}>
-        <img
-          src={
-            data?.poster_path
-              ? `${IMAGE_URL}/original/${data?.poster_path}`
-              : 'https://blog.kakaocdn.net/dn/b8Kdun/btqCqM43uim/1sWJVkjEEy4LJMfR3mcqxK/img.jpg'
-          }
-          alt="poster"
-        />
+        <div>
+          <img
+            src={
+              data?.poster_path
+                ? `${IMAGE_URL}/original/${data?.poster_path}`
+                : 'https://blog.kakaocdn.net/dn/b8Kdun/btqCqM43uim/1sWJVkjEEy4LJMfR3mcqxK/img.jpg'
+            }
+            alt="poster"
+          />
+        </div>
+        <Description data={data} path={path} id={id} />
+        <Actors path={path} id={id} />
       </Content>
     </DetailPageWrapper>
   );
 }
 
-const DetailPageWrapper = styled.div<{
-  height: number | undefined;
-}>`
-  ${({ height, theme }) => css``}
-`;
+const DetailPageWrapper = styled.div``;
 
-const Background = styled.div<{ src: string }>`
-  ${({ src, theme }) => css`
+const Background = styled.div<{ src: string; height: number | undefined }>`
+  ${({ src, theme, height }) => css`
     background-color: ${theme.colors.navy};
-    height: 100vh;
+    height: ${`${height}px`};
     left: 0;
     position: absolute;
     top: 0;
@@ -93,11 +82,22 @@ const Background = styled.div<{ src: string }>`
   `}
 `;
 
-const Content = styled.div`
-  img {
-    border-radius: 30px;
-    height: 300px;
-    object-fit: cover;
-    width: 200px;
-  }
+const Content = styled.article`
+  ${({ theme }) => css`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-top: 15em;
+    position: relative;
+    & > div:nth-child(1) {
+      bottom: 3em;
+      position: relative;
+      img {
+        border-radius: 30px;
+        height: 300px;
+        object-fit: cover;
+        width: 200px;
+      }
+    }
+  `}
 `;
