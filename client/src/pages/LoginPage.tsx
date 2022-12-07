@@ -45,7 +45,11 @@ const Wrapper = styled.div`
     display: flex;
     height: 100vh;
     justify-content: center;
-    width: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100vw;
+    z-index: -1;
     & > div:first-child {
       background-color: ${theme.colors.navy};
       height: 100vh;
@@ -53,11 +57,13 @@ const Wrapper = styled.div`
       position: absolute;
       top: 0;
       width: 100vw;
+      z-index: -1;
       img {
         display: none;
       }
     }
     & > div:last-child {
+      background-color: ${theme.colors.navy};
       border-radius: 35px;
       max-width: 450px;
       position: relative;
@@ -74,9 +80,6 @@ const Wrapper = styled.div`
           position: absolute;
           width: 100vw;
         }
-      }
-      & > div:last-child {
-        background-color: ${theme.colors.navy};
       }
     }
   `}
