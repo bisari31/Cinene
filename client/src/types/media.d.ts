@@ -27,7 +27,7 @@ interface IMediaResults {
 interface IMediaResultsInDetail {
   adult: boolean;
   backdrop_path: string;
-  belongs_to_collection: any;
+  belongs_to_collection: null;
   budget: number;
   genres: IGenre_ids[];
   homepage: string;
@@ -49,7 +49,12 @@ interface IMediaResultsInDetail {
   overview: string;
   popularity: number;
   poster_path: string;
-  production_companies: any;
+  production_companies: {
+    id: number;
+    logo_path: string;
+    name: string;
+    origin_country: string;
+  }[];
   production_countries: { iso_3166_1: string; name: string }[];
   release_date: string;
   revenue: number;
@@ -62,7 +67,7 @@ interface IMediaResultsInDetail {
   status: string;
   tagline: string;
   title: string;
-  video: boolean | any;
+  video: boolean;
   vote_average: number;
   vote_count: number;
 }
@@ -72,4 +77,22 @@ interface IMediaData {
   results: IMediaResults[];
   total_pages: number;
   total_results: number;
+}
+
+interface IVideos {
+  id: number;
+  results: [
+    {
+      iso_639_1: string;
+      iso_3166_1: string;
+      name: string;
+      key: string;
+      site: string;
+      size: 1080;
+      type: string;
+      official: boolean;
+      published_at: string;
+      id: string;
+    },
+  ];
 }
