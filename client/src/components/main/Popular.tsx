@@ -1,12 +1,15 @@
+/* eslint-disable jsx-a11y/media-has-caption */
 import { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
 import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { lighten, darken } from 'polished';
+import ReactPlayer from 'react-player';
 
-import { getMediaDetail, IMAGE_URL } from 'services/media';
+import { getMediaDetail, getVideos, IMAGE_URL } from 'services/media';
 import { ChevronLeft, ChevronRight, Star } from 'assets';
 import useTrendingMediaQuery from 'hooks/useTrendingMediaQuery';
+import { getMediaOverview, getMediaTitle, getReleaseDate } from 'utils/media';
 
 export default function Popular() {
   const [viewIndex, setViewIndex] = useState(0);
@@ -17,6 +20,14 @@ export default function Popular() {
   const { data: detailData } = useQuery(
     ['media', 'details', currentMedia?.id],
     () => getMediaDetail(currentMedia?.id, currentMedia?.media_type),
+    {
+      staleTime: 1000 * 60 * 60 * 24,
+    },
+  );
+
+  const { data: videoData } = useQuery(
+    ['media', 'video', currentMedia?.id],
+    () => getVideos(currentMedia?.id, currentMedia?.media_type),
     {
       staleTime: 1000 * 60 * 60 * 24,
     },
@@ -40,29 +51,9 @@ export default function Popular() {
     setViewIndex(newIndex);
   };
 
-  const getMediaTitle = () => {
-    if (currentMedia?.media_type === 'movie') return currentMedia.title;
-    return `${detailData?.name} ${
-      detailData?.seasons[detailData.seasons.length - 1].name
-    }`;
-  };
-
-  const getMediaOverview = () => {
-    if (currentMedia?.media_type === 'movie') return currentMedia.overview;
-    return (
-      detailData?.seasons[detailData.seasons.length - 1].overview ||
-      detailData?.overview
-    );
-  };
-
-  const getReleaseDate = () => {
-    if (currentMedia?.media_type === 'movie') return currentMedia.release_date;
-    return detailData?.seasons[detailData.seasons.length - 1].air_date;
-  };
-
-  const mediaRelease = getReleaseDate();
-  const mediaTitle = getMediaTitle();
-  const mediaOverview = getMediaOverview();
+  const release = getReleaseDate(currentMedia?.media_type, detailData);
+  const title = getMediaTitle(currentMedia?.media_type, detailData);
+  const overview = getMediaOverview(currentMedia?.media_type, detailData);
 
   useEffect(() => {
     if (data) {
@@ -71,9 +62,11 @@ export default function Popular() {
   }, [data, viewIndex]);
 
   useEffect(() => {
-    const slider = setTimeout(() => handleSlide(1), 10000);
+    const slider = setTimeout(() => handleSlide(1), 40000);
     return () => clearTimeout(slider);
   });
+
+  console.log(videoData);
 
   return (
     <section>
@@ -93,21 +86,18 @@ export default function Popular() {
               </div>
             </div>
             <div>
-              <p>{mediaRelease}</p>
+              <p>{release}</p>
               {detailData?.genres.map((item) => (
                 <p key={item.id}>{item.name}</p>
               ))}
             </div>
           </Category>
           <Overview>
-            <p>{mediaTitle}</p>
-            <p>{mediaOverview}</p>
+            <p>{title}</p>
+            <p>{overview}</p>
           </Overview>
           <ButtonWrapper>
-            <Link
-              to={`/${currentMedia?.media_type}/${currentMedia?.id}`}
-              state={{ path: currentMedia?.media_type, id: currentMedia?.id }}
-            >
+            <Link to={`/${currentMedia?.media_type}/${currentMedia?.id}`}>
               자세히 보기
             </Link>
             <button type="button" onClick={() => handleSlide(-1)}>
@@ -119,6 +109,18 @@ export default function Popular() {
           </ButtonWrapper>
         </div>
       </Item>
+      <VideoWrapper>
+        {videoData && (
+          <ReactPlayer
+            controls
+            playing
+            url={`https://youtu.be/${videoData?.key}`}
+            muted={false}
+            width={500}
+            height={300}
+          />
+        )}
+      </VideoWrapper>
     </section>
   );
 }
@@ -174,7 +176,7 @@ const Category = styled.div`
     & > div > div:first-child {
       p {
         align-items: center;
-        background-color: ${theme.colors.pink};
+        background-color: ${theme.colors.red};
         border-radius: 10.5px;
         color: #fff;
         display: flex;
@@ -308,4 +310,10 @@ const ButtonWrapper = styled.div`
       }
     }
   `}
+`;
+
+const VideoWrapper = styled.div`
+  position: absolute;
+  right: 300px;
+  top: 300px;
 `;
