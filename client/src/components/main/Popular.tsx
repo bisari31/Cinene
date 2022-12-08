@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/media-has-caption */
 import { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
 import styled, { css } from 'styled-components';
@@ -7,9 +6,11 @@ import { lighten, darken } from 'polished';
 import ReactPlayer from 'react-player';
 
 import { getMediaDetail, getVideos, IMAGE_URL } from 'services/media';
-import { ChevronLeft, ChevronRight, Star } from 'assets';
+import { ChevronLeft, ChevronRight } from 'assets';
 import useTrendingMediaQuery from 'hooks/useTrendingMediaQuery';
 import { getMediaOverview, getMediaTitle, getReleaseDate } from 'utils/media';
+
+import AverageButton from './AverageButton';
 
 export default function Popular() {
   const [viewIndex, setViewIndex] = useState(0);
@@ -34,12 +35,8 @@ export default function Popular() {
   );
 
   const changeUppercase = (str: string | undefined) => {
-    if (str) return str.charAt(0).toUpperCase() + str.slice(1);
-  };
-
-  const sliceAverage = (num: number | undefined) => {
-    if (num) return num.toFixed(1);
-    return 0;
+    if (str === 'movie') return '영화';
+    return '드라마';
   };
 
   const handleSlide = (index: number) => {
@@ -77,15 +74,14 @@ export default function Popular() {
         <div>
           <Category>
             <div>
-              <div>
-                <p>{changeUppercase(currentMedia?.media_type)}</p>
-              </div>
-              <div>
-                <Star />
-                <span>{sliceAverage(currentMedia?.vote_average)}</span>
-              </div>
+              <AverageButton type="TMDB" average={currentMedia?.vote_average} />
+              <AverageButton
+                type="Cinene"
+                average={currentMedia?.vote_average}
+              />
             </div>
             <div>
+              <p>{changeUppercase(currentMedia?.media_type)}</p>
               <p>{release}</p>
               {detailData?.genres.map((item) => (
                 <p key={item.id}>{item.name}</p>
@@ -170,43 +166,7 @@ const Category = styled.div`
     & > div {
       align-items: center;
       display: flex;
-      font-size: 0.8rem;
-      margin-bottom: 1.5em;
-    }
-    & > div > div:first-child {
-      p {
-        align-items: center;
-        background-color: ${theme.colors.red};
-        border-radius: 10.5px;
-        color: #fff;
-        display: flex;
-        height: 35px;
-        justify-content: center;
-        width: 60px;
-      }
-      margin-right: 1em;
-    }
-    & > div > div:nth-child(2) {
-      align-items: center;
-      background-color: ${theme.colors.yellow};
-      border-radius: 10.5px;
-      display: flex;
-      height: 35px;
-      justify-content: center;
-      margin-right: 1em;
-      svg {
-        fill: ${theme.colors.black};
-        height: 20px;
-        margin-right: 0.2em;
-        stroke: none;
-        stroke-linecap: round;
-        width: 20px;
-      }
-      span {
-        color: ${theme.colors.black};
-        font-weight: 500;
-      }
-      width: 60px;
+      margin-bottom: 1em;
     }
 
     & > div:nth-child(2) {
@@ -214,6 +174,8 @@ const Category = styled.div`
       color: ${theme.colors.gray100};
       display: flex;
       flex-wrap: wrap;
+      font-size: 0.8rem;
+      height: 35px;
       line-height: 1.3;
       p + p {
         align-items: center;
@@ -232,7 +194,7 @@ const Category = styled.div`
       flex-direction: row;
 
       & > div {
-        margin-bottom: 3em;
+        margin-bottom: 2em;
       }
     }
   `}
@@ -273,7 +235,7 @@ const ButtonWrapper = styled.div`
     }
     a {
       align-items: center;
-      background-color: ${theme.colors.purple};
+      background-color: ${theme.colors.black50};
       border-radius: 12px;
       display: flex;
       font-size: 0.8rem;
@@ -282,14 +244,14 @@ const ButtonWrapper = styled.div`
       margin-right: 2em;
       width: 120px;
       &:hover {
-        background-color: ${lighten(0.1, theme.colors.purple)};
+        background-color: ${lighten(0.1, theme.colors.black50)};
       }
       &:active {
-        background-color: ${darken(0.1, theme.colors.purple)};
+        background-color: ${darken(0.1, theme.colors.black50)};
       }
     }
     button {
-      background-color: ${theme.colors.purple};
+      background-color: ${theme.colors.black50};
       border: none;
       border-radius: 12px;
       height: 40px;
@@ -303,16 +265,17 @@ const ButtonWrapper = styled.div`
         width: 30px;
       }
       &:hover {
-        background-color: ${lighten(0.1, theme.colors.purple)};
+        background-color: ${lighten(0.1, theme.colors.black50)};
       }
       &:active {
-        background-color: ${darken(0.1, theme.colors.purple)};
+        background-color: ${darken(0.1, theme.colors.black50)};
       }
     }
   `}
 `;
 
 const VideoWrapper = styled.div`
+  display: none;
   position: absolute;
   right: 300px;
   top: 300px;
