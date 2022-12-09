@@ -6,11 +6,12 @@ import { lighten, darken } from 'polished';
 
 import { userIdState } from 'atom/user';
 import { useAuthQuery } from 'hooks/useAuthQuery';
-import useClickedOutSide from 'hooks/useClickedOutSide';
+import useOutsideClick from 'hooks/useOutsideClick';
 import { logout } from 'services/auth';
 
-import Modal from 'components/common/Portal';
 import { Favorite } from 'assets';
+import Portal from 'components/common/Portal';
+import Modal from 'components/common/Modal';
 
 export default function AuthMenu() {
   const [userId, setUserId] = useRecoilState(userIdState);
@@ -20,7 +21,7 @@ export default function AuthMenu() {
     isVisible,
     animationState,
     changeVisibility,
-  } = useClickedOutSide(300);
+  } = useOutsideClick(300);
 
   const navigate = useNavigate();
 
@@ -70,16 +71,18 @@ export default function AuthMenu() {
         )}
 
         {isVisible && (
-          <Modal
-            color="purple"
-            buttonText={['아니요', '로그아웃']}
-            isVisible={animationState}
-            refElement={refElement}
-            closeFn={changeVisibility}
-            executeFn={handleLogout}
-          >
-            정말 로그아웃 하시겠습니까? 😰
-          </Modal>
+          <Portal>
+            <Modal
+              color="purple"
+              buttonText={['아니요', '로그아웃']}
+              isVisible={animationState}
+              refElement={refElement}
+              closeFn={changeVisibility}
+              executeFn={handleLogout}
+            >
+              정말 로그아웃 하시겠습니까? 😰
+            </Modal>
+          </Portal>
         )}
       </ul>
     </AuthMenuWrapper>
@@ -105,7 +108,7 @@ const BtnMenu = styled.li`
     }
     a,
     button {
-      background-color: ${theme.colors.purple};
+      background: ${theme.colors.purple};
       border: none;
       border-radius: 12px;
       color: #fff;

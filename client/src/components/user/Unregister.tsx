@@ -6,12 +6,13 @@ import { useSetRecoilState } from 'recoil';
 
 import { checkPassword, deleteUser } from 'services/auth';
 import useInput from 'hooks/useInput';
-import useClickedOutSide from 'hooks/useClickedOutSide';
+import useOutsideClick from 'hooks/useOutsideClick';
 import { userIdState } from 'atom/user';
 
 import Button from 'components/common/Button';
-import Modal from 'components/common/Portal';
 import Input from 'components/common/Input';
+import Portal from 'components/common/Portal';
+import Modal from 'components/common/Modal';
 
 export default function Unregister() {
   const setUserId = useSetRecoilState(userIdState);
@@ -21,7 +22,7 @@ export default function Unregister() {
   const navigate = useNavigate();
 
   const { ref, changeVisibility, isVisible, animationState } =
-    useClickedOutSide(300);
+    useOutsideClick(300);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -69,16 +70,18 @@ export default function Unregister() {
         </Button>
       </form>
       {isVisible && (
-        <Modal
-          refElement={ref}
-          isVisible={animationState}
-          buttonText={['아니요', '네']}
-          closeFn={changeVisibility}
-          executeFn={handleClick}
-          color="black"
-        >
-          정말 탈퇴하시겠습니까? 😭
-        </Modal>
+        <Portal>
+          <Modal
+            refElement={ref}
+            isVisible={animationState}
+            buttonText={['아니요', '네']}
+            closeFn={changeVisibility}
+            executeFn={handleClick}
+            color="black"
+          >
+            정말 탈퇴하시겠습니까? 😭
+          </Modal>
+        </Portal>
       )}
     </UnregisterWrapper>
   );

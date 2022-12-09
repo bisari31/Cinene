@@ -6,7 +6,7 @@ import styled, { css } from 'styled-components';
 import { Edit, Upload } from 'assets';
 import useInput from 'hooks/useInput';
 import { changeNickname } from 'services/auth';
-import useClickedOutSide from 'hooks/useClickedOutSide';
+import useOutsideClick from 'hooks/useOutsideClick';
 import { queryClient } from 'index';
 import { nicknameRegex } from 'utils/regex';
 
@@ -41,7 +41,7 @@ export default function UserProfile({ children, user }: IProps) {
     handleChange: handleChangeNickname,
     setInput: setNickname,
   } = useInput();
-  const { ref, isVisible: isEditing, changeVisibility } = useClickedOutSide();
+  const { ref, isVisible: isEditing, changeVisibility } = useOutsideClick();
   const inputRef = useRef<HTMLInputElement>(null);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

@@ -6,13 +6,14 @@ import styled from 'styled-components';
 
 import { queryClient } from 'index';
 import { changePassword } from 'services/auth';
-import useClickedOutSide from 'hooks/useClickedOutSide';
+import useOutsideClick from 'hooks/useOutsideClick';
 import useInput from 'hooks/useInput';
 
-import CustomModal from 'components/common/Portal';
 import Button from 'components/common/Button';
 import Input from 'components/common/Input';
 import ConfirmPassword from 'components/common/ConfirmPassword';
+import Modal from 'components/common/Modal';
+import Portal from 'components/common/Portal';
 
 export default function PasswordForm() {
   const [isDisabled, setIsDisabled] = useState(false);
@@ -28,7 +29,7 @@ export default function PasswordForm() {
   } = useInput();
 
   const { ref, isVisible, changeVisibility, animationState } =
-    useClickedOutSide();
+    useOutsideClick();
   const navigate = useNavigate();
 
   const { mutate } = useMutation(changePassword, {
@@ -89,15 +90,17 @@ export default function PasswordForm() {
         </Button>
       </form>
       {isVisible && (
-        <CustomModal
-          refElement={ref}
-          isVisible={animationState}
-          buttonText={['확인']}
-          color="black"
-          executeFn={() => navigate('/')}
-        >
-          비밀번호 변경 완료
-        </CustomModal>
+        <Portal>
+          <Modal
+            refElement={ref}
+            isVisible={animationState}
+            buttonText={['확인']}
+            color="black"
+            executeFn={() => navigate('/')}
+          >
+            비밀번호 변경 완료
+          </Modal>
+        </Portal>
       )}
     </UserModifyWrapper>
   );

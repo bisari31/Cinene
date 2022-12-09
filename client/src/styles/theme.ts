@@ -10,6 +10,7 @@ const colors = {
   navy: '#181920',
   navy50: '#2e2f3a',
   black: '#101010',
+  black50: '#2e2e2e',
   white: '#ffffff',
   gray50: '#f2f2f2',
   gray100: '#e6e6e6',
