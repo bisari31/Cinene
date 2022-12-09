@@ -1,9 +1,11 @@
+import { useEffect, memo } from 'react';
 import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { getSimilarMedia, IMAGE_URL } from 'services/media';
 import { getMediaOverview, getMediaTitle } from 'utils/media';
+import Average from 'components/main/Average';
 
 interface Props {
   data: IMediaResultsInDetail | undefined;
@@ -11,7 +13,7 @@ interface Props {
   id: number;
 }
 
-export default function Description({ path, id, data }: Props) {
+function Description({ path, id, data }: Props) {
   const { data: similarData } = useQuery([path, 'similar', data?.id], () =>
     getSimilarMedia(id, path),
   );
@@ -20,8 +22,16 @@ export default function Description({ path, id, data }: Props) {
   const overview = getMediaOverview(path, data);
   const getType = path === 'movie' ? '영화' : '시리즈';
 
+  useEffect(() => {
+    console.log(
+      '🚀 ~ file: Description.tsx:26 ~ Description ~ similarData',
+      data,
+    );
+  }, [data]);
+
   return (
     <DescriptionWrapper>
+      <Average />
       <h2>{title}</h2>
       <p>{overview}</p>
       <div>
@@ -31,7 +41,11 @@ export default function Description({ path, id, data }: Props) {
             <li key={media.id}>
               <Link to={`/${path}/${media.id}`}>
                 <img
-                  src={`${IMAGE_URL}/w500/${media.poster_path}`}
+                  src={
+                    media.poster_path
+                      ? `${IMAGE_URL}/w500/${media.poster_path}`
+                      : 'https://blog.kakaocdn.net/dn/b8Kdun/btqCqM43uim/1sWJVkjEEy4LJMfR3mcqxK/img.jpg'
+                  }
                   alt={media.name || media.title}
                 />
                 <span>{media.name || media.title}</span>
@@ -44,29 +58,44 @@ export default function Description({ path, id, data }: Props) {
   );
 }
 
+export default memo(Description);
+
 const DescriptionWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  max-width: 850px;
-  padding: 0 4em;
-  width: 100%;
-  h2 {
-    font-size: 2.3rem;
-    font-weight: 500;
-  }
+  ${({ theme }) => css`
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    max-width: 850px;
+    padding: 0;
+    width: 100%;
+    & > div:first-child {
+      margin-bottom: 2em;
+    }
+    h2 {
+      font-size: 2.3rem;
+      font-weight: 500;
+    }
 
-  p {
-    color: ${({ theme }) => theme.colors.gray300};
-    font-size: 0.9rem;
-    line-height: 1.6;
-    margin-top: 3em;
-  }
+    & > p {
+      color: ${theme.colors.gray300};
+      font-size: 0.9rem;
+      line-height: 1.8;
+      margin-top: 3em;
+    }
 
-  h3 {
-    font-size: 1.2rem;
-    margin-top: 3em;
-  }
+    h3 {
+      font-size: 1rem;
+      margin-top: 3em;
+    }
+    & > div:first-child {
+    }
+    @media ${theme.device.tablet} {
+      padding: 0 1em;
+    }
+    @media (min-width: 1300px) {
+      padding: 0 4em;
+    }
+  `}
 `;
 const SimilarMedia = styled.ul`
   align-items: flex-start;

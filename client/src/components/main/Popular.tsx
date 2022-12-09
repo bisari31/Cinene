@@ -10,7 +10,7 @@ import { ChevronLeft, ChevronRight } from 'assets';
 import useTrendingMediaQuery from 'hooks/useTrendingMediaQuery';
 import { getMediaOverview, getMediaTitle, getReleaseDate } from 'utils/media';
 
-import AverageButton from './AverageButton';
+import AverageButton from './Average';
 
 export default function Popular() {
   const [viewIndex, setViewIndex] = useState(0);
@@ -63,28 +63,28 @@ export default function Popular() {
     return () => clearTimeout(slider);
   });
 
-  console.log(videoData);
+  useEffect(() => {
+    console.log('🚀 ~ file: Popular.tsx:70 ~ Popular ~ videoData', data);
+  }, [data]);
 
   return (
     <section>
       <Background
-        src={`${IMAGE_URL}/original/${currentMedia?.backdrop_path}`}
+        src={
+          currentMedia
+            ? `${IMAGE_URL}/original/${currentMedia?.backdrop_path}`
+            : ''
+        }
       />
       <Item>
         <div>
           <Category>
+            <AverageButton />
             <div>
-              <AverageButton type="TMDB" average={currentMedia?.vote_average} />
-              <AverageButton
-                type="Cinene"
-                average={currentMedia?.vote_average}
-              />
-            </div>
-            <div>
-              <p>{changeUppercase(currentMedia?.media_type)}</p>
-              <p>{release}</p>
+              <span>{changeUppercase(currentMedia?.media_type)}</span>
+              <span>{release}</span>
               {detailData?.genres.map((item) => (
-                <p key={item.id}>{item.name}</p>
+                <span key={item.id}>{item.name}</span>
               ))}
             </div>
           </Category>
@@ -105,18 +105,18 @@ export default function Popular() {
           </ButtonWrapper>
         </div>
       </Item>
-      <VideoWrapper>
+      {/* <VideoWrapper>
         {videoData && (
           <ReactPlayer
             controls
             playing
-            url={`https://youtu.be/${videoData?.key}`}
-            muted={false}
+            url={`https://youtu.be/${videoData.key}`}
+            muted
             width={500}
             height={300}
           />
         )}
-      </VideoWrapper>
+      </VideoWrapper> */}
     </section>
   );
 }
@@ -163,21 +163,16 @@ const Category = styled.div`
   ${({ theme }) => css`
     display: flex;
     flex-direction: column;
-    & > div {
-      align-items: center;
-      display: flex;
-      margin-bottom: 1em;
-    }
-
+    margin-bottom: 1em;
     & > div:nth-child(2) {
       align-items: center;
       color: ${theme.colors.gray100};
       display: flex;
       flex-wrap: wrap;
       font-size: 0.8rem;
-      height: 35px;
-      line-height: 1.3;
-      p + p {
+      line-height: 1.5;
+      margin-top: 1em;
+      span + span {
         align-items: center;
         display: flex;
         &::before {
@@ -192,9 +187,9 @@ const Category = styled.div`
     }
     @media ${theme.device.tablet} {
       flex-direction: row;
-
-      & > div {
-        margin-bottom: 2em;
+      margin-bottom: 1.5em;
+      & > div:nth-child(2) {
+        margin: 0;
       }
     }
   `}
@@ -235,7 +230,7 @@ const ButtonWrapper = styled.div`
     }
     a {
       align-items: center;
-      background-color: ${theme.colors.black50};
+      background-color: ${theme.colors.purple};
       border-radius: 12px;
       display: flex;
       font-size: 0.8rem;
@@ -244,10 +239,10 @@ const ButtonWrapper = styled.div`
       margin-right: 2em;
       width: 120px;
       &:hover {
-        background-color: ${lighten(0.1, theme.colors.black50)};
+        background-color: ${lighten(0.1, theme.colors.purple)};
       }
       &:active {
-        background-color: ${darken(0.1, theme.colors.black50)};
+        background-color: ${darken(0.1, theme.colors.purple)};
       }
     }
     button {
@@ -275,7 +270,6 @@ const ButtonWrapper = styled.div`
 `;
 
 const VideoWrapper = styled.div`
-  display: none;
   position: absolute;
   right: 300px;
   top: 300px;

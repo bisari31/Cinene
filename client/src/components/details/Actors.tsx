@@ -1,30 +1,20 @@
-import { useEffect, useState } from 'react';
+import { memo } from 'react';
 import { useQuery } from 'react-query';
 import styled, { css } from 'styled-components';
 import { lighten, darken } from 'polished';
 
 import { getMediaCredits, IMAGE_URL } from 'services/media';
 import { ChevronRight } from 'assets';
-import { useLocation } from 'react-router-dom';
 
 interface Props {
   id: number;
   path: string;
 }
 
-export default function Actors({ id, path }: Props) {
+function Actors({ id, path }: Props) {
   const { data } = useQuery([path, 'credits', id], () =>
     getMediaCredits(id, path),
   );
-
-  const location = useLocation();
-  console.log(location);
-
-  // const getActors = () => {
-  //   const newData = data?.cast.map((actor, index) => {
-  //     if (index > 3) return;
-  //   });
-  // };
 
   return (
     <ActorsWrapper>
@@ -46,67 +36,76 @@ export default function Actors({ id, path }: Props) {
               </div>
               <div>
                 <span>{actor.name}</span>
-                <span>{actor.character} 역</span>
+                <span>
+                  {actor.character ? `${actor.character} 역` : '정보 없음'}
+                </span>
               </div>
             </li>
           );
         })}
       </Ul>
-      <div>
-        <button type="button">
-          더보기
-          <ChevronRight />
-        </button>
-      </div>
+      <button type="button">
+        더보기
+        <ChevronRight />
+      </button>
     </ActorsWrapper>
   );
 }
 
+export default memo(Actors);
+
 const ActorsWrapper = styled.div`
   ${({ theme }) => css`
     h3 {
-      font-size: 1.2rem;
+      font-size: 1rem;
       font-weight: 400;
       margin-bottom: 1em;
     }
-    & > div {
+
+    button {
+      align-items: center;
+      background: ${theme.colors.purple};
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      display: flex;
+      font-size: 0.8rem;
+      height: 35px;
+      justify-content: center;
+      margin-top: 3em;
+      width: 85px;
+      svg {
+        height: 20px;
+        margin-left: 0.2em;
+        stroke: #fff;
+        stroke-width: 1.5;
+        width: 20px;
+      }
+      :hover {
+        background: ${lighten(0.1, theme.colors.purple)};
+      }
+      :active {
+        background: ${darken(0.1, theme.colors.purple)};
+      }
+    }
+    @media ${theme.device.laptop} {
       button {
-        align-items: center;
-        background: ${theme.colors.red};
-        border: none;
-        border-radius: 12px;
-        color: #fff;
-        display: flex;
-        font-size: 0.8rem;
-        height: 35px;
-        justify-content: center;
-        margin-top: 2em;
-        width: 85px;
-        svg {
-          height: 20px;
-          margin-left: 0.2em;
-          stroke: #fff;
-          stroke-width: 1.5;
-          width: 20px;
-        }
-        :hover {
-          background: ${lighten(0.1, theme.colors.red)};
-        }
-        :active {
-          background: ${darken(0.1, theme.colors.red)};
-        }
+        margin-top: 3em;
       }
     }
   `}
 `;
 
 const Ul = styled.ul`
+  align-items: center;
+  display: flex;
   li {
     align-items: center;
     display: flex;
+    flex-direction: column;
     div:nth-child(1) {
-      width: 60px;
       height: 60px;
+      width: 60px;
       img {
         border-radius: 50%;
         height: 60px;
@@ -130,6 +129,18 @@ const Ul = styled.ul`
     }
   }
   li + li {
+    margin-left: 1.5em;
+  }
+  @media (min-width: 1300px) {
+    flex-direction: column;
     margin-top: 1.5em;
+    align-items: flex-start;
+    li {
+      flex-direction: row;
+    }
+    li + li {
+      margin-left: 0;
+      margin-top: 1.5em;
+    }
   }
 `;
