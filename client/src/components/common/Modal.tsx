@@ -1,5 +1,8 @@
+import { useState, useEffect } from 'react';
+import useDarkOutside from 'hooks/useDarkOutside';
 import styled, { keyframes } from 'styled-components';
 import { ColorsKey } from 'styles/theme';
+import { outside } from 'styles/css';
 import Button from './Button';
 
 interface Props {
@@ -21,8 +24,15 @@ export default function Modal({
   closeFn,
   executeFn,
 }: Props) {
+  const [height, setHeight] = useState<number>();
+
+  useDarkOutside(isVisible);
+
+  useEffect(() => {
+    setHeight(window.scrollY);
+  }, [isVisible]);
   return (
-    <OutSide>
+    <OutSide height={height}>
       <ModalWrapper isVisible={isVisible} ref={refElement}>
         <MessageWrapper>
           <p>{children}</p>
@@ -79,16 +89,8 @@ const slideFadeOut = keyframes`
 }
 `;
 
-const OutSide = styled.div`
-  align-items: center;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  height: 0;
-  justify-content: center;
-  left: 0;
-  position: absolute;
-  top: 0;
-  width: 0;
+const OutSide = styled.div<{ height: number | undefined }>`
+  ${outside};
 `;
 const ModalWrapper = styled.div<{ isVisible: boolean }>`
   animation: ${({ isVisible }) => (isVisible ? slideFadeIn : slideFadeOut)} 0.5s
