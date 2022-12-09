@@ -9,3 +9,4 @@ export { ReactComponent as Edit } from './edit.svg';
 export { ReactComponent as Plus } from './plus.svg';
 export { ReactComponent as Favorite } from './favorite.svg';
 export { ReactComponent as Star } from './star.svg';
+export { ReactComponent as Close } from './close.svg';
