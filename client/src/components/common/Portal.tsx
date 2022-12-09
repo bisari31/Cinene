@@ -7,41 +7,41 @@ interface PorTalProps {
   children: React.ReactNode;
 }
 
-export interface IModalProps extends PorTalProps {
-  refElement: RefObject<HTMLDivElement>;
-  isVisible: boolean;
-  buttonText: string[];
-  color: ColorsKey;
-  closeFn?: () => void;
-  executeFn: () => void;
-}
+// export interface IModalProps extends PorTalProps {
+//   refElement: RefObject<HTMLDivElement>;
+//   isVisible: boolean;
+//   buttonText: string[];
+//   color: ColorsKey;
+//   closeFn?: () => void;
+//   executeFn: () => void;
+// }
 
-function Portal({ children }: PorTalProps) {
+export default function Portal({ children }: PorTalProps) {
   const modal = document.getElementById('portal') as HTMLElement;
   return ReactDOM.createPortal(children, modal);
 }
 
-export default function CustomModal({
-  children,
-  isVisible,
-  refElement,
-  buttonText,
-  color,
-  closeFn,
-  executeFn,
-}: IModalProps) {
-  return (
-    <Portal>
-      <Modal
-        closeFn={closeFn}
-        color={color}
-        buttonText={buttonText}
-        isVisible={isVisible}
-        refElement={refElement}
-        executeFn={executeFn}
-      >
-        {children}
-      </Modal>
-    </Portal>
-  );
-}
+// export default function Portal({
+//   children,
+//   isVisible,
+//   refElement,
+//   buttonText,
+//   color,
+//   closeFn,
+//   executeFn,
+// }: IModalProps) {
+//   return (
+//     <div>
+//       {/* <Modal
+//         closeFn={closeFn}
+//         color={color}
+//         buttonText={buttonText}
+//         isVisible={isVisible}
+//         refElement={refElement}
+//         executeFn={executeFn}
+//       > */}
+//         {children}
+//       {/* </Modal> */}
+//     </div>
+//   );
+// }

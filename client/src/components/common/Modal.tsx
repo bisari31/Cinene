@@ -1,6 +1,16 @@
 import styled, { keyframes } from 'styled-components';
+import { ColorsKey } from 'styles/theme';
 import Button from './Button';
-import { IModalProps } from './Portal';
+
+interface Props {
+  refElement: React.RefObject<HTMLDivElement>;
+  isVisible: boolean;
+  buttonText: string[];
+  color: ColorsKey;
+  children: React.ReactNode;
+  closeFn?: () => void;
+  executeFn: () => void;
+}
 
 export default function Modal({
   refElement,
@@ -10,7 +20,7 @@ export default function Modal({
   buttonText,
   closeFn,
   executeFn,
-}: IModalProps) {
+}: Props) {
   return (
     <OutSide>
       <ModalWrapper isVisible={isVisible} ref={refElement}>
@@ -72,13 +82,13 @@ const slideFadeOut = keyframes`
 const OutSide = styled.div`
   align-items: center;
   background-color: rgba(0, 0, 0, 0.5);
-  bottom: 0;
   display: flex;
+  height: 0;
   justify-content: center;
   left: 0;
   position: absolute;
-  right: 0;
   top: 0;
+  width: 0;
 `;
 const ModalWrapper = styled.div<{ isVisible: boolean }>`
   animation: ${({ isVisible }) => (isVisible ? slideFadeIn : slideFadeOut)} 0.5s
