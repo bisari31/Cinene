@@ -18,7 +18,10 @@ export default function CommentItem({
   return (
     <CommentItemWrapper isReply={isReply} onClick={toggleReplyComment}>
       <Avatar>
-        <img src={`/${comment.writer.img}`} alt="" />
+        <img
+          src="https://blog.kakaocdn.net/dn/b8Kdun/btqCqM43uim/1sWJVkjEEy4LJMfR3mcqxK/img.jpg"
+          alt=""
+        />
       </Avatar>
       <Content>
         <NicknameWrapper>

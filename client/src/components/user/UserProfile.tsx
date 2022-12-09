@@ -68,7 +68,10 @@ export default function UserProfile({ children, user }: IProps) {
     <UserProfileWrapper>
       <Section>
         <ImgWrapper>
-          <img src={user?.img} alt="profile" />
+          <img
+            src="https://blog.kakaocdn.net/dn/b8Kdun/btqCqM43uim/1sWJVkjEEy4LJMfR3mcqxK/img.jpg"
+            alt="profile"
+          />
           <button type="button">
             <Upload />
           </button>

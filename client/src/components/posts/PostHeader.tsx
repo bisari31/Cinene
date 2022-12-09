@@ -9,7 +9,10 @@ export default function PostHeader({ content }: IProps) {
   return (
     <PostHeaderWrapper>
       <ImgWrapper>
-        <img src={`/${content?.writer?.img}`} alt="user_image" />
+        <img
+          src="https://blog.kakaocdn.net/dn/b8Kdun/btqCqM43uim/1sWJVkjEEy4LJMfR3mcqxK/img.jpg"
+          alt="user_image"
+        />
       </ImgWrapper>
       <Details>
         <div className="title_wrapper">

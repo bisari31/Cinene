@@ -50,7 +50,10 @@ export default function AuthMenu() {
             </Icons>
             <UserInfo>
               <Link to="/mypage">
-                <img src={`/${data.user?.img}`} alt="user_image" />
+                <img
+                  src="https://blog.kakaocdn.net/dn/b8Kdun/btqCqM43uim/1sWJVkjEEy4LJMfR3mcqxK/img.jpg"
+                  alt="user_image"
+                />
               </Link>
             </UserInfo>
             <BtnMenu>
