@@ -19,7 +19,7 @@ export default function SimilarMedia() {
 
   return (
     <SimilarMediaWrapper>
-      <Slider title={setTitle}>
+      <Slider title={`추천 ${setTitle}`}>
         {data?.map((media) => (
           <List key={media.id}>
             <Link to={`/${path}/${media.id}`} draggable="false">

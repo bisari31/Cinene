@@ -3,6 +3,7 @@ import { darken, lighten } from 'polished';
 import styled, { css } from 'styled-components';
 
 import { ChevronLeft, ChevronRight } from 'assets';
+import throttle from 'hooks/useThrottle';
 
 interface Props {
   children: React.ReactNode;
@@ -12,13 +13,13 @@ interface Props {
 const PERCENT = 0.5;
 
 export default function Slider({ children, title }: Props) {
+  const [isDragging, setIsDragging] = useState(false);
   const [isDown, setIsDown] = useState(false);
   const [startX, setStartX] = useState(0);
   const [endX, setEndX] = useState(0);
   const [currentX, setCurrentX] = useState(0);
   const [clientWidth, setClientWidth] = useState(0);
   const [maxWidth, setMaxWidth] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
 
   const ref = useRef<HTMLUListElement>(null);
 
@@ -78,6 +79,15 @@ export default function Slider({ children, title }: Props) {
     setCurrentX(nextWidth > 0 ? 0 : nextWidth);
   };
 
+  const getWidth = useCallback(() => {
+    if (ref.current) {
+      setClientWidth(ref.current.clientWidth);
+      setMaxWidth(ref.current.clientWidth - ref.current.scrollWidth);
+    }
+  }, []);
+
+  const getThrottleWidth = throttle(getWidth, 1000);
+
   useEffect(() => {
     const checkOutSideClick = (element: HTMLElement | null) => {
       if (!element) return;
@@ -90,15 +100,17 @@ export default function Slider({ children, title }: Props) {
   }, [currentX, isDown, maxWidth, ref]);
 
   useEffect(() => {
-    if (ref.current) {
-      setClientWidth(ref.current.clientWidth);
-      setMaxWidth(ref.current.clientWidth - ref.current.scrollWidth);
-    }
-  }, [ref, children]);
+    getWidth();
+  }, [ref, children, getWidth]);
 
   useEffect(() => {
     if (ref.current) ref.current.style.transform = `translateX(${currentX}px)`;
   }, [currentX, ref]);
+
+  useEffect(() => {
+    window.addEventListener('resize', getThrottleWidth);
+    return () => window.removeEventListener('reize', getThrottleWidth);
+  });
 
   return (
     <SliderWrapper disable={isDragging}>
@@ -113,21 +125,25 @@ export default function Slider({ children, title }: Props) {
       >
         {children}
       </ul>
-      <ButtonWrapper>
-        <button type="button" onClick={prevSlide}>
-          <ChevronLeft />
-        </button>
-        <button type="button" onClick={() => nextSlide(ref.current)}>
-          <ChevronRight />
-        </button>
-      </ButtonWrapper>
+      {maxWidth ? (
+        <ButtonWrapper>
+          <button type="button" onClick={prevSlide}>
+            <ChevronLeft />
+          </button>
+          <button type="button" onClick={() => nextSlide(ref.current)}>
+            <ChevronRight />
+          </button>
+        </ButtonWrapper>
+      ) : (
+        ''
+      )}
     </SliderWrapper>
   );
 }
 
 const SliderWrapper = styled.div<{ disable: boolean }>`
   ${({ disable }) => css`
-    margin-bottom: 3rem;
+    margin-bottom: 4rem;
     overflow: hidden;
     position: relative;
     h3 {

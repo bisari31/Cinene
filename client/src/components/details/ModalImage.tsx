@@ -4,6 +4,7 @@ import useEscapeClose from 'hooks/useEscapeClose';
 import { useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { outside } from 'styles/css';
+import { EMPTY_IMAGE } from 'utils/imageUrl';
 
 interface Props {
   src: string;
@@ -31,13 +32,7 @@ export default function ModalImage({
     <OutSide height={height}>
       <Modal ref={modalRef}>
         <div />
-        <img
-          src={
-            src ??
-            'https://blog.kakaocdn.net/dn/b8Kdun/btqCqM43uim/1sWJVkjEEy4LJMfR3mcqxK/img.jpg'
-          }
-          alt="poster"
-        />
+        <img src={src ?? EMPTY_IMAGE} alt="poster" />
         <button type="button" onClick={() => changeVisibility()}>
           <Close />
         </button>

@@ -103,6 +103,7 @@ const CreditsWrapper = styled.div`
         font-size: 0.9rem;
         overflow: hidden;
         white-space: normal;
+        width: 90%;
       }
       & > span:nth-child(2) {
         -webkit-box-orient: vertical;
@@ -113,6 +114,7 @@ const CreditsWrapper = styled.div`
         margin-top: 0.5em;
         overflow: hidden;
         white-space: normal;
+        width: 90%;
       }
     }
   }
