@@ -12,7 +12,7 @@ export default function Average() {
       <div>
         <Star />
         <span>
-          <b>8.2</b> / 1055
+          <b>8.2 </b> / 1055
         </span>
       </div>
       <div>
@@ -37,7 +37,7 @@ const AverageWrapper = styled.div`
         font-size: 0.8rem;
         b {
           color: ${theme.colors.white};
-          font-size: 1.2rem;
+          font-size: 1.8rem;
           font-weight: 450;
         }
       }

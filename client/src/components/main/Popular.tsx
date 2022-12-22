@@ -10,6 +10,7 @@ import { ChevronLeft, ChevronRight } from 'assets';
 import useTrendingMediaQuery from 'hooks/useTrendingMediaQuery';
 import { getMediaOverview, getMediaTitle, getReleaseDate } from 'utils/media';
 
+import { EMPTY_IMAGE } from 'utils/imageUrl';
 import AverageButton from './Average';
 
 export default function Popular() {
@@ -22,7 +23,7 @@ export default function Popular() {
     ['media', 'details', currentMedia?.id],
     () => getMediaDetail(currentMedia?.id, currentMedia?.media_type),
     {
-      staleTime: 1000 * 60 * 60 * 24,
+      staleTime: 1000 * 60 * 60 * 6,
     },
   );
 
@@ -30,7 +31,7 @@ export default function Popular() {
     ['media', 'video', currentMedia?.id],
     () => getVideos(currentMedia?.id, currentMedia?.media_type),
     {
-      staleTime: 1000 * 60 * 60 * 24,
+      staleTime: 1000 * 60 * 60 * 6,
     },
   );
 
@@ -73,7 +74,7 @@ export default function Popular() {
         src={
           currentMedia
             ? `${IMAGE_URL}/original/${currentMedia?.backdrop_path}`
-            : ''
+            : EMPTY_IMAGE
         }
       />
       <Item>
@@ -198,11 +199,14 @@ const Category = styled.div`
 const Overview = styled.div`
   display: flex;
   flex-direction: column;
-  & > p:first-child {
+
+  p:first-child {
     font-size: 2.5rem;
     font-weight: 500;
     line-height: 1.3;
+    margin-right: 0.5em;
   }
+
   & > p:nth-child(2) {
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 6;
@@ -230,7 +234,7 @@ const ButtonWrapper = styled.div`
     }
     a {
       align-items: center;
-      background-color: ${theme.colors.purple};
+      background-color: ${theme.colors.pink};
       border-radius: 12px;
       display: flex;
       font-size: 0.8rem;
@@ -239,10 +243,10 @@ const ButtonWrapper = styled.div`
       margin-right: 2em;
       width: 120px;
       &:hover {
-        background-color: ${lighten(0.1, theme.colors.purple)};
+        background-color: ${lighten(0.1, theme.colors.pink)};
       }
       &:active {
-        background-color: ${darken(0.1, theme.colors.purple)};
+        background-color: ${darken(0.1, theme.colors.pink)};
       }
     }
     button {

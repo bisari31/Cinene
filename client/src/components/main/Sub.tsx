@@ -1,9 +1,15 @@
 import styled, { css } from 'styled-components';
 
+import TopRated from './TopRated';
+import Upcomming from './Upcomming';
+
 export default function Sub() {
   return (
     <SubWrapper>
-      <div>qwewqewqe</div>
+      <Upcomming type="now" />
+      <Upcomming type="upcoming" />
+      <TopRated type="cinene" />
+      <TopRated type="tmdb" />
     </SubWrapper>
   );
 }
@@ -11,17 +17,23 @@ export default function Sub() {
 const SubWrapper = styled.section`
   ${({ theme }) => css`
     background-color: ${theme.colors.navy};
-    height: 100vh;
     left: 0;
+    margin-top: 1em;
     position: absolute;
     right: 0;
     top: 100vh;
-    div {
+    & > div {
+      h3 {
+        font-size: 1.3rem;
+        margin-bottom: 1.5em;
+      }
       margin: 0 auto;
       max-width: 1280px;
       padding: ${theme.config.padding};
-      position: relative;
       width: 100%;
+      & > div {
+        right: 0;
+      }
     }
   `};
 `;
