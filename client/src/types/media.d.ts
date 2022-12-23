@@ -79,6 +79,24 @@ interface IMediaData {
   total_results: number;
 }
 
+interface newResults
+  extends Pick<
+      Crew,
+      | 'known_for_department'
+      | 'media_type'
+      | 'name'
+      | 'popularity'
+      | 'profile_path'
+    >,
+    IMediaResults {}
+
+interface ISearchData {
+  page: number;
+  results: newResults[];
+  total_pages: number;
+  total_results: number;
+}
+
 interface IVideos {
   id: number;
   results: [

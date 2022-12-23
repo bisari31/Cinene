@@ -4,6 +4,10 @@ interface ICredits {
   id: number;
 }
 
+interface ISearchCrew {
+  results: Crew[];
+}
+
 interface Cast {
   adult: boolean;
   character: string;
