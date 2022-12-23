@@ -28,13 +28,13 @@ export default function PasswordForm() {
     errorMsg,
   } = useInput();
 
-  const { ref, isVisible, changeVisibility, animationState } =
+  const { ref, isVisible, handleChangeVisibility, animationState } =
     useOutsideClick();
   const navigate = useNavigate();
 
   const { mutate } = useMutation(changePassword, {
     onSuccess: () => {
-      changeVisibility();
+      handleChangeVisibility();
       queryClient.invalidateQueries(['auth']);
     },
     onError: (err) => {
@@ -82,7 +82,7 @@ export default function PasswordForm() {
         />
         <Button
           isDisabled={isDisabled}
-          color="black"
+          color="pink"
           size="fullWidth"
           type="submit"
         >
@@ -95,7 +95,7 @@ export default function PasswordForm() {
             refElement={ref}
             isVisible={animationState}
             buttonText={['확인']}
-            color="black"
+            color="pink"
             executeFn={() => navigate('/')}
           >
             비밀번호 변경 완료
@@ -113,6 +113,6 @@ const UserModifyWrapper = styled.div`
   flex-direction: column;
 
   Button {
-    margin-top: 8em;
+    margin-top: 4em;
   }
 `;

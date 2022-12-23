@@ -5,7 +5,7 @@ export const outside = css<{ height: number | undefined }>`
     align-items: center;
     background-color: rgba(0, 0, 0, 0.6);
     display: flex;
-    height: 100%;
+    height: 200vh;
     justify-content: center;
     left: 50%;
     position: absolute;

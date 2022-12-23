@@ -9,6 +9,7 @@ const colors = {
   pink: '#dd3b5f',
   navy: '#181920',
   navy50: '#2e2f3a',
+  navy100: '#252a34',
   black: '#101010',
   black50: '#2e2e2e',
   white: '#ffffff',

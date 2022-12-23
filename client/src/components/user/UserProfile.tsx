@@ -30,7 +30,7 @@ export default function UserProfile({ children, user }: IProps) {
   const { mutate } = useMutation(changeNickname, {
     onSuccess: (res) => {
       queryClient.invalidateQueries(['auth', `${res.user._id}`]);
-      changeVisibility();
+      handleChangeVisibility();
       setErrorMsg('');
     },
     onError: (err: IError) => setErrorMsg(err.response.data.message),
@@ -41,15 +41,19 @@ export default function UserProfile({ children, user }: IProps) {
     handleChange: handleChangeNickname,
     setInput: setNickname,
   } = useInput();
-  const { ref, isVisible: isEditing, changeVisibility } = useOutsideClick();
+  const {
+    ref,
+    isVisible: isEditing,
+    handleChangeVisibility,
+  } = useOutsideClick();
   const inputRef = useRef<HTMLInputElement>(null);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!isEditing) return changeVisibility();
+    if (!isEditing) return handleChangeVisibility();
     const result = nickname.match(nicknameRegex);
     if (!result)
       return setErrorMsg('닉네임이 올바르지 않습니다. (특수문자 제외 2~10자)');
-    if (nickname === user?.nickname) return changeVisibility();
+    if (nickname === user?.nickname) return handleChangeVisibility();
     mutate({ nickname });
   };
 
@@ -143,7 +147,7 @@ const ImgWrapper = styled.div`
       width: 160px;
     }
     & > button {
-      background-color: ${theme.colors.black};
+      background-color: ${theme.colors.pink};
       bottom: 20px;
       position: absolute;
       right: -5px;
@@ -158,14 +162,14 @@ const ImgWrapper = styled.div`
 const NicknameWrapper = styled.div`
   ${({ theme }) => css`
     h3 {
-      color: ${theme.colors.gray500};
+      color: ${theme.colors.white};
       font-size: 18px;
-      margin-top: 0.8em;
+      margin-top: 2em;
     }
     & > div:nth-child(3) {
       margin-top: 0.8em;
       span {
-        color: ${theme.colors.gray500};
+        color: ${theme.colors.white};
         display: inline-block;
         font-size: 13px;
       }
@@ -176,6 +180,7 @@ const NicknameWrapper = styled.div`
 const Form = styled.form<{ isEditing: boolean }>`
   ${({ theme, isEditing }) => css`
     display: flex;
+    height: 50px;
     justify-content: center;
     max-width: 350px;
     position: relative;
@@ -183,38 +188,40 @@ const Form = styled.form<{ isEditing: boolean }>`
       align-items: center;
       flex-direction: column;
       input {
-        width: 100%;
-        background: ${isEditing ? 'none' : theme.colors.gray50};
+        height: 100%;
+        background: ${isEditing ? theme.colors.gray50 : theme.colors.navy100};
         border: ${isEditing ? `2px solid ${theme.colors.blue}` : 'none'};
-        color: ${theme.colors.black};
+        color: ${isEditing ? theme.colors.black : theme.colors.white};
         font-size: 23px;
         font-weight: 500;
         margin: 0;
         padding: 0 1.5em;
         text-align: center;
+        width: 100%;
       }
       input:hover {
         cursor: pointer;
       }
     }
     & > button {
+      top: 50%;
+      transform: translateY(-50%);
       align-items: center;
       background: none;
       border: none;
       display: flex;
       height: 35px;
       position: absolute;
-      right: 0;
-      top: 2.5px;
+      right: 0.5em;
       width: 35px;
       svg {
-        stroke: ${theme.colors.gray500};
+        stroke: ${theme.colors.gray300};
         stroke-width: 1.5;
       }
     }
     button:hover {
       svg {
-        stroke: ${theme.colors.blue};
+        stroke: ${theme.colors.pink};
         stroke-width: 2;
       }
     }

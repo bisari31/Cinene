@@ -60,7 +60,7 @@ const InputWrapper = styled.div`
 
 const StyledInput = styled.input<{ isError: boolean }>`
   ${({ theme, isError }) => css`
-    background-color: #252a34;
+    background-color: ${theme.colors.navy100};
     border: none;
     /* border: ${isError
       ? `1px solid ${theme.colors.red}`

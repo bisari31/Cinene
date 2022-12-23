@@ -29,7 +29,7 @@ export default function UserMenu({ category, onClick, target }: IProps) {
 }
 
 const Ul = styled.ul`
-  border-bottom: 1px solid ${({ theme }) => theme.colors.gray100};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.gray300};
   display: flex;
   flex-direction: row;
   margin-top: 3em;
@@ -47,8 +47,8 @@ const List = styled.li<{ isActive: boolean }>`
     button {
       background: none;
       border: none;
-      color: ${isActive ? theme.colors.black : theme.colors.gray500};
-      font-weight: ${isActive ? 500 : 400};
+      color: ${isActive ? theme.colors.white : theme.colors.gray300};
+      font-weight: ${isActive ? 400 : 300};
       padding: 1em;
       width: 100%;
     }
@@ -60,9 +60,9 @@ const List = styled.li<{ isActive: boolean }>`
 
 const Slider = styled.div<{ target: number; length: number }>`
   ${({ target, length, theme }) => css`
-    background-color: ${theme.colors.black};
+    background-color: ${theme.colors.white};
     border-radius: 5px;
-    bottom: -1px;
+    bottom: -2px;
     height: 3px;
     position: absolute;
     transform: ${`translateX(calc(${target} * 100%))`};

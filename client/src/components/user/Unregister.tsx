@@ -21,14 +21,14 @@ export default function Unregister() {
   const [isDisabled, setIsDisabled] = useState(false);
   const navigate = useNavigate();
 
-  const { ref, changeVisibility, isVisible, animationState } =
+  const { ref, handleChangeVisibility, isVisible, animationState } =
     useOutsideClick(300);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       await checkPassword({ password });
-      changeVisibility();
+      handleChangeVisibility();
     } catch (err) {
       if (axios.isAxiosError(err)) setErrorMsg(err.response?.data.message);
     }
@@ -63,7 +63,7 @@ export default function Unregister() {
         <Button
           isDisabled={isDisabled}
           type="submit"
-          color="black"
+          color="pink"
           size="fullWidth"
         >
           회원 탈퇴
@@ -75,9 +75,9 @@ export default function Unregister() {
             refElement={ref}
             isVisible={animationState}
             buttonText={['아니요', '네']}
-            closeFn={changeVisibility}
+            closeFn={handleChangeVisibility}
             executeFn={handleClick}
-            color="black"
+            color="pink"
           >
             정말 탈퇴하시겠습니까? 😭
           </Modal>
@@ -96,6 +96,6 @@ const UnregisterWrapper = styled.div`
     width: 100%;
   }
   button {
-    margin-top: 8em;
+    margin-top: 4em;
   }
 `;

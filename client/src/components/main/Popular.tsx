@@ -250,7 +250,7 @@ const ButtonWrapper = styled.div`
       }
     }
     button {
-      background-color: ${theme.colors.black50};
+      background-color: ${theme.colors.navy50};
       border: none;
       border-radius: 12px;
       height: 40px;
@@ -264,10 +264,10 @@ const ButtonWrapper = styled.div`
         width: 30px;
       }
       &:hover {
-        background-color: ${lighten(0.1, theme.colors.black50)};
+        background-color: ${lighten(0.1, theme.colors.navy50)};
       }
       &:active {
-        background-color: ${darken(0.1, theme.colors.black50)};
+        background-color: ${darken(0.1, theme.colors.navy50)};
       }
     }
   `}
