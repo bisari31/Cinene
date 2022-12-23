@@ -10,3 +10,5 @@ export { ReactComponent as Plus } from './plus.svg';
 export { ReactComponent as Favorite } from './favorite.svg';
 export { ReactComponent as Star } from './star.svg';
 export { ReactComponent as Close } from './close.svg';
+export { ReactComponent as Search } from './search.svg';
+export { ReactComponent as Menu } from './menu.svg';
