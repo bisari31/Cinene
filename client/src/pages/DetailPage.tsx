@@ -1,21 +1,19 @@
+import { useEffect, useState, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import { useQuery } from 'react-query';
 
 import { getMediaDetail, IMAGE_URL } from 'services/media';
-
-import Actors from 'components/details/Actors';
-import Description from 'components/details/Description';
-import useCurrentPathName from 'hooks/useCurrentPathName';
 import useOutsideClick from 'hooks/useOutsideClick';
+import useCurrentPathName from 'hooks/useCurrentPathName';
+
+import Description from 'components/details/Description';
 import Portal from 'components/common/Portal';
-import { useEffect, useState } from 'react';
 import ModalImage from 'components/details/ModalImage';
+import { EMPTY_IMAGE } from 'utils/imageUrl';
 
 export default function DetailPage() {
-  const { ref, isVisible, changeVisibility } = useOutsideClick();
-
+  const { ref, isVisible, handleChangeVisibility } = useOutsideClick();
   const { id, path } = useCurrentPathName();
-
   const { data } = useQuery([path, id], () => getMediaDetail(id, path));
 
   return (
@@ -23,34 +21,30 @@ export default function DetailPage() {
       src={
         data?.backdrop_path
           ? `${IMAGE_URL}/original/${data?.backdrop_path}`
-          : 'https://blog.kakaocdn.net/dn/b8Kdun/btqCqM43uim/1sWJVkjEEy4LJMfR3mcqxK/img.jpg'
+          : EMPTY_IMAGE
       }
     >
       <div />
-      <Background />
       <Content>
         <div>
-          <button type="button" onClick={() => changeVisibility()}>
+          <button type="button" onClick={() => handleChangeVisibility()}>
             <img
               src={
                 data?.poster_path
-                  ? `${IMAGE_URL}/original/${data?.poster_path}`
-                  : 'https://blog.kakaocdn.net/dn/b8Kdun/btqCqM43uim/1sWJVkjEEy4LJMfR3mcqxK/img.jpg'
+                  ? `${IMAGE_URL}/w300/${data?.poster_path}`
+                  : EMPTY_IMAGE
               }
               alt="poster"
             />
           </button>
         </div>
-        <div>
-          <Description data={data} path={path} id={id} />
-          <Actors path={path} id={id} />
-        </div>
+        <Description data={data} path={path} id={id} />
       </Content>
       {isVisible && (
         <Portal>
           <ModalImage
             modalRef={ref}
-            changeVisibility={changeVisibility}
+            handleChangeVisibility={handleChangeVisibility}
             isVisible={isVisible}
             src={`${IMAGE_URL}/original/${data?.poster_path}`}
           />
@@ -68,7 +62,7 @@ const DetailPageWrapper = styled.div<{ src: string }>`
       rgba(24, 25, 32, 1) 50vh
       ), url(${src}) center`};
       background-size: cover;
-      height: 50%;
+      height: 50vh;
       left: 0;
       position: absolute;
       top: 0;
@@ -78,25 +72,12 @@ const DetailPageWrapper = styled.div<{ src: string }>`
   `}
 `;
 
-const Background = styled.div`
-  ${({ theme }) => css`
-    background-color: ${theme.colors.navy};
-    height: ${`calc(${theme.config.header} + 100% + 200px)`};
-    left: 0;
-    position: absolute;
-    top: ${theme.config.header};
-    width: 100%;
-    z-index: -2;
-  `}
-`;
-
 const Content = styled.article`
   ${({ theme }) => css`
     display: flex;
-    flex-direction: row;
-    justify-content: space-around;
+    flex-direction: column;
     padding-top: 15em;
-    position: relative;
+
     & > div:nth-child(1) {
       bottom: 3em;
       position: relative;
@@ -107,6 +88,7 @@ const Content = styled.article`
         height: 300px;
         overflow: hidden;
         padding: 0;
+        position: relative;
         width: 200px;
         img {
           height: 100%;
@@ -115,21 +97,11 @@ const Content = styled.article`
         }
       }
     }
-    & > div:last-child {
-      display: flex;
-      flex-direction: column;
-      div:last-child {
-      }
-    }
-
-    @media (max-width: 1050px) {
-      flex-direction: column;
-      }
-    }
-    @media (min-width: 1300px) {
-      justify-content: space-between;
-      & > div:last-child {
-        flex-direction: row;
+    @media ${theme.device.laptop} {
+      flex-direction: row;
+      & > div:nth-child(2) {
+        padding-left: 5%;
+        width: calc(100% - 200px);
       }
     }
   `}

@@ -1,6 +1,6 @@
 import { atom } from 'recoil';
 
-export const showsBackgroundState = atom({
-  key: 'showsBackgroundState',
+export const showBackgroundState = atom({
+  key: 'showBackgroundState',
   default: false,
 });

@@ -6,6 +6,7 @@ import { IMAGE_URL } from 'services/media';
 import useTrendingMediaQuery from 'hooks/useTrendingMediaQuery';
 
 import SignForm from 'components/SignForm';
+import { EMPTY_IMAGE } from 'utils/imageUrl';
 
 export default function LoginPage() {
   const [backdrop, setBackdrop] = useState<string>();
@@ -30,7 +31,10 @@ export default function LoginPage() {
   return (
     <Wrapper>
       <div>
-        <img src={`${IMAGE_URL}/original/${backdrop}`} alt="backdrop" />
+        <img
+          src={backdrop ? `${IMAGE_URL}/original/${backdrop}` : EMPTY_IMAGE}
+          alt="backdrop"
+        />
       </div>
       <div>
         <SignForm type={pathname} />

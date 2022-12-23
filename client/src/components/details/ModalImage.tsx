@@ -9,19 +9,19 @@ import { EMPTY_IMAGE } from 'utils/imageUrl';
 interface Props {
   src: string;
   isVisible: boolean;
-  changeVisibility: () => void;
+  handleChangeVisibility: () => void;
   modalRef: React.RefObject<HTMLDivElement>;
 }
 
 export default function ModalImage({
   src,
   isVisible,
-  changeVisibility,
+  handleChangeVisibility,
   modalRef,
 }: Props) {
   const [height, setHeight] = useState<number>();
 
-  useEscapeClose(isVisible, changeVisibility);
+  useEscapeClose(isVisible, handleChangeVisibility);
   useDarkOutside(isVisible);
 
   useEffect(() => {
@@ -33,7 +33,7 @@ export default function ModalImage({
       <Modal ref={modalRef}>
         <div />
         <img src={src ?? EMPTY_IMAGE} alt="poster" />
-        <button type="button" onClick={() => changeVisibility()}>
+        <button type="button" onClick={() => handleChangeVisibility()}>
           <Close />
         </button>
       </Modal>
