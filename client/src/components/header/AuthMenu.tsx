@@ -9,24 +9,28 @@ import { useAuthQuery } from 'hooks/useAuthQuery';
 import useOutsideClick from 'hooks/useOutsideClick';
 import { logout } from 'services/auth';
 
-import { Favorite } from 'assets';
+import { Favorite, Search } from 'assets';
 import Portal from 'components/common/Portal';
 import Modal from 'components/common/Modal';
 
-export default function AuthMenu() {
+interface Props {
+  setIsVisible: () => void;
+}
+
+export default function AuthMenu({ setIsVisible }: Props) {
   const [userId, setUserId] = useRecoilState(userIdState);
   const { data } = useAuthQuery(userId);
   const {
     ref: refElement,
     isVisible,
     animationState,
-    changeVisibility,
+    handleChangeVisibility,
   } = useOutsideClick(300);
 
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    changeVisibility();
+    handleChangeVisibility();
     logout().then(() => {
       localStorage.removeItem('auth');
       setUserId('');
@@ -41,11 +45,16 @@ export default function AuthMenu() {
   return (
     <AuthMenuWrapper>
       <ul>
+        <Icons className="search_icon_wrapper">
+          <button type="button" onClick={setIsVisible}>
+            <Search className="search_icon" />
+          </button>
+        </Icons>
         {data?.isLoggedIn ? (
           <>
             <Icons>
               <Link to="/favorite">
-                <Favorite />
+                <Favorite className="favorite_icon" />
               </Link>
             </Icons>
             <UserInfo>
@@ -56,8 +65,8 @@ export default function AuthMenu() {
                 />
               </Link>
             </UserInfo>
-            <BtnMenu>
-              <button type="button" onClick={changeVisibility}>
+            <BtnMenu className="logout_button">
+              <button type="button" onClick={handleChangeVisibility}>
                 로그아웃
               </button>
             </BtnMenu>
@@ -76,11 +85,11 @@ export default function AuthMenu() {
         {isVisible && (
           <Portal>
             <Modal
-              color="purple"
+              color="pink"
               buttonText={['아니요', '로그아웃']}
               isVisible={animationState}
               refElement={refElement}
-              closeFn={changeVisibility}
+              closeFn={handleChangeVisibility}
               executeFn={handleLogout}
             >
               정말 로그아웃 하시겠습니까? 😰
@@ -99,6 +108,17 @@ const AuthMenuWrapper = styled.div`
     li {
       font-size: 12px;
     }
+
+    .logout_button,
+    .search_icon_wrapper {
+      display: none;
+    }
+    @media ${({ theme }) => theme.device.tablet} {
+      .logout_button,
+      .search_icon_wrapper {
+        display: flex;
+      }
+    }
   }
 `;
 
@@ -111,7 +131,7 @@ const BtnMenu = styled.li`
     }
     a,
     button {
-      background: ${theme.colors.purple};
+      background: ${theme.colors.pink};
       border: none;
       border-radius: 12px;
       color: #fff;
@@ -119,27 +139,42 @@ const BtnMenu = styled.li`
       height: 35px;
       width: 90px;
       :hover {
-        background-color: ${lighten(0.1, theme.colors.purple)};
+        background-color: ${lighten(0.1, theme.colors.pink)};
       }
       :active {
-        background-color: ${darken(0.1, theme.colors.purple)};
+        background-color: ${darken(0.1, theme.colors.pink)};
       }
     }
   `}
 `;
 const Icons = styled.li`
-  a {
-    svg {
-      stroke: #fff;
-      width: 22px;
-    }
+  align-items: center;
+  display: flex;
+  button {
+    border: none;
+    align-items: center;
+    display: flex;
+    background: none;
+    padding: 0;
+  }
+  .search_icon {
+    fill: #fff;
+    stroke-width: 0.1;
+  }
+  svg {
+    stroke: #fff;
+    stroke-width: 1.5;
+    width: 22px;
+  }
+  & + & {
+    margin-left: 1em;
   }
 `;
 
 const UserInfo = styled.li`
   border-radius: 50%;
   margin-left: 1.7em;
-  margin-right: 2.7em;
+  /* margin-right: 2.7em; */
   overflow: hidden;
   a {
     border-radius: inherit;
@@ -152,6 +187,9 @@ const UserInfo = styled.li`
   }
   &:hover {
     cursor: pointer;
+  }
+  @media ${({ theme }) => theme.device.tablet} {
+    margin-right: 2.7em;
   }
 `;
 
