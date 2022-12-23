@@ -8,15 +8,17 @@ import { IMAGE_URL, searchMedia } from 'services/media';
 import { EMPTY_IMAGE, USER_IMAGE } from 'utils/imageUrl';
 
 interface Props {
-  elementRef: React.RefObject<HTMLDivElement>;
-  isVisible: boolean;
-  handleChangeVisibility: () => void;
+  elementRef?: React.RefObject<HTMLDivElement>;
+  isVisible?: boolean;
+  handleChangeVisibility?: () => void;
+  isMobile?: boolean;
 }
 
 export default function SearchBar({
   elementRef,
-  isVisible,
-  handleChangeVisibility,
+  isVisible = true,
+  handleChangeVisibility = () => null,
+  isMobile = false,
 }: Props) {
   const [text, setText] = useState('');
 
@@ -28,12 +30,12 @@ export default function SearchBar({
   };
 
   const handleEscClose = (e: React.KeyboardEvent) => {
-    if (e.key === 'Escape') handleChangeVisibility();
+    if (e.key === 'Escape' && !isMobile) handleChangeVisibility();
   };
 
   const handleClickNavigation = (item: newResults) => {
-    navigate(`${item.media_type}/${item.id}`);
-    handleChangeVisibility();
+    navigate(`/${item.media_type}/${item.id}`);
+    if (!isMobile) handleChangeVisibility();
   };
 
   const getSearchTitle = (item: newResults) => {
@@ -189,7 +191,7 @@ const List = styled.div<{ noResults?: boolean }>`
     border-radius: inherit;
     height: 60px;
     overflow: hidden;
-    width: 100%;
+    /* width: 100%; */
     button {
       padding: 0 1em;
       width: 100%;

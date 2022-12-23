@@ -11,6 +11,7 @@ import PostDetailPage from 'pages/posts/PostDetailPage';
 import MyPage from 'pages/MyPage';
 import DetailPage from 'pages/DetailPage';
 import LoginPage from 'pages/LoginPage';
+import MobileSearch from 'components/header/MobileSearch';
 
 export default function App() {
   const AuthLoginPage = AuthHoc(LoginPage);
@@ -33,6 +34,7 @@ export default function App() {
         <Route path="/movie/:id" element={<DetailPage />} />
         <Route path="/tv/:id" element={<DetailPage />} />
       </Route>
+      <Route path="/search" element={<MobileSearch />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
