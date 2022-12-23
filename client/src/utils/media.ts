@@ -2,8 +2,13 @@ type MediaType = string | undefined;
 type Data = IMediaResultsInDetail | undefined;
 
 export const getMediaTitle = (type: MediaType, data: Data) => {
-  if (data && type === 'movie') return data.title;
-  return `${data?.name} ${data?.seasons[data.seasons.length - 1].name}`;
+  if (!data) return;
+  if (type === 'movie') return data.title;
+  return `${
+    data?.seasons.length > 1
+      ? `${data.name} ${data?.seasons[data.seasons.length - 1].name}`
+      : data?.name
+  }`;
 };
 
 export const getMediaOverview = (type: MediaType, data: Data) => {
