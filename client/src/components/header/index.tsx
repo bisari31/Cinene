@@ -1,7 +1,5 @@
 import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
-import { useRecoilValue } from 'recoil';
-import { showBackgroundState } from 'atom/theme';
 
 import useOutsideClick from 'hooks/useOutsideClick';
 
@@ -10,13 +8,11 @@ import SearchBar from './SearchBar';
 import SideMenu from './SideMenu';
 
 export default function Header() {
-  const showsBackground = useRecoilValue(showBackgroundState);
-
   const { ref, isVisible, handleChangeVisibility, animationState } =
     useOutsideClick(300);
 
   return (
-    <HeaderWrapper showsBackground={showsBackground}>
+    <HeaderWrapper>
       <Logo>
         <SideMenu />
         <h1>
@@ -35,13 +31,10 @@ export default function Header() {
   );
 }
 
-const HeaderWrapper = styled.header<{ showsBackground: boolean }>`
-  ${({ theme, showsBackground }) => css`
-    align-items: center;
-    background: ${showsBackground ? theme.colors.black : 'none'};
-    display: flex;
-    justify-content: space-between;
-  `};
+const HeaderWrapper = styled.header`
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
 `;
 
 const Logo = styled.div`

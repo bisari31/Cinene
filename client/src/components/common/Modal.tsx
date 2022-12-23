@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import useDarkOutside from 'hooks/useDarkOutside';
 import styled, { keyframes } from 'styled-components';
 import { ColorsKey } from 'styles/theme';
 import { outside } from 'styles/css';
+import usePreventScrolling from 'hooks/usePreventScrolling';
 import Button from './Button';
 
 interface Props {
@@ -26,7 +26,7 @@ export default function Modal({
 }: Props) {
   const [height, setHeight] = useState<number>();
 
-  useDarkOutside(isVisible);
+  usePreventScrolling(isVisible);
 
   useEffect(() => {
     setHeight(window.scrollY);

@@ -1,6 +1,6 @@
 import { Close } from 'assets';
-import useDarkOutside from 'hooks/useDarkOutside';
 import useEscapeClose from 'hooks/useEscapeClose';
+import usePreventScrolling from 'hooks/usePreventScrolling';
 import { useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { outside } from 'styles/css';
@@ -22,7 +22,7 @@ export default function ModalImage({
   const [height, setHeight] = useState<number>();
 
   useEscapeClose(isVisible, handleChangeVisibility);
-  useDarkOutside(isVisible);
+  usePreventScrolling(isVisible);
 
   useEffect(() => {
     setHeight(window.scrollY);
@@ -51,7 +51,7 @@ const Modal = styled.div`
     position: relative;
     img {
       height: 100%;
-      object-fit: contain;
+      object-fit: cover;
       width: 100%;
     }
     button {
