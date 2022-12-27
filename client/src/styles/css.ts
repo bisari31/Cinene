@@ -14,3 +14,20 @@ export const outside = css<{ height: number | undefined }>`
     width: 100%;
   `}
 `;
+
+export const LeftButton = css`
+  align-items: center;
+  border: none;
+  border-radius: 8px;
+  display: flex;
+  height: 35px;
+  justify-content: center;
+  padding: 0;
+  width: 35px;
+  svg {
+    height: 80%;
+    stroke: #fff;
+    stroke-width: 1;
+    width: 80%;
+  }
+`;

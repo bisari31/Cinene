@@ -24,6 +24,11 @@ interface IMediaResults {
   vote_count: number;
 }
 
+interface ICombinedCredits {
+  crew: IMediaResults[];
+  cast: IMediaResults[];
+}
+
 interface IMediaResultsInDetail {
   adult: boolean;
   backdrop_path: string;

@@ -33,6 +33,7 @@ export default function App() {
         <Route path="/mypage" element={<AuthMypage />} />
         <Route path="/movie/:id" element={<DetailPage />} />
         <Route path="/tv/:id" element={<DetailPage />} />
+        <Route path="/person/:id" element={<DetailPage />} />
       </Route>
       <Route path="/search" element={<MobileSearch />} />
       <Route path="*" element={<NotFound />} />

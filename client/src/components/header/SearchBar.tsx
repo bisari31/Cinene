@@ -68,6 +68,10 @@ export default function SearchBar({
     return () => setText('');
   }, [isVisible, inputRef]);
 
+  useEffect(() => {
+    console.log('🚀 ~ file: SearchBar.tsx:74 ~ data', data);
+  }, [data]);
+
   return (
     <SearchBarWrapper
       isVisible={isVisible}

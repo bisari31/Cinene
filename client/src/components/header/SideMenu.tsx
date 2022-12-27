@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
+import { Link } from 'react-router-dom';
 
 import { ChevronLeft, Menu, Search } from 'assets';
-import { Link } from 'react-router-dom';
+import { LeftButton } from 'styles/css';
+
 import useOutsideClick from 'hooks/useOutsideClick';
 import usePreventScrolling from 'hooks/usePreventScrolling';
 
@@ -18,10 +19,6 @@ export default function SideMenu() {
         <Menu />
       </button>
       <SideMenuBar ref={ref} isVisible={isVisible}>
-        <Link to="/search">
-          <Search />
-          검색
-        </Link>
         <button
           type="button"
           className="chevronleft_wrapper"
@@ -29,6 +26,18 @@ export default function SideMenu() {
         >
           <ChevronLeft />
         </button>
+        <Link to="/search">
+          <Search />
+          검색
+        </Link>
+        <Link to="/search">
+          <Search />
+          검색
+        </Link>
+        <Link to="/search">
+          <Search />
+          검색
+        </Link>
       </SideMenuBar>
     </SideMenuWrapper>
   );
@@ -72,15 +81,17 @@ const SideMenuBar = styled.div<{ isVisible: boolean }>`
     background-color: ${theme.colors.navy100};
     border-radius: 0 40px 40px 0;
     height: 100%;
-    left: ${isVisible ? '0px' : '-376px'};
-    padding: 10em 1em;
+    left: ${isVisible ? '0px' : '-480px'};
+    padding: 1em;
     position: absolute;
     top: 0;
     transition: 0.4s ease-out;
     width: 60%;
-
     z-index: 999;
-    a {
+    & > a:nth-of-type(1) {
+      margin-top: 3em;
+    }
+    & > a {
       align-items: center;
       svg {
         fill: #fff;
@@ -92,30 +103,17 @@ const SideMenuBar = styled.div<{ isVisible: boolean }>`
       border-radius: 10px;
       display: flex;
       font-size: 1rem;
-      padding: 1em 2em;
+      padding: 1em;
       &:hover {
         background-color: ${theme.colors.navy};
       }
     }
+    a + a {
+      margin-top: 0.5em;
+    }
     .chevronleft_wrapper {
-      align-items: center;
+      ${LeftButton};
       background-color: ${theme.colors.navy};
-      border: none;
-      border-radius: 8px;
-      display: flex;
-      height: 35px;
-      justify-content: center;
-      left: 1em;
-      padding: 0;
-      position: absolute;
-      top: 1em;
-      width: 35px;
-      svg {
-        height: 80%;
-        stroke: #fff;
-        stroke-width: 1;
-        width: 80%;
-      }
     }
     @media ${theme.device.tablet} {
       display: none;

@@ -1,6 +1,9 @@
-import { ChevronLeft } from 'assets';
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
+import { ChevronLeft } from 'assets';
+
+import { LeftButton } from 'styles/css';
+
 import SearchBar from './SearchBar';
 
 export default function MobileSearch() {
@@ -19,9 +22,9 @@ const MobileSearchWrapper = styled.div`
   ${({ theme }) => css`
     padding: 1em;
     & > div {
+      animation: none;
       margin-top: 1em;
       position: static;
-      animation: none;
       width: 100%;
       & > div:first-child {
         width: 100%;
@@ -31,17 +34,8 @@ const MobileSearchWrapper = styled.div`
       }
     }
     & > button {
-      background: ${theme.colors.navy100};
-      border: none;
-      border-radius: 10px;
-      height: 35px;
-      padding: 0;
-      width: 35px;
-      svg {
-        height: 80%;
-        stroke: #fff;
-        width: 80%;
-      }
+      ${LeftButton};
+      background-color: ${theme.colors.navy100};
     }
   `}
 `;

@@ -27,6 +27,27 @@ export const getMediaDetail = async (
   return data;
 };
 
+export const getPersonDetail = async (
+  id: number | undefined,
+  type: string | undefined,
+) => {
+  if (!id || !type) return;
+  const { data } = await axios.get<IPerson>(`${API_URL}/${type}/${id}`, {
+    params,
+  });
+  return data;
+};
+
+export const getCombinedCredits = async (id: number) => {
+  const { data } = await axios.get<ICombinedCredits>(
+    `${API_URL}/person/${id}/combined_credits`,
+    {
+      params,
+    },
+  );
+  return data;
+};
+
 export const getMediaCredits = async (
   id: number | undefined,
   type: string | undefined,

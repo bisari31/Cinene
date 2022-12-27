@@ -4,6 +4,8 @@ import styled, { css } from 'styled-components';
 
 import { getMediaOverview, getMediaTitle } from 'utils/media';
 import Average from 'components/main/Average';
+import { useQuery } from 'react-query';
+import { getSimilarMedia } from 'services/media';
 import SimilarMedia from './SimilarMedia';
 import Credits from './Credits';
 
@@ -17,12 +19,17 @@ function Description({ path, data, id }: Props) {
   const title = getMediaTitle(path, data);
   const overview = getMediaOverview(path, data);
 
+  const { data: similarData } = useQuery([path, 'similar', id], () =>
+    getSimilarMedia(id, path),
+  );
+  const setTitle = path === 'movie' ? '영화' : '시리즈';
+
   return (
     <DescriptionWrapper>
       <Average />
       <h2>{title}</h2>
       <p>{overview}</p>
-      <SimilarMedia />
+      <SimilarMedia data={similarData} title={`추천 ${setTitle}`} type={path} />
       <Credits id={id} path={path} />
     </DescriptionWrapper>
   );

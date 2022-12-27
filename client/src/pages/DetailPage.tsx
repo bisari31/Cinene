@@ -2,43 +2,63 @@ import { useEffect, useState, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import { useQuery } from 'react-query';
 
-import { getMediaDetail, IMAGE_URL } from 'services/media';
+import { getMediaDetail, getPersonDetail, IMAGE_URL } from 'services/media';
 import useOutsideClick from 'hooks/useOutsideClick';
 import useCurrentPathName from 'hooks/useCurrentPathName';
+import { EMPTY_IMAGE, USER_IMAGE } from 'utils/imageUrl';
 
-import Description from 'components/details/Description';
+import Description from 'components/details/MediaDescription';
 import Portal from 'components/common/Portal';
 import ModalImage from 'components/details/ModalImage';
-import { EMPTY_IMAGE } from 'utils/imageUrl';
+import PersonDescription from 'components/details/PersonDescription';
 
 export default function DetailPage() {
   const { ref, isVisible, handleChangeVisibility } = useOutsideClick();
   const { id, path } = useCurrentPathName();
-  const { data } = useQuery([path, id], () => getMediaDetail(id, path));
+  const { data } = useQuery([path, id], () => getMediaDetail(id, path), {
+    enabled: path !== 'person',
+  });
+  const { data: personData } = useQuery(
+    [path, id],
+    () => getPersonDetail(id, path),
+    {
+      enabled: path === 'person',
+    },
+  );
+
+  const getBackdrop = () => {
+    if (data?.backdrop_path) {
+      return `${IMAGE_URL}/original/${data?.backdrop_path}`;
+    }
+    return EMPTY_IMAGE;
+  };
+
+  const getPoster = (pathname: string, size: 'w500' | 'original') => {
+    if (pathname === 'person') {
+      return personData?.profile_path
+        ? `${IMAGE_URL}/${size}/${personData.profile_path}`
+        : USER_IMAGE;
+    }
+    if (data?.poster_path) {
+      return `${IMAGE_URL}/${size}/${data?.poster_path}`;
+    }
+    return EMPTY_IMAGE;
+  };
 
   return (
-    <DetailPageWrapper
-      src={
-        data?.backdrop_path
-          ? `${IMAGE_URL}/original/${data?.backdrop_path}`
-          : EMPTY_IMAGE
-      }
-    >
+    <DetailPageWrapper src={getBackdrop()}>
       <div />
       <Content>
         <div>
           <button type="button" onClick={() => handleChangeVisibility()}>
-            <img
-              src={
-                data?.poster_path
-                  ? `${IMAGE_URL}/w300/${data?.poster_path}`
-                  : EMPTY_IMAGE
-              }
-              alt="poster"
-            />
+            <img src={getPoster(path, 'w500')} alt="poster" />
           </button>
         </div>
-        <Description data={data} path={path} id={id} />
+        {path === 'person' ? (
+          <PersonDescription path={path} id={id} data={personData} />
+        ) : (
+          <Description data={data} path={path} id={id} />
+        )}
       </Content>
       {isVisible && (
         <Portal>
@@ -46,7 +66,7 @@ export default function DetailPage() {
             modalRef={ref}
             handleChangeVisibility={handleChangeVisibility}
             isVisible={isVisible}
-            src={`${IMAGE_URL}/original/${data?.poster_path}`}
+            src={getPoster(path, 'original')}
           />
         </Portal>
       )}

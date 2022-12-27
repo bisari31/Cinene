@@ -1,28 +1,30 @@
-import { useState, useRef, useEffect } from 'react';
-
+import { useEffect } from 'react';
 import styled from 'styled-components';
-import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
 
-import { getSimilarMedia, IMAGE_URL } from 'services/media';
-import useCurrentPathName from 'hooks/useCurrentPathName';
-import Slider from 'components/common/Slider';
 import { EMPTY_IMAGE } from 'utils/imageUrl';
+import { IMAGE_URL } from 'services/media';
 
-export default function SimilarMedia() {
-  const { id, path } = useCurrentPathName();
-  const { data } = useQuery([path, 'similar', id], () =>
-    getSimilarMedia(id, path),
-  );
+import Slider from 'components/common/Slider';
 
-  const setTitle = path === 'movie' ? '영화' : '시리즈';
+interface IProps {
+  data: IMediaResults[] | undefined;
+  title: string;
+  type?: string;
+}
+
+export default function SimilarMedia({ data, title, type }: IProps) {
+  if (!data?.length) return null;
 
   return (
     <SimilarMediaWrapper>
-      <Slider title={`추천 ${setTitle}`}>
+      <Slider title={title}>
         {data?.map((media) => (
           <List key={media.id}>
-            <Link to={`/${path}/${media.id}`} draggable="false">
+            <Link
+              to={`/${type || media.media_type}/${media.id}`}
+              draggable="false"
+            >
               <img
                 draggable="false"
                 src={
