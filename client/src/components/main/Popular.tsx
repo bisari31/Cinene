@@ -77,13 +77,6 @@ export default function Popular() {
         <div>
           <Category>
             <AverageButton />
-            <div>
-              <span>{changeUppercase(currentMedia?.media_type)}</span>
-              <span>{release}</span>
-              {detailData?.genres.map((item) => (
-                <span key={item.id}>{item.name}</span>
-              ))}
-            </div>
           </Category>
           <Overview>
             <p>{title}</p>
@@ -161,27 +154,7 @@ const Category = styled.div`
     display: flex;
     flex-direction: column;
     margin-bottom: 1em;
-    & > div:nth-child(2) {
-      align-items: center;
-      color: ${theme.colors.gray100};
-      display: flex;
-      flex-wrap: wrap;
-      font-size: 0.8rem;
-      line-height: 1.5;
-      margin-top: 1em;
-      span + span {
-        align-items: center;
-        display: flex;
-        &::before {
-          background-color: ${theme.colors.gray100};
-          content: '';
-          display: inline-block;
-          height: 12px;
-          margin: 0 0.5rem;
-          width: 2px;
-        }
-      }
-    }
+
     @media ${theme.device.tablet} {
       flex-direction: row;
       margin-bottom: 1.5em;
