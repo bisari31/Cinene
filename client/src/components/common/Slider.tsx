@@ -156,7 +156,8 @@ const SliderWrapper = styled.div<{ disable: boolean }>`
     ul {
       display: flex;
     }
-    img {
+    img,
+    a {
       pointer-events: ${disable ? 'none' : 'auto'};
     }
   `}

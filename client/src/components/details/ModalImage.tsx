@@ -49,6 +49,7 @@ const Modal = styled.div`
   ${({ theme }) => css`
     height: 70vh;
     position: relative;
+    width: 100vw;
     img {
       height: 100%;
       object-fit: cover;
@@ -77,6 +78,7 @@ const Modal = styled.div`
     }
     @media ${theme.device.tablet} {
       height: 90vh;
+      width: 650px;
     }
   `}
 `;

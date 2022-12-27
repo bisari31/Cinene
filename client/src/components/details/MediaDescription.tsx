@@ -19,8 +19,10 @@ function Description({ path, data, id }: Props) {
   const title = getMediaTitle(path, data);
   const overview = getMediaOverview(path, data);
 
-  const { data: similarData } = useQuery([path, 'similar', id], () =>
-    getSimilarMedia(id, path),
+  const { data: similarData } = useQuery(
+    [path, 'similar', id],
+    () => getSimilarMedia(id, path),
+    { refetchOnWindowFocus: false },
   );
   const setTitle = path === 'movie' ? '영화' : '시리즈';
 

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
@@ -53,8 +53,14 @@ const List = styled.li`
   }
 
   p {
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
     line-height: 1.4;
+    display: -webkit-box;
+    overflow: hidden;
+    white-space: normal;
     font-size: 0.9rem;
+    width: 140px;
     margin-top: 0.7em;
   }
   & + & {

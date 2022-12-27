@@ -17,11 +17,13 @@ export default function DetailPage() {
   const { id, path } = useCurrentPathName();
   const { data } = useQuery([path, id], () => getMediaDetail(id, path), {
     enabled: path !== 'person',
+    refetchOnWindowFocus: false,
   });
   const { data: personData } = useQuery(
     [path, id],
     () => getPersonDetail(id, path),
     {
+      refetchOnWindowFocus: false,
       enabled: path === 'person',
     },
   );
@@ -105,7 +107,7 @@ const Content = styled.article`
         background: none;
         border: none;
         border-radius: 30px;
-        height: 300px;
+        height: 270px;
         overflow: hidden;
         padding: 0;
         position: relative;
