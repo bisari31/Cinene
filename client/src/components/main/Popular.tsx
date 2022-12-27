@@ -64,10 +64,6 @@ export default function Popular() {
     return () => clearTimeout(slider);
   });
 
-  useEffect(() => {
-    console.log('🚀 ~ file: Popular.tsx:70 ~ Popular ~ videoData', data);
-  }, [data]);
-
   return (
     <section>
       <Background

@@ -26,10 +26,6 @@ export default function TopRated({ type }: Props) {
     },
   };
 
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
-
   return (
     <TopRatedWrapper>
       <Slider title={siteType[type].title}>
