@@ -1,10 +1,11 @@
+import styled, { css } from 'styled-components';
+import { useEffect, useState } from 'react';
+
+import { outside } from 'styles/css';
 import { Close } from 'assets';
+import { EMPTY_IMAGE } from 'utils/imageUrl';
 import useEscapeClose from 'hooks/useEscapeClose';
 import usePreventScrolling from 'hooks/usePreventScrolling';
-import { useEffect, useState } from 'react';
-import styled, { css } from 'styled-components';
-import { outside } from 'styles/css';
-import { EMPTY_IMAGE } from 'utils/imageUrl';
 
 interface Props {
   src: string;
@@ -47,7 +48,7 @@ const OutSide = styled.div<{ height: number | undefined }>`
 
 const Modal = styled.div`
   ${({ theme }) => css`
-    height: 70vh;
+    height: 80vh;
     position: relative;
     width: 100vw;
     img {
@@ -77,7 +78,7 @@ const Modal = styled.div`
       }
     }
     @media ${theme.device.tablet} {
-      height: 90vh;
+      height: 100vh;
       width: 650px;
     }
   `}

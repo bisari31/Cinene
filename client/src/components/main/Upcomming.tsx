@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { useQuery } from 'react-query';
 import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
@@ -54,7 +53,7 @@ export default function Upcomming({ type }: Props) {
     const today = dayjs();
     const releaseDate = dayjs(day);
     const dday = releaseDate.diff(today, 'day');
-    return dday === 0 ? 'D-DAY' : `D-${dday}`;
+    return dday === 0 ? 'D-Day' : `D-${dday}`;
   };
 
   const getMovieImage = (item: IMediaResults) => {

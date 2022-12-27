@@ -30,6 +30,13 @@ function Description({ path, data, id }: Props) {
     <DescriptionWrapper>
       <Average />
       <h2>{title}</h2>
+      <Genre>
+        <p>{setTitle}</p>
+        <p>{data?.release_date ?? data?.first_air_date}</p>
+        {data?.genres.map((genre) => (
+          <p key={genre.id}>{genre.name}</p>
+        ))}
+      </Genre>
       <p>{overview}</p>
       <SimilarMedia data={similarData} title={`추천 ${setTitle}`} type={path} />
       <Credits id={id} path={path} />
@@ -53,6 +60,25 @@ const DescriptionWrapper = styled.div`
       font-size: 0.9rem;
       line-height: 1.8;
       margin: 3rem 0;
+    }
+  `}
+`;
+
+const Genre = styled.div`
+  ${({ theme }) => css`
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5em 1em;
+    margin-top: 1.5em;
+    p {
+      background-color: ${theme.colors.navy100};
+      border-radius: 7px;
+      color: ${theme.colors.white};
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 400;
+      padding: 0.6em 0.8em;
+      width: auto;
     }
   `}
 `;

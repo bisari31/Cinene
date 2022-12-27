@@ -36,6 +36,7 @@ interface IMediaResultsInDetail {
   budget: number;
   genres: IGenre_ids[];
   homepage: string;
+  first_air_date?: string;
   id: number;
   last_air_date?: string;
   imdb_id: string;

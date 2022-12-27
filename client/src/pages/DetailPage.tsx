@@ -47,6 +47,10 @@ export default function DetailPage() {
     return EMPTY_IMAGE;
   };
 
+  useEffect(() => {
+    console.log('🚀 ~ file: DetailPage.tsx:53 ~ DetailPage ~ data', data);
+  }, [data]);
+
   return (
     <DetailPageWrapper src={getBackdrop()}>
       <div />
@@ -107,7 +111,7 @@ const Content = styled.article`
         background: none;
         border: none;
         border-radius: 30px;
-        height: 270px;
+        height: 290px;
         overflow: hidden;
         padding: 0;
         position: relative;

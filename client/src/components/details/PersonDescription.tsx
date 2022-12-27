@@ -1,8 +1,9 @@
-import { hasSelectionSupport } from '@testing-library/user-event/dist/utils';
 import { useEffect } from 'react';
 import { useQuery } from 'react-query';
-import { getCombinedCredits } from 'services/media';
 import styled, { css } from 'styled-components';
+
+import { getCombinedCredits } from 'services/media';
+
 import SimilarMedia from './SimilarMedia';
 
 interface IProps {
@@ -36,9 +37,14 @@ export default function PersonDescription({ data, path, id }: IProps) {
     );
     return duplication?.sort(
       (a, b) =>
-        new Date(b.release_date).getTime() - new Date(a.release_date).getTime(),
+        new Date(b.release_date || (b.first_air_date as string)).getTime() -
+        new Date(a.release_date || (a.first_air_date as string)).getTime(),
     );
   };
+
+  useEffect(() => {
+    console.log(creditData);
+  }, [creditData]);
 
   return (
     <PersonDescriptionWrapper>
