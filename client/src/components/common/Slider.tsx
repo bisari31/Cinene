@@ -23,27 +23,42 @@ export default function Slider({ children, title }: Props) {
 
   const ref = useRef<HTMLUListElement>(null);
 
-  const handleMouseDown = (e: React.MouseEvent) => {
+  const handleMouseDown = (e: React.MouseEvent | React.TouchEvent) => {
     if (!ref.current) return;
     ref.current.style.transition = '';
     setIsDown(true);
-    setStartX(e.pageX);
+    if (e.type === 'mousedown') {
+      setStartX((e as React.MouseEvent).pageX);
+    } else {
+      setStartX((e as React.TouchEvent).touches[0].pageX);
+    }
     const x = getTranslateX(ref.current);
     setEndX(x);
   };
 
-  const handleMouseMove = (e: React.MouseEvent) => {
+  const handleMouseMove = (e: React.MouseEvent | React.TouchEvent) => {
     if (!isDown || !ref.current) return;
     setIsDragging(true);
-    setCurrentX(e.pageX - startX + endX);
+    if (e.type === 'mousemove') {
+      setCurrentX((e as React.MouseEvent).pageX - startX + endX);
+    } else {
+      setCurrentX((e as React.TouchEvent).touches[0].pageX - startX + endX);
+    }
     if (currentX > 0) return setCurrentX((prev) => prev / 2);
     if (maxWidth > currentX)
       setCurrentX((prev) => (prev - maxWidth) / 2 + maxWidth);
   };
 
-  const handleMouseUp = (e: React.MouseEvent) => {
+  const handleMouseUp = (e: React.MouseEvent | React.TouchEvent) => {
     if (!ref.current) return;
-    setTranslateX(e.pageX, ref.current);
+    if (e.type === 'mouseup') {
+      setTranslateX((e as React.MouseEvent).pageX, ref.current);
+    } else {
+      setTranslateX(
+        (e as React.TouchEvent).changedTouches[0].pageX,
+        ref.current,
+      );
+    }
     setIsDown(false);
     getTransition(ref.current);
     setIsDragging(false);
@@ -117,6 +132,9 @@ export default function Slider({ children, title }: Props) {
       <h3>{title}</h3>
       <ul
         ref={ref}
+        onTouchEnd={handleMouseUp}
+        onTouchMove={handleMouseMove}
+        onTouchStart={handleMouseDown}
         onMouseLeave={() => setIsDown(false)}
         onMouseMove={handleMouseMove}
         onMouseDown={handleMouseDown}
