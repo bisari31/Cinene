@@ -21,16 +21,41 @@ export default function SearchBar({
   isMobile = false,
 }: Props) {
   const [text, setText] = useState('');
+  const [targetIndex, setTargetIndex] = useState(-1);
+  const [totalIndex, setTotalIndex] = useState(0);
 
   const inputRef = useRef<HTMLInputElement>(null);
+  const divRef = useRef<HTMLDivElement>(null);
+
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setText(e.target.value);
   };
 
-  const handleEscClose = (e: React.KeyboardEvent) => {
-    if (e.key === 'Escape' && !isMobile) handleChangeVisibility();
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    switch (e.key) {
+      case 'ArrowDown': {
+        if (totalIndex === targetIndex) setTargetIndex(0);
+        else setTargetIndex(targetIndex + 1);
+        break;
+      }
+      case 'ArrowUp': {
+        if (targetIndex === 0) setTargetIndex(totalIndex);
+        else setTargetIndex(targetIndex - 1);
+        break;
+      }
+      case 'Enter': {
+        if (data) handleClickNavigation(data[targetIndex]);
+        break;
+      }
+      case 'Escape': {
+        handleChangeVisibility();
+        break;
+      }
+      default:
+        break;
+    }
   };
 
   const handleClickNavigation = (item: newResults) => {
@@ -69,8 +94,10 @@ export default function SearchBar({
   }, [isVisible, inputRef]);
 
   useEffect(() => {
-    console.log('🚀 ~ file: SearchBar.tsx:74 ~ data', data);
-  }, [data]);
+    if (!divRef.current) return;
+    setTotalIndex(divRef.current.childElementCount - 1);
+    setTargetIndex(-1);
+  }, [data, divRef]);
 
   return (
     <SearchBarWrapper
@@ -81,7 +108,7 @@ export default function SearchBar({
       <div>
         <input
           ref={inputRef}
-          onKeyDown={handleEscClose}
+          onKeyDown={handleKeyDown}
           type="text"
           value={text}
           onChange={handleChange}
@@ -96,10 +123,12 @@ export default function SearchBar({
             </List>
           </div>
         ) : (
-          <div>
-            {data?.map((item) => (
-              <List key={item.id}>
+          <div ref={divRef}>
+            {data?.map((item, index) => (
+              <List key={item.id} isActive={index === targetIndex}>
                 <button
+                  onFocus={() => setTargetIndex(index)}
+                  onMouseOver={() => setTargetIndex(index)}
                   type="button"
                   onClick={() => handleClickNavigation(item)}
                 >
@@ -190,8 +219,8 @@ const SearchBarWrapper = styled.div<{
   `}
 `;
 
-const List = styled.div<{ noResults?: boolean }>`
-  ${({ theme, noResults }) => css`
+const List = styled.div<{ noResults?: boolean; isActive?: boolean }>`
+  ${({ theme, noResults, isActive }) => css`
     border-radius: inherit;
     height: 60px;
     overflow: hidden;
@@ -206,6 +235,7 @@ const List = styled.div<{ noResults?: boolean }>`
       display: flex;
       align-items: center;
       background: none;
+      background-color: ${isActive && theme.colors.navy};
       border-radius: inherit;
       img {
         border-radius: inherit;
@@ -214,9 +244,9 @@ const List = styled.div<{ noResults?: boolean }>`
         object-fit: cover;
         width: 45px;
       }
-      &:hover {
+      /* &:hover {
         background-color: ${!noResults && theme.colors.navy};
-      }
+      } */
     }
     & + & {
       margin-top: 0.5em;
