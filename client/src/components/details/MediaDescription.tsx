@@ -1,43 +1,54 @@
-import { memo } from 'react';
-
+import { memo, useEffect } from 'react';
 import styled, { css } from 'styled-components';
+import { useQuery } from 'react-query';
 
 import { getMediaOverview, getMediaTitle } from 'utils/media';
-import Average from 'components/main/Average';
-import { useQuery } from 'react-query';
 import { getSimilarMedia } from 'services/media';
+
+import Average from 'components/main/Average';
 import SimilarMedia from './SimilarMedia';
 import Credits from './Credits';
+import Seasons from './Seasons';
 
 interface Props {
-  data: IMediaResultsInDetail | undefined;
+  data: IMovieTvDetails | undefined;
   path: string;
   id: number;
 }
 
 function Description({ path, data, id }: Props) {
-  const title = getMediaTitle(path, data);
-  const overview = getMediaOverview(path, data);
+  const title = getMediaTitle(data);
+  const overview = getMediaOverview(data);
 
   const { data: similarData } = useQuery(
     [path, 'similar', id],
     () => getSimilarMedia(id, path),
     { refetchOnWindowFocus: false },
   );
-  const setTitle = path === 'movie' ? '영화' : '시리즈';
+  const setTitle = path === 'movie' ? '영화' : 'TV';
+
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
 
   return (
     <DescriptionWrapper>
       <Average />
       <h2>{title}</h2>
       <Genre>
-        <p>{setTitle}</p>
         <p>{data?.release_date ?? data?.first_air_date}</p>
+        <p>
+          {setTitle === '영화'
+            ? `${data?.runtime}분`
+            : `시즌 ${data?.seasons.length}`}
+        </p>
+        <p>{setTitle}</p>
         {data?.genres.map((genre) => (
           <p key={genre.id}>{genre.name}</p>
         ))}
       </Genre>
       <p>{overview}</p>
+      <Seasons seasons={data?.seasons} />
       <SimilarMedia data={similarData} title={`추천 ${setTitle}`} type={path} />
       <Credits id={id} path={path} />
     </DescriptionWrapper>

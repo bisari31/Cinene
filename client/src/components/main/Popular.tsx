@@ -8,7 +8,7 @@ import ReactPlayer from 'react-player';
 import { getMediaDetail, getVideos, IMAGE_URL } from 'services/media';
 import { ChevronLeft, ChevronRight } from 'assets';
 import useTrendingMediaQuery from 'hooks/useTrendingMediaQuery';
-import { getMediaOverview, getMediaTitle, getReleaseDate } from 'utils/media';
+import { getMediaOverview, getMediaTitle } from 'utils/media';
 
 import { EMPTY_IMAGE } from 'utils/imageUrl';
 import AverageButton from './Average';
@@ -35,11 +35,6 @@ export default function Popular() {
     },
   );
 
-  const changeUppercase = (str: string | undefined) => {
-    if (str === 'movie') return '영화';
-    return '드라마';
-  };
-
   const handleSlide = (index: number) => {
     const maxIndex = data?.length;
     if (!maxIndex) return;
@@ -49,9 +44,8 @@ export default function Popular() {
     setViewIndex(newIndex);
   };
 
-  const release = getReleaseDate(currentMedia?.media_type, detailData);
-  const title = getMediaTitle(currentMedia?.media_type, detailData);
-  const overview = getMediaOverview(currentMedia?.media_type, detailData);
+  const title = getMediaTitle(detailData);
+  const overview = getMediaOverview(detailData);
 
   useEffect(() => {
     if (data) {

@@ -1,4 +1,4 @@
-import { useState, memo, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
 import styled from 'styled-components';
 
@@ -15,8 +15,10 @@ interface Props {
 
 function Credits({ id, path }: Props) {
   const [directror, setDirector] = useState<Crew[]>();
-  const { data } = useQuery([path, 'credits', id], () =>
-    getMediaCredits(id, path),
+  const { data } = useQuery(
+    [path, 'credits', id],
+    () => getMediaCredits(id, path),
+    { refetchOnWindowFocus: false },
   );
 
   useEffect(() => {
@@ -77,7 +79,7 @@ function Credits({ id, path }: Props) {
   );
 }
 
-export default memo(Credits);
+export default Credits;
 
 const CreditsWrapper = styled.div`
   overflow: hidden;
