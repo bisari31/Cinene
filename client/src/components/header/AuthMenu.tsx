@@ -155,7 +155,7 @@ const Icons = styled.li`
     align-items: center;
     display: flex;
     background: none;
-    padding: 0;
+    padding: 1em;
   }
   .search_icon {
     fill: #fff;
@@ -194,9 +194,10 @@ const UserInfo = styled.li`
 `;
 
 const LoginMenu = styled.li`
+  /* background-color: red; */
   height: 35px;
   text-align: center;
-  width: 90px;
+  width: 70px;
   a {
     display: inline-block;
     height: 100%;
