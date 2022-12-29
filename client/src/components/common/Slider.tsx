@@ -23,49 +23,65 @@ export default function Slider({ children, title }: Props) {
 
   const ref = useRef<HTMLUListElement>(null);
 
+  const setX = (
+    e: React.MouseEvent | React.TouchEvent,
+    element?: React.RefObject<HTMLUListElement>,
+  ) => {
+    const mouseEvent = e as React.MouseEvent;
+    const touchEvent = e as React.TouchEvent;
+    switch (e.type) {
+      case 'mousedown':
+        setStartX(mouseEvent.pageX);
+        break;
+      case 'mousemove':
+        setCurrentX(mouseEvent.pageX - startX + endX);
+        break;
+      case 'mouseup':
+        if (element?.current) setTranslateX(mouseEvent.pageX, element.current);
+        break;
+      case 'touchstart':
+        setStartX(touchEvent.touches[0].pageX);
+        break;
+      case 'touchmove':
+        setCurrentX(touchEvent.touches[0].pageX - startX + endX);
+        break;
+      case 'touchend':
+        if (element?.current)
+          setTranslateX(touchEvent.changedTouches[0].pageX, element.current);
+
+        break;
+      default:
+        break;
+    }
+  };
+
   const handleMouseDown = (e: React.MouseEvent | React.TouchEvent) => {
     if (!ref.current) return;
     ref.current.style.transition = '';
     setIsDown(true);
-    if (e.type === 'mousedown') {
-      setStartX((e as React.MouseEvent).pageX);
-    } else {
-      setStartX((e as React.TouchEvent).touches[0].pageX);
-    }
+    setX(e);
     const x = getTranslateX(ref.current);
     setEndX(x);
   };
 
   const handleMouseMove = (e: React.MouseEvent | React.TouchEvent) => {
-    if (!isDown || !ref.current) return;
+    if (!isDown) return;
     setIsDragging(true);
-    if (e.type === 'mousemove') {
-      setCurrentX((e as React.MouseEvent).pageX - startX + endX);
-    } else {
-      setCurrentX((e as React.TouchEvent).touches[0].pageX - startX + endX);
-    }
+    setX(e);
     if (currentX > 0) return setCurrentX((prev) => prev / 2);
     if (maxWidth > currentX)
       setCurrentX((prev) => (prev - maxWidth) / 2 + maxWidth);
   };
 
   const handleMouseUp = (e: React.MouseEvent | React.TouchEvent) => {
-    if (!ref.current) return;
-    if (e.type === 'mouseup') {
-      setTranslateX((e as React.MouseEvent).pageX, ref.current);
-    } else {
-      setTranslateX(
-        (e as React.TouchEvent).changedTouches[0].pageX,
-        ref.current,
-      );
-    }
+    setX(e, ref);
     setIsDown(false);
-    getTransition(ref.current);
+    getTransition(ref);
     setIsDragging(false);
   };
 
-  const getTransition = (element: HTMLElement) => {
-    element.style.transition = '0.5s ease';
+  const getTransition = (element: React.RefObject<HTMLElement>) => {
+    if (element.current) element.current.style.transition = '0.5s ease';
   };
 
   const getTranslateX = (element: HTMLElement) => {
@@ -104,14 +120,12 @@ export default function Slider({ children, title }: Props) {
   const getThrottleWidth = throttle(getWidth, 1000);
 
   useEffect(() => {
-    const checkOutSideClick = (element: HTMLElement | null) => {
-      if (!element) return;
+    const checkOutSideClick = (element: React.RefObject<HTMLElement>) => {
       getTransition(element);
       if (currentX > 0) return setCurrentX(0);
       if (currentX < maxWidth) setCurrentX(maxWidth);
     };
-
-    if (!isDown) checkOutSideClick(ref.current);
+    if (!isDown) checkOutSideClick(ref);
   }, [currentX, isDown, maxWidth, ref]);
 
   useEffect(() => {
