@@ -1,6 +1,7 @@
 import { memo, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import { useQuery } from 'react-query';
+import dayjs from 'dayjs';
 
 import { getMediaOverview, getMediaTitle } from 'utils/media';
 import { getSimilarMedia } from 'services/media';
@@ -27,24 +28,39 @@ function Description({ path, data, id }: Props) {
   );
   const setTitle = path === 'movie' ? '영화' : 'TV';
 
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
+  const getReleaseDate = (releaseItem?: IMovieTvDetails) => {
+    if (releaseItem?.release_date)
+      return <p>개봉: {releaseItem.release_date}</p>;
+    if (releaseItem?.first_air_date) {
+      const last = releaseItem?.last_air_date;
+      const first = releaseItem?.first_air_date;
+      const today = dayjs();
+      const diff = today.diff(last, 'd');
+
+      let result;
+      if (first === last) result = first;
+      else if (diff > 7) result = `${first} ~ ${last}`;
+      else result = `${first} ~ `;
+
+      return <p>{result}</p>;
+    }
+  };
 
   return (
     <DescriptionWrapper>
       <Average />
       <h2>{title}</h2>
       <Genre>
-        <p>{data?.release_date ?? data?.first_air_date}</p>
+        {getReleaseDate(data)}
         <p>
           {setTitle === '영화'
             ? `${data?.runtime}분`
             : `시즌 ${data?.seasons.length}`}
         </p>
-        <p>{setTitle}</p>
         {data?.genres.map((genre) => (
-          <p key={genre.id}>{genre.name}</p>
+          <p className="genre_button" key={genre.id}>
+            {genre.name}
+          </p>
         ))}
       </Genre>
       <p>{overview}</p>
@@ -65,6 +81,7 @@ const DescriptionWrapper = styled.div`
     h2 {
       font-size: 2.3rem;
       font-weight: 500;
+      line-height: 1.5;
     }
     & > p {
       color: ${theme.colors.gray300};
@@ -79,17 +96,19 @@ const Genre = styled.div`
   ${({ theme }) => css`
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5em 1em;
+    gap: 0.8em 1em;
     margin-top: 1.5em;
     p {
-      background-color: ${theme.colors.navy100};
+      background-color: ${theme.colors.pink};
       border-radius: 7px;
       color: ${theme.colors.white};
       display: inline-block;
       font-size: 0.78rem;
       font-weight: 400;
       padding: 0.6em 0.8em;
-      width: auto;
+    }
+    .genre_button {
+      background-color: ${theme.colors.navy50};
     }
   `}
 `;
