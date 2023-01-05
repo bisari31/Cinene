@@ -1,37 +1,24 @@
-// import bcrypt from 'bcrypt';
-import { Response, Request, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
+import User from '../models/user';
+import { IUser } from '../types/user';
 
-import User, { DBUser } from '../models/user';
-
-export interface AuthRequest extends Request {
-  user?: DBUser;
+export interface IRequest<T> extends Request {
+  body: T;
+  user?: IUser;
+  cookies: { auth?: string };
 }
 
-export const authenticate = (
-  req: AuthRequest,
+export const authenticate = async (
+  req: IRequest<any>,
   res: Response,
   next: NextFunction,
 ) => {
-  User.findByToken(req.cookies.auth, (err, user) => {
-    if (err) return res.status(200).send({ success: false });
+  try {
+    const user = await User.findToken(req.cookies.auth);
+    if (!user) return res.send({ success: false });
     req.user = user;
     next();
-  });
+  } catch (err) {
+    return res.send({ success: false });
+  }
 };
-
-// export const comparePassword = (
-//   req: AuthRequest,
-//   res: Response,
-//   next: NextFunction,
-// ) => {
-//   const result = bcrypt.compare(
-//     req.body.password,
-//     req.user?.password as string,
-//   );
-//   if (!result) {
-//     return res
-//       .status(400)
-//       .send({ success: false, message: '비밀번호가 일치하지 않습니다.' });
-//   }
-//   next();
-// };

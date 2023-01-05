@@ -2,20 +2,19 @@ import { model, Schema, Types } from 'mongoose';
 
 const commentSchema = new Schema(
   {
-    userId: {
+    writer: {
       type: Types.ObjectId,
       ref: 'User',
     },
     comment: {
       type: String,
     },
-    contentId: {
+    postId: {
       type: Types.ObjectId,
-      ref: 'Content',
+      ref: 'Post',
     },
     responseTo: {
       type: Types.ObjectId,
-      ref: 'User',
     },
   },
   { timestamps: true },

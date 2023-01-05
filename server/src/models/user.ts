@@ -1,29 +1,10 @@
-import { Schema, model, Model, ObjectId } from 'mongoose';
+import { model, Schema, Model, ObjectId } from 'mongoose';
 import jwt from 'jsonwebtoken';
-
-export interface DBUser {
-  _id: ObjectId;
-  email: string;
-  password: string;
-  nickname: string;
-  token: string;
-  createdAt: Date;
-  img: string;
-}
-
-interface DBUserMethods {
-  generateToken(): Promise<DBUser>;
-}
-interface DBUserModel extends Model<DBUser, {}, DBUserMethods> {
-  findByToken(
-    token: string,
-    cb: (err: true | null, user: DBUser) => void,
-  ): void;
-}
+import { IUser, UserModel } from '../types/user';
 
 const PRIVATE_KEY = process.env.PRIVATE_KEY!;
 
-const userSchema = new Schema<DBUser>(
+const userSchema = new Schema<IUser>(
   {
     email: {
       type: String,
@@ -36,16 +17,16 @@ const userSchema = new Schema<DBUser>(
       type: String,
       unique: true,
     },
+    img: {
+      type: String,
+      default: 'default.jpg',
+    },
     token: {
       type: String,
     },
-    img: {
-      type: String,
-      default: 'panda-g3d0df0196_640.jpg',
-    },
   },
   {
-    timestamps: { createdAt: true, updatedAt: false },
+    timestamps: true,
   },
 );
 
@@ -60,17 +41,19 @@ userSchema.methods.generateToken = async function () {
   }
 };
 
-userSchema.statics.findByToken = async function (token: string, cb) {
+userSchema.statics.findToken = async function (
+  token: string,
+): Promise<false | IUser> {
   try {
     const id = jwt.verify(token, `${PRIVATE_KEY}`);
-    const user = await this.findOne({ _id: id, token });
-    if (!user) return cb(true);
-    cb(null, user);
+    const user: IUser = await this.findOne({ _id: id });
+    if (!user) throw Error;
+    return user;
   } catch (err) {
-    cb(true);
+    return false;
   }
 };
 
-const User = model<DBUser, DBUserModel>('User', userSchema);
+const User = model<IUser, UserModel>('User', userSchema);
 
 export default User;

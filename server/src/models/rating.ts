@@ -1,26 +1,24 @@
 import { model, Schema, Types } from 'mongoose';
 
-const commentSchema = new Schema(
+const ratingSchema = new Schema(
   {
     userId: {
       type: Types.ObjectId,
       ref: 'User',
     },
-    comment: {
-      type: String,
-    },
     contentId: {
       type: Types.ObjectId,
       ref: 'Content',
     },
-    responseTo: {
-      type: Types.ObjectId,
-      ref: 'User',
+    review: {
+      type: String,
+    },
+    rating: {
+      type: Number,
     },
   },
   { timestamps: true },
 );
 
-const Comment = model('Comment', commentSchema);
-
-export default Comment;
+const Rating = model('Rating', ratingSchema);
+export default Rating;

@@ -1,7 +1,7 @@
 import { Request, Response, Router } from 'express';
-import Comment from '../models/comment';
-import Post from '../models/post';
-import { authenticate } from './middleware';
+import Comment from '../models/comment_prev';
+import Post from '../models/post_prev';
+import { authenticate } from './middleware_prev';
 
 const router = Router();
 
