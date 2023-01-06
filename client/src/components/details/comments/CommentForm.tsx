@@ -1,92 +1,83 @@
+import styled, { css } from 'styled-components';
 import { useState } from 'react';
 import { useMutation } from 'react-query';
-import styled, { css, ThemeProps } from 'styled-components';
+import { useRecoilValue } from 'recoil';
 
-import { createComment } from 'services/comments';
-import { buttonEffect } from 'styles/css';
 import { useAuthQuery } from 'hooks/useAuthQuery';
+import { createComment } from 'services/comments';
+import { contentIdState } from 'atom/user';
 
 import { queryClient } from 'index';
+import { buttonEffect } from 'styles/css';
 
 interface IProps {
-  contentId?: string;
-  responseTo?: string;
+  responseId?: string;
 }
 
-export default function Form({ contentId, responseTo }: IProps) {
+export default function CommentForm({ responseId }: IProps) {
   const [text, setText] = useState('');
-  const { data: authData } = useAuthQuery();
+  const contentId = useRecoilValue(contentIdState);
 
   const { mutate } = useMutation(createComment, {
-    onSuccess: (data) => {
-      console.log(data);
+    onSuccess: () => {
+      queryClient.invalidateQueries(['comments']);
       setText('');
-      queryClient.invalidateQueries(['comments', contentId]);
     },
-    onError: (error) => console.error(error),
   });
+
+  const { data } = useAuthQuery();
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!data?.success || !text) return;
+    mutate({
+      comment: text,
+      contentId,
+      responseTo: responseId,
+    });
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setText(e.target.value);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!authData?.success) return;
-    mutate({ comment: text, contentId, responseTo });
-  };
-
   return (
-    <StyledForm isResponse={!!responseTo} onSubmit={handleSubmit}>
+    <CommentFormWrapper onSubmit={handleSubmit} color="navy50">
       <textarea
-        readOnly={!authData?.success}
+        readOnly={!data?.success}
         placeholder={
-          authData?.success ? '댓글을 입력해 주세요' : '로그인이 필요합니다'
+          data?.success ? '댓글을 입력해 주세요' : '로그인이 필요합니다'
         }
         value={text}
         onChange={handleChange}
       />
-      <Button color="navy50" type="submit">
-        {responseTo ? '답글 등록' : '등록'}
-      </Button>
-    </StyledForm>
+      <button type="submit">등록</button>
+    </CommentFormWrapper>
   );
 }
 
-const StyledForm = styled.form<{ isResponse: boolean }>`
-  ${({ theme, isResponse }) => css`
+const CommentFormWrapper = styled.form`
+  ${({ theme }) => css`
     display: flex;
-    height: 40px;
-    margin-left: ${isResponse && '4em'};
-    margin-top: ${isResponse && '1em'};
-    textarea,
+    margin: 2em 0;
+    textarea {
+      resize: none;
+      flex: 1;
+      padding: 1em 1.5em;
+      overflow-y: hidden;
+    }
     button {
+      margin-left: 3em;
+      width: 100px;
+      ${buttonEffect};
+    }
+    button,
+    textarea {
       background-color: ${theme.colors.navy50};
       border: none;
-      border-radius: 7px;
+      border-radius: 10px;
       color: #fff;
-      font-size: 0.8rem;
-    }
-    textarea {
-      overflow-y: hidden;
-      padding: 1em 1.5em;
-      resize: none;
-      width: 100%;
-      &::placeholder {
-        color: ${theme.colors.gray500};
-      }
-    }
-
-    @media ${theme.device.tablet} {
-      button {
-        margin-left: 3em;
-      }
+      height: 40px;
     }
   `}
-`;
-
-const Button = styled.button`
-  ${buttonEffect};
-  margin-left: 2em;
-  max-width: 100px;
-  width: 30%;
 `;
