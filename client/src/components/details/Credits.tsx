@@ -27,6 +27,8 @@ function Credits({ id, path }: Props) {
 
   if (!data) return <div>loading...</div>;
 
+  if (!data.cast.length && !data.crew.length) return null;
+
   return (
     <CreditsWrapper>
       <Slider title="감독 / 출연진">

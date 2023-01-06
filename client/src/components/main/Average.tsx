@@ -1,7 +1,14 @@
 import { Star } from 'assets';
+import { IContent } from 'services/contents';
 import styled, { css } from 'styled-components';
 
-export default function Average() {
+interface IProps {
+  cinene?: IContent | null;
+  tmdb?: number;
+  isMedia?: boolean;
+}
+
+export default function Average({ tmdb, cinene, isMedia = true }: IProps) {
   const sliceAverage = (num: number | undefined) => {
     if (num) return num.toFixed(1);
     return 0;
@@ -12,13 +19,14 @@ export default function Average() {
       <div>
         <Star />
         <span>
-          <b>8.2 </b> / 1055
+          <b>{cinene?.average ?? 0} </b> / {cinene?.count ?? 0}
         </span>
       </div>
-      <div>
-        {/* <span>TMDB {sliceAverage(average)}</span> */}
-        <span>TMDB 7.5</span>
-      </div>
+      {isMedia && (
+        <div>
+          <span>TMDB {sliceAverage(tmdb)}</span>
+        </div>
+      )}
     </AverageWrapper>
   );
 }
@@ -49,7 +57,7 @@ const AverageWrapper = styled.div`
         width: 25px;
       }
     }
-    div:last-child {
+    div:nth-of-type(2) {
       margin-right: 1em;
       span {
         align-items: center;

@@ -7,6 +7,7 @@ import { useMutation } from 'react-query';
 import useInput from 'hooks/useInput';
 import { userIdState } from 'atom/user';
 import { login, register } from 'services/auth';
+import { queryClient } from 'index';
 import Input from './common/Input';
 import Button from './common/Button';
 import ConfirmPassword from './common/ConfirmPassword';
@@ -40,7 +41,9 @@ export default function SignForm({ type }: { type: 'login' | 'register' }) {
   const { mutate: loginMutate } = useMutation(login, {
     onSuccess: (data) => {
       setUserId(data.user._id);
-      localStorage.setItem('auth', data.user._id);
+      localStorage.setItem('userId', data.user._id);
+      queryClient.invalidateQueries(['auth']);
+      // localStorage.setItem('token', data.user.token);
       navigate('/');
     },
     onError: (err: ILoginError) => {

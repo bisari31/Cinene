@@ -1,4 +1,6 @@
+import { darken, lighten } from 'polished';
 import { css } from 'styled-components';
+import theme, { ColorsKey } from './theme';
 
 export const outside = css<{ height: number | undefined }>`
   ${({ height }) => css`
@@ -30,4 +32,15 @@ export const LeftButton = css`
     stroke-width: 1;
     width: 80%;
   }
+`;
+
+export const buttonEffect = css<{ color: ColorsKey }>`
+  ${({ color }) => css`
+    &:hover {
+      background-color: ${lighten(0.05, theme.colors[color])};
+    }
+    &:active {
+      background: ${darken(0.05, theme.colors[color])};
+    }
+  `}
 `;

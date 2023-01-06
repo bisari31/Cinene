@@ -1,11 +1,11 @@
-import { darken, lighten } from 'polished';
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
+import { buttonEffect } from 'styles/css';
 
 export default function NotFound() {
   const navigate = useNavigate();
   return (
-    <NotFoundWrapper>
+    <NotFoundWrapper color="pink">
       잘못된 접근
       <button type="button" onClick={() => navigate(-1)}>
         돌아가기
@@ -31,12 +31,7 @@ const NotFoundWrapper = styled.div`
       height: 40px;
       margin-top: 3rem;
       width: 150px;
-      &:hover {
-        background-color: ${lighten(0.1, theme.colors.pink)};
-      }
-      &:active {
-        background-color: ${darken(0.1, theme.colors.pink)};
-      }
+      ${buttonEffect};
     }
   `}
 `;

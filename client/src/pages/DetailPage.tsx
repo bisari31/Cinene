@@ -11,6 +11,7 @@ import Description from 'components/details/MediaDescription';
 import Portal from 'components/common/Portal';
 import ModalImage from 'components/details/ModalImage';
 import PersonDescription from 'components/details/PersonDescription';
+import { getContent } from 'services/contents';
 
 export default function DetailPage() {
   const { ref, isVisible, handleChangeVisibility } = useOutsideClick();
@@ -18,15 +19,26 @@ export default function DetailPage() {
   const { data } = useQuery([path, id], () => getMediaDetail(id, path), {
     enabled: path !== 'person',
     refetchOnWindowFocus: false,
+    staleTime: 1000 * 60 * 60 * 6,
   });
+
   const { data: personData } = useQuery(
     [path, id],
     () => getPersonDetail(id, path),
     {
       refetchOnWindowFocus: false,
       enabled: path === 'person',
+      staleTime: 1000 * 60 * 60 * 6,
     },
   );
+
+  // const { data: cineneData } = useQuery(
+  //   ['cinene', path, id],
+  //   () => getContent(path, id),
+  //   {
+  //     refetchOnWindowFocus: false,
+  //   },
+  // );
 
   const getBackdrop = () => {
     if (data?.backdrop_path) {
@@ -46,10 +58,6 @@ export default function DetailPage() {
     }
     return EMPTY_IMAGE;
   };
-
-  useEffect(() => {
-    console.log('🚀 ~ file: DetailPage.tsx:53 ~ DetailPage ~ data', data);
-  }, [data]);
 
   return (
     <DetailPageWrapper src={getBackdrop()}>

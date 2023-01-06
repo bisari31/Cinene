@@ -1,11 +1,13 @@
 interface IUser {
-  _id: string;
+  createdAt: string;
   email: string;
+  img: string;
   nickname: string;
   password: string;
   token: string;
-  createdAt: string;
-  img: string;
+  updatedAt: string;
+  __v: number;
+  _id: string;
 }
 
 interface ILoginError {

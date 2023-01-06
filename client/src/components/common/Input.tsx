@@ -46,25 +46,19 @@ export default function Input({
 }
 
 const InputWrapper = styled.div`
-  ${({ theme }) => css`
-    label {
-      /* color: ${theme.colors.gray500}; */
-      color: #fff;
-      display: inline-block;
-      font-size: 0.8rem;
-      font-weight: 300;
-      margin-bottom: 0.7em;
-    }
-  `}
+  label {
+    color: #fff;
+    display: inline-block;
+    font-size: 0.8rem;
+    font-weight: 300;
+    margin-bottom: 0.7em;
+  }
 `;
 
 const StyledInput = styled.input<{ isError: boolean }>`
   ${({ theme, isError }) => css`
     background-color: ${theme.colors.navy100};
-    border: none;
-    /* border: ${isError
-      ? `1px solid ${theme.colors.red}`
-      : `1px solid ${theme.colors.gray100}`}; */
+    border: ${isError ? `1px solid ${theme.colors.red}` : 'none'};
     border-radius: ${theme.config.border};
     color: #fff;
     font-size: 0.8rem;

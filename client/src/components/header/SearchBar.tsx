@@ -224,7 +224,6 @@ const List = styled.div<{ noResults?: boolean; isActive?: boolean }>`
     border-radius: inherit;
     height: 60px;
     overflow: hidden;
-    /* width: 100%; */
     button {
       padding: 0 1em;
       width: 100%;
@@ -244,9 +243,6 @@ const List = styled.div<{ noResults?: boolean; isActive?: boolean }>`
         object-fit: cover;
         width: 45px;
       }
-      /* &:hover {
-        background-color: ${!noResults && theme.colors.navy};
-      } */
     }
     & + & {
       margin-top: 0.5em;

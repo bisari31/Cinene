@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 import { useEffect } from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { Link, useNavigate } from 'react-router-dom';
 import { lighten, darken } from 'polished';
 
@@ -18,8 +18,8 @@ interface Props {
 }
 
 export default function AuthMenu({ setIsVisible }: Props) {
-  const [userId, setUserId] = useRecoilState(userIdState);
-  const { data } = useAuthQuery(userId);
+  const setUserId = useSetRecoilState(userIdState);
+  const { data } = useAuthQuery();
   const {
     ref: refElement,
     isVisible,
@@ -27,20 +27,22 @@ export default function AuthMenu({ setIsVisible }: Props) {
     handleChangeVisibility,
   } = useOutsideClick(300);
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const handleLogout = () => {
     handleChangeVisibility();
     logout().then(() => {
-      localStorage.removeItem('auth');
+      localStorage.removeItem('userId');
       setUserId('');
     });
   };
 
   useEffect(() => {
-    const item = localStorage.getItem('auth');
-    if (item) setUserId(item);
-  }, []);
+    const item = localStorage.getItem('userId');
+    if (item) {
+      setUserId(item);
+    }
+  }, [setUserId]);
 
   return (
     <AuthMenuWrapper>
@@ -50,7 +52,7 @@ export default function AuthMenu({ setIsVisible }: Props) {
             <Search className="search_icon" />
           </button>
         </Icons>
-        {data?.isLoggedIn ? (
+        {data?.success ? (
           <>
             <Icons>
               <Link to="/favorite">
@@ -194,7 +196,6 @@ const UserInfo = styled.li`
 `;
 
 const LoginMenu = styled.li`
-  /* background-color: red; */
   height: 35px;
   text-align: center;
   width: 70px;

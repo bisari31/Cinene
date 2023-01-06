@@ -24,7 +24,10 @@ export default function Seasons({ seasons }: IProps) {
               }
               alt={tv.name}
             />
-            <p>{`${tv.name} (${tv.air_date})`}</p>
+            <p>
+              {tv.name}
+              <time dateTime={tv.air_date}>{` (${tv.air_date})`}</time>
+            </p>
           </List>
         ))}
       </Slider>
@@ -49,6 +52,10 @@ const List = styled.li`
     font-size: 0.9rem;
     width: 140px;
     margin-top: 0.7em;
+    time {
+      font-size: 0.75rem;
+      color: ${({ theme }) => theme.colors.gray300};
+    }
   }
   & + & {
     padding-left: 1.5em;

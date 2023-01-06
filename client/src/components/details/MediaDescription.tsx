@@ -7,9 +7,11 @@ import { getMediaOverview, getMediaTitle } from 'utils/media';
 import { getSimilarMedia } from 'services/media';
 
 import Average from 'components/main/Average';
+import useCineneDataQuery from 'hooks/useCineneDataQuery';
 import SimilarMedia from './SimilarMedia';
 import Credits from './Credits';
 import Seasons from './Seasons';
+import Comment from './comments';
 
 interface Props {
   data: IMovieTvDetails | undefined;
@@ -24,8 +26,9 @@ function Description({ path, data, id }: Props) {
   const { data: similarData } = useQuery(
     [path, 'similar', id],
     () => getSimilarMedia(id, path),
-    { refetchOnWindowFocus: false },
+    { refetchOnWindowFocus: false, staleTime: 1000 * 60 * 60 * 6 },
   );
+  const cineneData = useCineneDataQuery(path, id, data);
   const setTitle = path === 'movie' ? '영화' : 'TV';
 
   const getReleaseDate = (releaseItem?: IMovieTvDetails) => {
@@ -48,7 +51,7 @@ function Description({ path, data, id }: Props) {
 
   return (
     <DescriptionWrapper>
-      <Average />
+      <Average tmdb={data?.vote_average} cinene={cineneData} />
       <h2>{title}</h2>
       <Genre>
         {getReleaseDate(data)}
@@ -67,6 +70,7 @@ function Description({ path, data, id }: Props) {
       <Seasons seasons={data?.seasons} />
       <SimilarMedia data={similarData} title={`추천 ${setTitle}`} type={path} />
       <Credits id={id} path={path} />
+      <Comment contentId={cineneData?._id} />
     </DescriptionWrapper>
   );
 }

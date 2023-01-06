@@ -2,8 +2,6 @@ import { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
 import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
-import { lighten, darken } from 'polished';
-import ReactPlayer from 'react-player';
 
 import { getMediaDetail, getVideos, IMAGE_URL } from 'services/media';
 import { ChevronLeft, ChevronRight } from 'assets';
@@ -11,13 +9,15 @@ import useTrendingMediaQuery from 'hooks/useTrendingMediaQuery';
 import { getMediaOverview, getMediaTitle } from 'utils/media';
 
 import { EMPTY_IMAGE } from 'utils/imageUrl';
+import { buttonEffect } from 'styles/css';
+import useCineneDataQuery from 'hooks/useCineneDataQuery';
 import AverageButton from './Average';
 
 export default function Popular() {
   const [viewIndex, setViewIndex] = useState(0);
   const [currentMedia, setCurrentMedia] = useState<IMediaResults>();
 
-  const { data } = useTrendingMediaQuery();
+  const { data, isLoading, isFetching } = useTrendingMediaQuery();
 
   const { data: detailData } = useQuery(
     ['media', 'details', currentMedia?.id],
@@ -26,14 +26,19 @@ export default function Popular() {
       staleTime: 1000 * 60 * 60 * 6,
     },
   );
-
-  const { data: videoData } = useQuery(
-    ['media', 'video', currentMedia?.id],
-    () => getVideos(currentMedia?.id, currentMedia?.media_type),
-    {
-      staleTime: 1000 * 60 * 60 * 6,
-    },
+  const cineneData = useCineneDataQuery(
+    currentMedia?.media_type,
+    currentMedia?.id,
+    detailData,
   );
+
+  // const { data: videoData } = useQuery(
+  //   ['media', 'video', currentMedia?.id],
+  //   () => getVideos(currentMedia?.id, currentMedia?.media_type),
+  //   {
+  //     staleTime: 1000 * 60 * 60 * 6,
+  //   },
+  // );
 
   const handleSlide = (index: number) => {
     const maxIndex = data?.length;
@@ -70,22 +75,29 @@ export default function Popular() {
       <Item>
         <div>
           <Category>
-            <AverageButton />
+            <AverageButton
+              tmdb={currentMedia?.vote_average}
+              cinene={cineneData}
+            />
           </Category>
           <Overview>
             <p>{title}</p>
             <p>{overview}</p>
           </Overview>
-          <ButtonWrapper>
+          <ButtonWrapper color="pink">
             <Link to={`/${currentMedia?.media_type}/${currentMedia?.id}`}>
               자세히 보기
             </Link>
-            <button type="button" onClick={() => handleSlide(-1)}>
+            <Button
+              color="navy50"
+              type="button"
+              onClick={() => handleSlide(-1)}
+            >
               <ChevronLeft />
-            </button>
-            <button type="button" onClick={() => handleSlide(1)}>
+            </Button>
+            <Button color="navy50" type="button" onClick={() => handleSlide(1)}>
               <ChevronRight />
-            </button>
+            </Button>
           </ButtonWrapper>
         </div>
       </Item>
@@ -205,35 +217,26 @@ const ButtonWrapper = styled.div`
       justify-content: center;
       margin-right: 2em;
       width: 120px;
-      &:hover {
-        background-color: ${lighten(0.1, theme.colors.pink)};
-      }
-      &:active {
-        background-color: ${darken(0.1, theme.colors.pink)};
-      }
-    }
-    button {
-      background-color: ${theme.colors.navy50};
-      border: none;
-      border-radius: 12px;
-      height: 40px;
-      margin-right: 1em;
-      svg {
-        align-items: center;
-        display: flex;
-        height: 30px;
-        stroke: #fff;
-        stroke-width: 1;
-        width: 30px;
-      }
-      &:hover {
-        background-color: ${lighten(0.1, theme.colors.navy50)};
-      }
-      &:active {
-        background-color: ${darken(0.1, theme.colors.navy50)};
-      }
+      ${buttonEffect};
     }
   `}
+`;
+
+const Button = styled.button`
+  background-color: ${({ theme }) => theme.colors.navy50};
+  border: none;
+  border-radius: 12px;
+  height: 40px;
+  margin-right: 1em;
+  ${buttonEffect};
+  svg {
+    align-items: center;
+    display: flex;
+    height: 30px;
+    stroke: #fff;
+    stroke-width: 1;
+    width: 30px;
+  }
 `;
 
 const VideoWrapper = styled.div`

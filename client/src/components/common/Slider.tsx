@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { darken, lighten } from 'polished';
 import styled, { css } from 'styled-components';
 
 import { ChevronLeft, ChevronRight } from 'assets';
 import throttle from 'hooks/useThrottle';
+import { buttonEffect } from 'styles/css';
 
 interface Props {
   children: React.ReactNode;
@@ -48,10 +48,8 @@ export default function Slider({ children, title }: Props) {
       case 'touchend':
         if (element?.current)
           setTranslateX(touchEvent.changedTouches[0].pageX, element.current);
-
         break;
       default:
-        break;
     }
   };
 
@@ -158,7 +156,7 @@ export default function Slider({ children, title }: Props) {
         {children}
       </ul>
       {maxWidth ? (
-        <ButtonWrapper>
+        <ButtonWrapper color="navy50">
           <button type="button" onClick={prevSlide}>
             <ChevronLeft />
           </button>
@@ -208,12 +206,7 @@ const ButtonWrapper = styled.div`
       border: none;
       border-radius: 10px;
       height: 30px;
-      &:hover {
-        background: ${lighten(0.1, theme.colors.navy50)};
-      }
-      &:active {
-        background: ${darken(0.1, theme.colors.navy50)};
-      }
+      ${buttonEffect};
       svg {
         align-items: center;
         display: flex;
