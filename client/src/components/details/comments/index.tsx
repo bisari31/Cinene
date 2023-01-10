@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components';
 
 import { getComments } from 'services/comments';
 import { useSetRecoilState } from 'recoil';
-import { contentIdState } from 'atom/user';
+import { contentIdState } from 'atom/atom';
 
 import CommentForm from './CommentForm';
 import CommentItem from './CommentItem';
@@ -44,11 +44,6 @@ const Wrapper = styled.div<{ length: number | undefined }>`
   ${({ theme, length }) => css`
     margin-bottom: 3rem;
     h3 {
-      font-size: 1rem;
-      font-weight: 500;
-      height: 30px;
-      line-height: 30px;
-      margin-bottom: 1.5rem;
       &::after {
         color: ${theme.colors.gray300};
         content: '(${length ? `${length}` : '0'})';

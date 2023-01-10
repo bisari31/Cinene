@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { useMutation } from 'react-query';
 
 import useInput from 'hooks/useInput';
-import { userIdState } from 'atom/user';
+import { userIdState } from 'atom/atom';
 import { login, register } from 'services/auth';
 import { queryClient } from 'index';
 import Input from './common/Input';

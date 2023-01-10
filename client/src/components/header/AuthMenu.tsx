@@ -4,7 +4,7 @@ import { useRecoilState, useSetRecoilState } from 'recoil';
 import { Link, useNavigate } from 'react-router-dom';
 import { lighten, darken } from 'polished';
 
-import { userIdState } from 'atom/user';
+import { userIdState } from 'atom/atom';
 import { useAuthQuery } from 'hooks/useAuthQuery';
 import useOutsideClick from 'hooks/useOutsideClick';
 import { logout } from 'services/auth';

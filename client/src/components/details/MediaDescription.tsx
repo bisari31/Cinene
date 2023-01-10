@@ -8,10 +8,13 @@ import { getSimilarMedia } from 'services/media';
 
 import Average from 'components/main/Average';
 import useCineneDataQuery from 'hooks/useCineneDataQuery';
+import { Favorite } from 'assets';
 import SimilarMedia from './SimilarMedia';
 import Credits from './Credits';
 import Seasons from './Seasons';
 import Comment from './comments';
+import Like from './Like';
+import Reviews from './Reviews';
 
 interface Props {
   data: IMovieTvDetails | undefined;
@@ -53,6 +56,7 @@ function Description({ path, data, id }: Props) {
     <DescriptionWrapper>
       <Average tmdb={data?.vote_average} cinene={cineneData} />
       <h2>{title}</h2>
+      <Like />
       <Genre>
         {getReleaseDate(data)}
         <p>
@@ -66,10 +70,12 @@ function Description({ path, data, id }: Props) {
           </p>
         ))}
       </Genre>
+
       <p>{overview}</p>
       <Seasons seasons={data?.seasons} />
       <SimilarMedia data={similarData} title={`추천 ${setTitle}`} type={path} />
       <Credits id={id} path={path} />
+      <Reviews />
       <Comment contentId={cineneData?._id} />
     </DescriptionWrapper>
   );
@@ -82,11 +88,7 @@ const DescriptionWrapper = styled.div`
     & > div:first-child {
       margin-bottom: 2em;
     }
-    h2 {
-      font-size: 2.3rem;
-      font-weight: 500;
-      line-height: 1.5;
-    }
+
     & > p {
       color: ${theme.colors.gray300};
       font-size: 0.9rem;
@@ -101,7 +103,7 @@ const Genre = styled.div`
     display: flex;
     flex-wrap: wrap;
     gap: 0.8em 1em;
-    margin-top: 1.5em;
+    margin-top: 1em;
     p {
       background-color: ${theme.colors.pink};
       border-radius: 7px;

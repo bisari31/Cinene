@@ -3,7 +3,7 @@ import { useQuery } from 'react-query';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { auth } from 'services/auth';
-import { userIdState } from 'atom/user';
+import { userIdState } from 'atom/atom';
 
 export const useAuthQuery = () => {
   const userId = useRecoilValue(userIdState);

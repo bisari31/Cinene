@@ -12,6 +12,8 @@ import Portal from 'components/common/Portal';
 import ModalImage from 'components/details/ModalImage';
 import PersonDescription from 'components/details/PersonDescription';
 import { getContent } from 'services/contents';
+import Reviews from 'components/details/Reviews';
+import Comments from 'components/details/comments';
 
 export default function DetailPage() {
   const { ref, isVisible, handleChangeVisibility } = useOutsideClick();
@@ -111,6 +113,18 @@ const Content = styled.article`
     display: flex;
     flex-direction: column;
     padding-top: 15em;
+    h2 {
+      font-size: 2.3rem;
+      font-weight: 500;
+      line-height: 1.5;
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 500;
+      height: 30px;
+      line-height: 30px;
+      margin-bottom: 1.5rem;
+    }
 
     & > div:nth-child(1) {
       bottom: 3em;

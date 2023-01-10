@@ -176,13 +176,7 @@ const SliderWrapper = styled.div<{ disable: boolean }>`
     margin-bottom: 4rem;
     overflow: hidden;
     position: relative;
-    h3 {
-      font-size: 1rem;
-      height: 30px;
-      font-weight: 500;
-      line-height: 30px;
-      margin-bottom: 1.5rem;
-    }
+
     ul {
       display: flex;
     }

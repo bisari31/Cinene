@@ -5,7 +5,7 @@ import { useRecoilValue } from 'recoil';
 
 import { useAuthQuery } from 'hooks/useAuthQuery';
 import { createComment } from 'services/comments';
-import { contentIdState } from 'atom/user';
+import { contentIdState } from 'atom/atom';
 
 import { queryClient } from 'index';
 import { buttonEffect } from 'styles/css';

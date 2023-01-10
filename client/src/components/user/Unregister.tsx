@@ -7,7 +7,7 @@ import { useSetRecoilState } from 'recoil';
 import { checkPassword, deleteUser } from 'services/auth';
 import useInput from 'hooks/useInput';
 import useOutsideClick from 'hooks/useOutsideClick';
-import { userIdState } from 'atom/user';
+import { userIdState } from 'atom/atom';
 
 import Button from 'components/common/Button';
 import Input from 'components/common/Input';
