@@ -1,24 +1,25 @@
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
-import { ChevronLeft } from 'assets';
 
+import { ChevronLeft } from 'assets';
 import { LeftButton } from 'styles/css';
 
-import SearchBar from './SearchBar';
+import SearchBar from 'components/header/SearchBar';
 
-export default function MobileSearch() {
+export default function SearchPage() {
   const navigate = useNavigate();
+
   return (
-    <MobileSearchWrapper>
+    <SearchPageWrapper>
       <button type="button" onClick={() => navigate(-1)}>
         <ChevronLeft />
       </button>
       <SearchBar isMobile />
-    </MobileSearchWrapper>
+    </SearchPageWrapper>
   );
 }
 
-const MobileSearchWrapper = styled.div`
+const SearchPageWrapper = styled.div`
   ${({ theme }) => css`
     padding: 1em;
     & > div {

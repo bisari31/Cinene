@@ -8,7 +8,8 @@ import LandingPage from 'pages/LandingPage';
 import MyPage from 'pages/MyPage';
 import DetailPage from 'pages/DetailPage';
 import LoginPage from 'pages/LoginPage';
-import MobileSearch from 'components/header/MobileSearch';
+import FavoritesPage from 'pages/FavoritesPage';
+import SearchPage from 'pages/SearchPage';
 
 export default function App() {
   const AuthLoginPage = AuthHoc(LoginPage);
@@ -27,8 +28,9 @@ export default function App() {
         <Route path="/movie/:id" element={<DetailPage />} />
         <Route path="/tv/:id" element={<DetailPage />} />
         <Route path="/person/:id" element={<DetailPage />} />
+        <Route path="/favorites" element={<FavoritesPage />} />
       </Route>
-      <Route path="/search" element={<MobileSearch />} />
+      <Route path="/search" element={<SearchPage />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

@@ -8,8 +8,8 @@ import { userIdState } from 'atom/atom';
 import { useAuthQuery } from 'hooks/useAuthQuery';
 import useOutsideClick from 'hooks/useOutsideClick';
 import { logout } from 'services/auth';
+import { Heart, Search } from 'assets';
 
-import { Favorite, Search } from 'assets';
 import Portal from 'components/common/Portal';
 import Modal from 'components/common/Modal';
 
@@ -52,13 +52,13 @@ export default function AuthMenu({ setIsVisible }: Props) {
             <Search className="search_icon" />
           </button>
         </Icons>
+        <Icons className="favorites_icon_wrapper">
+          <Link to="/favorites">
+            <Heart className="favorites_icon" />
+          </Link>
+        </Icons>
         {data?.success ? (
           <>
-            <Icons>
-              <Link to="/favorite">
-                <Favorite className="favorite_icon" />
-              </Link>
-            </Icons>
             <UserInfo>
               <Link to="/mypage">
                 <img
@@ -112,12 +112,14 @@ const AuthMenuWrapper = styled.div`
     }
 
     .logout_button,
-    .search_icon_wrapper {
+    .search_icon_wrapper,
+    .favorites_icon_wrapper {
       display: none;
     }
     @media ${({ theme }) => theme.device.tablet} {
       .logout_button,
-      .search_icon_wrapper {
+      .search_icon_wrapper,
+      .favorites_icon_wrapper {
         display: flex;
       }
     }
@@ -151,13 +153,24 @@ const BtnMenu = styled.li`
 `;
 const Icons = styled.li`
   align-items: center;
+  display: inline-flex;
   display: flex;
+  height: 48px;
+  width: 48px;
+  a,
   button {
-    border: none;
-    align-items: center;
     display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+  button {
+    padding: 0;
+    align-items: center;
     background: none;
-    padding: 1em;
+    border: none;
+    display: flex;
   }
   .search_icon {
     fill: #fff;
@@ -167,9 +180,6 @@ const Icons = styled.li`
     stroke: #fff;
     stroke-width: 1.5;
     width: 22px;
-  }
-  & + & {
-    margin-left: 1em;
   }
 `;
 
@@ -198,7 +208,7 @@ const UserInfo = styled.li`
 const LoginMenu = styled.li`
   height: 35px;
   text-align: center;
-  width: 70px;
+  width: 90px;
   a {
     display: inline-block;
     height: 100%;

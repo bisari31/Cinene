@@ -1,20 +1,39 @@
 import styled, { css } from 'styled-components';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-import { ChevronLeft, Menu, Search } from 'assets';
+import { ChevronLeft, Heart, Menu, Search } from 'assets';
 import { LeftButton } from 'styles/css';
 
 import useOutsideClick from 'hooks/useOutsideClick';
 import usePreventScrolling from 'hooks/usePreventScrolling';
 
+const MENU_LIST = [
+  {
+    name: '검색',
+    svg: <Search />,
+    pathname: '/search',
+  },
+  {
+    name: '즐겨찾기',
+    svg: <Heart />,
+    pathname: '/favorites',
+  },
+];
+
 export default function SideMenu() {
   const { ref, handleChangeVisibility, isVisible } = useOutsideClick();
 
+  const navigate = useNavigate();
   usePreventScrolling(isVisible);
 
+  const moveFavoritesPage = (pathname: string) => {
+    handleChangeVisibility();
+    navigate(pathname);
+  };
+
   return (
-    <SideMenuWrapper isVisible={isVisible}>
-      <div />
+    <SideMenuWrapper>
+      <Background isVisible={isVisible} />
       <button type="button" onClick={handleChangeVisibility}>
         <Menu />
       </button>
@@ -26,34 +45,24 @@ export default function SideMenu() {
         >
           <ChevronLeft />
         </button>
-        <Link to="/search">
-          <Search />
-          검색
-        </Link>
-        <Link to="/search">
-          <Search />
-          검색
-        </Link>
-        <Link to="/search">
-          <Search />
-          검색
-        </Link>
+        {MENU_LIST.map((list) => (
+          <Item key={list.pathname}>
+            <button
+              type="button"
+              onClick={() => moveFavoritesPage(list.pathname)}
+            >
+              {list.svg}
+              {list.name}
+            </button>
+          </Item>
+        ))}
       </SideMenuBar>
     </SideMenuWrapper>
   );
 }
 
-const SideMenuWrapper = styled.div<{ isVisible: boolean }>`
+const SideMenuWrapper = styled.div`
   align-items: center;
-  & > div:first-child {
-    display: ${({ isVisible }) => (isVisible ? 'block' : 'none')};
-    position: absolute;
-    left: 0;
-    right: 0;
-    height: 200vh;
-    z-index: 100;
-    background-color: rgba(0, 0, 0, 0.6);
-  }
   display: flex;
   & > button {
     background: none;
@@ -76,6 +85,16 @@ const SideMenuWrapper = styled.div<{ isVisible: boolean }>`
   }
 `;
 
+const Background = styled.div<{ isVisible: boolean }>`
+  background-color: rgba(0, 0, 0, 0.6);
+  display: ${({ isVisible }) => (isVisible ? 'block' : 'none')};
+  height: 200vh;
+  left: 0;
+  position: absolute;
+  right: 0;
+  z-index: 100;
+`;
+
 const SideMenuBar = styled.div<{ isVisible: boolean }>`
   ${({ theme, isVisible }) => css`
     background-color: ${theme.colors.navy100};
@@ -88,28 +107,14 @@ const SideMenuBar = styled.div<{ isVisible: boolean }>`
     transition: 0.4s ease-out;
     width: 60%;
     z-index: 999;
-    & > a:nth-of-type(1) {
-      margin-top: 3em;
-    }
-    & > a {
-      align-items: center;
+    & > div:nth-of-type(2) {
       svg {
-        fill: #fff;
-        margin-right: 1em;
-        stroke: #fff;
-        stroke-width: 0.5;
-        width: 18px;
-      }
-      border-radius: 10px;
-      display: flex;
-      font-size: 1rem;
-      padding: 1em;
-      &:hover {
-        background-color: ${theme.colors.navy};
+        fill: none;
+        stroke-width: 2;
       }
     }
-    a + a {
-      margin-top: 0.5em;
+    & > div:nth-of-type(1) {
+      margin-top: 2em;
     }
     .chevronleft_wrapper {
       ${LeftButton};
@@ -117,6 +122,33 @@ const SideMenuBar = styled.div<{ isVisible: boolean }>`
     }
     @media ${theme.device.tablet} {
       display: none;
+    }
+  `}
+`;
+
+const Item = styled.div`
+  ${({ theme }) => css`
+    border-radius: 10px;
+    &:hover {
+      background-color: ${theme.colors.navy};
+    }
+    button {
+      align-items: center;
+      background: none;
+      border: none;
+      color: #fff;
+      display: flex;
+      font-size: 0.9rem;
+      padding: 1em;
+      width: 100%;
+      svg {
+        fill: #fff;
+        height: 18px;
+        margin-right: 1em;
+        stroke: #fff;
+        stroke-width: 0.5;
+        width: 18px;
+      }
     }
   `}
 `;
