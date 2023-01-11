@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useQuery } from 'react-query';
 import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
@@ -11,6 +12,7 @@ import { EMPTY_IMAGE } from 'utils/imageUrl';
 
 import Slider from 'components/common/Slider';
 import dayjs from 'dayjs';
+import { changeNickname } from 'services/auth';
 
 interface Props {
   type: 'upcoming' | 'now';
@@ -22,12 +24,12 @@ export default function Upcomming({ type }: Props) {
     getUpcomingMovie,
     {
       staleTime: 1000 * 60 * 60 * 6,
-      select: (prevData) =>
-        prevData.sort(
-          (a, b) =>
-            new Date(a.release_date).getTime() -
-            new Date(b.release_date).getTime(),
-        ),
+      select: (prevData) => {
+        const day = dayjs();
+        return prevData
+          .sort((a, b) => dayjs(a.release_date).diff(b.release_date, 'd'))
+          .filter((item) => day.diff(item.release_date, 'd') < 1);
+      },
     },
   );
   const { data: nowData } = useQuery(
@@ -104,11 +106,16 @@ const List = styled.li`
       font-weight: 500;
     }
     p:nth-of-type(1) {
+      background-color: rgba(0, 0, 0, 0.4);
       font-size: 1.2rem;
       text-align: end;
-      width: 250px;
+      max-width: 350px;
       bottom: 1.5em;
       right: 1.5em;
+      width: auto;
+      padding: 0.2em 0.4em;
+      word-break: keep-all;
+      border-radius: 7px;
     }
     p:nth-of-type(2) {
       font-size: 0.9rem;
