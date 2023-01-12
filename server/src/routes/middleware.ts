@@ -19,6 +19,6 @@ export const authenticate = async (
     req.user = user;
     next();
   } catch (err) {
-    return res.send({ success: false });
+    return res.send({ success: false, message: '로그인 실패' });
   }
 };

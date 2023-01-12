@@ -4,7 +4,7 @@ import { Router, Request, Response } from 'express';
 import Content from '../models/content';
 import { IContent } from '../types/content';
 
-interface CustomRequest<T> extends Request {
+export interface CustomRequest<T> extends Request {
   body: T;
 }
 
@@ -22,7 +22,6 @@ router.get('/:type/:id', async (req, res) => {
         message: '콘텐츠 없음',
         content: null,
       });
-    console.log(content);
     res.json({ success: true, content });
   } catch (err) {
     res

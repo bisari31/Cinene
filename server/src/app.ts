@@ -8,6 +8,7 @@ import authRouter from './routes/auth';
 import contentRouter from './routes/contents';
 import commentRouter from './routes/comments';
 import ratingRouter from './routes/rating';
+import likeRouter from './routes/like';
 // import authRouter from './routes/auth';
 // import postsRouter from './routes/posts';
 // import commentRouter from './routes/comment';
@@ -31,6 +32,8 @@ app.use(morgan('dev'));
 app.use('/auth', authRouter);
 app.use('/content', contentRouter);
 app.use('/comment', commentRouter);
+app.use('/like', likeRouter);
+
 app.use('/rating', ratingRouter);
 
 // app.use('/auth', authRouter);

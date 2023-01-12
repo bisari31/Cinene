@@ -1,25 +1,19 @@
 import { Schema, Types, model } from 'mongoose';
 
-const likeSchema = new Schema(
-  {
-    contentId: {
-      type: Types.ObjectId,
-      ref: 'Content',
-    },
-    commentId: {
-      type: Types.ObjectId,
-      ref: 'Content',
-    },
-    userId: {
-      type: Types.ObjectId,
-      ref: 'User',
-    },
-    comment: {
-      type: String,
-    },
+const likeSchema = new Schema({
+  contentId: {
+    type: Types.ObjectId,
+    ref: 'Content',
   },
-  { timestamps: true },
-);
+  commentId: {
+    type: Types.ObjectId,
+    ref: 'Comment',
+  },
+  userId: {
+    type: Types.ObjectId,
+    ref: 'User',
+  },
+});
 
 const Like = model('Like', likeSchema);
 
