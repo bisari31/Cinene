@@ -13,7 +13,7 @@ import ModalImage from 'components/details/ModalImage';
 import PersonDescription from 'components/details/PersonDescription';
 import { getContent } from 'services/contents';
 import Reviews from 'components/details/Reviews';
-import Comments from 'components/details/comments';
+import Comments from 'components/details/Comments';
 
 export default function DetailPage() {
   const { ref, isVisible, handleChangeVisibility } = useOutsideClick();

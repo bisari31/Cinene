@@ -1,16 +1,8 @@
 import axios from 'axios';
 
-// interface IContentBody {
-//   tmdbId: number;
-//   type: string;
-//   poster: string;
-//   backdrop: string;
-//   name: string;
-// }
-
 interface IResponse {
   success: boolean;
-  content: IContent | null;
+  content: IContent | undefined;
   message?: string;
 }
 

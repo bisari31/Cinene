@@ -1,14 +1,19 @@
+import { IContent } from 'services/contents';
 import styled, { css } from 'styled-components';
 
-export default function Reviews() {
+interface IProps {
+  data: IContent | undefined | null;
+}
+
+export default function Reviews({ data }: IProps) {
   return (
-    <ReviewsWrapper length={0}>
+    <ReviewsWrapper length={data?.count}>
       <h3>리뷰</h3>
     </ReviewsWrapper>
   );
 }
 
-const ReviewsWrapper = styled.div<{ length: number }>`
+const ReviewsWrapper = styled.div<{ length: number | undefined }>`
   ${({ theme, length }) => css`
     h3 {
       &::after {

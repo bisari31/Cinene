@@ -5,14 +5,13 @@ import dayjs from 'dayjs';
 
 import { getMediaOverview, getMediaTitle } from 'utils/media';
 import { getSimilarMedia } from 'services/media';
+import useCineneDataQuery from 'hooks/useCineneDataQuery';
 
 import Average from 'components/main/Average';
-import useCineneDataQuery from 'hooks/useCineneDataQuery';
-import { Favorite } from 'assets';
 import SimilarMedia from './SimilarMedia';
 import Credits from './Credits';
 import Seasons from './Seasons';
-import Comment from './comments';
+import Comment from './Comments';
 import Like from './Like';
 import Reviews from './Reviews';
 
@@ -56,7 +55,7 @@ function Description({ path, data, id }: Props) {
     <DescriptionWrapper>
       <Average tmdb={data?.vote_average} cinene={cineneData} />
       <h2>{title}</h2>
-      <Like />
+      <Like cinene={cineneData} />
       <Genre>
         {getReleaseDate(data)}
         <p>
@@ -75,7 +74,7 @@ function Description({ path, data, id }: Props) {
       <Seasons seasons={data?.seasons} />
       <SimilarMedia data={similarData} title={`추천 ${setTitle}`} type={path} />
       <Credits id={id} path={path} />
-      <Reviews />
+      <Reviews data={cineneData} />
       <Comment contentId={cineneData?._id} />
     </DescriptionWrapper>
   );

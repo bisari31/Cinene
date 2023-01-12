@@ -7,7 +7,7 @@ import useCineneDataQuery from 'hooks/useCineneDataQuery';
 
 import Average from 'components/main/Average';
 import SimilarMedia from './SimilarMedia';
-import Comment from './comments';
+import Comment from './Comments';
 import Like from './Like';
 import Reviews from './Reviews';
 
@@ -56,7 +56,7 @@ export default function PersonDescription({ data, path, id }: IProps) {
     <PersonDescriptionWrapper>
       <Average isMedia={false} cinene={cineneData} />
       <h2>{getKoreanName(data)}</h2>
-      <Like />
+      <Like cinene={cineneData} />
       <div>
         <p>{data?.birthday ? `출생: ${data.birthday}` : '정보 없음'}</p>
       </div>
@@ -72,7 +72,7 @@ export default function PersonDescription({ data, path, id }: IProps) {
           title="제작 작품"
         />
       )}
-      <Reviews />
+      <Reviews data={cineneData} />
       <Comment contentId={cineneData?._id} />
     </PersonDescriptionWrapper>
   );

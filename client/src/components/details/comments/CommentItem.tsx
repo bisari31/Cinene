@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components';
 
 import { IComment } from 'types/comment';
 import { USER_IMAGE } from 'utils/imageUrl';
-import { Favorite } from 'assets';
+import { ChevronDown, Heart } from 'assets';
 import { buttonEffect } from 'styles/css';
 
 import ReplyComments from './ReplyComments';
@@ -92,7 +92,7 @@ export default function CommentItem({
         </div>
         <ButtonWrapper color="navy50">
           <Button type="button">
-            <Favorite />
+            <Heart />
           </Button>
           {!isResponse && (
             <Button
@@ -176,9 +176,12 @@ const Button = styled.button<{ dataLength?: number }>`
     display: flex;
     font-size: 0.8rem;
     padding: 0.5em;
+
     &::after {
       color: ${theme.colors.gray300};
       content: '${dataLength ? `${dataLength}` : '0'}';
+      font-size: 0.75rem;
+      line-height: 1;
       margin-left: 0.3em;
     }
   `}
