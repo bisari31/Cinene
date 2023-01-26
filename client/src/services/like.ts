@@ -10,7 +10,18 @@ interface IResponse {
 export const getContentLikes = async (id?: string, userId?: string) => {
   try {
     const { data } = await axios.get<IResponse>(
-      `/like?id=${id}${userId ? `&userId=${userId}` : ''}`,
+      `/like/content/${id}${userId ? `?userId=${userId}` : ''}`,
+    );
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const getCommentsLikes = async (id?: string, userId?: string) => {
+  try {
+    const { data } = await axios.get<IResponse>(
+      `/like/comments/${id}${userId ? `?userId=${userId}` : ''}`,
     );
     return data;
   } catch (err) {
@@ -20,6 +31,6 @@ export const getContentLikes = async (id?: string, userId?: string) => {
 
 export const upLike = async (id?: string) => {
   if (!id) return;
-  const { data } = await axios.post<IResponse>(`/like?id=${id}`);
+  const { data } = await axios.post<IResponse>(`/like/${id}`);
   return data;
 };

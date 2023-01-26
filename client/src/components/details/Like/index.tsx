@@ -19,14 +19,15 @@ interface IProps {
 }
 
 export default function Like({ cinene }: IProps) {
-  const { ref, animationState, handleChangeVisibility, isVisible } =
-    useOutsideClick(300);
-  const { data: auth } = useAuthQuery();
-
   const navigate = useNavigate();
 
+  const { ref, animationState, handleChangeVisibility, isVisible } =
+    useOutsideClick(300);
+
+  const { data: auth } = useAuthQuery();
+
   const { data } = useQuery(
-    ['likes', cinene?._id, { loggedIn: auth?.success }],
+    ['likes', 'content', cinene?._id, { loggedIn: auth?.success }],
     () => getContentLikes(cinene?._id, auth?.user?._id),
     {
       enabled: !!cinene?._id,
@@ -35,7 +36,7 @@ export default function Like({ cinene }: IProps) {
 
   const { mutate } = useMutation(upLike, {
     onSuccess: () => {
-      queryClient.invalidateQueries(['likes', cinene?._id]);
+      queryClient.invalidateQueries(['likes', 'content', cinene?._id]);
     },
   });
 
@@ -47,7 +48,12 @@ export default function Like({ cinene }: IProps) {
   return (
     <ButtonWrapper color="navy50">
       <Button type="button">리뷰 {cinene?.count}</Button>
-      <Button type="button" isActive={data?.isLike} onClick={handleClick}>
+      <Button
+        type="button"
+        isActive={data?.isLike}
+        isNotZero={!!data?.likes}
+        onClick={handleClick}
+      >
         <Heart /> {data?.likes ?? 0}
       </Button>
       {isVisible && (
@@ -77,8 +83,8 @@ const ButtonWrapper = styled.div`
   }
 `;
 
-const Button = styled.button<{ isActive?: boolean }>`
-  ${({ theme, isActive }) => css`
+const Button = styled.button<{ isActive?: boolean; isNotZero?: boolean }>`
+  ${({ theme, isActive, isNotZero }) => css`
     align-items: center;
     background-color: ${theme.colors.navy50};
     border: ${isActive ? `1px solid ${theme.colors.pink}` : '#fff'};
@@ -90,10 +96,10 @@ const Button = styled.button<{ isActive?: boolean }>`
     height: 27.45px;
     padding: 0 0.8em;
     svg {
-      fill: ${isActive ? theme.colors.pink : 'none'};
+      fill: ${isActive || isNotZero ? theme.colors.pink : ''};
       height: 13px;
       margin-right: 0.3em;
-      stroke: ${isActive ? theme.colors.pink : '#fff'};
+      stroke: ${isActive || isNotZero ? theme.colors.pink : '#fff'};
       stroke-width: 1.5;
       width: 13px;
     }

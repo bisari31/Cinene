@@ -18,14 +18,14 @@ export default function CommentForm({ responseId }: IProps) {
   const [text, setText] = useState('');
   const contentId = useRecoilValue(contentIdState);
 
+  const { data } = useAuthQuery();
+
   const { mutate } = useMutation(createComment, {
     onSuccess: () => {
       queryClient.invalidateQueries(['comments']);
       setText('');
     },
   });
-
-  const { data } = useAuthQuery();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

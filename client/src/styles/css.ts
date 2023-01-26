@@ -1,5 +1,5 @@
 import { darken, lighten } from 'polished';
-import { css } from 'styled-components';
+import styled, { css } from 'styled-components';
 import theme, { ColorsKey } from './theme';
 
 export const outside = css<{ height: number | undefined }>`
@@ -41,6 +41,33 @@ export const buttonEffect = css<{ color: ColorsKey }>`
     }
     &:active {
       background: ${darken(0.05, theme.colors[color])};
+    }
+  `}
+`;
+
+export const Button = styled.button<{ dataLength?: number }>`
+  ${({ dataLength }) => css`
+    align-items: center;
+    background: none;
+    border: none;
+    border-radius: 10px;
+    color: ${theme.colors.gray100};
+    display: flex;
+    font-size: 0.8rem;
+    padding: 0.5em;
+    svg {
+      height: 16px;
+      stroke: ${theme.colors.red};
+      stroke-width: 2;
+      width: 16px;
+    }
+
+    &::after {
+      color: ${theme.colors.gray300};
+      content: '${dataLength ? `${dataLength}` : '0'}';
+      font-size: 0.75rem;
+      line-height: 1;
+      margin-left: 0.3em;
     }
   `}
 `;

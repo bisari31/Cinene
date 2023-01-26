@@ -1,7 +1,8 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+import { buttonEffect } from 'styles/css';
 
 export default function FavoritesPage() {
-  return <FavoritesPageWrapper>FavoritesPage</FavoritesPageWrapper>;
+  return <FavoritesPageWrapper />;
 }
 
 const FavoritesPageWrapper = styled.div``;

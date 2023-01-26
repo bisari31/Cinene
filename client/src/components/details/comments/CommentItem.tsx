@@ -1,19 +1,13 @@
 import { useState, useEffect } from 'react';
-import dayjs from 'dayjs';
 import styled, { css } from 'styled-components';
 
 import { IComment } from 'types/comment';
 import { USER_IMAGE } from 'utils/imageUrl';
-import { ChevronDown, Heart } from 'assets';
-import { buttonEffect } from 'styles/css';
+import { Button, buttonEffect } from 'styles/css';
+import { changeDaysAgo } from 'utils/days';
 
 import ReplyComments from './ReplyComments';
-
-interface IDays {
-  shorthand: 's' | 'm' | 'h' | 'd' | 'w' | 'M';
-  name: string;
-  calculation: number;
-}
+import CommentLikeButton from './CommentLikeButton';
 
 interface IProps {
   comments?: IComment[];
@@ -29,49 +23,6 @@ export default function CommentItem({
   const [ReplyData, setReplyData] = useState<IComment[]>();
   const [openReplyComment, setOpenReplyComment] = useState(false);
 
-  const setDate = (date?: string) => {
-    const today = dayjs();
-    const daysArray: IDays[] = [
-      {
-        shorthand: 's',
-        name: '방금 전',
-        calculation: 60,
-      },
-      {
-        shorthand: 'm',
-        name: '분 전',
-        calculation: 60,
-      },
-      {
-        shorthand: 'h',
-        name: '시간 전',
-        calculation: 24,
-      },
-      {
-        shorthand: 'd',
-        name: '일 전',
-        calculation: 7,
-      },
-      {
-        shorthand: 'w',
-        name: '주 전',
-        calculation: 4,
-      },
-      {
-        shorthand: 'M',
-        name: '달 전',
-        calculation: 12,
-      },
-    ];
-    // eslint-disable-next-line no-restricted-syntax
-    for (const item of daysArray) {
-      const diff = today.diff(date, item.shorthand);
-      if (diff < item.calculation)
-        return item.shorthand === 's' ? item.name : `${diff}${item.name}`;
-    }
-    return `${today.diff(date, 'y')} 년 전`;
-  };
-
   useEffect(() => {
     setReplyData(
       comments?.filter((item) => item.responseTo === commentItem?._id),
@@ -82,7 +33,7 @@ export default function CommentItem({
     <>
       <Item
         key={commentItem?._id}
-        date={setDate(commentItem?.createdAt)}
+        date={changeDaysAgo(commentItem?.createdAt)}
         isResponse={isResponse}
       >
         <img src={USER_IMAGE} alt="user_poster" />
@@ -91,9 +42,7 @@ export default function CommentItem({
           <p>{commentItem?.comment}</p>
         </div>
         <ButtonWrapper color="navy50">
-          <Button type="button">
-            <Heart />
-          </Button>
+          <CommentLikeButton commentId={commentItem?._id} />
           {!isResponse && (
             <Button
               dataLength={ReplyData?.length}
@@ -158,31 +107,4 @@ const ButtonWrapper = styled.div`
   button {
     ${buttonEffect};
   }
-  svg {
-    height: 16px;
-    stroke: ${({ theme }) => theme.colors.red};
-    stroke-width: 2;
-    width: 16px;
-  }
-`;
-
-const Button = styled.button<{ dataLength?: number }>`
-  ${({ theme, dataLength }) => css`
-    align-items: center;
-    background: none;
-    border: none;
-    border-radius: 10px;
-    color: ${theme.colors.gray100};
-    display: flex;
-    font-size: 0.8rem;
-    padding: 0.5em;
-
-    &::after {
-      color: ${theme.colors.gray300};
-      content: '${dataLength ? `${dataLength}` : '0'}';
-      font-size: 0.75rem;
-      line-height: 1;
-      margin-left: 0.3em;
-    }
-  `}
 `;
