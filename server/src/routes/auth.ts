@@ -15,7 +15,7 @@ interface IRegisterBody {
 
 router.get('/', authenticate, async (req: IRequest<null>, res) => {
   try {
-    res.json({ success: true });
+    res.json({ success: true, user: req.user });
   } catch (err) {
     res.status(400).send({ success: false, message: '인증 오류' });
   }

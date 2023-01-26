@@ -23,6 +23,7 @@ const userSchema = new Schema<IUser>(
     },
     token: {
       type: String,
+      default: '',
     },
   },
   {
