@@ -6,23 +6,24 @@ import { IUser } from '../types/user';
 import Like from '../models/like';
 
 interface IRequest extends Request {
-  params: { id: string };
+  params: { id: string; type: 'commentId' | 'contentId' };
   query: { userId?: string };
   user?: IUser;
 }
 
 const router = Router();
 
-router.get('/content/:id', async (req: IRequest, res) => {
+router.get('/:type/:id', async (req: IRequest, res) => {
   try {
-    const likes = await Like.find({ contentId: req.params.id });
+    const type = req.params.type;
+    const likes = await Like.find({ [type]: req.params.id });
     if (!req.query.userId) {
       return res.json({ success: true, likes: likes.length, isLike: false });
     }
     console.log(likes);
     const document = await Like.findOne({
       userId: req.query.userId,
-      contentId: req.params.id,
+      [type]: req.params.id,
     });
     res.json({
       success: true,
@@ -35,18 +36,19 @@ router.get('/content/:id', async (req: IRequest, res) => {
   }
 });
 
-router.post('/:id', authenticate, async (req: IRequest, res) => {
+router.post('/:type/:id', authenticate, async (req: IRequest, res) => {
   try {
+    const type = req.params.type;
     const document = await Like.findOne({
       userId: req.user?._id,
-      contentId: req.params.id,
+      [type]: req.params.id,
     });
     if (document) {
       await Like.deleteOne({ _id: document._id });
       return res.json({ success: true });
     }
     await Like.create({
-      contentId: req.params.id,
+      [type]: req.params.id,
       userId: req.user?._id,
     });
     return res.json({ success: true });
@@ -55,26 +57,4 @@ router.post('/:id', authenticate, async (req: IRequest, res) => {
     console.error(err);
   }
 });
-
-router.get('/comments/:id', async (req: IRequest, res) => {
-  try {
-    const likes = await Like.find({ commentId: req.params.id });
-    if (!req.query.userId) {
-      return res.json({ success: true, likes: likes.length, isLike: false });
-    }
-    // const document = await Like.findOne({
-    //   userId: req.query.userId,
-    //   contentId: req.params.id,
-    // });
-    // res.json({
-    //   success: true,
-    //   likes: likes.length,
-    //   isLike: !!document,
-    // });
-  } catch (err) {
-    res.status(400).json({ success: false, message: '좋아요 조회 실패' });
-    console.error(err);
-  }
-});
-
 export default router;

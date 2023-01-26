@@ -5,9 +5,12 @@ import { IComment } from 'types/comment';
 import { USER_IMAGE } from 'utils/imageUrl';
 import { Button, buttonEffect } from 'styles/css';
 import { changeDaysAgo } from 'utils/days';
+import { Heart } from 'assets';
+import useOutsideClick from 'hooks/useOutsideClick';
+import useLike from 'hooks/useLike';
 
+import LoginPortal from 'components/common/LoginPortal';
 import ReplyComments from './ReplyComments';
-import CommentLikeButton from './CommentLikeButton';
 
 interface IProps {
   comments?: IComment[];
@@ -22,6 +25,16 @@ export default function CommentItem({
 }: IProps) {
   const [ReplyData, setReplyData] = useState<IComment[]>();
   const [openReplyComment, setOpenReplyComment] = useState(false);
+
+  const { ref, animationState, handleChangeVisibility, isVisible } =
+    useOutsideClick(300);
+
+  const { authData, data, mutate } = useLike('comments', commentItem?._id);
+
+  const handleClick = () => {
+    if (!authData?.success) return handleChangeVisibility();
+    mutate({ type: 'commentId', id: commentItem?._id });
+  };
 
   useEffect(() => {
     setReplyData(
@@ -42,20 +55,34 @@ export default function CommentItem({
           <p>{commentItem?.comment}</p>
         </div>
         <ButtonWrapper color="navy50">
-          <CommentLikeButton commentId={commentItem?._id} />
+          <Button
+            isZero={!data?.likes}
+            type="button"
+            onClick={handleClick}
+            isActive={data?.isLike}
+          >
+            <Heart /> {data?.likes ?? '0'}
+          </Button>
           {!isResponse && (
             <Button
-              dataLength={ReplyData?.length}
+              isActive={openReplyComment}
               type="button"
               onClick={() => setOpenReplyComment((prev) => !prev)}
             >
-              답글
+              답글 {ReplyData?.length}
             </Button>
           )}
         </ButtonWrapper>
       </Item>
       {openReplyComment && (
         <ReplyComments comments={ReplyData} responseId={commentItem?._id} />
+      )}
+      {isVisible && (
+        <LoginPortal
+          closeFn={handleChangeVisibility}
+          isVisible={animationState}
+          refElement={ref}
+        />
       )}
     </>
   );
@@ -106,5 +133,8 @@ const ButtonWrapper = styled.div`
   display: flex;
   button {
     ${buttonEffect};
+  }
+  button + button {
+    margin-left: 0.5em;
   }
 `;

@@ -45,29 +45,28 @@ export const buttonEffect = css<{ color: ColorsKey }>`
   `}
 `;
 
-export const Button = styled.button<{ dataLength?: number }>`
-  ${({ dataLength }) => css`
+export const Button = styled.button<{
+  isZero?: boolean;
+  isActive?: boolean;
+}>`
+  ${({ isActive, isZero }) => css`
     align-items: center;
-    background: none;
-    border: none;
-    border-radius: 10px;
-    color: ${theme.colors.gray100};
+    background-color: ${theme.colors.navy50};
+    border: ${isActive ? `1px solid ${theme.colors.pink}` : '#fff'};
+    border-radius: 7px;
+    color: #fff;
     display: flex;
-    font-size: 0.8rem;
-    padding: 0.5em;
+    font-size: 0.78rem;
+    font-weight: 400;
+    height: 27.45px;
+    padding: 0 0.8em;
     svg {
-      height: 16px;
-      stroke: ${theme.colors.red};
+      fill: ${isActive || !isZero ? theme.colors.pink : ''};
+      height: 13px;
+      margin-right: 0.3em;
+      stroke: ${theme.colors.pink};
       stroke-width: 2;
-      width: 16px;
-    }
-
-    &::after {
-      color: ${theme.colors.gray300};
-      content: '${dataLength ? `${dataLength}` : '0'}';
-      font-size: 0.75rem;
-      line-height: 1;
-      margin-left: 0.3em;
+      width: 13px;
     }
   `}
 `;

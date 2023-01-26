@@ -12,7 +12,7 @@ import SimilarMedia from './SimilarMedia';
 import Credits from './Credits';
 import Seasons from './Seasons';
 import Comment from './Comments';
-import Like from './Like';
+import Like from './LikeButton';
 import Reviews from './Reviews';
 
 interface Props {

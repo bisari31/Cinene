@@ -8,7 +8,7 @@ import useCineneDataQuery from 'hooks/useCineneDataQuery';
 import Average from 'components/main/Average';
 import SimilarMedia from './SimilarMedia';
 import Comment from './Comments';
-import Like from './Like';
+import Like from './LikeButton';
 import Reviews from './Reviews';
 
 interface IProps {
