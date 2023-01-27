@@ -1,41 +1,24 @@
 import styled, { css } from 'styled-components';
 import { useEffect } from 'react';
-import { useRecoilState, useSetRecoilState } from 'recoil';
-import { Link, useNavigate } from 'react-router-dom';
+import { useSetRecoilState } from 'recoil';
+import { Link } from 'react-router-dom';
 import { lighten, darken } from 'polished';
 
 import { userIdState } from 'atom/atom';
-import { useAuthQuery } from 'hooks/useAuthQuery';
-import useOutsideClick from 'hooks/useOutsideClick';
-import { logout } from 'services/auth';
 import { Heart, Search } from 'assets';
 
-import Portal from 'components/common/Portal';
-import Modal from 'components/common/Modal';
+import LogoutButton from 'components/common/LogoutButton';
 
 interface Props {
   setIsVisible: () => void;
+  data?: {
+    success: boolean;
+    user: IUser | undefined;
+  };
 }
 
-export default function AuthMenu({ setIsVisible }: Props) {
+export default function AuthMenu({ setIsVisible, data }: Props) {
   const setUserId = useSetRecoilState(userIdState);
-  const { data } = useAuthQuery();
-  const {
-    ref: refElement,
-    isVisible,
-    animationState,
-    handleChangeVisibility,
-  } = useOutsideClick(300);
-
-  // const navigate = useNavigate();
-
-  const handleLogout = () => {
-    handleChangeVisibility();
-    logout().then(() => {
-      localStorage.removeItem('userId');
-      setUserId('');
-    });
-  };
 
   useEffect(() => {
     const item = localStorage.getItem('userId');
@@ -68,9 +51,7 @@ export default function AuthMenu({ setIsVisible }: Props) {
               </Link>
             </UserInfo>
             <BtnMenu className="logout_button">
-              <button type="button" onClick={handleChangeVisibility}>
-                로그아웃
-              </button>
+              <LogoutButton />
             </BtnMenu>
           </>
         ) : (
@@ -82,21 +63,6 @@ export default function AuthMenu({ setIsVisible }: Props) {
               <Link to="/register">회원가입</Link>
             </BtnMenu>
           </>
-        )}
-
-        {isVisible && (
-          <Portal>
-            <Modal
-              color="pink"
-              buttonText={['아니요', '로그아웃']}
-              isVisible={animationState}
-              refElement={refElement}
-              closeFn={handleChangeVisibility}
-              executeFn={handleLogout}
-            >
-              정말 로그아웃 하시겠습니까? 😰
-            </Modal>
-          </Portal>
         )}
       </ul>
     </AuthMenuWrapper>

@@ -91,14 +91,15 @@ const slideFadeOut = keyframes`
 
 const OutSide = styled.div<{ height: number | undefined }>`
   ${outside};
+  z-index: 3;
 `;
 const ModalWrapper = styled.div<{ isVisible: boolean }>`
   animation: ${({ isVisible }) => (isVisible ? slideFadeIn : slideFadeOut)} 0.5s
     ease-out;
   background-color: ${({ theme }) => theme.colors.navy};
   border-radius: 30px;
-  /* box-shadow: 0px 4px 14px 3px rgba(0, 0, 0, 0.6); */
   display: flex;
+  /* box-shadow: 0px 4px 14px 3px rgba(0, 0, 0, 0.6); */
   flex-direction: column;
   height: 30vh;
   margin: 3em;

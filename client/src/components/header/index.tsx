@@ -2,19 +2,22 @@ import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
 
 import useOutsideClick from 'hooks/useOutsideClick';
+import { useAuthQuery } from 'hooks/useAuthQuery';
 
 import AuthMenu from './AuthMenu';
 import SearchBar from './SearchBar';
 import SideMenu from './SideMenu';
 
 export default function Header() {
+  const { data } = useAuthQuery();
+
   const { ref, isVisible, handleChangeVisibility, animationState } =
     useOutsideClick(300);
 
   return (
     <HeaderWrapper>
       <Logo>
-        <SideMenu />
+        <SideMenu data={data} />
         <h1>
           <Link to="/">Cinene</Link>
         </h1>
@@ -26,7 +29,7 @@ export default function Header() {
           handleChangeVisibility={handleChangeVisibility}
         />
       </SearchWrapper>
-      <AuthMenu setIsVisible={handleChangeVisibility} />
+      <AuthMenu data={data} setIsVisible={handleChangeVisibility} />
     </HeaderWrapper>
   );
 }

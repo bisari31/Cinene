@@ -1,6 +1,5 @@
-import { useEffect } from 'react';
 import { useQuery } from 'react-query';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilValue } from 'recoil';
 
 import { auth } from 'services/auth';
 import { userIdState } from 'atom/atom';

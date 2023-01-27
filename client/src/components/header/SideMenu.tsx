@@ -3,9 +3,17 @@ import { useNavigate } from 'react-router-dom';
 
 import { ChevronLeft, Heart, Menu, Search } from 'assets';
 import { LeftButton } from 'styles/css';
-
 import useOutsideClick from 'hooks/useOutsideClick';
 import usePreventScrolling from 'hooks/usePreventScrolling';
+
+import LogoutButton from 'components/common/LogoutButton';
+
+interface IProps {
+  data?: {
+    success: boolean;
+    user?: IUser | undefined;
+  };
+}
 
 const MENU_LIST = [
   {
@@ -20,7 +28,7 @@ const MENU_LIST = [
   },
 ];
 
-export default function SideMenu() {
+export default function SideMenu({ data }: IProps) {
   const { ref, handleChangeVisibility, isVisible } = useOutsideClick();
 
   const navigate = useNavigate();
@@ -56,6 +64,7 @@ export default function SideMenu() {
             </button>
           </Item>
         ))}
+        {data?.success && <LogoutButton />}
       </SideMenuBar>
     </SideMenuWrapper>
   );
@@ -92,13 +101,14 @@ const Background = styled.div<{ isVisible: boolean }>`
   left: 0;
   position: absolute;
   right: 0;
-  z-index: 100;
 `;
 
 const SideMenuBar = styled.div<{ isVisible: boolean }>`
   ${({ theme, isVisible }) => css`
     background-color: ${theme.colors.navy100};
     border-radius: 0 40px 40px 0;
+    display: flex;
+    flex-direction: column;
     height: 100%;
     left: ${isVisible ? '0px' : '-480px'};
     padding: 1em;
@@ -106,20 +116,31 @@ const SideMenuBar = styled.div<{ isVisible: boolean }>`
     top: 0;
     transition: 0.4s ease-out;
     width: 60%;
-    z-index: 999;
+    z-index: 1;
+    & > div:nth-of-type(1) {
+      margin-top: 2em;
+    }
     & > div:nth-of-type(2) {
       svg {
         fill: none;
         stroke-width: 2;
       }
     }
-    & > div:nth-of-type(1) {
-      margin-top: 2em;
+    & > button:last-child {
+      margin-top: auto;
+      margin-bottom: 3em;
+      border: none;
+      padding: 1em;
+      color: #fff;
+      border-radius: 10px;
+      display: flex;
+      justify-content: center;
     }
     .chevronleft_wrapper {
       ${LeftButton};
       background-color: ${theme.colors.navy};
     }
+
     @media ${theme.device.tablet} {
       display: none;
     }
