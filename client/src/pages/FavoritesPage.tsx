@@ -1,21 +1,52 @@
+import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+
 import { useAuthQuery } from 'hooks/useAuthQuery';
-import styled, { css } from 'styled-components';
-import { buttonEffect } from 'styles/css';
+
+import Button from 'components/common/Button';
+import Favorites from 'components/favorites';
 
 export default function FavoritesPage() {
   const { data } = useAuthQuery();
+  const navigate = useNavigate();
+
   return (
     <FavoritesPageWrapper>
       {!data?.success ? (
-        <div>
+        <GuestForm>
           로그인이 필요한 서비스 입니다.
-          <button type="button">로그인하기</button>
-        </div>
+          <Button
+            onClick={() => navigate('/login')}
+            type="button"
+            size="small"
+            color="pink"
+          >
+            로그인
+          </Button>
+        </GuestForm>
       ) : (
-        'ㅇㅇ'
+        <Favorites data={data} />
       )}
     </FavoritesPageWrapper>
   );
 }
 
-const FavoritesPageWrapper = styled.div``;
+const FavoritesPageWrapper = styled.div`
+  height: ${({ theme }) => `calc(100vh - ${theme.config.header} - 1em)`};
+`;
+
+const GuestForm = styled.div`
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  font-size: 1.1rem;
+  font-weight: 400;
+  height: ${({ theme }) => `calc(100vh - ${theme.config.header})`};
+  justify-content: center;
+  button {
+    border-radius: 12px;
+    height: 40px;
+    margin-top: 3em;
+    width: 150px;
+  }
+`;

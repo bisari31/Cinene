@@ -22,3 +22,26 @@ interface IPostUpdateBody {
   title: string;
   body: string;
 }
+
+interface IFavoritesContents {
+  average: number;
+  count: number;
+  name: string;
+  poster: string;
+  tmdbId: number;
+  type: string;
+  __v: number;
+  _id: string;
+}
+
+interface IFavoritesContent {
+  contentId: IFavoritesContents;
+  userId: string;
+  __v: number;
+  _id: string;
+}
+
+interface IFavoritesData {
+  contents: IFavoritesContent[];
+  success: boolean;
+}

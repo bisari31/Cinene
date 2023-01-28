@@ -26,3 +26,8 @@ export const upLike = async (obj: { type: IdType; id?: string }) => {
   const { data } = await axios.post<IResponse>(`/like/${obj.type}/${obj.id}`);
   return data;
 };
+
+export const getFavorites = async () => {
+  const { data } = await axios.get<IFavoritesData>(`/like/favorites`);
+  return data;
+};
