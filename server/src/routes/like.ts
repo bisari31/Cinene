@@ -1,11 +1,11 @@
 import { Request, Router } from 'express';
-
+import { IRequest } from './middleware';
 import { authenticate } from './middleware';
 import { IUser } from '../types/user';
 
 import Like from '../models/like';
 
-interface IRequest extends Request {
+interface CustomRequest extends Request {
   params: { id: string; type: 'commentId' | 'contentId' };
   query: { userId?: string };
   user?: IUser;
@@ -13,7 +13,7 @@ interface IRequest extends Request {
 
 const router = Router();
 
-router.get('/:type/:id', async (req: IRequest, res) => {
+router.get('/:type/:id', async (req: CustomRequest, res) => {
   try {
     const type = req.params.type;
     const likes = await Like.find({ [type]: req.params.id });
@@ -36,7 +36,7 @@ router.get('/:type/:id', async (req: IRequest, res) => {
   }
 });
 
-router.post('/:type/:id', authenticate, async (req: IRequest, res) => {
+router.post('/:type/:id', authenticate, async (req: CustomRequest, res) => {
   try {
     const type = req.params.type;
     const document = await Like.findOne({
@@ -55,6 +55,21 @@ router.post('/:type/:id', authenticate, async (req: IRequest, res) => {
   } catch (err) {
     res.status(400).json({ success: false, message: '좋아요 증감 실패' });
     console.error(err);
+  }
+});
+
+router.get('/favorites', authenticate, async (req: IRequest<null>, res) => {
+  try {
+    console.log('qwe');
+    const contents = await Like.find({ userId: req.user?._id })
+      .exists('contentId', true)
+      .populate('contentId');
+
+    res.json({ success: true, contents });
+  } catch (err) {
+    res
+      .status(400)
+      .json({ success: false, message: '즐겨찾기 목록 조회 실패' });
   }
 });
 export default router;

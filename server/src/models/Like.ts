@@ -11,7 +11,6 @@ const likeSchema = new Schema({
   },
   userId: {
     type: Types.ObjectId,
-    ref: 'User',
   },
 });
 
