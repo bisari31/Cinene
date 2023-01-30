@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import styled from 'styled-components';
 
@@ -15,23 +15,34 @@ interface IProps {
 }
 
 export default function Favorites({ data }: IProps) {
+  const [selectedType, setSelectedType] = useState(1);
+  const [newFavoritesData, setNewFavoritesData] =
+    useState<IFavoritesContent[]>();
+
   const { data: favoritesData } = useQuery(
     ['favorites', data?.user?._id],
     getFavorites,
     {
       enabled: data?.success,
+      refetchOnWindowFocus: false,
     },
   );
 
   useEffect(() => {
-    console.log(favoritesData);
-  }, [favoritesData]);
+    setNewFavoritesData(
+      favoritesData?.contents.filter((item) =>
+        selectedType === 1
+          ? item.contentId.type !== 'person'
+          : item.contentId.type === 'person',
+      ),
+    );
+  }, [selectedType, favoritesData]);
 
   return (
     <FavoritesWrapper>
-      <Toggle />
+      <Toggle selectedType={selectedType} setSelectedType={setSelectedType} />
       <ul>
-        {favoritesData?.contents.map((item) => (
+        {newFavoritesData?.map((item) => (
           <FavoriteItem key={item._id} item={item} />
         ))}
       </ul>
@@ -40,7 +51,17 @@ export default function Favorites({ data }: IProps) {
 }
 
 const FavoritesWrapper = styled.div`
+  width: 100%;
   ul {
-    margin-top: 1em;
+    align-items: center;
+    display: grid;
+    gap: 1em;
+    grid-template-columns: repeat(2, 50%);
+    margin-top: 2em;
+  }
+  @media ${({ theme }) => theme.device.tablet} {
+    ul {
+      grid-template-columns: repeat(4, 25%);
+    }
   }
 `;

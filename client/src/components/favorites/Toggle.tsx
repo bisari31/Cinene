@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { useState } from 'react';
+import React from 'react';
 
 const TOGGLE_OPTION = [
   {
@@ -12,9 +12,12 @@ const TOGGLE_OPTION = [
   },
 ];
 
-export default function Toggle() {
-  const [selectedType, setSelectedType] = useState(1);
+interface IProps {
+  selectedType: number;
+  setSelectedType: React.Dispatch<React.SetStateAction<number>>;
+}
 
+export default function Toggle({ selectedType, setSelectedType }: IProps) {
   return (
     <ToggleWrapper selectedType={selectedType}>
       <div>

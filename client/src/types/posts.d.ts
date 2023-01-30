@@ -29,7 +29,7 @@ interface IFavoritesContents {
   name: string;
   poster: string;
   tmdbId: number;
-  type: string;
+  type: 'movie' | 'tv' | 'person';
   __v: number;
   _id: string;
 }
