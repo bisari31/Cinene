@@ -31,9 +31,7 @@ export default function FavoritesPage() {
   );
 }
 
-const FavoritesPageWrapper = styled.div`
-  height: ${({ theme }) => `calc(100vh - ${theme.config.header} - 1em)`};
-`;
+const FavoritesPageWrapper = styled.div``;
 
 const GuestForm = styled.div`
   align-items: center;

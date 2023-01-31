@@ -51,17 +51,18 @@ export default function Favorites({ data }: IProps) {
 }
 
 const FavoritesWrapper = styled.div`
-  width: 100%;
   ul {
     align-items: center;
     display: grid;
-    gap: 1em;
-    grid-template-columns: repeat(2, 50%);
+    gap: 2em;
+    grid-template-columns: repeat(2, 1fr);
+    margin-bottom: 4em;
     margin-top: 2em;
   }
-  @media ${({ theme }) => theme.device.tablet} {
+
+  @media ${({ theme }) => theme.device.laptop} {
     ul {
-      grid-template-columns: repeat(4, 25%);
+      grid-template-columns: repeat(4, 1fr);
     }
   }
 `;
