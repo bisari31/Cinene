@@ -14,7 +14,7 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
 );
 
-export const queryClient = new QueryClient();
+const queryClient = new QueryClient();
 
 root.render(
   <React.StrictMode>

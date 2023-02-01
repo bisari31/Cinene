@@ -1,11 +1,12 @@
-import { useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 
 import { getLikes, upLike } from 'services/like';
-import { queryClient } from 'index';
 import { useAuthQuery } from './useAuthQuery';
 
 export default function useLike(type: 'comments' | 'content', id?: string) {
   const { data: authData } = useAuthQuery();
+
+  const client = useQueryClient();
 
   const IdType = type === 'comments' ? 'commentId' : 'contentId';
 
@@ -15,7 +16,7 @@ export default function useLike(type: 'comments' | 'content', id?: string) {
   );
   const { mutate } = useMutation(upLike, {
     onSuccess: () => {
-      queryClient.invalidateQueries(['likes', type, id]);
+      client.invalidateQueries(['likes', type, id]);
     },
   });
   return { authData, data, mutate };

@@ -1,13 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
 import dayjs from 'dayjs';
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import styled, { css } from 'styled-components';
 
 import { Edit, Upload } from 'assets';
 import useInput from 'hooks/useInput';
 import { changeNickname } from 'services/auth';
 import useOutsideClick from 'hooks/useOutsideClick';
-import { queryClient } from 'index';
 import { nicknameRegex } from 'utils/regex';
 
 import Input from 'components/common/Input';
@@ -27,9 +26,11 @@ interface IProps {
 }
 
 export default function UserProfile({ children, user }: IProps) {
+  const client = useQueryClient();
+
   const { mutate } = useMutation(changeNickname, {
     onSuccess: (res) => {
-      queryClient.invalidateQueries(['auth', `${res.user._id}`]);
+      client.invalidateQueries(['auth', `${res.user._id}`]);
       handleChangeVisibility();
       setErrorMsg('');
     },

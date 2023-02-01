@@ -1,22 +1,22 @@
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 
 import { IMAGE_URL } from 'services/media';
 import { Heart } from 'assets';
 import { buttonEffect } from 'styles/css';
 import { EMPTY_IMAGE, USER_IMAGE } from 'utils/imageUrl';
 import { upLike } from 'services/like';
-import { queryClient } from 'index';
 
 interface IProps {
   item: IFavoritesContent;
 }
 
 export default function FavoriteItem({ item }: IProps) {
-  const { mutate } = useMutation(['favorites'], upLike, {
+  const client = useQueryClient();
+  const { mutate } = useMutation(upLike, {
     onSuccess: () => {
-      queryClient.invalidateQueries(['favorites']);
+      client.invalidateQueries(['favorites']);
     },
   });
 

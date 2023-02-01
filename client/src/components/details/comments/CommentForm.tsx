@@ -1,13 +1,11 @@
 import styled, { css } from 'styled-components';
 import { useState } from 'react';
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { useRecoilValue } from 'recoil';
 
 import { useAuthQuery } from 'hooks/useAuthQuery';
 import { createComment } from 'services/comments';
 import { contentIdState } from 'atom/atom';
-
-import { queryClient } from 'index';
 import { buttonEffect } from 'styles/css';
 
 interface IProps {
@@ -16,13 +14,15 @@ interface IProps {
 
 export default function CommentForm({ responseId }: IProps) {
   const [text, setText] = useState('');
+
+  const client = useQueryClient();
   const contentId = useRecoilValue(contentIdState);
 
   const { data } = useAuthQuery();
 
   const { mutate } = useMutation(createComment, {
     onSuccess: () => {
-      queryClient.invalidateQueries(['comments']);
+      client.invalidateQueries(['comments']);
       setText('');
     },
   });

@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { queryClient } from 'index';
 import { changePassword } from 'services/auth';
 import useOutsideClick from 'hooks/useOutsideClick';
 import useInput from 'hooks/useInput';
@@ -31,11 +30,12 @@ export default function PasswordForm() {
   const { ref, isVisible, handleChangeVisibility, animationState } =
     useOutsideClick();
   const navigate = useNavigate();
+  const client = useQueryClient();
 
   const { mutate } = useMutation(changePassword, {
     onSuccess: () => {
       handleChangeVisibility();
-      queryClient.invalidateQueries(['auth']);
+      client.invalidateQueries(['auth']);
     },
     onError: (err) => {
       if (axios.isAxiosError(err)) {

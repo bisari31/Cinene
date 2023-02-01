@@ -2,12 +2,12 @@ import { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 
 import useInput from 'hooks/useInput';
 import { userIdState } from 'atom/atom';
 import { login, register } from 'services/auth';
-import { queryClient } from 'index';
+
 import Input from './common/Input';
 import Button from './common/Button';
 import ConfirmPassword from './common/ConfirmPassword';
@@ -38,11 +38,13 @@ export default function SignForm({ type }: { type: 'login' | 'register' }) {
   const setUserId = useSetRecoilState(userIdState);
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+  const client = useQueryClient();
+
   const { mutate: loginMutate } = useMutation(login, {
     onSuccess: (data) => {
       setUserId(data.user._id);
       localStorage.setItem('userId', data.user._id);
-      queryClient.invalidateQueries(['auth']);
+      client.invalidateQueries(['auth']);
       // localStorage.setItem('token', data.user.token);
       navigate('/');
     },
