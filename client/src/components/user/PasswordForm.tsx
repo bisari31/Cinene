@@ -30,12 +30,12 @@ export default function PasswordForm() {
   const { ref, isVisible, handleChangeVisibility, animationState } =
     useOutsideClick();
   const navigate = useNavigate();
-  const client = useQueryClient();
+  const queryClient = useQueryClient();
 
   const { mutate } = useMutation(changePassword, {
     onSuccess: () => {
       handleChangeVisibility();
-      client.invalidateQueries(['auth']);
+      queryClient.invalidateQueries(['auth']);
     },
     onError: (err) => {
       if (axios.isAxiosError(err)) {

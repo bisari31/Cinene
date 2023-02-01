@@ -15,14 +15,14 @@ interface IProps {
 export default function CommentForm({ responseId }: IProps) {
   const [text, setText] = useState('');
 
-  const client = useQueryClient();
+  const queryClient = useQueryClient();
   const contentId = useRecoilValue(contentIdState);
 
   const { data } = useAuthQuery();
 
   const { mutate } = useMutation(createComment, {
     onSuccess: () => {
-      client.invalidateQueries(['comments']);
+      queryClient.invalidateQueries(['comments']);
       setText('');
     },
   });

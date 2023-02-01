@@ -26,11 +26,11 @@ interface IProps {
 }
 
 export default function UserProfile({ children, user }: IProps) {
-  const client = useQueryClient();
+  const queryClient = useQueryClient();
 
   const { mutate } = useMutation(changeNickname, {
     onSuccess: (res) => {
-      client.invalidateQueries(['auth', `${res.user._id}`]);
+      queryClient.invalidateQueries(['auth', `${res.user._id}`]);
       handleChangeVisibility();
       setErrorMsg('');
     },

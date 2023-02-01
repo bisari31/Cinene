@@ -38,13 +38,13 @@ export default function SignForm({ type }: { type: 'login' | 'register' }) {
   const setUserId = useSetRecoilState(userIdState);
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
-  const client = useQueryClient();
+  const queryClient = useQueryClient();
 
   const { mutate: loginMutate } = useMutation(login, {
     onSuccess: (data) => {
       setUserId(data.user._id);
       localStorage.setItem('userId', data.user._id);
-      client.invalidateQueries(['auth']);
+      queryClient.invalidateQueries(['auth']);
       // localStorage.setItem('token', data.user.token);
       navigate('/');
     },
