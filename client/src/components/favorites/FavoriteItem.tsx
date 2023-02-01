@@ -13,11 +13,29 @@ interface IProps {
 }
 
 export default function FavoriteItem({ item }: IProps) {
-  const client = useQueryClient();
+  const queryClient = useQueryClient();
+
   const { mutate } = useMutation(upLike, {
-    onSuccess: () => {
-      client.invalidateQueries(['favorites']);
+    onMutate: async (data) => {
+      await queryClient.cancelQueries(['favorites']);
+      const previousData = queryClient.getQueryData<IFavoritesData>([
+        'favorites',
+      ]);
+      if (previousData) {
+        queryClient.setQueryData<IFavoritesData>(['favorites'], {
+          ...previousData,
+          contents: previousData.contents.filter(
+            (content) => content.contentId._id !== data.id,
+          ),
+        });
+      }
+      return { previousData };
     },
+    onError: (error, variables, context) => {
+      if (context?.previousData)
+        queryClient.setQueryData(['favorites'], context.previousData);
+    },
+    onSettled: () => queryClient.invalidateQueries(['favorites']),
   });
 
   const handleClickButton = (id: string) => {
