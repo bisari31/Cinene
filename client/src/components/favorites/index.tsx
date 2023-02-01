@@ -19,14 +19,10 @@ export default function Favorites({ data }: IProps) {
   const [newFavoritesData, setNewFavoritesData] =
     useState<IFavoritesContent[]>();
 
-  const { data: favoritesData } = useQuery(
-    ['favorites', data?.user?._id],
-    getFavorites,
-    {
-      enabled: data?.success,
-      refetchOnWindowFocus: false,
-    },
-  );
+  const { data: favoritesData } = useQuery(['favorites'], getFavorites, {
+    enabled: data?.success,
+    refetchOnWindowFocus: false,
+  });
 
   useEffect(() => {
     setNewFavoritesData(

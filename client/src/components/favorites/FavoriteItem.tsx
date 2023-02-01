@@ -1,21 +1,27 @@
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { useMutation } from 'react-query';
 
 import { IMAGE_URL } from 'services/media';
 import { Heart } from 'assets';
 import { buttonEffect } from 'styles/css';
 import { EMPTY_IMAGE, USER_IMAGE } from 'utils/imageUrl';
-import { contentIdState } from 'atom/atom';
+import { upLike } from 'services/like';
+import { queryClient } from 'index';
 
 interface IProps {
   item: IFavoritesContent;
 }
 
 export default function FavoriteItem({ item }: IProps) {
-  // const { authData, data, mutate } = useLike();
+  const { mutate } = useMutation(['favorites'], upLike, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['favorites']);
+    },
+  });
 
-  const handleClickButton = () => {
-    console.log('qwe');
+  const handleClickButton = (id: string) => {
+    mutate({ type: 'contentId', id });
   };
 
   const checkEmptyImageUrl = (content: IFavoritesContent) => {
@@ -31,7 +37,11 @@ export default function FavoriteItem({ item }: IProps) {
         <img src={checkEmptyImageUrl(item)} alt={item.contentId.name} />
         <span>{item.contentId.name}</span>
       </Link>
-      <Button color="navy50" type="button" onClick={handleClickButton}>
+      <Button
+        color="navy50"
+        type="button"
+        onClick={() => handleClickButton(item.contentId._id)}
+      >
         <Heart />
       </Button>
     </FavoriteItemWrapper>
