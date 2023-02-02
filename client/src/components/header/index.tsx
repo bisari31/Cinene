@@ -24,7 +24,7 @@ export default function Header() {
       </Logo>
       <SearchWrapper isHidden={!isVisible}>
         <SearchBar
-          elementRef={ref}
+          ref={ref}
           isVisible={animationState}
           handleChangeVisibility={handleChangeVisibility}
         />

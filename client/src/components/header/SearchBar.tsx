@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  forwardRef,
+  ForwardedRef,
+} from 'react';
 import { useQuery } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import styled, { css, keyframes } from 'styled-components';
@@ -8,18 +14,19 @@ import { IMAGE_URL, searchMedia } from 'services/media';
 import { EMPTY_IMAGE, USER_IMAGE } from 'utils/imageUrl';
 
 interface Props {
-  elementRef?: React.RefObject<HTMLDivElement>;
   isVisible?: boolean;
   handleChangeVisibility?: () => void;
   isMobile?: boolean;
 }
 
-export default function SearchBar({
-  elementRef,
-  isVisible = true,
-  handleChangeVisibility = () => null,
-  isMobile = false,
-}: Props) {
+function SearchBar(
+  {
+    isVisible = true,
+    handleChangeVisibility = () => null,
+    isMobile = false,
+  }: Props,
+  ref: ForwardedRef<HTMLDivElement>,
+) {
   const [text, setText] = useState('');
   const [targetIndex, setTargetIndex] = useState(-1);
   const [totalIndex, setTotalIndex] = useState(0);
@@ -100,11 +107,7 @@ export default function SearchBar({
   }, [data, divRef]);
 
   return (
-    <SearchBarWrapper
-      isVisible={isVisible}
-      hasData={!!data?.length}
-      ref={elementRef}
-    >
+    <SearchBarWrapper isVisible={isVisible} hasData={!!data?.length} ref={ref}>
       <div>
         <input
           ref={inputRef}
@@ -156,6 +159,8 @@ export default function SearchBar({
     </SearchBarWrapper>
   );
 }
+
+export default forwardRef(SearchBar);
 
 const slideDown = keyframes`
 from {

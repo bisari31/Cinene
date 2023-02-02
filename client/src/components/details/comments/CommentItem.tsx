@@ -81,7 +81,7 @@ export default function CommentItem({
         <LoginPortal
           closeFn={handleChangeVisibility}
           isVisible={animationState}
-          refElement={ref}
+          ref={ref}
         />
       )}
     </>

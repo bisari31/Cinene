@@ -72,7 +72,7 @@ export default function Unregister() {
       {isVisible && (
         <Portal>
           <Modal
-            refElement={ref}
+            ref={ref}
             isVisible={animationState}
             buttonText={['아니요', '네']}
             closeFn={handleChangeVisibility}

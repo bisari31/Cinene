@@ -54,7 +54,7 @@ function LikeButton(
         <LoginPortal
           closeFn={handleChangeVisibility}
           isVisible={animationState}
-          refElement={modalRef}
+          ref={modalRef}
         />
       )}
     </ButtonWrapper>

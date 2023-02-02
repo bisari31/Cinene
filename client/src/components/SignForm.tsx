@@ -112,7 +112,7 @@ export default function SignForm({ type }: { type: 'login' | 'register' }) {
         value={email}
         onChange={handleChangeEmail}
         type="text"
-        refElement={inputRef}
+        ref={inputRef}
       />
 
       {type === 'register' && (

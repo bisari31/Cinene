@@ -92,7 +92,7 @@ export default function PasswordForm() {
       {isVisible && (
         <Portal>
           <Modal
-            refElement={ref}
+            ref={ref}
             isVisible={animationState}
             buttonText={['확인']}
             color="pink"

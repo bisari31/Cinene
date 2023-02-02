@@ -1,4 +1,5 @@
-import { useEffect } from 'react';
+import useForwardRef from 'hooks/useForwardRef';
+import { useEffect, forwardRef } from 'react';
 import styled, { css } from 'styled-components';
 
 interface IProps {
@@ -7,26 +8,29 @@ interface IProps {
   type: 'text' | 'password';
   disabled?: boolean;
   label?: string;
-  refElement?: React.RefObject<HTMLInputElement>;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   errorMessage?: string;
 }
 
-export default function Input({
-  placeholder = '',
-  value,
-  type = 'text',
-  disabled = false,
-  label = '',
-  refElement = undefined,
-  errorMessage = '',
-  ...rest
-}: IProps) {
+function Input(
+  {
+    placeholder = '',
+    value,
+    type = 'text',
+    disabled = false,
+    label = '',
+    errorMessage = '',
+    ...rest
+  }: IProps,
+  ref: React.ForwardedRef<HTMLInputElement>,
+) {
+  // const inputRef = useForwardRef<HTMLInputElement>(ref);
+
   useEffect(() => {
-    if (refElement && !disabled) {
-      refElement.current?.focus();
-    }
-  }, [refElement, disabled]);
+    if (typeof ref !== 'object') return;
+    // eslint-disable-next-line react/destructuring-assignment
+    if (ref && !disabled) ref.current?.focus();
+  }, [ref, disabled]);
 
   return (
     <InputWrapper>
@@ -34,7 +38,7 @@ export default function Input({
       <StyledInput
         isError={!!errorMessage}
         disabled={disabled}
-        ref={refElement}
+        ref={ref}
         placeholder={placeholder}
         value={value}
         type={type}
@@ -44,6 +48,8 @@ export default function Input({
     </InputWrapper>
   );
 }
+
+export default forwardRef(Input);
 
 const InputWrapper = styled.div`
   label {

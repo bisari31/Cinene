@@ -32,7 +32,7 @@ export default function LogoutButton() {
             color="pink"
             buttonText={['아니요', '로그아웃']}
             isVisible={animationState}
-            refElement={ref}
+            ref={ref}
             closeFn={handleChangeVisibility}
             executeFn={handleLogout}
           >

@@ -1,12 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, forwardRef, ForwardedRef } from 'react';
 import styled, { keyframes } from 'styled-components';
+
 import { ColorsKey } from 'styles/theme';
 import { outside } from 'styles/css';
 import usePreventScrolling from 'hooks/usePreventScrolling';
+
 import Button from './Button';
 
 interface Props {
-  refElement: React.RefObject<HTMLDivElement>;
   isVisible: boolean;
   buttonText: string[];
   color: ColorsKey;
@@ -15,15 +16,10 @@ interface Props {
   executeFn: () => void;
 }
 
-export default function Modal({
-  refElement,
-  children,
-  isVisible,
-  color,
-  buttonText,
-  closeFn,
-  executeFn,
-}: Props) {
+function Modal(
+  { children, isVisible, color, buttonText, closeFn, executeFn }: Props,
+  ref: ForwardedRef<HTMLDivElement>,
+) {
   const [height, setHeight] = useState<number>();
 
   usePreventScrolling(isVisible);
@@ -33,7 +29,7 @@ export default function Modal({
   }, [isVisible]);
   return (
     <OutSide height={height}>
-      <ModalWrapper isVisible={isVisible} ref={refElement}>
+      <ModalWrapper isVisible={isVisible} ref={ref}>
         <MessageWrapper>
           <p>{children}</p>
         </MessageWrapper>
@@ -61,6 +57,9 @@ export default function Modal({
     </OutSide>
   );
 }
+
+export default forwardRef(Modal);
+
 const slideFadeIn = keyframes`
 from {
   transform: translateY(-100px);

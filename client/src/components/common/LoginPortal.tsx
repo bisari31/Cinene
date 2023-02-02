@@ -1,3 +1,4 @@
+import { forwardRef, ForwardedRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import Modal from './Modal';
@@ -6,14 +7,12 @@ import Portal from './Portal';
 interface IProps {
   closeFn: () => void;
   isVisible: boolean;
-  refElement: React.RefObject<HTMLDivElement>;
 }
 
-export default function LoginPortal({
-  closeFn,
-  isVisible,
-  refElement,
-}: IProps) {
+function LoginPortal(
+  { closeFn, isVisible }: IProps,
+  ref: ForwardedRef<HTMLDivElement>,
+) {
   const navigate = useNavigate();
 
   return (
@@ -21,7 +20,7 @@ export default function LoginPortal({
       <Modal
         executeFn={() => navigate('/login')}
         closeFn={closeFn}
-        refElement={refElement}
+        ref={ref}
         buttonText={['닫기', '로그인']}
         isVisible={isVisible}
         color="pink"
@@ -31,3 +30,5 @@ export default function LoginPortal({
     </Portal>
   );
 }
+
+export default forwardRef(LoginPortal);

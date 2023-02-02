@@ -48,6 +48,7 @@ export default function UserProfile({ children, user }: IProps) {
     handleChangeVisibility,
   } = useOutsideClick();
   const inputRef = useRef<HTMLInputElement>(null);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!isEditing) return handleChangeVisibility();
@@ -85,7 +86,7 @@ export default function UserProfile({ children, user }: IProps) {
           <div ref={ref}>
             <Form isEditing={isEditing} onSubmit={handleSubmit}>
               <Input
-                refElement={inputRef}
+                ref={inputRef}
                 disabled={!isEditing}
                 errorMessage={errorMsg}
                 type="text"
