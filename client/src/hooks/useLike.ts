@@ -1,5 +1,4 @@
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { Updater } from 'react-query/types/core/utils';
 
 import { getLikes, upLike } from 'services/like';
 import { useAuthQuery } from './useAuthQuery';

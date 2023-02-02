@@ -1,4 +1,4 @@
-import { memo, useEffect } from 'react';
+import { memo, useRef, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import { useQuery } from 'react-query';
 import dayjs from 'dayjs';
@@ -24,6 +24,7 @@ interface Props {
 function Description({ path, data, id }: Props) {
   const title = getMediaTitle(data);
   const overview = getMediaOverview(data);
+  const reviewRef = useRef<HTMLHeadingElement>(null);
 
   const { data: similarData } = useQuery(
     [path, 'similar', id],
@@ -55,7 +56,7 @@ function Description({ path, data, id }: Props) {
     <DescriptionWrapper>
       <Average tmdb={data?.vote_average} cinene={cineneData} />
       <h2>{title}</h2>
-      <Like cinene={cineneData} />
+      <Like ref={reviewRef} cinene={cineneData} />
       <Genre>
         {getReleaseDate(data)}
         <p>
@@ -74,7 +75,7 @@ function Description({ path, data, id }: Props) {
       <Seasons seasons={data?.seasons} />
       <SimilarMedia data={similarData} title={`추천 ${setTitle}`} type={path} />
       <Credits id={id} path={path} />
-      <Reviews data={cineneData} />
+      <Reviews ref={reviewRef} data={cineneData} />
       <Comment contentId={cineneData?._id} />
     </DescriptionWrapper>
   );

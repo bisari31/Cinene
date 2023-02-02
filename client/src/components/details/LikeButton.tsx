@@ -1,3 +1,4 @@
+import { forwardRef } from 'react';
 import styled from 'styled-components';
 
 import { Heart } from 'assets';
@@ -12,25 +13,40 @@ interface IProps {
   cinene: IContent | null | undefined;
 }
 
-export default function LikeButton({ cinene }: IProps) {
-  const { ref, animationState, handleChangeVisibility, isVisible } =
-    useOutsideClick(300);
+function LikeButton(
+  { cinene }: IProps,
+  ref: React.ForwardedRef<HTMLHeadingElement>,
+) {
+  const {
+    ref: modalRef,
+    animationState,
+    handleChangeVisibility,
+    isVisible,
+  } = useOutsideClick(300);
 
   const { authData, data, mutate } = useLike('content', cinene?._id);
 
-  const handleClick = () => {
+  const handleMutate = () => {
     if (!authData?.success) return handleChangeVisibility();
     mutate({ type: 'contentId', id: cinene?._id });
   };
 
+  const handleMoveToReview = () => {
+    if (typeof ref === 'object')
+      // eslint-disable-next-line react/destructuring-assignment
+      ref?.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
+
   return (
     <ButtonWrapper color="navy50">
-      <Button type="button">리뷰 {cinene?.count}</Button>
+      <Button type="button" onClick={handleMoveToReview}>
+        리뷰 {cinene?.count}
+      </Button>
       <Button
         type="button"
         isActive={data?.isLike}
         isZero={!data?.likes}
-        onClick={handleClick}
+        onClick={handleMutate}
       >
         <Heart /> {data?.likes ?? '0'}
       </Button>
@@ -38,12 +54,14 @@ export default function LikeButton({ cinene }: IProps) {
         <LoginPortal
           closeFn={handleChangeVisibility}
           isVisible={animationState}
-          refElement={ref}
+          refElement={modalRef}
         />
       )}
     </ButtonWrapper>
   );
 }
+
+export default forwardRef(LikeButton);
 
 const ButtonWrapper = styled.div`
   display: flex;

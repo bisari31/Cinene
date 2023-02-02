@@ -11,9 +11,6 @@ import Description from 'components/details/MediaDescription';
 import Portal from 'components/common/Portal';
 import ModalImage from 'components/details/ModalImage';
 import PersonDescription from 'components/details/PersonDescription';
-import { getContent } from 'services/contents';
-import Reviews from 'components/details/Reviews';
-import Comments from 'components/details/Comments';
 
 export default function DetailPage() {
   const { ref, isVisible, handleChangeVisibility } = useOutsideClick();
@@ -33,14 +30,6 @@ export default function DetailPage() {
       staleTime: 1000 * 60 * 60 * 6,
     },
   );
-
-  // const { data: cineneData } = useQuery(
-  //   ['cinene', path, id],
-  //   () => getContent(path, id),
-  //   {
-  //     refetchOnWindowFocus: false,
-  //   },
-  // );
 
   const getBackdrop = () => {
     if (data?.backdrop_path) {
