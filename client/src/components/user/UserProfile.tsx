@@ -31,7 +31,7 @@ export default function UserProfile({ children, user }: IProps) {
   const { mutate } = useMutation(changeNickname, {
     onSuccess: (res) => {
       queryClient.invalidateQueries(['auth', `${res.user._id}`]);
-      handleChangeVisibility();
+      changeVisibility();
       setErrorMsg('');
     },
     onError: (err: IError) => setErrorMsg(err.response.data.message),
@@ -42,20 +42,16 @@ export default function UserProfile({ children, user }: IProps) {
     handleChange: handleChangeNickname,
     setInput: setNickname,
   } = useInput();
-  const {
-    ref,
-    isVisible: isEditing,
-    handleChangeVisibility,
-  } = useOutsideClick();
+  const { ref, isVisible: isEditing, changeVisibility } = useOutsideClick();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!isEditing) return handleChangeVisibility();
+    if (!isEditing) return changeVisibility();
     const result = nickname.match(nicknameRegex);
     if (!result)
       return setErrorMsg('닉네임이 올바르지 않습니다. (특수문자 제외 2~10자)');
-    if (nickname === user?.nickname) return handleChangeVisibility();
+    if (nickname === user?.nickname) return changeVisibility();
     mutate({ nickname });
   };
 

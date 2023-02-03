@@ -21,14 +21,14 @@ export default function Unregister() {
   const [isDisabled, setIsDisabled] = useState(false);
   const navigate = useNavigate();
 
-  const { ref, handleChangeVisibility, isVisible, animationState } =
+  const { ref, changeVisibility, isVisible, animationState } =
     useOutsideClick(300);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       await checkPassword({ password });
-      handleChangeVisibility();
+      changeVisibility();
     } catch (err) {
       if (axios.isAxiosError(err)) setErrorMsg(err.response?.data.message);
     }
@@ -75,7 +75,7 @@ export default function Unregister() {
             ref={ref}
             isVisible={animationState}
             buttonText={['아니요', '네']}
-            closeFn={handleChangeVisibility}
+            closeFn={changeVisibility}
             executeFn={handleClick}
             color="pink"
           >

@@ -26,7 +26,7 @@ export default function Favorites({ data }: IProps) {
 
   useEffect(() => {
     setNewFavoritesData(
-      favoritesData?.contents.filter((item) =>
+      favoritesData?.contents?.filter((item) =>
         selectedType === 1
           ? item.contentId.type !== 'person'
           : item.contentId.type === 'person',

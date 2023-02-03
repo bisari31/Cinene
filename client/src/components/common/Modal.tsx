@@ -5,34 +5,37 @@ import { ColorsKey } from 'styles/theme';
 import { outside } from 'styles/css';
 import usePreventScrolling from 'hooks/usePreventScrolling';
 
+import useEscapeClose from 'hooks/useEscapeClose';
 import Button from './Button';
 
 interface Props {
   isVisible: boolean;
   buttonText: string[];
   color: ColorsKey;
+  height?: string;
   children: React.ReactNode;
+
   closeFn?: () => void;
   executeFn: () => void;
 }
 
 function Modal(
-  { children, isVisible, color, buttonText, closeFn, executeFn }: Props,
+  { children, isVisible, color, buttonText, height, closeFn, executeFn }: Props,
   ref: ForwardedRef<HTMLDivElement>,
 ) {
-  const [height, setHeight] = useState<number>();
+  const [scrollY, setScrollY] = useState<number>();
 
   usePreventScrolling(isVisible);
+  useEscapeClose(isVisible, closeFn || executeFn);
 
   useEffect(() => {
-    setHeight(window.scrollY);
+    setScrollY(window.scrollY);
   }, [isVisible]);
+
   return (
-    <OutSide height={height}>
-      <ModalWrapper isVisible={isVisible} ref={ref}>
-        <MessageWrapper>
-          <p>{children}</p>
-        </MessageWrapper>
+    <OutSide height={scrollY}>
+      <ModalWrapper isVisible={isVisible} ref={ref} height={height}>
+        <MessageWrapper>{children}</MessageWrapper>
         <BtnWrapper>
           <Button
             type="button"
@@ -92,7 +95,7 @@ const OutSide = styled.div<{ height: number | undefined }>`
   ${outside};
   z-index: 3;
 `;
-const ModalWrapper = styled.div<{ isVisible: boolean }>`
+const ModalWrapper = styled.div<{ isVisible: boolean; height?: string }>`
   animation: ${({ isVisible }) => (isVisible ? slideFadeIn : slideFadeOut)} 0.5s
     ease-out;
   background-color: ${({ theme }) => theme.colors.navy};
@@ -100,7 +103,7 @@ const ModalWrapper = styled.div<{ isVisible: boolean }>`
   display: flex;
   /* box-shadow: 0px 4px 14px 3px rgba(0, 0, 0, 0.6); */
   flex-direction: column;
-  height: 30vh;
+  height: ${({ height }) => height || '30vh'};
   margin: 3em;
   padding: 2em;
   width: 450px;
@@ -109,13 +112,12 @@ const MessageWrapper = styled.div`
   align-items: center;
   display: flex;
   flex: 1;
+  font-size: 1.2rem;
+  font-weight: 500;
+
   justify-content: center;
   line-height: 1.5;
-  p {
-    font-size: 1.2rem;
-    font-weight: 500;
-    text-align: center;
-  }
+  text-align: center;
 `;
 
 const BtnWrapper = styled.div`

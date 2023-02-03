@@ -15,16 +15,12 @@ import { EMPTY_IMAGE, USER_IMAGE } from 'utils/imageUrl';
 
 interface Props {
   isVisible?: boolean;
-  handleChangeVisibility?: () => void;
+  changeVisibility?: () => void;
   isMobile?: boolean;
 }
 
 function SearchBar(
-  {
-    isVisible = true,
-    handleChangeVisibility = () => null,
-    isMobile = false,
-  }: Props,
+  { isVisible = true, changeVisibility = () => null, isMobile = false }: Props,
   ref: ForwardedRef<HTMLDivElement>,
 ) {
   const [text, setText] = useState('');
@@ -57,7 +53,7 @@ function SearchBar(
         break;
       }
       case 'Escape': {
-        handleChangeVisibility();
+        changeVisibility();
         break;
       }
       default:
@@ -67,7 +63,7 @@ function SearchBar(
 
   const handleClickNavigation = (item: newResults) => {
     navigate(`/${item.media_type}/${item.id}`);
-    if (!isMobile) handleChangeVisibility();
+    if (!isMobile) changeVisibility();
   };
 
   const getSearchTitle = (item: newResults) => {

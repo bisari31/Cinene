@@ -26,13 +26,13 @@ export default function CommentItem({
   const [ReplyData, setReplyData] = useState<IComment[]>();
   const [openReplyComment, setOpenReplyComment] = useState(false);
 
-  const { ref, animationState, handleChangeVisibility, isVisible } =
+  const { ref, animationState, changeVisibility, isVisible } =
     useOutsideClick(300);
 
   const { authData, data, mutate } = useLike('comments', commentItem?._id);
 
   const handleClick = () => {
-    if (!authData?.success) return handleChangeVisibility();
+    if (!authData?.success) return changeVisibility();
     mutate({ type: 'commentId', id: commentItem?._id });
   };
 
@@ -79,7 +79,7 @@ export default function CommentItem({
       )}
       {isVisible && (
         <LoginPortal
-          closeFn={handleChangeVisibility}
+          closeFn={changeVisibility}
           isVisible={animationState}
           ref={ref}
         />

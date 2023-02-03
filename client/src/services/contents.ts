@@ -2,18 +2,8 @@ import axios from 'axios';
 
 interface IResponse {
   success: boolean;
-  content: IContent | undefined;
+  content: IFavoritesContents | undefined;
   message?: string;
-}
-
-export interface IContent {
-  _id: string;
-  type: string;
-  name: string;
-  poster: string;
-  tmdbId: number;
-  count: number;
-  average: number;
 }
 
 export const getContent = async (type?: string, id?: number) => {

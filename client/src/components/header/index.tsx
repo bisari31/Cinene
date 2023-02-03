@@ -11,7 +11,7 @@ import SideMenu from './SideMenu';
 export default function Header() {
   const { data } = useAuthQuery();
 
-  const { ref, isVisible, handleChangeVisibility, animationState } =
+  const { ref, isVisible, changeVisibility, animationState } =
     useOutsideClick(300);
 
   return (
@@ -26,10 +26,10 @@ export default function Header() {
         <SearchBar
           ref={ref}
           isVisible={animationState}
-          handleChangeVisibility={handleChangeVisibility}
+          changeVisibility={changeVisibility}
         />
       </SearchWrapper>
-      <AuthMenu data={data} setIsVisible={handleChangeVisibility} />
+      <AuthMenu data={data} setIsVisible={changeVisibility} />
     </HeaderWrapper>
   );
 }

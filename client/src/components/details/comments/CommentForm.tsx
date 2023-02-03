@@ -3,10 +3,13 @@ import { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { useRecoilValue } from 'recoil';
 
-import { useAuthQuery } from 'hooks/useAuthQuery';
 import { createComment } from 'services/comments';
 import { contentIdState } from 'atom/atom';
 import { buttonEffect } from 'styles/css';
+import { useAuthQuery } from 'hooks/useAuthQuery';
+import useOutsideClick from 'hooks/useOutsideClick';
+
+import LoginPortal from 'components/common/LoginPortal';
 
 interface IProps {
   responseId?: string;
@@ -14,9 +17,11 @@ interface IProps {
 
 export default function CommentForm({ responseId }: IProps) {
   const [text, setText] = useState('');
-
-  const queryClient = useQueryClient();
   const contentId = useRecoilValue(contentIdState);
+  const queryClient = useQueryClient();
+
+  const { animationState, changeVisibility, isVisible, ref } =
+    useOutsideClick(300);
 
   const { data } = useAuthQuery();
 
@@ -29,7 +34,8 @@ export default function CommentForm({ responseId }: IProps) {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!data?.success || !text) return;
+    if (!data?.success) return changeVisibility();
+    if (!text) return;
     mutate({
       comment: text,
       contentId,
@@ -52,6 +58,13 @@ export default function CommentForm({ responseId }: IProps) {
         onChange={handleChange}
       />
       <button type="submit">등록</button>
+      {isVisible && (
+        <LoginPortal
+          ref={ref}
+          closeFn={changeVisibility}
+          isVisible={animationState}
+        />
+      )}
     </CommentFormWrapper>
   );
 }

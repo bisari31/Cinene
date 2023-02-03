@@ -27,14 +27,14 @@ export default function PasswordForm() {
     errorMsg,
   } = useInput();
 
-  const { ref, isVisible, handleChangeVisibility, animationState } =
+  const { ref, isVisible, changeVisibility, animationState } =
     useOutsideClick();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const { mutate } = useMutation(changePassword, {
     onSuccess: () => {
-      handleChangeVisibility();
+      changeVisibility();
       queryClient.invalidateQueries(['auth']);
     },
     onError: (err) => {

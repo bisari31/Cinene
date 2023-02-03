@@ -13,7 +13,7 @@ import ModalImage from 'components/details/ModalImage';
 import PersonDescription from 'components/details/PersonDescription';
 
 export default function DetailPage() {
-  const { ref, isVisible, handleChangeVisibility } = useOutsideClick();
+  const { ref, isVisible, changeVisibility } = useOutsideClick();
   const { id, path } = useCurrentPathName();
   const { data } = useQuery([path, id], () => getMediaDetail(id, path), {
     enabled: path !== 'person',
@@ -55,7 +55,7 @@ export default function DetailPage() {
       <div />
       <Content>
         <div>
-          <button type="button" onClick={() => handleChangeVisibility()}>
+          <button type="button" onClick={() => changeVisibility()}>
             <img src={getPoster(path, 'w500')} alt="poster" />
           </button>
         </div>
@@ -69,7 +69,7 @@ export default function DetailPage() {
         <Portal>
           <ModalImage
             modalRef={ref}
-            handleChangeVisibility={handleChangeVisibility}
+            changeVisibility={changeVisibility}
             isVisible={isVisible}
             src={getPoster(path, 'original')}
           />

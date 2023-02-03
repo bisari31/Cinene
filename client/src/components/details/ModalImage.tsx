@@ -10,19 +10,19 @@ import usePreventScrolling from 'hooks/usePreventScrolling';
 interface Props {
   src: string;
   isVisible: boolean;
-  handleChangeVisibility: () => void;
+  changeVisibility: () => void;
   modalRef: React.RefObject<HTMLDivElement>;
 }
 
 export default function ModalImage({
   src,
   isVisible,
-  handleChangeVisibility,
+  changeVisibility,
   modalRef,
 }: Props) {
   const [height, setHeight] = useState<number>();
 
-  useEscapeClose(isVisible, handleChangeVisibility);
+  useEscapeClose(isVisible, changeVisibility);
   usePreventScrolling(isVisible);
 
   useEffect(() => {
@@ -34,7 +34,7 @@ export default function ModalImage({
       <Modal ref={modalRef}>
         <div />
         <img src={src ?? EMPTY_IMAGE} alt="poster" />
-        <button type="button" onClick={() => handleChangeVisibility()}>
+        <button type="button" onClick={() => changeVisibility()}>
           <Close />
         </button>
       </Modal>

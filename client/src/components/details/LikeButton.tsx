@@ -2,7 +2,6 @@ import { forwardRef } from 'react';
 import styled from 'styled-components';
 
 import { Heart } from 'assets';
-import { IContent } from 'services/contents';
 import { Button, buttonEffect } from 'styles/css';
 import useOutsideClick from 'hooks/useOutsideClick';
 import useLike from 'hooks/useLike';
@@ -10,7 +9,7 @@ import useLike from 'hooks/useLike';
 import LoginPortal from 'components/common/LoginPortal';
 
 interface IProps {
-  cinene: IContent | null | undefined;
+  cinene: IFavoritesContents | null | undefined;
 }
 
 function LikeButton(
@@ -20,21 +19,22 @@ function LikeButton(
   const {
     ref: modalRef,
     animationState,
-    handleChangeVisibility,
+    changeVisibility,
     isVisible,
   } = useOutsideClick(300);
 
   const { authData, data, mutate } = useLike('content', cinene?._id);
 
   const handleMutate = () => {
-    if (!authData?.success) return handleChangeVisibility();
+    if (!authData?.success) return changeVisibility();
     mutate({ type: 'contentId', id: cinene?._id });
   };
 
   const handleMoveToReview = () => {
-    if (typeof ref === 'object')
+    if (typeof ref === 'object') {
       // eslint-disable-next-line react/destructuring-assignment
       ref?.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
   };
 
   return (
@@ -52,7 +52,7 @@ function LikeButton(
       </Button>
       {isVisible && (
         <LoginPortal
-          closeFn={handleChangeVisibility}
+          closeFn={changeVisibility}
           isVisible={animationState}
           ref={modalRef}
         />

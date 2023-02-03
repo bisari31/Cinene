@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useQuery } from 'react-query';
 import styled, { css } from 'styled-components';
 
@@ -18,6 +18,8 @@ interface IProps {
 }
 
 export default function PersonDescription({ data, path, id }: IProps) {
+  const reviewRef = useRef<HTMLHeadingElement>(null);
+
   const getKoreanName = (userData: IPerson | undefined) => {
     if (!userData) return;
     const korean = /[가-힣]/;
@@ -56,7 +58,7 @@ export default function PersonDescription({ data, path, id }: IProps) {
     <PersonDescriptionWrapper>
       <Average isMedia={false} cinene={cineneData} />
       <h2>{getKoreanName(data)}</h2>
-      <Like cinene={cineneData} />
+      <Like ref={reviewRef} cinene={cineneData} />
       <div>
         <p>{data?.birthday ? `출생: ${data.birthday}` : '정보 없음'}</p>
       </div>
@@ -72,7 +74,7 @@ export default function PersonDescription({ data, path, id }: IProps) {
           title="제작 작품"
         />
       )}
-      <Reviews data={cineneData} />
+      <Reviews ref={reviewRef} data={cineneData} />
       <Comment contentId={cineneData?._id} />
     </PersonDescriptionWrapper>
   );

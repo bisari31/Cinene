@@ -1,9 +1,8 @@
 import { Star } from 'assets';
-import { IContent } from 'services/contents';
 import styled, { css } from 'styled-components';
 
 interface IProps {
-  cinene?: IContent | null;
+  cinene?: IFavoritesContents | null;
   tmdb?: number;
   isMedia?: boolean;
 }

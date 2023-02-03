@@ -10,11 +10,11 @@ import Portal from './Portal';
 
 export default function LogoutButton() {
   const setUserId = useSetRecoilState(userIdState);
-  const { ref, isVisible, animationState, handleChangeVisibility } =
+  const { ref, isVisible, animationState, changeVisibility } =
     useOutsideClick(300);
 
   const handleLogout = () => {
-    handleChangeVisibility();
+    changeVisibility();
     logout().then(() => {
       localStorage.removeItem('userId');
       setUserId('');
@@ -23,7 +23,7 @@ export default function LogoutButton() {
 
   return (
     <>
-      <Button color="pink" type="button" onClick={handleChangeVisibility}>
+      <Button color="pink" type="button" onClick={changeVisibility}>
         로그아웃
       </Button>
       {isVisible && (
@@ -33,7 +33,7 @@ export default function LogoutButton() {
             buttonText={['아니요', '로그아웃']}
             isVisible={animationState}
             ref={ref}
-            closeFn={handleChangeVisibility}
+            closeFn={changeVisibility}
             executeFn={handleLogout}
           >
             정말 로그아웃 하시겠습니까? 😰
