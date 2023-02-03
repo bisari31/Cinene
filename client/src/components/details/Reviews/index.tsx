@@ -1,19 +1,37 @@
 import styled, { css } from 'styled-components';
 import { forwardRef } from 'react';
 
-import { IContent } from 'services/contents';
+import useOutsideClick from 'hooks/useOutsideClick';
+import ReviewItem from './ReviewItem';
+import ReviewModal from './ReviewModal';
 
-interface IProps {
-  data: IContent | undefined | null;
+export interface IProps {
+  data: IFavoritesContents | undefined;
 }
 
 function Reviews(
   { data }: IProps,
   ref: React.ForwardedRef<HTMLHeadingElement>,
 ) {
+  const {
+    animationState,
+    changeVisibility,
+    isVisible,
+    ref: modalRef,
+  } = useOutsideClick(300);
+
   return (
     <ReviewsWrapper length={data?.count}>
       <h3 ref={ref}>리뷰</h3>
+      <ReviewItem changeVisibility={changeVisibility} />
+      {isVisible && (
+        <ReviewModal
+          animationState={animationState}
+          changeVisibility={changeVisibility}
+          isVisible={isVisible}
+          ref={modalRef}
+        />
+      )}
     </ReviewsWrapper>
   );
 }
