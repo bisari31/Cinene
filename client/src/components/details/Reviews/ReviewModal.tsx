@@ -1,20 +1,23 @@
 import styled from 'styled-components';
 import { useState, useEffect, useRef, forwardRef, ForwardedRef } from 'react';
+import { useMutation, useQueryClient } from 'react-query';
 
-import { checkEmptyImageUrl } from 'utils/imageUrl';
+import { Star } from 'assets';
+import usePrevious from 'hooks/usePrevious';
+import { addRating } from 'services/rating';
 
 import Modal from 'components/common/Modal';
 import Portal from 'components/common/Portal';
-import { Star } from 'assets';
-import usePrevious from 'hooks/usePrevious';
+import { IReviewProps } from './index';
 
-interface IProps {
+interface IProps extends IReviewProps {
   isVisible: boolean;
   animationState: boolean;
   changeVisibility: () => void;
+  hasReview: IDocument | null | undefined;
 }
 
-const COUNT_MESSAGE = [
+const RATING_MESSAGE = [
   '(별로에요)',
   '(그저그래요)',
   '(괜찮아요)',
@@ -23,35 +26,56 @@ const COUNT_MESSAGE = [
 ];
 
 function ReviewModal(
-  { isVisible, animationState, changeVisibility }: IProps,
+  { isVisible, animationState, changeVisibility, data, hasReview }: IProps,
   ref: ForwardedRef<HTMLDivElement>,
 ) {
   const [rating, setRating] = useState(0);
-  const [comment, setComment] = useState('');
+  const [review, setReview] = useState('');
   const previousRating = usePrevious(rating);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const queryClient = useQueryClient();
+
+  const { mutate } = useMutation(addRating, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['cinene', data?.type, data?.tmdbId]);
+      queryClient.invalidateQueries(['reviews', data?.type, data?._id]);
+      changeVisibility();
+    },
+  });
+
   const handleChangeComment = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setComment(e.target.value);
+    setReview(e.target.value);
   };
 
   const handleAddReview = () => {
+    mutate({
+      rating,
+      review,
+      contentId: data?._id,
+      contentType: data?.type,
+      isEditing: hasReview || null,
+    });
     changeVisibility();
   };
 
-  const showCountMessage = (count: number) =>
-    count ? `${count}점 ${COUNT_MESSAGE[count - 1]}` : '';
+  const showRatingMessage = (value: number) =>
+    value ? `${value}점 ${RATING_MESSAGE[value - 1]}` : '';
 
   useEffect(() => {
-    setComment('');
-  }, [isVisible]);
-
-  useEffect(() => {
-    if (isVisible) inputRef.current?.focus();
+    if (isVisible) {
+      inputRef.current?.focus();
+      setReview('');
+    }
   }, [inputRef, isVisible]);
+
   useEffect(() => {
-    console.log('🚀 ~ file: ReviewModal.tsx:54 ~ useEffect ~ rating', rating);
-  }, [rating]);
+    if (hasReview) {
+      setRating(hasReview.rating);
+      setReview(hasReview.review);
+    }
+  }, [hasReview]);
+
   return (
     <Portal>
       <Modal
@@ -60,7 +84,7 @@ function ReviewModal(
         executeFn={handleAddReview}
         isVisible={animationState}
         closeFn={changeVisibility}
-        buttonText={['닫기', '등록']}
+        buttonText={['닫기', hasReview ? '수정' : '등록']}
         color="pink"
       >
         <ModalContent>
@@ -79,14 +103,14 @@ function ReviewModal(
               ))}
             </div>
             <div>
-              <p>{showCountMessage(rating)}</p>
+              <p>{showRatingMessage(rating)}</p>
             </div>
           </div>
           <input
             ref={inputRef}
             type="text"
             placeholder="한줄평을 남겨주세요"
-            value={comment}
+            value={review}
             onChange={handleChangeComment}
           />
         </ModalContent>

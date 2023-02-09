@@ -1,58 +1,58 @@
+import { Star } from 'assets';
 import styled from 'styled-components';
 
-import { useAuthQuery } from 'hooks/useAuthQuery';
-import useOutsideClick from 'hooks/useOutsideClick';
-import LoginPortal from 'components/common/LoginPortal';
+import { USER_IMAGE } from 'utils/imageUrl';
+import { changeDaysAgo } from 'utils/days';
+import { Item } from '../Comments/CommentItem';
 
 interface IProps {
-  changeVisibility: () => void;
+  review: IDocument;
 }
 
-export default function ReviewItem({ changeVisibility }: IProps) {
-  const { data } = useAuthQuery();
-
-  const {
-    animationState,
-    changeVisibility: openLoginModal,
-    isVisible,
-    ref,
-  } = useOutsideClick(300);
-
-  const handleClick = () => {
-    if (!data?.success) return openLoginModal();
-    changeVisibility();
-  };
-
+export default function ReviewItem({ review }: IProps) {
   return (
-    <ReviewItemWrapper>
-      <Default type="button" onClick={handleClick}>
-        {!data?.success
-          ? '로그인 후 리뷰를 작성할 수 있습니다.'
-          : '작성된 리뷰가 없습니다. 리뷰를 작성해 주세요.'}
-      </Default>
-      {isVisible && (
-        <LoginPortal
-          ref={ref}
-          isVisible={animationState}
-          closeFn={openLoginModal}
-        />
-      )}
-    </ReviewItemWrapper>
+    <Item date={changeDaysAgo(review.createdAt)}>
+      <img src={USER_IMAGE} alt="user_avatar" />
+      <div>
+        <p>{review.userId.nickname}</p>
+        <p>{review.review}</p>
+      </div>
+      <SvgWrapper>
+        {[1, 2, 3, 4, 5]
+          .map((star) => (
+            <StyledButton
+              isFilling={star >= review.rating}
+              key={star}
+              type="button"
+              disabled
+            >
+              <Star />
+            </StyledButton>
+          ))
+          .reverse()}
+      </SvgWrapper>
+    </Item>
   );
 }
 
-const ReviewItemWrapper = styled.div`
-  margin: 2em 0;
+const SvgWrapper = styled.div`
+  align-items: center;
+  display: flex;
 `;
 
-const Default = styled.button`
-  background-color: ${({ theme }) => theme.colors.navy50};
-  border: ${({ theme }) => `1px solid ${theme.colors.navy50}`};
-  border-radius: 10px;
-  color: ${({ theme }) => theme.colors.gray500};
-  font-size: 0.75rem;
-  padding: 1em 1.5em;
+const StyledButton = styled.button<{ isFilling: boolean }>`
+  background: none;
+  border: none;
+  padding: 0;
+  width: 18px;
   &:hover {
-    border: ${({ theme }) => `1px solid ${theme.colors.pink}`};
+    cursor: auto;
+  }
+  svg {
+    fill: ${({ theme, isFilling }) =>
+      isFilling ? theme.colors.yellow : theme.colors.navy};
+    height: 100%;
+    stroke: none;
+    width: 100%;
   }
 `;
