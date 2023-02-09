@@ -1,6 +1,18 @@
-import { model, Schema, Types } from 'mongoose';
+import { model, ObjectId, Schema, Types } from 'mongoose';
 
-const ratingSchema = new Schema(
+export interface IRating {
+  userId: ObjectId;
+  contentId: ObjectId;
+  contentType: string;
+  review: string;
+  rating: number;
+  params?: { contentId: string; contentType: string };
+  isEditing: null | {
+    _id: string;
+  };
+}
+
+const ratingSchema = new Schema<IRating>(
   {
     userId: {
       type: Types.ObjectId,
@@ -9,6 +21,9 @@ const ratingSchema = new Schema(
     contentId: {
       type: Types.ObjectId,
       ref: 'Content',
+    },
+    contentType: {
+      type: String,
     },
     review: {
       type: String,
@@ -20,5 +35,5 @@ const ratingSchema = new Schema(
   { timestamps: true },
 );
 
-const Rating = model('Rating', ratingSchema);
+const Rating = model<IRating>('Rating', ratingSchema);
 export default Rating;

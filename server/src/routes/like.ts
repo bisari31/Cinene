@@ -1,9 +1,9 @@
 import { Request, Router } from 'express';
 import { IRequest } from './middleware';
 import { authenticate } from './middleware';
-import { IUser } from '../types/user';
 
 import Like from '../models/like';
+import { IUser } from '../models/user';
 
 interface CustomRequest extends Request {
   params: { id: string; type: 'commentId' | 'contentId' };
@@ -15,15 +15,14 @@ const router = Router();
 
 router.get('/:type/:id', async (req: CustomRequest, res) => {
   try {
-    const type = req.params.type;
-    const likes = await Like.find({ [type]: req.params.id });
+    const { type, id } = req.params;
+    const likes = await Like.find({ [type]: id });
     if (!req.query.userId) {
       return res.json({ success: true, likes: likes.length, isLike: false });
     }
-    console.log(likes);
     const document = await Like.findOne({
       userId: req.query.userId,
-      [type]: req.params.id,
+      [type]: id,
     });
     res.json({
       success: true,

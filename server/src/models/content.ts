@@ -1,5 +1,14 @@
-import { Model, model, Schema, Types } from 'mongoose';
-import { IContent } from '../types/content';
+import { Model, model, ObjectId, Schema, Types } from 'mongoose';
+
+export interface IContent {
+  _id?: ObjectId;
+  type: string;
+  name: string;
+  poster: string;
+  tmdbId: number;
+  average: number;
+  count: number;
+}
 
 interface DBContentMethods {}
 interface DBContentModel extends Model<IContent, {}, DBContentMethods> {

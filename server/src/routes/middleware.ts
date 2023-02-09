@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import User from '../models/user';
-import { IUser } from '../types/user';
+import User, { IUser } from '../models/user';
 
 export interface IRequest<T> extends Request {
   body: T;

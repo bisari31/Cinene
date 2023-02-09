@@ -1,8 +1,7 @@
 import { config } from 'dotenv';
 import { Router, Request, Response } from 'express';
 
-import Content from '../models/content';
-import { IContent } from '../types/content';
+import Content, { IContent } from '../models/content';
 
 export interface CustomRequest<T> extends Request {
   body: T;

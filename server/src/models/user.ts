@@ -1,6 +1,23 @@
 import { model, Schema, Model, ObjectId } from 'mongoose';
 import jwt from 'jsonwebtoken';
-import { IUser, UserModel } from '../types/user';
+
+export interface IUser {
+  _id: ObjectId;
+  email: string;
+  password: string;
+  nickname: string;
+  img: string;
+  token?: string;
+  createdAt: Date;
+}
+
+export interface UserMethods {
+  generateToken(): Promise<IUser>;
+}
+
+export interface UserModel extends Model<IUser, {}, UserMethods> {
+  findToken(token: string | undefined): Promise<false | IUser>;
+}
 
 const PRIVATE_KEY = process.env.PRIVATE_KEY!;
 
