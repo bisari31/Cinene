@@ -22,7 +22,6 @@ export const getReviews = async (
 
 const createReview = async (obj: IAddReview) => {
   try {
-    if (!obj.comment || !obj.rating) return;
     const { data } = await axios.post('/reviews', obj);
     return data;
   } catch (err) {
@@ -31,7 +30,6 @@ const createReview = async (obj: IAddReview) => {
 };
 const modifyReview = async (obj: IAddReview) => {
   try {
-    if (!obj.comment || !obj.rating) return;
     const { data } = await axios.patch(`/reviews/${obj.isEditing?._id}`, obj);
     return data;
   } catch (err) {

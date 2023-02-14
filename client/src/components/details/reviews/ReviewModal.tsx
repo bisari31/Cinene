@@ -31,14 +31,17 @@ function ReviewModal(
 ) {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
+  const [isCommentError, setIsCommentError] = useState(false);
+  const [isRatingError, setIsRatingError] = useState(false);
+
   const previousRating = usePrevious(rating);
+  const previousComment = usePrevious(comment);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const queryClient = useQueryClient();
 
   const { mutate } = useMutation(addRating, {
     onSuccess: () => {
-      console.log(data?.type, data?.tmdbId);
       queryClient.invalidateQueries(['cinene', data?.type, data?.tmdbId]);
       queryClient.invalidateQueries(['reviews', data?.type, data?._id]);
       changeVisibility();
@@ -50,6 +53,8 @@ function ReviewModal(
   };
 
   const handleAddReview = () => {
+    if (!comment || comment.length > 50) return setIsCommentError(true);
+    if (!rating) return setIsRatingError(true);
     mutate({
       comment,
       rating,
@@ -57,17 +62,12 @@ function ReviewModal(
       contentType: data?.type,
       isEditing: hasReview || null,
     });
-    // mutate({
-    //   comment,
-    //   rating,
-    //   contentId: data?._id,
-    //   contentType: data?.type,
-    //   isEditing: hasReview || null,
-    // });
   };
 
-  const showRatingMessage = (value: number) =>
-    value ? `${value}점 ${RATING_MESSAGE[value - 1]}` : '';
+  const showRatingMessage = (value: number) => {
+    if (isRatingError) return '평점을 남겨주세요';
+    return value ? `${value}점 ${RATING_MESSAGE[value - 1]}` : '';
+  };
 
   useEffect(() => {
     if (isVisible) {
@@ -83,6 +83,18 @@ function ReviewModal(
     }
   }, [hasReview]);
 
+  useEffect(() => {
+    if (isRatingError && rating > 0) {
+      setIsRatingError(false);
+    }
+  }, [isRatingError, rating]);
+
+  useEffect(() => {
+    if (isCommentError && comment !== previousComment) {
+      setIsCommentError(false);
+    }
+  }, [isCommentError, comment, previousComment]);
+
   if (!data) return null;
 
   return (
@@ -96,7 +108,10 @@ function ReviewModal(
         buttonText={['닫기', hasReview ? '수정' : '등록']}
         color="pink"
       >
-        <ModalContent>
+        <ModalContent
+          isCommentError={isCommentError}
+          isRatingError={isRatingError}
+        >
           <div>
             <div>
               {[1, 2, 3, 4, 5].map((number) => (
@@ -118,7 +133,7 @@ function ReviewModal(
           <input
             ref={inputRef}
             type="text"
-            placeholder="한줄평을 남겨주세요"
+            placeholder="한줄평을 남겨주세요 (50자 이하)"
             value={comment}
             onChange={handleChangeComment}
           />
@@ -130,7 +145,10 @@ function ReviewModal(
 
 export default forwardRef(ReviewModal);
 
-const ModalContent = styled.div`
+const ModalContent = styled.div<{
+  isCommentError: boolean;
+  isRatingError: boolean;
+}>`
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -139,14 +157,17 @@ const ModalContent = styled.div`
   & > div:first-child {
     margin-bottom: 0.5em;
     div:nth-child(2) {
+      color: ${({ theme, isRatingError }) =>
+        isRatingError ? theme.colors.red : ''};
+      font-size: 0.95rem;
       height: 22.8px;
       margin-bottom: 0.5em;
-      font-size: 0.95rem;
     }
   }
   input {
     background-color: ${({ theme }) => theme.colors.navy50};
-    border: none;
+    border: ${({ isCommentError, theme }) =>
+      isCommentError ? `1px solid ${theme.colors.red}` : 'none'};
     border-radius: 10px;
     color: ${({ theme }) => theme.colors.gray100};
     height: 40px;
