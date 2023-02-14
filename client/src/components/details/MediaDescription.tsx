@@ -13,7 +13,7 @@ import Credits from './Credits';
 import Seasons from './Seasons';
 import Comment from './comments';
 import Like from './LikeButton';
-import Reviews from './reviewsqwe/index';
+import Reviews from './reviews/index';
 
 interface Props {
   data: IMovieTvDetails | undefined;
