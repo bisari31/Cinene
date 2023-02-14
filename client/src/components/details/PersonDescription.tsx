@@ -9,7 +9,7 @@ import Average from 'components/main/Average';
 import SimilarMedia from './SimilarMedia';
 import Comment from './comments';
 import Like from './LikeButton';
-import Reviews from './reviews';
+import Reviews from './Reviews';
 
 interface IProps {
   data?: IPerson;

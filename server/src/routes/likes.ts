@@ -2,7 +2,7 @@ import { Request, Router } from 'express';
 import { IRequest } from './middleware';
 import { authenticate } from './middleware';
 
-import Like from '../models/like';
+import Like from '../models/Like';
 import { IUser } from '../models/user';
 
 interface CustomRequest extends Request {
