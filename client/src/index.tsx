@@ -1,12 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import theme from 'styles/theme';
-import { ThemeProvider } from 'styled-components';
-import GlobalStyle from 'styles/Globalstyle';
-import { BrowserRouter } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { ReactQueryDevtools } from 'react-query/devtools';
 import { RecoilRoot } from 'recoil';
+import { ThemeProvider } from 'styled-components';
+import { BrowserRouter } from 'react-router-dom';
+import { ReactQueryDevtools } from 'react-query/devtools';
+import { QueryClient, QueryClientProvider } from 'react-query';
+
+import theme from 'styles/theme';
+import GlobalStyle from 'styles/Globalstyle';
 import reportWebVitals from './reportWebVitals';
 import App from './App';
 
@@ -14,7 +15,7 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
 );
 
-export const queryClient = new QueryClient();
+const queryClient = new QueryClient();
 
 root.render(
   <React.StrictMode>

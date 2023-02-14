@@ -1,27 +1,46 @@
+import { useState, useEffect, forwardRef, ForwardedRef } from 'react';
 import styled, { keyframes } from 'styled-components';
-import Button from './Button';
-import { IModalProps } from './Portal';
 
-export default function Modal({
-  refElement,
-  children,
-  isVisible,
-  color,
-  buttonText,
-  closeFn,
-  executeFn,
-}: IModalProps) {
+import { ColorsKey } from 'styles/theme';
+import { outside } from 'styles/css';
+import usePreventScrolling from 'hooks/usePreventScrolling';
+
+import useEscapeClose from 'hooks/useEscapeClose';
+import Button from './Button';
+
+interface Props {
+  isVisible: boolean;
+  buttonText: string[];
+  color: ColorsKey;
+  height?: string;
+  children: React.ReactNode;
+
+  closeFn?: () => void;
+  executeFn: () => void;
+}
+
+function Modal(
+  { children, isVisible, color, buttonText, height, closeFn, executeFn }: Props,
+  ref: ForwardedRef<HTMLDivElement>,
+) {
+  const [scrollY, setScrollY] = useState<number>();
+
+  usePreventScrolling(isVisible);
+  useEscapeClose(isVisible, closeFn || executeFn);
+
+  useEffect(() => {
+    setScrollY(window.scrollY);
+  }, [isVisible]);
+
   return (
-    <OutSide>
-      <ModalWrapper isVisible={isVisible} ref={refElement}>
-        <MessageWrapper>
-          <p>{children}</p>
-        </MessageWrapper>
+    <OutSide height={scrollY}>
+      <ModalWrapper isVisible={isVisible} ref={ref} height={height}>
+        <MessageWrapper>{children}</MessageWrapper>
         <BtnWrapper>
           <Button
             type="button"
             size="fullWidth"
-            color={buttonText.length === 2 ? 'gray100' : color}
+            color={buttonText.length === 2 ? 'navy50' : color}
             onClick={buttonText.length === 2 ? closeFn : executeFn}
           >
             {buttonText[0]}
@@ -41,6 +60,9 @@ export default function Modal({
     </OutSide>
   );
 }
+
+export default forwardRef(Modal);
+
 const slideFadeIn = keyframes`
 from {
   transform: translateY(-100px);
@@ -69,25 +91,19 @@ const slideFadeOut = keyframes`
 }
 `;
 
-const OutSide = styled.div`
-  align-items: center;
-  background-color: rgba(0, 0, 0, 0.5);
-  bottom: 0;
-  display: flex;
-  justify-content: center;
-  left: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
+const OutSide = styled.div<{ height: number | undefined }>`
+  ${outside};
+  z-index: 3;
 `;
-const ModalWrapper = styled.div<{ isVisible: boolean }>`
+const ModalWrapper = styled.div<{ isVisible: boolean; height?: string }>`
   animation: ${({ isVisible }) => (isVisible ? slideFadeIn : slideFadeOut)} 0.5s
     ease-out;
-  background-color: #fff;
-  border-radius: 15px;
+  background-color: ${({ theme }) => theme.colors.navy};
+  border-radius: 30px;
   display: flex;
+  /* box-shadow: 0px 4px 14px 3px rgba(0, 0, 0, 0.6); */
   flex-direction: column;
-  height: 30vh;
+  height: ${({ height }) => height || '30vh'};
   margin: 3em;
   padding: 2em;
   width: 450px;
@@ -96,13 +112,12 @@ const MessageWrapper = styled.div`
   align-items: center;
   display: flex;
   flex: 1;
+  font-size: 1.2rem;
+  font-weight: 500;
+
   justify-content: center;
   line-height: 1.5;
-  p {
-    font-size: 1.2rem;
-    font-weight: 500;
-    text-align: center;
-  }
+  text-align: center;
 `;
 
 const BtnWrapper = styled.div`

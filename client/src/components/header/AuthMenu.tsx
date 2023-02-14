@@ -1,159 +1,181 @@
 import styled, { css } from 'styled-components';
 import { useEffect } from 'react';
-import { useRecoilState } from 'recoil';
-import { Link, useNavigate } from 'react-router-dom';
+import { useSetRecoilState } from 'recoil';
+import { Link } from 'react-router-dom';
 import { lighten, darken } from 'polished';
 
-import { userIdState } from 'atom/user';
-import { useAuthQuery } from 'hooks/useAuthQuery';
-import useClickedOutSide from 'hooks/useClickedOutSide';
-import { ChevronDown } from 'assets';
-import { logout } from 'services/auth';
+import { userIdState } from 'atom/atom';
+import { Heart, Search } from 'assets';
 
-import SideMenu from 'components/header/SideMenu';
-import Modal from 'components/common/Portal';
+import LogoutButton from 'components/common/LogoutButton';
 
-export default function AuthMenu() {
-  const [userId, setUserId] = useRecoilState(userIdState);
-  const { data } = useAuthQuery(userId);
-  const { ref, isVisible, changeVisibility } = useClickedOutSide();
-  const {
-    ref: logoutRef,
-    isVisible: isVisibleLogoutForm,
-    animationState: logoutState,
-    changeVisibility: changeVisibilityModal,
-  } = useClickedOutSide(300);
+interface Props {
+  setIsVisible: () => void;
+  data?: IAuthData;
+}
 
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    changeVisibilityModal();
-    logout().then(() => {
-      localStorage.removeItem('auth');
-      setUserId('');
-      navigate('/');
-    });
-  };
+export default function AuthMenu({ setIsVisible, data }: Props) {
+  const setUserId = useSetRecoilState(userIdState);
 
   useEffect(() => {
-    const item = localStorage.getItem('auth');
-    if (item) setUserId(item);
-  }, []);
+    const item = localStorage.getItem('userId');
+    if (item) {
+      setUserId(item);
+    }
+  }, [setUserId]);
 
   return (
-    <AuthFormWrapper>
-      <SideBar>
-        <ul>
-          {data?.isLoggedIn ? (
-            <UserInfoList onClick={changeVisibility} showMemu={isVisible}>
-              <img src={`/${data.user?.img}`} alt="user_image" />
-              <span>{data.user?.nickname}</span>
-              <ChevronDown />
-              {isVisible && (
-                <SideMenu onClick={changeVisibilityModal} refElement={ref} />
-              )}
-            </UserInfoList>
-          ) : (
-            <>
-              <SignMenu>
-                <Link to="/login">로그인</Link>
-              </SignMenu>
-              <SignMenu>
-                <Link to="/register">회원가입</Link>
-              </SignMenu>
-            </>
-          )}
-        </ul>
-      </SideBar>
-      {isVisibleLogoutForm && (
-        <Modal
-          color="black"
-          buttonText={['아니요', '로그아웃']}
-          isVisible={logoutState}
-          refElement={logoutRef}
-          closeFn={changeVisibilityModal}
-          executeFn={handleLogout}
-        >
-          정말 로그아웃 하시겠습니까? 😰
-        </Modal>
-      )}
-    </AuthFormWrapper>
+    <AuthMenuWrapper>
+      <ul>
+        <Icons className="search_icon_wrapper">
+          <button type="button" onClick={setIsVisible}>
+            <Search className="search_icon" />
+          </button>
+        </Icons>
+        <Icons className="favorites_icon_wrapper">
+          <Link to="/favorites">
+            <Heart className="favorites_icon" />
+          </Link>
+        </Icons>
+        {data?.success ? (
+          <>
+            <UserInfo>
+              <Link to="/mypage">
+                <img
+                  src="https://blog.kakaocdn.net/dn/b8Kdun/btqCqM43uim/1sWJVkjEEy4LJMfR3mcqxK/img.jpg"
+                  alt="user_image"
+                />
+              </Link>
+            </UserInfo>
+            <BtnMenu className="logout_button">
+              <LogoutButton />
+            </BtnMenu>
+          </>
+        ) : (
+          <>
+            <LoginMenu>
+              <Link to="/login">로그인</Link>
+            </LoginMenu>
+            <BtnMenu>
+              <Link to="/register">회원가입</Link>
+            </BtnMenu>
+          </>
+        )}
+      </ul>
+    </AuthMenuWrapper>
   );
 }
 
-const AuthFormWrapper = styled.div``;
-const SideBar = styled.div`
-  align-items: center;
-  display: flex;
+const AuthMenuWrapper = styled.div`
   ul {
     align-items: center;
-    color: ${({ theme }) => theme.colors.black};
     display: flex;
-    flex: 1;
-
     li {
-      align-items: center;
-      display: flex;
-      font-size: 13px;
+      font-size: 12px;
+    }
+
+    .logout_button,
+    .search_icon_wrapper,
+    .favorites_icon_wrapper {
+      display: none;
+    }
+    @media ${({ theme }) => theme.device.tablet} {
+      .logout_button,
+      .search_icon_wrapper,
+      .favorites_icon_wrapper {
+        display: flex;
+      }
     }
   }
 `;
 
-const UserInfoList = styled.li<{ showMemu: boolean }>`
-  ${({ showMemu }) => css`
-    display: flex;
-    position: relative;
-    img {
-      border-radius: 50%;
-      height: 40px;
-      object-fit: cover;
-      width: 40px;
+const BtnMenu = styled.li`
+  ${({ theme }) => css`
+    a {
+      display: inline-block;
+      text-align: center;
+      line-height: 35px;
     }
-    svg {
-      stroke: #fff;
-      stroke-width: 2.5;
-      transform: ${showMemu ? `rotate(180deg)` : `rotate(0deg)`};
-      transition: 0.5s ease;
-      width: 14px;
-    }
-    span {
+    a,
+    button {
+      background: ${theme.colors.pink};
+      border: none;
+      border-radius: 12px;
       color: #fff;
-      font-weight: 500;
-      margin-left: 1em;
-      margin-right: 0.8em;
-    }
-    &:hover {
-      cursor: pointer;
+      font-size: 12px;
+      height: 35px;
+      width: 90px;
+      :hover {
+        background-color: ${lighten(0.1, theme.colors.pink)};
+      }
+      :active {
+        background-color: ${darken(0.1, theme.colors.pink)};
+      }
     }
   `}
 `;
-
-const SignMenu = styled.li`
-  ${({ theme }) => css`
-    border-radius: 17.5px;
-    color: #fff;
-    height: 35px;
+const Icons = styled.li`
+  align-items: center;
+  display: inline-flex;
+  display: flex;
+  height: 48px;
+  width: 48px;
+  a,
+  button {
+    display: flex;
+    align-items: center;
     justify-content: center;
-    width: 90px;
-    &:last-child {
-      background-color: ${theme.colors.purple};
-      color: #fff;
-      margin-left: 0.5em;
-      :hover {
-        background-color: ${lighten(0.1, theme.colors.purple)};
-      }
-      :active {
-        background-color: ${darken(0.1, theme.colors.purple)};
-      }
+    width: 100%;
+    height: 100%;
+  }
+  button {
+    padding: 0;
+    align-items: center;
+    background: none;
+    border: none;
+    display: flex;
+  }
+  .search_icon {
+    fill: #fff;
+    stroke-width: 0.1;
+  }
+  svg {
+    stroke: #fff;
+    stroke-width: 1.5;
+    width: 22px;
+  }
+`;
+
+const UserInfo = styled.li`
+  border-radius: 50%;
+  margin-left: 1.7em;
+  /* margin-right: 2.7em; */
+  overflow: hidden;
+  a {
+    border-radius: inherit;
+    img {
+      border-radius: inherit;
+      height: 35px;
+      object-fit: cover;
+      width: 35px;
     }
-    a {
-      align-items: center;
-      display: flex;
-      font-size: 12px;
-      font-weight: 400;
-      height: 100%;
-      justify-content: center;
-      width: 100%;
-    }
-  `}
+  }
+  &:hover {
+    cursor: pointer;
+  }
+  @media ${({ theme }) => theme.device.tablet} {
+    margin-right: 2.7em;
+  }
+`;
+
+const LoginMenu = styled.li`
+  height: 35px;
+  text-align: center;
+  width: 90px;
+  a {
+    display: inline-block;
+    height: 100%;
+    line-height: 35px;
+    width: 100%;
+  }
 `;

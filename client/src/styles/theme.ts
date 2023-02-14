@@ -7,8 +7,11 @@ const colors = {
   orange: '#f9690a',
   yellow: '#fdce00',
   pink: '#dd3b5f',
-  navy: '#0f1319',
-  black: '#282828',
+  navy: '#181920',
+  navy50: '#2e2f3a',
+  navy100: '#252a34',
+  black: '#101010',
+  black50: '#2e2e2e',
   white: '#ffffff',
   gray50: '#f2f2f2',
   gray100: '#e6e6e6',
@@ -21,10 +24,10 @@ const sizes = {
   laptop: '1024px',
 };
 
-const config = {
+export const config = {
   padding: '0 1em',
   header: '70px',
-  border: '6px',
+  border: '16px',
   main_margin_top: '0px',
 };
 

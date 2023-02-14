@@ -1,59 +1,65 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
 
+import useOutsideClick from 'hooks/useOutsideClick';
+import { useAuthQuery } from 'hooks/useAuthQuery';
+
 import AuthMenu from './AuthMenu';
+import SearchBar from './SearchBar';
+import SideMenu from './SideMenu';
 
 export default function Header() {
+  const { data } = useAuthQuery();
+
+  const { ref, isVisible, changeVisibility, animationState } =
+    useOutsideClick(300);
+
   return (
     <HeaderWrapper>
       <Logo>
+        <SideMenu data={data} />
         <h1>
-          <Link to="/">LOGO</Link>
+          <Link to="/">Cinene</Link>
         </h1>
       </Logo>
-      <Nav>
-        <ul>
-          <li>
-            <Link to="/">홈</Link>
-          </li>
-          <li>
-            <Link to="/post">게시판</Link>
-          </li>
-        </ul>
-      </Nav>
-      <AuthMenu />
+      <SearchWrapper isHidden={!isVisible}>
+        <SearchBar
+          ref={ref}
+          isVisible={animationState}
+          changeVisibility={changeVisibility}
+        />
+      </SearchWrapper>
+      <AuthMenu data={data} setIsVisible={changeVisibility} />
     </HeaderWrapper>
   );
 }
 
 const HeaderWrapper = styled.header`
-  max-width: 1280px;
-  position: absolute;
-  width: 100%;
-`;
-const Logo = styled.div`
+  align-items: center;
   display: flex;
+  justify-content: space-between;
+`;
+
+const Logo = styled.div`
+  align-items: center;
+  display: flex;
+  flex: 1;
+
   h1 {
-    color: #fff;
     font-size: 20px;
     font-weight: 700;
   }
-  @media ${({ theme }) => theme.device.mobile} {
-    flex: 1;
-  }
 `;
 
-const Nav = styled.nav`
-  flex: 1;
-  font-size: 14px;
-  margin-left: 10em;
-  ul {
-    display: flex;
-  }
-  li + li {
-    margin-left: 3em;
-  }
-  @media ${({ theme }) => theme.device.mobile} {
+const SearchWrapper = styled.div<{ isHidden: boolean }>`
+  ${({ isHidden, theme }) => css`
+    align-items: center;
+    background-color: red;
     display: none;
-  }
+    justify-content: center;
+    width: 100%;
+    @media ${theme.device.tablet} {
+      display: ${isHidden ? 'none' : 'flex'};
+    }
+  `}
 `;

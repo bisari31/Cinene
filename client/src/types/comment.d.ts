@@ -1,10 +1,10 @@
 export interface IComment {
   comment: string;
+  contentId: string;
   createdAt: string;
-  postId: string;
   updatedAt: string;
-  writer: IUser;
+  responseTo: string;
+  userId: IUser;
   __v: number;
   _id: string;
-  responseTo: string;
 }

@@ -1,38 +1,44 @@
 import { useState, useEffect } from 'react';
-import { useQueries, useQuery } from 'react-query';
-import { getMediaDetail, getTrendingMedia, IMAGE_URL } from 'services/media';
+import { useQuery } from 'react-query';
 import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
-import { ChevronLeft, ChevronRight, Star } from 'assets';
-import { lighten, darken } from 'polished';
+
+import { getMediaDetail, getVideos, IMAGE_URL } from 'services/media';
+import { ChevronLeft, ChevronRight } from 'assets';
+import useTrendingMediaQuery from 'hooks/useTrendingMediaQuery';
+import { getMediaOverview, getMediaTitle } from 'utils/media';
+
+import { EMPTY_IMAGE } from 'utils/imageUrl';
+import { buttonEffect } from 'styles/css';
+import useCineneDataQuery from 'hooks/useCineneDataQuery';
+import AverageButton from './Average';
 
 export default function Popular() {
   const [viewIndex, setViewIndex] = useState(0);
-  const [currentMedia, setCurrentMedia] = useState<IMediaDetail>();
+  const [currentMedia, setCurrentMedia] = useState<IMediaResults>();
 
-  const { data } = useQuery(['media', 'popular'], getTrendingMedia, {
-    refetchOnWindowFocus: false,
-    staleTime: 1000 * 60 * 60 * 24,
-  });
+  const { data, isLoading, isFetching } = useTrendingMediaQuery();
 
-  const { data: detailData } = useQuery(['media', currentMedia?.id], () =>
-    getMediaDetail(currentMedia?.id, currentMedia?.media_type),
+  const { data: detailData } = useQuery(
+    ['media', 'details', currentMedia?.id],
+    () => getMediaDetail(currentMedia?.id, currentMedia?.media_type),
+    {
+      staleTime: 1000 * 60 * 60 * 6,
+    },
+  );
+  const cineneData = useCineneDataQuery(
+    currentMedia?.media_type,
+    currentMedia?.id,
+    detailData,
   );
 
-  const changeUppercase = (str: string | undefined) => {
-    if (str) return str.charAt(0).toUpperCase() + str.slice(1);
-  };
-
-  const sliceOverview = (str: string | undefined) => {
-    if (!str) return;
-    const maxLength = 150;
-    if (str.length > maxLength) return `${str.slice(0, maxLength)}...`;
-    return str;
-  };
-
-  const sliceAverage = (num: number | undefined) => {
-    if (num) return num.toFixed(1);
-  };
+  // const { data: videoData } = useQuery(
+  //   ['media', 'video', currentMedia?.id],
+  //   () => getVideos(currentMedia?.id, currentMedia?.media_type),
+  //   {
+  //     staleTime: 1000 * 60 * 60 * 6,
+  //   },
+  // );
 
   const handleSlide = (index: number) => {
     const maxIndex = data?.length;
@@ -43,80 +49,108 @@ export default function Popular() {
     setViewIndex(newIndex);
   };
 
+  const title = getMediaTitle(detailData);
+  const overview = getMediaOverview(detailData);
+
   useEffect(() => {
-    if (data) setCurrentMedia(data[viewIndex]);
+    if (data) {
+      setCurrentMedia(data[viewIndex]);
+    }
   }, [data, viewIndex]);
 
-  console.log(data);
+  useEffect(() => {
+    const slider = setTimeout(() => handleSlide(1), 40000);
+    return () => clearTimeout(slider);
+  });
+
   return (
-    <PopularWrapper>
+    <section>
+      <Background
+        src={
+          currentMedia
+            ? `${IMAGE_URL}/original/${currentMedia?.backdrop_path}`
+            : EMPTY_IMAGE
+        }
+      />
       <Item>
-        <img
-          src={`${IMAGE_URL}/original/${currentMedia?.backdrop_path}`}
-          alt="backdrop"
-        />
         <div>
           <Category>
-            <div>
-              <p>{changeUppercase(currentMedia?.media_type)}</p>
-            </div>
-            <div>
-              <p>{currentMedia?.release_date}</p>
-              {detailData?.genre_ids?.map((item) => (
-                <p key={item.id}>{item.name}</p>
-              ))}
-            </div>
+            <AverageButton
+              tmdb={currentMedia?.vote_average}
+              cinene={cineneData}
+            />
           </Category>
           <Overview>
-            <div>
-              <p>{currentMedia?.name ?? currentMedia?.title}</p>
-              <div>
-                <Star />
-                <span>{sliceAverage(currentMedia?.vote_average)}</span>
-              </div>
-            </div>
-            <p>{sliceOverview(currentMedia?.overview)}</p>
+            <p>{title}</p>
+            <p>{overview}</p>
           </Overview>
-          <ButtonWrapper>
+          <ButtonWrapper color="pink">
             <Link to={`/${currentMedia?.media_type}/${currentMedia?.id}`}>
               자세히 보기
             </Link>
-            <button type="button" onClick={() => handleSlide(-1)}>
+            <Button
+              color="navy50"
+              type="button"
+              onClick={() => handleSlide(-1)}
+            >
               <ChevronLeft />
-            </button>
-            <button type="button" onClick={() => handleSlide(1)}>
+            </Button>
+            <Button color="navy50" type="button" onClick={() => handleSlide(1)}>
               <ChevronRight />
-            </button>
+            </Button>
           </ButtonWrapper>
         </div>
       </Item>
-    </PopularWrapper>
+      {/* <VideoWrapper>
+        {videoData && (
+          <ReactPlayer
+            controls
+            playing
+            url={`https://youtu.be/${videoData.key}`}
+            muted
+            width={500}
+            height={300}
+          />
+        )}
+      </VideoWrapper> */}
+    </section>
   );
 }
 
-const PopularWrapper = styled.section``;
+const Background = styled.div<{ src: string }>`
+  ${({ src }) => css`
+    background: ${`linear-gradient(
+        rgba(24, 25, 32, 0.5) 70vh,
+        rgba(24, 25, 32, 1) 100vh
+      ), url(${src}) center`};
+    background-size: cover;
+    height: 100vh;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: -1;
+  `}
+`;
 
 const Item = styled.div`
   ${({ theme }) => css`
     align-items: flex-end;
     display: flex;
     height: 90vh;
-    img {
-      background-color: ${theme.colors.navy};
-      height: 90vh;
-      left: 0;
-      object-fit: cover;
-      position: absolute;
-      right: 0;
-      width: 100%;
-    }
     & > div {
+      bottom: 10%;
       display: flex;
       flex-direction: column;
       height: 500px;
-      justify-content: center;
+      justify-content: flex-end;
       position: relative;
-      width: 85%;
+      width: 90%;
+    }
+    @media ${theme.device.tablet} {
+      & > div {
+        width: 80%;
+      }
     }
   `}
 `;
@@ -124,125 +158,89 @@ const Item = styled.div`
 const Category = styled.div`
   ${({ theme }) => css`
     display: flex;
-    font-size: 0.8rem;
-    margin-bottom: 3em;
-    & > div:first-child {
-      p {
-        align-items: center;
-        background-color: ${theme.colors.pink};
-        border-radius: 100px;
-        color: #fff;
-        display: flex;
-        height: 35px;
-        justify-content: center;
-        width: 60px;
+    flex-direction: column;
+    margin-bottom: 1em;
+
+    @media ${theme.device.tablet} {
+      flex-direction: row;
+      margin-bottom: 1.5em;
+      & > div:nth-child(2) {
+        margin: 0;
       }
-      margin-right: 1em;
     }
-    & > div:nth-child(2) {
-      align-items: center;
-      color: ${theme.colors.gray300};
-      display: flex;
-    p + p {
-      display: flex;
-      align-items: center;
-        &::before {
-        content: '';
-        margin:0 0.5rem;
-        display: inline-block;
-        height:12px;
-        width:2px;
-        background-color: ${theme.colors.gray300};
-        }
-      }
   `}
 `;
 
 const Overview = styled.div`
-  ${({ theme }) => css`
-    display: flex;
-    flex-direction: column;
-    & > p:nth-child(2) {
-      color: #fff;
-      font-size: 0.9rem;
-      line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+
+  p:first-child {
+    font-size: 2.5rem;
+    font-weight: 500;
+    line-height: 1.3;
+    margin-right: 0.5em;
+  }
+
+  & > p:nth-child(2) {
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 6;
+    color: ${({ theme }) => theme.colors.gray100};
+    display: -webkit-box;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-top: 2em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word;
+    @media ${({ theme }) => theme.device.tablet} {
       margin-top: 3em;
     }
-    & > div {
-      align-items: center;
-      display: flex;
-      & > p {
-        font-size: 2.5rem;
-        font-weight: 500;
-        line-height: 1.3;
-      }
-      & > div {
-        align-items: center;
-        background-color: ${theme.colors.yellow};
-        border-radius: 3px;
-        display: flex;
-        height: 35px;
-        justify-content: center;
-        margin-left: 1.5em;
-        width: 85px;
-        svg {
-          fill: ${theme.colors.black};
-          height: 28px;
-          stroke: none;
-          width: 28px;
-          margin-right: 0.5em;
-        }
-        span {
-          color: ${theme.colors.black};
-          font-size: 1.5rem;
-          font-weight: 500;
-        }
-      }
-    }
-  `}
+  }
 `;
 
 const ButtonWrapper = styled.div`
   ${({ theme }) => css`
     align-items: center;
     display: flex;
-    margin-top: 3em;
+    margin-top: 2em;
+    @media ${theme.device.tablet} {
+      margin-top: 3em;
+    }
     a {
       align-items: center;
-      background-color: ${theme.colors.purple};
-      border-radius: 100px;
+      background-color: ${theme.colors.pink};
+      border-radius: 12px;
       display: flex;
       font-size: 0.8rem;
       height: 40px;
       justify-content: center;
       margin-right: 2em;
       width: 120px;
-      &:hover {
-        background-color: ${lighten(0.1, theme.colors.purple)};
-      }
-      &:active {
-        background-color: ${darken(0.1, theme.colors.purple)};
-      }
-    }
-    button {
-      background-color: ${theme.colors.purple};
-      border: none;
-      border-radius: 20px;
-      height: 40px;
-      margin-right: 1em;
-      svg {
-        align-items: center;
-        display: flex;
-        height: 30px;
-        stroke: #fff;
-        width: 30px;
-      }
-      &:hover {
-        background-color: ${lighten(0.1, theme.colors.purple)};
-      }
-      &:active {
-        background-color: ${darken(0.1, theme.colors.purple)};
-      }
+      ${buttonEffect};
     }
   `}
+`;
+
+const Button = styled.button`
+  background-color: ${({ theme }) => theme.colors.navy50};
+  border: none;
+  border-radius: 12px;
+  height: 40px;
+  margin-right: 1em;
+  ${buttonEffect};
+  svg {
+    align-items: center;
+    display: flex;
+    height: 30px;
+    stroke: #fff;
+    stroke-width: 1;
+    width: 30px;
+  }
+`;
+
+const VideoWrapper = styled.div`
+  position: absolute;
+  right: 300px;
+  top: 300px;
 `;

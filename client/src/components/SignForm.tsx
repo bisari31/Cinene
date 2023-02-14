@@ -1,25 +1,36 @@
 import { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
-import styled, { css } from 'styled-components';
-import { useMutation } from 'react-query';
+import styled from 'styled-components';
+import { useMutation, useQueryClient } from 'react-query';
 
 import useInput from 'hooks/useInput';
-import { userIdState } from 'atom/user';
+import { userIdState } from 'atom/atom';
 import { login, register } from 'services/auth';
-import { handleBlur } from 'utils';
+
 import Input from './common/Input';
 import Button from './common/Button';
 import ConfirmPassword from './common/ConfirmPassword';
 
 export default function SignForm({ type }: { type: 'login' | 'register' }) {
-  const [email, handleChangeEmail] = useInput();
-  const [password, handleChangePassword] = useInput();
-  const [nickname, handleChangeNickname] = useInput();
-
-  const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
-  const [nicknameError, setNicknameError] = useState('');
+  const {
+    input: email,
+    handleChange: handleChangeEmail,
+    errorMsg: emailError,
+    setErrorMsg: setEmailError,
+  } = useInput('email');
+  const {
+    input: password,
+    handleChange: handleChangePassword,
+    errorMsg: passwordError,
+    setErrorMsg: setPasswordError,
+  } = useInput('password');
+  const {
+    input: nickname,
+    handleChange: handleChangeNickname,
+    errorMsg: nicknameError,
+    setErrorMsg: setNicknameError,
+  } = useInput('nickname');
 
   const [signupError, setSignupError] = useState(true);
   const [isDisabled, setIsDisabled] = useState(true);
@@ -27,11 +38,14 @@ export default function SignForm({ type }: { type: 'login' | 'register' }) {
   const setUserId = useSetRecoilState(userIdState);
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const { mutate: loginMutate } = useMutation(login, {
     onSuccess: (data) => {
       setUserId(data.user._id);
-      localStorage.setItem('auth', data.user._id);
+      localStorage.setItem('userId', data.user._id);
+      queryClient.invalidateQueries(['auth']);
+      // localStorage.setItem('token', data.user.token);
       navigate('/');
     },
     onError: (err: ILoginError) => {
@@ -68,106 +82,101 @@ export default function SignForm({ type }: { type: 'login' | 'register' }) {
 
   useEffect(() => {
     if (type === 'register') {
-      if (nickname && email && !emailError && !nicknameError && !signupError)
+      if (
+        nickname &&
+        email &&
+        !emailError &&
+        !nicknameError &&
+        !signupError &&
+        !passwordError
+      )
         return setIsDisabled(false);
       setIsDisabled(true);
     }
-  }, [email, signupError, type, nickname, emailError, nicknameError]);
-
-  useEffect(() => {
-    setEmailError('');
-  }, [email]);
-
-  useEffect(() => {
-    setPasswordError('');
-  }, [password]);
-
-  useEffect(() => {
-    setNicknameError('');
-  }, [nickname]);
+  }, [
+    email,
+    signupError,
+    type,
+    nickname,
+    emailError,
+    nicknameError,
+    passwordError,
+  ]);
 
   return (
-    <SignFormWrapper>
-      <form action="" onSubmit={onSubmit}>
-        <Input
-          onBlur={() => handleBlur(email, 'email', setEmailError)}
-          errorMessage={emailError}
-          placeholder="이메일 주소"
-          label="이메일"
-          value={email}
-          onChange={handleChangeEmail}
-          type="text"
-          refElement={inputRef}
-        />
+    <Form onSubmit={onSubmit}>
+      <Input
+        errorMessage={emailError}
+        placeholder="이메일 주소"
+        label="이메일"
+        value={email}
+        onChange={handleChangeEmail}
+        type="text"
+        ref={inputRef}
+      />
 
-        {type === 'register' && (
-          <Input
-            onBlur={() => handleBlur(nickname, 'nickname', setNicknameError)}
-            label="닉네임"
-            placeholder="특수문자 제외 2~10자"
-            errorMessage={nicknameError}
-            value={nickname}
-            onChange={handleChangeNickname}
-            type="text"
-          />
-        )}
-        {type === 'login' ? (
-          <Input
-            onBlur={() => handleBlur(password, 'password', setPasswordError)}
-            errorMessage={passwordError}
-            label="비밀번호"
-            placeholder="영문,숫자 포함 8~16자"
-            value={password}
-            onChange={handleChangePassword}
-            type="password"
-          />
-        ) : (
-          <ConfirmPassword
-            placeholder="영문,숫자 포함 8~16자"
-            setReturnError={setSignupError}
-            type="register"
-            password={password}
-            onChange={handleChangePassword}
-          />
-        )}
-        <ButtonWrapper>
+      {type === 'register' && (
+        <Input
+          label="닉네임"
+          placeholder="특수문자 제외 2~10자"
+          errorMessage={nicknameError}
+          value={nickname}
+          onChange={handleChangeNickname}
+          type="text"
+        />
+      )}
+      {type === 'login' ? (
+        <Input
+          errorMessage={passwordError}
+          label="비밀번호"
+          placeholder="영문,숫자 포함 8~16자"
+          value={password}
+          onChange={handleChangePassword}
+          type="password"
+        />
+      ) : (
+        <ConfirmPassword
+          placeholder="영문,숫자 포함 8~16자"
+          setReturnError={setSignupError}
+          errorMessage={passwordError}
+          type="register"
+          password={password}
+          onChange={handleChangePassword}
+        />
+      )}
+      <ButtonWrapper>
+        <Button
+          color="pink"
+          size="fullWidth"
+          type="submit"
+          isDisabled={isDisabled}
+        >
+          {type === 'login' ? '로그인' : '회원가입'}
+        </Button>
+        {type === 'login' && (
           <Button
-            color="purple"
+            color="yellow"
             size="fullWidth"
-            type="submit"
-            isDisabled={isDisabled}
+            type="button"
+            fontColor="black"
           >
-            {type === 'login' ? '로그인' : '회원가입'}
+            카카오톡 로그인
           </Button>
-          {type === 'login' && (
-            <Button color="yellow" size="fullWidth" type="button">
-              카카오톡 로그인
-            </Button>
-          )}
-        </ButtonWrapper>
-      </form>
-    </SignFormWrapper>
+        )}
+      </ButtonWrapper>
+    </Form>
   );
 }
 
-const SignFormWrapper = styled.div`
-  ${({ theme }) => css`
-    align-items: center;
-    display: flex;
-    height: ${`calc(100vh -  ${theme.config.header} - ${theme.config.main_margin_top})`};
-    justify-content: center;
-    form {
-      flex: 1;
-      max-width: 400px;
-    }
-  `}
+const Form = styled.form`
+  padding: 3em;
 `;
 
 const ButtonWrapper = styled.div`
   & > button:nth-child(1) {
-    margin-top: 8em;
+    margin-top: 3.5em;
   }
   & > button:nth-child(2) {
-    margin-top: 2em;
+    margin-top: 1.5em;
   }
 `;

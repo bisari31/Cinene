@@ -12,9 +12,9 @@ export default function AuthHoc(
     const navigate = useNavigate();
 
     useEffect(() => {
-      if (data?.isLoggedIn) {
-        if (!option) navigate(-1);
-      } else if (!data?.isLoggedIn && option) navigate('/login');
+      if (data?.success) {
+        if (!option) navigate('/');
+      } else if (!data?.success && option) navigate('/login');
     }, [data, navigate]);
 
     return <Component />;

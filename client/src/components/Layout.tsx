@@ -16,17 +16,14 @@ export default function Layout() {
 
 const LayoutWrapper = styled.div`
   ${({ theme }) => css`
+    padding: ${theme.config.padding};
     header {
-      width: 100%;
-      align-items: center;
       display: flex;
-      padding: ${theme.config.padding};
       height: ${theme.config.header};
       z-index: 3;
     }
     main {
       margin-top: ${theme.config.main_margin_top};
-      padding: ${theme.config.padding};
       z-index: 2;
     }
   `}

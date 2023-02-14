@@ -1,29 +1,27 @@
-import { Schema, model, Model, ObjectId } from 'mongoose';
+import { model, Schema, Model, ObjectId } from 'mongoose';
 import jwt from 'jsonwebtoken';
 
-export interface DBUser {
+export interface IUser {
   _id: ObjectId;
   email: string;
   password: string;
   nickname: string;
-  token: string;
-  createdAt: Date;
   img: string;
+  token?: string;
+  createdAt: Date;
 }
 
-interface DBUserMethods {
-  generateToken(): Promise<DBUser>;
+export interface UserMethods {
+  generateToken(): Promise<IUser>;
 }
-interface DBUserModel extends Model<DBUser, {}, DBUserMethods> {
-  findByToken(
-    token: string,
-    cb: (err: true | null, user: DBUser) => void,
-  ): void;
+
+export interface UserModel extends Model<IUser, {}, UserMethods> {
+  findToken(token: string | undefined): Promise<false | IUser>;
 }
 
 const PRIVATE_KEY = process.env.PRIVATE_KEY!;
 
-const userSchema = new Schema<DBUser>(
+const userSchema = new Schema<IUser>(
   {
     email: {
       type: String,
@@ -36,16 +34,17 @@ const userSchema = new Schema<DBUser>(
       type: String,
       unique: true,
     },
-    token: {
-      type: String,
-    },
     img: {
       type: String,
-      default: 'panda-g3d0df0196_640.jpg',
+      default: 'default.jpg',
+    },
+    token: {
+      type: String,
+      default: '',
     },
   },
   {
-    timestamps: { createdAt: true, updatedAt: false },
+    timestamps: true,
   },
 );
 
@@ -60,17 +59,19 @@ userSchema.methods.generateToken = async function () {
   }
 };
 
-userSchema.statics.findByToken = async function (token: string, cb) {
+userSchema.statics.findToken = async function (
+  token: string,
+): Promise<false | IUser> {
   try {
     const id = jwt.verify(token, `${PRIVATE_KEY}`);
-    const user = await this.findOne({ _id: id, token });
-    if (!user) return cb(true);
-    cb(null, user);
+    const user: IUser = await this.findOne({ _id: id });
+    if (!user) throw Error;
+    return user;
   } catch (err) {
-    cb(true);
+    return false;
   }
 };
 
-const User = model<DBUser, DBUserModel>('User', userSchema);
+const User = model<IUser, UserModel>('User', userSchema);
 
 export default User;

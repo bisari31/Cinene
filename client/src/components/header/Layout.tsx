@@ -21,12 +21,9 @@ const LayoutWrapper = styled.div`
       max-width: 1280px;
       align-items: center;
       display: flex;
-      padding: ${theme.config.padding};
-      padding: 20px;
     }
     main {
       margin-top: ${theme.config.main_margin_top};
-      padding: ${theme.config.padding};
     }
   `}
 `;

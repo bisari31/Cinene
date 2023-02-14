@@ -27,11 +27,18 @@ const GlobalStyle = createGlobalStyle`
   }
 
   body {
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+
+    background-color: #181920;
     max-width: 1280px;
     width:100%;
     margin: 0 auto;
     color: #fff;
 }
+
 `;
 
 export default GlobalStyle;

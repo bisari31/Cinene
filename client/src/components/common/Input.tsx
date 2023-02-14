@@ -1,4 +1,5 @@
-import { useEffect } from 'react';
+import useForwardRef from 'hooks/useForwardRef';
+import { useEffect, forwardRef } from 'react';
 import styled, { css } from 'styled-components';
 
 interface IProps {
@@ -7,27 +8,29 @@ interface IProps {
   type: 'text' | 'password';
   disabled?: boolean;
   label?: string;
-  refElement?: React.RefObject<HTMLInputElement>;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onBlur?: () => void;
   errorMessage?: string;
 }
 
-export default function Input({
-  placeholder = '',
-  value,
-  type = 'text',
-  disabled = false,
-  label = '',
-  refElement = undefined,
-  errorMessage = '',
-  ...rest
-}: IProps) {
+function Input(
+  {
+    placeholder = '',
+    value,
+    type = 'text',
+    disabled = false,
+    label = '',
+    errorMessage = '',
+    ...rest
+  }: IProps,
+  ref: React.ForwardedRef<HTMLInputElement>,
+) {
+  // const inputRef = useForwardRef<HTMLInputElement>(ref);
+
   useEffect(() => {
-    if (refElement && !disabled) {
-      refElement.current?.focus();
-    }
-  }, [refElement, disabled]);
+    if (typeof ref !== 'object') return;
+    // eslint-disable-next-line react/destructuring-assignment
+    if (ref && !disabled) ref.current?.focus();
+  }, [ref, disabled]);
 
   return (
     <InputWrapper>
@@ -35,7 +38,7 @@ export default function Input({
       <StyledInput
         isError={!!errorMessage}
         disabled={disabled}
-        ref={refElement}
+        ref={ref}
         placeholder={placeholder}
         value={value}
         type={type}
@@ -46,32 +49,30 @@ export default function Input({
   );
 }
 
+export default forwardRef(Input);
+
 const InputWrapper = styled.div`
-  ${({ theme }) => css`
-    label {
-      color: ${theme.colors.gray500};
-      font-size: 14px;
-    }
-  `}
-  & + & {
-    margin-top: 2.5em;
+  label {
+    color: #fff;
+    display: inline-block;
+    font-size: 0.8rem;
+    font-weight: 300;
+    margin-bottom: 0.7em;
   }
 `;
 
 const StyledInput = styled.input<{ isError: boolean }>`
   ${({ theme, isError }) => css`
-    border: ${isError
-      ? `2px solid ${theme.colors.red}`
-      : `1px solid ${theme.colors.gray100}`};
+    background-color: ${theme.colors.navy100};
+    border: ${isError ? `1px solid ${theme.colors.red}` : 'none'};
     border-radius: ${theme.config.border};
-    height: 40px;
-    margin-top: 0.5em;
-    padding: 0 1em;
+    color: #fff;
+    font-size: 0.8rem;
+    height: 4.3em;
+    padding: 2em;
     width: 100%;
     &:focus {
-      border: ${isError
-        ? `2px solid ${theme.colors.red}`
-        : `2px solid ${theme.colors.purple}`};
+      border: ${isError ? `1px solid ${theme.colors.red}` : `none`};
     }
   `}
 `;
@@ -79,8 +80,10 @@ const StyledInput = styled.input<{ isError: boolean }>`
 const ErrorMessage = styled.span`
   ${({ theme }) => css`
     color: ${theme.colors.red};
-    display: inline-block;
-    font-size: 14px;
-    margin-top: 1em;
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 300;
+    height: 1.8em;
+    margin-top: 0.8em;
   `}
 `;

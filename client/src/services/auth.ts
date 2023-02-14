@@ -13,10 +13,7 @@ interface IBody {
 }
 
 export const auth = async () => {
-  const { data } = await axios.get<{
-    isLoggedIn: boolean;
-    user: IUser;
-  }>('/auth');
+  const { data } = await axios.get<IAuthData>('/auth');
   return data;
 };
 

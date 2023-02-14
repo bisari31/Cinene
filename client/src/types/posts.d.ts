@@ -1,24 +1,22 @@
-interface IPost {
-  body: string;
-  createdAt: string;
-  seq: number;
-  title: string;
-  updatedAt: string;
-  views: number;
-  writer: IUser;
+interface IFavoritesContents {
+  average: number;
+  count: number;
+  name: string;
+  poster: string;
+  tmdbId: number;
+  type: 'movie' | 'tv' | 'person';
   __v: number;
   _id: string;
-  commentsNum: number;
 }
 
-interface IPostsData {
-  posts: IPost[];
-  success: boolean;
-}
-
-interface IPostUpdateBody {
-  postId: string;
+interface IFavoritesContent {
+  contentId: IFavoritesContents;
   userId: string;
-  title: string;
-  body: string;
+  __v: number;
+  _id: string;
+}
+
+interface IFavoritesData {
+  contents: IFavoritesContent[];
+  success: boolean;
 }

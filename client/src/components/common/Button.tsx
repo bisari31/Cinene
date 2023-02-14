@@ -29,7 +29,7 @@ const sizes = {
   },
   medium: {
     width: '200px',
-    height: '3.8em',
+    height: '35px',
     fontSize: '0.8rem',
   },
   large: {
@@ -39,7 +39,7 @@ const sizes = {
   },
   fullWidth: {
     width: '100%',
-    height: '2.8rem',
+    height: '4.3em',
     fontSize: '0.8rem',
   },
 };
@@ -70,12 +70,25 @@ function Button({
 
 export default memo(Button);
 
-const StyledButton = styled.button<IButtonProps>`
-  ${({ size, theme, color, isDisabled, fontColor }) =>
+const disability = css<{ isDisabled: boolean }>`
+  ${({ theme, isDisabled }) =>
+    isDisabled &&
     css`
-      background-color: ${isDisabled
-        ? theme.colors.gray500
-        : theme.colors[color]};
+      background-color: ${theme.colors.gray500};
+      &:hover {
+        background-color: ${theme.colors.gray500};
+        cursor: not-allowed;
+      }
+      &:active {
+        background-color: ${theme.colors.gray500};
+      }
+    `}
+`;
+
+const StyledButton = styled.button<IButtonProps>`
+  ${({ size, theme, color, fontColor }) =>
+    css`
+      background-color: ${theme.colors[color]};
       border: none;
       border-radius: ${theme.config.border};
       color: ${fontColor};
@@ -86,14 +99,12 @@ const StyledButton = styled.button<IButtonProps>`
         background-color: ${color.includes('gray')
           ? darken(0.1, theme.colors[color])
           : lighten(0.1, theme.colors[color])};
-        background-color: ${isDisabled && theme.colors.gray500};
-        cursor: ${isDisabled ? 'not-allowed' : 'pointer'};
       }
       &:active {
         background-color: ${color.includes('gray')
           ? darken(0.2, theme.colors[color])
           : darken(0.1, theme.colors[color])};
-        background-color: ${isDisabled && theme.colors.gray500};
       }
+      ${disability}
     `}
 `;
