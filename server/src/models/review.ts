@@ -1,10 +1,10 @@
 import { model, ObjectId, Schema, Types } from 'mongoose';
 
-export interface IRating {
+export interface IReview {
   userId: ObjectId;
   contentId: ObjectId;
   contentType: string;
-  review: string;
+  comment: string;
   rating: number;
   params?: { contentId: string; contentType: string };
   isEditing: null | {
@@ -12,7 +12,7 @@ export interface IRating {
   };
 }
 
-const ratingSchema = new Schema<IRating>(
+const reviewSchema = new Schema<IReview>(
   {
     userId: {
       type: Types.ObjectId,
@@ -25,7 +25,7 @@ const ratingSchema = new Schema<IRating>(
     contentType: {
       type: String,
     },
-    review: {
+    comment: {
       type: String,
     },
     rating: {
@@ -35,5 +35,5 @@ const ratingSchema = new Schema<IRating>(
   { timestamps: true },
 );
 
-const Rating = model<IRating>('Rating', ratingSchema);
+const Rating = model<IReview>('Review', reviewSchema);
 export default Rating;

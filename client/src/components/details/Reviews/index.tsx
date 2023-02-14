@@ -4,7 +4,7 @@ import { useQuery } from 'react-query';
 
 import useOutsideClick from 'hooks/useOutsideClick';
 import { useAuthQuery } from 'hooks/useAuthQuery';
-import { getReviews } from 'services/rating';
+import { getReviews } from 'services/review';
 
 import ReviewHeader from './ReviewHeader';
 import ReviewModal from './ReviewModal';
@@ -34,10 +34,6 @@ function Reviews(
       refetchOnWindowFocus: false,
     },
   );
-
-  useEffect(() => {
-    console.log('🚀 ~ file: index.tsx:31 ~ reivew', reivewData);
-  }, [reivewData]);
 
   return (
     <ReviewsWrapper length={data?.count}>

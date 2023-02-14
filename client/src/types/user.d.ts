@@ -19,3 +19,8 @@ interface ILoginError {
     };
   };
 }
+
+interface IAuthData {
+  success: boolean;
+  user?: IUser;
+}

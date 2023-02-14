@@ -88,7 +88,7 @@ export default function CommentItem({
   );
 }
 
-const Item = styled.div<{ date: string; isResponse: boolean }>`
+export const Item = styled.div<{ date: string; isResponse?: boolean }>`
   ${({ theme, date }) => css`
     align-items: center;
     background-color: ${theme.colors.navy50};
@@ -105,7 +105,7 @@ const Item = styled.div<{ date: string; isResponse: boolean }>`
       flex: 1;
       word-break: break-all;
       line-height: 1.2;
-      p:first-child {
+      p:nth-of-type(1) {
         font-size: 0.9rem;
         font-weight: 500;
         margin-bottom: 0.3em;

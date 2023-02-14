@@ -1,5 +1,5 @@
 interface IAddReview {
-  review: string;
+  comment: string;
   rating: number;
   contentType: string | undefined;
   contentId: string | undefined;
@@ -18,7 +18,7 @@ interface IDocument {
   contentType: string;
   createdAt: string;
   rating: number;
-  review: string;
+  comment: string;
   updatedAt: string;
   __v: number;
   _id: string;

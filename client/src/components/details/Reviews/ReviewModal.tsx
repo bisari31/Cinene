@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from 'react-query';
 
 import { Star } from 'assets';
 import usePrevious from 'hooks/usePrevious';
-import { addRating } from 'services/rating';
+import { addRating } from 'services/review';
 
 import Modal from 'components/common/Modal';
 import Portal from 'components/common/Portal';
@@ -30,7 +30,7 @@ function ReviewModal(
   ref: ForwardedRef<HTMLDivElement>,
 ) {
   const [rating, setRating] = useState(0);
-  const [review, setReview] = useState('');
+  const [comment, setComment] = useState('');
   const previousRating = usePrevious(rating);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -38,6 +38,7 @@ function ReviewModal(
 
   const { mutate } = useMutation(addRating, {
     onSuccess: () => {
+      console.log(data?.type, data?.tmdbId);
       queryClient.invalidateQueries(['cinene', data?.type, data?.tmdbId]);
       queryClient.invalidateQueries(['reviews', data?.type, data?._id]);
       changeVisibility();
@@ -45,18 +46,24 @@ function ReviewModal(
   });
 
   const handleChangeComment = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setReview(e.target.value);
+    setComment(e.target.value);
   };
 
   const handleAddReview = () => {
     mutate({
+      comment,
       rating,
-      review,
       contentId: data?._id,
       contentType: data?.type,
       isEditing: hasReview || null,
     });
-    changeVisibility();
+    // mutate({
+    //   comment,
+    //   rating,
+    //   contentId: data?._id,
+    //   contentType: data?.type,
+    //   isEditing: hasReview || null,
+    // });
   };
 
   const showRatingMessage = (value: number) =>
@@ -65,16 +72,18 @@ function ReviewModal(
   useEffect(() => {
     if (isVisible) {
       inputRef.current?.focus();
-      setReview('');
+      setComment('');
     }
   }, [inputRef, isVisible]);
 
   useEffect(() => {
     if (hasReview) {
       setRating(hasReview.rating);
-      setReview(hasReview.review);
+      setComment(hasReview.comment);
     }
   }, [hasReview]);
+
+  if (!data) return null;
 
   return (
     <Portal>
@@ -110,7 +119,7 @@ function ReviewModal(
             ref={inputRef}
             type="text"
             placeholder="한줄평을 남겨주세요"
-            value={review}
+            value={comment}
             onChange={handleChangeComment}
           />
         </ModalContent>

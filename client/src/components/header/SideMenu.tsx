@@ -9,10 +9,7 @@ import usePreventScrolling from 'hooks/usePreventScrolling';
 import LogoutButton from 'components/common/LogoutButton';
 
 interface IProps {
-  data?: {
-    success: boolean;
-    user?: IUser | undefined;
-  };
+  data?: IAuthData;
 }
 
 const MENU_LIST = [

@@ -1,9 +1,11 @@
+import { useEffect } from 'react';
+
 import { Star } from 'assets';
 import styled from 'styled-components';
 
 import { USER_IMAGE } from 'utils/imageUrl';
 import { changeDaysAgo } from 'utils/days';
-import { Item } from '../Comments/CommentItem';
+import { Item } from '../comments/CommentItem';
 
 interface IProps {
   review: IDocument;
@@ -15,21 +17,19 @@ export default function ReviewItem({ review }: IProps) {
       <img src={USER_IMAGE} alt="user_avatar" />
       <div>
         <p>{review.userId.nickname}</p>
-        <p>{review.review}</p>
+        <p>{review.comment}</p>
       </div>
       <SvgWrapper>
-        {[1, 2, 3, 4, 5]
-          .map((star) => (
-            <StyledButton
-              isFilling={star >= review.rating}
-              key={star}
-              type="button"
-              disabled
-            >
-              <Star />
-            </StyledButton>
-          ))
-          .reverse()}
+        {[1, 2, 3, 4, 5].map((star) => (
+          <StyledButton
+            isFilling={star <= review.rating}
+            key={star}
+            type="button"
+            disabled
+          >
+            <Star />
+          </StyledButton>
+        ))}
       </SvgWrapper>
     </Item>
   );

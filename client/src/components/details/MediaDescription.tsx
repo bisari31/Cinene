@@ -11,9 +11,9 @@ import Average from 'components/main/Average';
 import SimilarMedia from './SimilarMedia';
 import Credits from './Credits';
 import Seasons from './Seasons';
-import Comment from './Comments';
+import Comment from './comments';
 import Like from './LikeButton';
-import Reviews from './Reviews';
+import Reviews from './reviews';
 
 interface Props {
   data: IMovieTvDetails | undefined;

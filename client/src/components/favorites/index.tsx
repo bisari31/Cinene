@@ -8,10 +8,7 @@ import Toggle from './Toggle';
 import FavoriteItem from './FavoriteItem';
 
 interface IProps {
-  data?: {
-    success: boolean;
-    user?: IUser;
-  };
+  data?: IAuthData;
 }
 
 export default function Favorites({ data }: IProps) {

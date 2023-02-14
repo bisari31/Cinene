@@ -16,7 +16,7 @@ export interface Response {
 export const createComment = async (body: IBody) => {
   try {
     if (!body.contentId) return;
-    const { data } = await axios.post<Response>('/comment', body);
+    const { data } = await axios.post<Response>('/comments', body);
     return data;
   } catch (err) {
     if (axios.isAxiosError(err)) {
@@ -36,6 +36,6 @@ export const getComments = async (id?: string) => {
   //   }
   // }
   if (!id) return;
-  const { data } = await axios.get<Response>(`/comment/${id}`);
+  const { data } = await axios.get<Response>(`/comments/${id}`);
   return data;
 };

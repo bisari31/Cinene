@@ -13,7 +13,7 @@ export const getLikes = async (type: IdType, id?: string, userId?: string) => {
   try {
     if (!id) return;
     const { data } = await axios.get<IResponse>(
-      `/like/${type}/${id}${userId ? `?userId=${userId}` : ''}`,
+      `/likes/${type}/${id}${userId ? `?userId=${userId}` : ''}`,
     );
     return data;
   } catch (err) {
@@ -23,11 +23,11 @@ export const getLikes = async (type: IdType, id?: string, userId?: string) => {
 
 export const upLike = async (obj: { type: IdType; id?: string }) => {
   if (!obj.id) return;
-  const { data } = await axios.post<IResponse>(`/like/${obj.type}/${obj.id}`);
+  const { data } = await axios.post<IResponse>(`/likes/${obj.type}/${obj.id}`);
   return data;
 };
 
 export const getFavorites = async () => {
-  const { data } = await axios.get<IFavoritesData>(`/like/favorites`);
+  const { data } = await axios.get<IFavoritesData>(`/likes/favorites`);
   return data;
 };

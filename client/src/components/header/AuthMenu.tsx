@@ -11,10 +11,7 @@ import LogoutButton from 'components/common/LogoutButton';
 
 interface Props {
   setIsVisible: () => void;
-  data?: {
-    success: boolean;
-    user: IUser | undefined;
-  };
+  data?: IAuthData;
 }
 
 export default function AuthMenu({ setIsVisible, data }: Props) {

@@ -1,4 +1,5 @@
 import { Star } from 'assets';
+import { useEffect } from 'react';
 import styled, { css } from 'styled-components';
 
 interface IProps {
@@ -18,7 +19,7 @@ export default function Average({ tmdb, cinene, isMedia = true }: IProps) {
       <div>
         <Star />
         <span>
-          <b>{cinene?.average ?? 0} </b> / {cinene?.count ?? 0}
+          <b>{cinene?.average?.toFixed(1) ?? 0} </b> / {cinene?.count ?? 0}
         </span>
       </div>
       {isMedia && (

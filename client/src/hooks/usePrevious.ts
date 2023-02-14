@@ -9,7 +9,7 @@ export default function usePrevious<T>(value: T) {
       '🚀 ~ file: usePrevious.ts:9 ~ useEffect ~ ref.current',
       ref.current,
     );
-  });
+  }, [value]);
 
   return ref.current;
 }

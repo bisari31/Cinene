@@ -1,4 +1,4 @@
-import { forwardRef } from 'react';
+import { forwardRef, useEffect } from 'react';
 import styled from 'styled-components';
 
 import { Heart } from 'assets';
@@ -36,6 +36,10 @@ function LikeButton(
       ref?.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   };
+
+  useEffect(() => {
+    console.log(cinene);
+  }, [cinene]);
 
   return (
     <ButtonWrapper color="navy50">

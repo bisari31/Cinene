@@ -14,11 +14,13 @@ import PersonDescription from 'components/details/PersonDescription';
 
 export default function DetailPage() {
   const { ref, isVisible, changeVisibility } = useOutsideClick();
+
   const { id, path } = useCurrentPathName();
+
   const { data } = useQuery([path, id], () => getMediaDetail(id, path), {
     enabled: path !== 'person',
     refetchOnWindowFocus: false,
-    staleTime: 1000 * 60 * 60 * 6,
+    staleTime: 1000 * 60 * 60,
   });
 
   const { data: personData } = useQuery(
@@ -27,7 +29,7 @@ export default function DetailPage() {
     {
       refetchOnWindowFocus: false,
       enabled: path === 'person',
-      staleTime: 1000 * 60 * 60 * 6,
+      staleTime: 1000 * 60 * 60,
     },
   );
 
@@ -49,6 +51,10 @@ export default function DetailPage() {
     }
     return EMPTY_IMAGE;
   };
+
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
 
   return (
     <DetailPageWrapper src={getBackdrop()}>

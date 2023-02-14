@@ -2,8 +2,8 @@ import { useQuery } from 'react-query';
 import { addContent, getContent } from 'services/contents';
 
 export default function useCineneDataQuery(
-  type?: string,
-  id?: number,
+  type: string | undefined,
+  id: number | undefined,
   body?: IMovieTvDetails | IPerson,
   personName?: string,
 ) {
@@ -11,9 +11,12 @@ export default function useCineneDataQuery(
   const person = body as IPerson;
 
   const { data } = useQuery(['cinene', type, id], () => getContent(type, id), {
-    staleTime: 1000 * 60,
+    staleTime: 1000 * 60 * 5,
     retry: false,
     refetchOnWindowFocus: false,
+    onSuccess: (a) => {
+      console.log(`a: `, a);
+    },
   });
   const { data: newData } = useQuery(
     ['cinene', type, id],
@@ -25,6 +28,7 @@ export default function useCineneDataQuery(
       }),
     {
       enabled: !!data?.message && !!body,
+      // enabled: !data?.success,
     },
   );
 

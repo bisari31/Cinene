@@ -5,10 +5,10 @@ import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 
 import authRouter from './routes/auth';
-import contentRouter from './routes/contents';
+import contentsRouter from './routes/contents';
 import commentRouter from './routes/comments';
-import ratingRouter from './routes/rating';
-import likeRouter from './routes/like';
+import reviewsRouter from './routes/reviews';
+import likesRouter from './routes/likes';
 // import authRouter from './routes/auth';
 // import postsRouter from './routes/posts';
 // import commentRouter from './routes/comment';
@@ -30,11 +30,10 @@ app.use(express.json());
 app.use(morgan('dev'));
 
 app.use('/auth', authRouter);
-app.use('/content', contentRouter);
-app.use('/comment', commentRouter);
-app.use('/like', likeRouter);
-
-app.use('/rating', ratingRouter);
+app.use('/contents', contentsRouter);
+app.use('/comments', commentRouter);
+app.use('/likes', likesRouter);
+app.use('/reviews', reviewsRouter);
 
 // app.use('/auth', authRouter);
 // app.use('/posts', postsRouter);

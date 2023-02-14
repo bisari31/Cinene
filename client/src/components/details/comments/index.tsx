@@ -15,13 +15,21 @@ interface IProps {
 
 export default function Comments({ contentId }: IProps) {
   const setContentId = useSetRecoilState(contentIdState);
-  const { data } = useQuery(['comments', contentId], () =>
-    getComments(contentId),
+  const { data } = useQuery(
+    ['comments', contentId],
+    () => getComments(contentId),
+    {
+      refetchOnWindowFocus: false,
+    },
   );
 
   useEffect(() => {
     if (contentId) setContentId(contentId);
   }, [contentId, setContentId]);
+
+  useEffect(() => {
+    console.log(`data: ${data}`);
+  }, [data]);
 
   return (
     <Wrapper length={data?.comments.length}>
