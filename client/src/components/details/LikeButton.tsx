@@ -44,7 +44,7 @@ function LikeButton(
   return (
     <ButtonWrapper color="navy50">
       <Button type="button" onClick={handleMoveToReview}>
-        리뷰 {cinene?.count}
+        리뷰 {cinene?.votes}
       </Button>
       <Button
         type="button"

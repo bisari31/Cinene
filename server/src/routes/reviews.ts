@@ -37,7 +37,7 @@ router.post('/', authenticate, async (req: IRequest<IReview>, res) => {
         {
           $set: {
             average: total / content.length,
-            count: content.length,
+            votes: content.length,
           },
         },
       );
@@ -65,7 +65,7 @@ router.patch('/:id', authenticate, async (req: PatchRequst<IReview>, res) => {
         {
           $set: {
             average: total / content.length,
-            count: content.length,
+            votes: content.length,
           },
         },
       );

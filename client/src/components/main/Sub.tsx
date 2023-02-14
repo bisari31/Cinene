@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-import TopRated from './TopRated';
+import TopRated from './topRated/index';
 import Upcomming from './Upcomming';
 
 export default function Sub() {

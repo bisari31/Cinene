@@ -7,7 +7,7 @@ export interface IContent {
   poster: string;
   tmdbId: number;
   average: number;
-  count: number;
+  votes: number;
 }
 
 interface DBContentMethods {}
@@ -25,7 +25,7 @@ const contentSchema = new Schema<IContent>({
     type: Number,
     default: 0,
   },
-  count: {
+  votes: {
     type: Number,
     default: 0,
   },
