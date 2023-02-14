@@ -1,5 +1,4 @@
-import { config } from 'dotenv';
-import { Router, Request, Response } from 'express';
+import { Router, Request } from 'express';
 
 import Content, { IContent } from '../models/content';
 
@@ -43,6 +42,17 @@ router.post('/', async (req: CustomRequest<IContent>, res) => {
     res
       .status(400)
       .json({ success: false, message: '콘텐츠 생성 오류', content: null });
+  }
+});
+
+router.get('/topRated', async (req, res) => {
+  try {
+    const contents = await Content.find().sort({ average: -1 }).limit(20);
+    res.json({ success: true, contents });
+  } catch (err) {
+    res
+      .status(400)
+      .json({ success: false, message: '콘텐츠 찾을 수 없음', content: null });
   }
 });
 
