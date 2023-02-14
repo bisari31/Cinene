@@ -1,6 +1,6 @@
 interface IFavoritesContents {
   average: number;
-  count: number;
+  votes: number;
   name: string;
   poster: string;
   tmdbId: number;

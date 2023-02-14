@@ -36,7 +36,7 @@ function Reviews(
   );
 
   return (
-    <ReviewsWrapper length={data?.count}>
+    <ReviewsWrapper length={data?.votes}>
       <h3 ref={ref}>리뷰</h3>
       <ReviewHeader
         hasReview={reivewData?.hasReview}

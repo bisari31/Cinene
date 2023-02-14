@@ -19,7 +19,7 @@ export default function Average({ tmdb, cinene, isMedia = true }: IProps) {
       <div>
         <Star />
         <span>
-          <b>{cinene?.average?.toFixed(1) ?? 0} </b> / {cinene?.count ?? 0}
+          <b>{cinene?.average?.toFixed(1) ?? 0} </b> / {cinene?.votes ?? 0}
         </span>
       </div>
       {isMedia && (

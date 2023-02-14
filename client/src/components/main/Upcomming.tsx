@@ -12,7 +12,6 @@ import { EMPTY_IMAGE } from 'utils/imageUrl';
 
 import Slider from 'components/common/Slider';
 import dayjs from 'dayjs';
-import { changeNickname } from 'services/auth';
 
 interface Props {
   type: 'upcoming' | 'now';
