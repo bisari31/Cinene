@@ -27,3 +27,8 @@ export const addContent = async (
   });
   return data;
 };
+
+export const getTopRated = async () => {
+  const { data } = await axios.get<ITopRatedData>('/contents/topRated');
+  return data;
+};

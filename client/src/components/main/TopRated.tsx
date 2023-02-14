@@ -7,6 +7,7 @@ import { getTopRatedMovie, IMAGE_URL } from 'services/media';
 import { EMPTY_IMAGE } from 'utils/imageUrl';
 
 import Slider from 'components/common/Slider';
+import { getTopRated } from 'services/contents';
 
 interface Props {
   type: 'cinene' | 'tmdb';
@@ -15,6 +16,18 @@ interface Props {
 export default function TopRated({ type }: Props) {
   const { data } = useQuery(['movie', 'topRated'], getTopRatedMovie, {
     staleTime: 1000 * 60 * 60 * 6,
+    enabled: type === 'tmdb',
+  });
+  const { data: cinene } = useQuery(['cinene', 'topRated'], getTopRated, {
+    refetchOnWindowFocus: false,
+    retry: false,
+    enabled: type === 'cinene',
+    onError: (err) => {
+      console.log(err);
+    },
+    onSuccess: (newDAta) => {
+      console.log(newDAta);
+    },
   });
 
   const siteType = {
@@ -30,22 +43,42 @@ export default function TopRated({ type }: Props) {
     <TopRatedWrapper>
       <Slider title={siteType[type].title}>
         <ul>
-          {data?.map((movie) => (
-            <List key={movie.id}>
-              <Link to={`/movie/${movie.id}`} draggable="false">
-                <img
-                  draggable="false"
-                  src={
-                    movie.backdrop_path
-                      ? `${IMAGE_URL}/w500/${movie.poster_path}`
-                      : EMPTY_IMAGE
-                  }
-                  alt={movie.title}
-                />
-                {/* <p>{movie.title}</p> */}
-              </Link>
-            </List>
-          ))}
+          {type === 'tmdb'
+            ? data?.map((movie) => (
+                <List key={movie.id}>
+                  <Link to={`/movie/${movie.id}`} draggable="false">
+                    <img
+                      draggable="false"
+                      src={
+                        movie.backdrop_path
+                          ? `${IMAGE_URL}/w500/${movie.poster_path}`
+                          : EMPTY_IMAGE
+                      }
+                      alt={movie.title}
+                    />
+                    {/* <p>{movie.title}</p> */}
+                  </Link>
+                </List>
+              ))
+            : cinene?.contents.map((content) => (
+                <List key={content._id}>
+                  <Link
+                    to={`/${content.type}/${content.tmdbId}`}
+                    draggable="false"
+                  >
+                    <img
+                      draggable="false"
+                      src={
+                        content.poster
+                          ? `${IMAGE_URL}/w500/${content.poster}`
+                          : EMPTY_IMAGE
+                      }
+                      alt={content.name}
+                    />
+                    {/* <p>{movie.title}</p> */}
+                  </Link>
+                </List>
+              ))}
         </ul>
       </Slider>
     </TopRatedWrapper>

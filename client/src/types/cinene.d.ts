@@ -20,3 +20,8 @@ interface IFavoritesData {
   contents: IFavoritesContent[];
   success: boolean;
 }
+
+interface ITopRatedData {
+  contents: IFavoritesContents[];
+  success: boolean;
+}

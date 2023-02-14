@@ -24,6 +24,7 @@ export default function Upcomming({ type }: Props) {
     getUpcomingMovie,
     {
       staleTime: 1000 * 60 * 60 * 6,
+      enabled: type === 'upcoming',
       select: (prevData) => {
         const day = dayjs();
         return prevData
@@ -37,6 +38,7 @@ export default function Upcomming({ type }: Props) {
     getNowPlayingMovie,
     {
       staleTime: 1000 * 60 * 60 * 6,
+      enabled: type === 'now',
     },
   );
 
