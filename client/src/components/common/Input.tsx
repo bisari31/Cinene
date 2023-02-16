@@ -1,4 +1,3 @@
-import useForwardRef from 'hooks/useForwardRef';
 import { useEffect, forwardRef } from 'react';
 import styled, { css } from 'styled-components';
 
@@ -9,27 +8,21 @@ interface IProps {
   disabled?: boolean;
   label?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   errorMessage?: string;
 }
 
 function Input(
-  {
-    placeholder = '',
-    value,
-    type = 'text',
-    disabled = false,
-    label = '',
-    errorMessage = '',
-    ...rest
-  }: IProps,
+  { disabled = false, label = '', errorMessage = '', ...rest }: IProps,
   ref: React.ForwardedRef<HTMLInputElement>,
 ) {
-  // const inputRef = useForwardRef<HTMLInputElement>(ref);
-
   useEffect(() => {
-    if (typeof ref !== 'object') return;
-    // eslint-disable-next-line react/destructuring-assignment
-    if (ref && !disabled) ref.current?.focus();
+    if (typeof ref === 'object') {
+      if (ref && !disabled) {
+        const { current } = ref;
+        current?.focus();
+      }
+    }
   }, [ref, disabled]);
 
   return (
@@ -39,9 +32,6 @@ function Input(
         isError={!!errorMessage}
         disabled={disabled}
         ref={ref}
-        placeholder={placeholder}
-        value={value}
-        type={type}
         {...rest}
       />
       <ErrorMessage>{errorMessage}</ErrorMessage>

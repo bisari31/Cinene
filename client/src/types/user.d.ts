@@ -15,7 +15,6 @@ interface ILoginError {
     data: {
       success: boolean;
       message: string;
-      type: 'email' | 'password' | 'nickname';
     };
   };
 }

@@ -1,19 +1,16 @@
 import { useLocation } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
-import SignForm from 'components/SignForm';
+import LoginForm from 'components/user/LoginForm';
 
 export default function LoginPage() {
-  const { pathname: getPathname } = useLocation();
+  const { pathname } = useLocation();
 
-  const handleSlicePathName = () =>
-    getPathname.slice(1) as 'login' | 'register';
-
-  const pathname = handleSlicePathName();
+  const getPathName = () => pathname.slice(1) as 'login' | 'register';
 
   return (
     <Wrapper>
-      <SignForm type={pathname} />
+      <LoginForm type={getPathName()} />
     </Wrapper>
   );
 }

@@ -4,15 +4,26 @@ import { Link } from 'react-router-dom';
 import useOutsideClick from 'hooks/useOutsideClick';
 import { useAuthQuery } from 'hooks/useAuthQuery';
 
+import { useEffect } from 'react';
+import { useSetRecoilState } from 'recoil';
+import { userIdState } from 'atom/atom';
 import AuthMenu from './AuthMenu';
 import SearchBar from './SearchBar';
 import SideMenu from './SideMenu';
 
 export default function Header() {
+  const setUserId = useSetRecoilState(userIdState);
   const { data } = useAuthQuery();
 
   const { ref, isVisible, changeVisibility, animationState } =
     useOutsideClick(300);
+
+  useEffect(() => {
+    const item = localStorage.getItem('userId');
+    if (item) {
+      setUserId(item);
+    }
+  }, [setUserId]);
 
   return (
     <HeaderWrapper>

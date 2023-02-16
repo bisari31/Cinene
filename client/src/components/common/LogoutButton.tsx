@@ -1,7 +1,7 @@
 import { userIdState } from 'atom/atom';
 import useOutsideClick from 'hooks/useOutsideClick';
 import { useSetRecoilState } from 'recoil';
-import { logout } from 'services/auth';
+import { logout } from 'services/user';
 import styled from 'styled-components';
 import { buttonEffect } from 'styles/css';
 

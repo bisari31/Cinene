@@ -5,7 +5,7 @@ import styled, { css } from 'styled-components';
 
 import { Edit, Upload } from 'assets';
 import useInput from 'hooks/useInput';
-import { changeNickname } from 'services/auth';
+import { changeNickname } from 'services/user';
 import useOutsideClick from 'hooks/useOutsideClick';
 import { nicknameRegex } from 'utils/regex';
 

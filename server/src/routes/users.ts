@@ -48,12 +48,13 @@ router.post('/register', async (req: IRequest<IRegisterBody>, res) => {
 
 router.post('/login', async (req: IRequest<IRegisterBody>, res) => {
   try {
+    const errorMessage = {
+      message: '아이디 또는 비밀번호가 올바르지 않습니다.',
+    };
     const user = await User.findOne({ email: req.body.email });
-    if (!user) throw { type: 'email', message: '아이디가 올바르지 않습니다.' };
+    if (!user) throw errorMessage;
     const password = await bcrypt.compare(req.body.password, user.password!);
-    if (!password)
-      throw { type: 'password', message: '비밀번호가 올바르지 않습니다.' };
-
+    if (!password) throw errorMessage;
     const newUser = await user.generateToken();
     res
       .cookie('auth', newUser.token, {

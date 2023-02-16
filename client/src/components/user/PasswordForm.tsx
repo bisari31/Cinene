@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { changePassword } from 'services/auth';
+import { changePassword } from 'services/user';
 import useOutsideClick from 'hooks/useOutsideClick';
 import useInput from 'hooks/useInput';
 
