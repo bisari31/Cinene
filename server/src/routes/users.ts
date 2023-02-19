@@ -23,14 +23,15 @@ router.get('/', authenticate, async (req: IRequest<null>, res) => {
 
 router.post('/register', async (req: IRequest<IRegisterBody>, res) => {
   try {
-    const checkEmail = await User.findOne({ email: req.body.email });
-    const checkName = await User.findOne({ nickname: req.body.nickname });
-
-    if (checkEmail) {
-      throw { type: 'email', message: '이미 가입된 이메일이 있습니다.' };
+    const isDuplicatedEmail = await User.findOne({ email: req.body.email });
+    if (isDuplicatedEmail) {
+      throw { message: '이미 가입된 이메일이 있습니다.' };
     }
-    if (checkName) {
-      throw { type: 'name', message: '이미 가입된 닉네임이 있습니다.' };
+    const isDuplicatedNickname = await User.findOne({
+      nickname: req.body.nickname,
+    });
+    if (isDuplicatedNickname) {
+      throw { message: '이미 가입된 닉네임이 있습니다.' };
     }
 
     const hash = await bcrypt.hash(req.body.password, SALT_ROUNDS);
@@ -48,16 +49,17 @@ router.post('/register', async (req: IRequest<IRegisterBody>, res) => {
 
 router.post('/login', async (req: IRequest<IRegisterBody>, res) => {
   try {
+    const errorMessage = {
+      message: '아이디 또는 비밀번호가 올바르지 않습니다.',
+    };
     const user = await User.findOne({ email: req.body.email });
-    if (!user) throw { type: 'email', message: '아이디가 올바르지 않습니다.' };
+    if (!user) throw errorMessage;
     const password = await bcrypt.compare(req.body.password, user.password!);
-    if (!password)
-      throw { type: 'password', message: '비밀번호가 올바르지 않습니다.' };
-
+    if (!password) throw errorMessage;
     const newUser = await user.generateToken();
     res
       .cookie('auth', newUser.token, {
-        expires: new Date(Date.now() + 1000 * 60 * 60),
+        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365),
       })
       .json({ success: true, user: newUser });
   } catch (err) {

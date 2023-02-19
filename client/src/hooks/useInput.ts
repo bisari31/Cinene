@@ -7,7 +7,7 @@ export default function useInput(
   text = '',
 ) {
   const [input, setInput] = useState<string>(text);
-  const [errorMsg, setErrorMsg] = useState<string>();
+  const [errorMsg, setErrorMsg] = useState<string>('');
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setInput(e.currentTarget.value);

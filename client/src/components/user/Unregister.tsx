@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 
-import { checkPassword, deleteUser } from 'services/auth';
+import { checkPassword, deleteUser } from 'services/user';
 import useInput from 'hooks/useInput';
 import useOutsideClick from 'hooks/useOutsideClick';
 import { userIdState } from 'atom/atom';

@@ -52,16 +52,15 @@ userSchema.methods.generateToken = async function () {
   try {
     const token = jwt.sign(this._id.toString(), `${PRIVATE_KEY}`);
     this.token = token;
-    const user = await this.save();
+    const user: IUser = await this.save();
     return user;
   } catch (err) {
     console.log(err);
   }
 };
 
-userSchema.statics.findToken = async function (
-  token: string,
-): Promise<false | IUser> {
+userSchema.statics.findToken = async function (token: string) {
+  // ): Promise<false | IUser> {
   try {
     const id = jwt.verify(token, `${PRIVATE_KEY}`);
     const user: IUser = await this.findOne({ _id: id });

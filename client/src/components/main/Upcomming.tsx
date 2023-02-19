@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { useQuery } from 'react-query';
 import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
@@ -52,7 +51,7 @@ export default function Upcomming({ type }: Props) {
     },
   };
 
-  const setDDay = (day: string) => {
+  const getDday = (day: string) => {
     const today = dayjs();
     const releaseDate = dayjs(day);
     const dday = releaseDate.diff(today, 'day');
@@ -80,7 +79,7 @@ export default function Upcomming({ type }: Props) {
                 />
                 <p>{movie.title}</p>
                 {type === 'upcoming' && (
-                  <p className="dday">{setDDay(movie.release_date)}</p>
+                  <p className="dday">{getDday(movie.release_date)}</p>
                 )}
               </Link>
             </List>

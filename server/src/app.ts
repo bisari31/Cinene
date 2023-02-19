@@ -4,14 +4,11 @@ import mongoose from 'mongoose';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 
-import authRouter from './routes/auth';
+import usersRouter from './routes/users';
 import contentsRouter from './routes/contents';
 import commentRouter from './routes/comments';
 import reviewsRouter from './routes/reviews';
 import likesRouter from './routes/likes';
-// import authRouter from './routes/auth';
-// import postsRouter from './routes/posts';
-// import commentRouter from './routes/comment';
 
 dotenv.config();
 const app = express();
@@ -26,18 +23,13 @@ mongoose.connect(DB_URI, { dbName: 'cinene' }, (err) => {
 
 app.use(cookieParser());
 app.use(express.json());
-// app.use(express.static('uploads'));
 app.use(morgan('dev'));
 
-app.use('/auth', authRouter);
+app.use('/users', usersRouter);
 app.use('/contents', contentsRouter);
 app.use('/comments', commentRouter);
 app.use('/likes', likesRouter);
 app.use('/reviews', reviewsRouter);
-
-// app.use('/auth', authRouter);
-// app.use('/posts', postsRouter);
-// app.use('/comment', commentRouter);
 
 app.use((req, res) => {
   res.status(404).send('not found');

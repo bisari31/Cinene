@@ -15,14 +15,14 @@ interface Props {
 }
 
 export default function AuthMenu({ setIsVisible, data }: Props) {
-  const setUserId = useSetRecoilState(userIdState);
+  // const setUserId = useSetRecoilState(userIdState);
 
-  useEffect(() => {
-    const item = localStorage.getItem('userId');
-    if (item) {
-      setUserId(item);
-    }
-  }, [setUserId]);
+  // useEffect(() => {
+  //   const item = localStorage.getItem('userId');
+  //   if (item) {
+  //     setUserId(item);
+  //   }
+  // }, [setUserId]);
 
   return (
     <AuthMenuWrapper>
