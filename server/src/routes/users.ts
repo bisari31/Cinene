@@ -24,13 +24,12 @@ router.get('/', authenticate, async (req: IRequest<null>, res) => {
 router.post('/register', async (req: IRequest<IRegisterBody>, res) => {
   try {
     const checkEmail = await User.findOne({ email: req.body.email });
-    const checkName = await User.findOne({ nickname: req.body.nickname });
-
     if (checkEmail) {
-      throw { type: 'email', message: '이미 가입된 이메일이 있습니다.' };
+      throw { message: '이미 가입된 이메일이 있습니다.' };
     }
+    const checkName = await User.findOne({ nickname: req.body.nickname });
     if (checkName) {
-      throw { type: 'name', message: '이미 가입된 닉네임이 있습니다.' };
+      throw { message: '이미 가입된 닉네임이 있습니다.' };
     }
 
     const hash = await bcrypt.hash(req.body.password, SALT_ROUNDS);
@@ -58,7 +57,7 @@ router.post('/login', async (req: IRequest<IRegisterBody>, res) => {
     const newUser = await user.generateToken();
     res
       .cookie('auth', newUser.token, {
-        expires: new Date(Date.now() + 1000 * 60 * 60),
+        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365),
       })
       .json({ success: true, user: newUser });
   } catch (err) {

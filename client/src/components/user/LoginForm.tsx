@@ -1,18 +1,15 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 import { useMutation, useQueryClient } from 'react-query';
 
-import useInput from 'hooks/useInput';
 import { userIdState } from 'atom/atom';
 import { login, register } from 'services/user';
-import { regexObj } from 'utils/regex';
-
 import useInputTes from 'hooks/useInputTes';
+
 import Input from '../common/Input';
 import Button from '../common/Button';
-import ConfirmPassword from '../common/ConfirmPassword';
 
 type PathName = 'login' | 'register';
 
@@ -32,6 +29,13 @@ export default function LoginForm({ type }: { type: PathName }) {
     handlePasswordValidation,
   ] = useInputTes('password');
   const [
+    confirmPassword,
+    confirmPasswordErrorMessage,
+    setConfirmPasswordError,
+    handleConfirmPasswordChange,
+    handleConfirmPasswordValidation,
+  ] = useInputTes('password');
+  const [
     nickname,
     nicknameErrorMessage,
     setNicknameErrore,
@@ -41,8 +45,7 @@ export default function LoginForm({ type }: { type: PathName }) {
 
   const [fetchErrorMessage, setFetchErrorMessage] = useState('');
 
-  const [signupError, setSignupError] = useState(true);
-  const [isDisabled, setIsDisabled] = useState(false);
+  const isLogin = type === 'login';
 
   const setUserId = useSetRecoilState(userIdState);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -59,72 +62,56 @@ export default function LoginForm({ type }: { type: PathName }) {
     },
     onError: ({ response }: ILoginError) => {
       setFetchErrorMessage(response.data.message);
-      // if (err.response.data.type === 'email') {
-      //   return setEmailError(err.response.data.message);
-      // }
-      // setPasswordError(err.response.data.message);
     },
   });
 
-  // const { mutate: registerMutate } = useMutation(register, {
-  //   onSuccess: () => navigate('/login'),
-  //   onError: (err: ILoginError) => {
-  //     if (err.response?.data.type === 'email')
-  //       return setEmailError(err.response.data.message);
-  //     setNicknameError(err.response?.data.message);
-  //   },
-  // });
+  const { mutate: registerMutate } = useMutation(register, {
+    onSuccess: () => navigate('/login'),
+    onError: ({ response }: ILoginError) => {
+      setFetchErrorMessage(response.data.message);
+    },
+  });
+
   const checkEmptyValue = () => {
     if (!email) setEmailError(true);
     if (!password) setPasswordError(true);
+    if (!isLogin) {
+      if (!nickname) setNicknameErrore(true);
+      if (!confirmPassword) setConfirmPasswordError(true);
+    }
 
-    return !email || !password;
+    return isLogin
+      ? !email || !password
+      : !email || !password || !nickname || !confirmPassword;
   };
+
+  const matchPassword = useCallback(() => {
+    if (password !== confirmPassword) {
+      setFetchErrorMessage('패스워드가 일치하지 않습니다.');
+      return false;
+    }
+    return true;
+  }, [password, confirmPassword]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setFetchErrorMessage('');
     const isEmpty = checkEmptyValue();
-    if (isEmpty || emailErrorMessage || passwordErrorMessage) return;
+    if (
+      isEmpty ||
+      emailErrorMessage ||
+      passwordErrorMessage ||
+      nicknameErrorMessage
+    )
+      return;
+    if (!isLogin) {
+      const isMatched = matchPassword();
+      if (!isMatched) return;
+    }
     const body = { email, nickname, password };
-    if (type === 'login') return loginMutate(body);
-    // registerMutate(body);
+    if (isLogin) return loginMutate(body);
+    registerMutate(body);
   };
-
-  // useEffect(() => {
-  //   setIsDisabled(!!emailErrorMessage || !!passwordErrorMessage);
-  // }, [emailErrorMessage, passwordErrorMessage]);
-
-  // useEffect(() => {
-  //   if (type === 'login') {
-  //     if (password && email && !emailError && !passwordError)
-  //       return setIsDisabled(false);
-  //     setIsDisabled(true);
-  //   }
-  // }, [password, email, type, emailError, passwordError]);
-
-  // useEffect(() => {
-  //   if (type === 'register') {
-  //     if (
-  //       nickname &&
-  //       email &&
-  //       !emailError &&
-  //       !nicknameError &&
-  //       !signupError &&
-  //       !passwordError
-  //     )
-  //       return setIsDisabled(false);
-  //     setIsDisabled(true);
-  //   }
-  // }, [
-  //   email,
-  //   signupError,
-  //   type,
-  //   nickname,
-  //   emailError,
-  //   nicknameError,
-  //   passwordError,
-  // ]);
 
   return (
     <Form onSubmit={handleSubmit}>
@@ -138,49 +125,43 @@ export default function LoginForm({ type }: { type: PathName }) {
         ref={inputRef}
         errorMessage={emailErrorMessage}
       />
-
-      {type === 'login' ? (
+      {!isLogin && (
         <Input
-          errorMessage={passwordErrorMessage}
-          label="비밀번호"
-          placeholder="영문,숫자 포함 8~16자"
-          value={password}
-          onChange={handlePasswordChange}
-          type="password"
-          onBlur={handlePasswordValidation}
+          label="닉네임"
+          placeholder="특수문자 제외 2~10자"
+          errorMessage={nicknameErrorMessage}
+          value={nickname}
+          onChange={handleNicknameChange}
+          onBlur={handleNicknameValidation}
+          type="text"
         />
-      ) : (
-        <>
-          <Input
-            label="닉네임"
-            placeholder="특수문자 제외 2~10자"
-            errorMessage={nicknameErrorMessage}
-            value={nickname}
-            onChange={handleNicknameChange}
-            onBlur={handleNicknameValidation}
-            type="text"
-          />
-          <ConfirmPassword
-            placeholder="영문,숫자 포함 8~16자"
-            setReturnError={setSignupError}
-            errorMessage={passwordErrorMessage}
-            type="register"
-            password={password}
-            onChange={handlePasswordChange}
-          />
-        </>
+      )}
+      <Input
+        errorMessage={passwordErrorMessage}
+        label="비밀번호"
+        placeholder="영문,숫자 포함 8~16자"
+        value={password}
+        onChange={handlePasswordChange}
+        type="password"
+        onBlur={handlePasswordValidation}
+      />
+      {!isLogin && (
+        <Input
+          errorMessage={confirmPasswordErrorMessage}
+          label="비밀번호 확인"
+          placeholder="영문,숫자 포함 8~16자"
+          value={confirmPassword}
+          onChange={handleConfirmPasswordChange}
+          type="password"
+          onBlur={handleConfirmPasswordValidation}
+        />
       )}
       <p>{fetchErrorMessage}</p>
       <ButtonWrapper>
-        <Button
-          color="pink"
-          size="fullWidth"
-          type="submit"
-          isDisabled={isDisabled}
-        >
-          {type === 'login' ? '로그인' : '회원가입'}
+        <Button color="pink" size="fullWidth" type="submit">
+          {isLogin ? '로그인' : '회원가입'}
         </Button>
-        {type === 'login' && (
+        {isLogin && (
           <Button
             color="yellow"
             size="fullWidth"

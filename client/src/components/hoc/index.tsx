@@ -7,6 +7,7 @@ export default function AuthHoc(
   Component: React.ComponentType,
   option = false,
 ) {
+
   function Authentication() {
     const { data } = useAuthQuery();
     const navigate = useNavigate();

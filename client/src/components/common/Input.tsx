@@ -1,4 +1,4 @@
-import { useEffect, forwardRef } from 'react';
+import { useEffect, forwardRef, memo } from 'react';
 import styled, { css } from 'styled-components';
 
 interface IProps {
@@ -39,7 +39,7 @@ function Input(
   );
 }
 
-export default forwardRef(Input);
+export default memo(forwardRef(Input));
 
 const InputWrapper = styled.div`
   label {

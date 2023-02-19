@@ -10,7 +10,7 @@ import useInput from 'hooks/useInput';
 
 import Button from 'components/common/Button';
 import Input from 'components/common/Input';
-import ConfirmPassword from 'components/common/ConfirmPassword';
+import ConfirmPassword from 'components/common/Password';
 import Modal from 'components/common/Modal';
 import Portal from 'components/common/Portal';
 
@@ -73,12 +73,13 @@ export default function PasswordForm() {
           errorMessage={passwordError}
         />
         <ConfirmPassword
+        
           errorMessage={errorMsg}
           placeholder="영문,숫자 포함 8~16자"
           type="edit"
           password={newPassword}
           setReturnError={setNewPasswordError}
-          onChange={changeNewPassword}
+          handleChange={changeNewPassword}
         />
         <Button
           isDisabled={isDisabled}
