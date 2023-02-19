@@ -1,6 +1,6 @@
-import { Star } from 'assets';
-import { useEffect } from 'react';
 import styled, { css } from 'styled-components';
+
+import { Star } from 'assets';
 
 interface IProps {
   cinene?: IFavoritesContents | null;

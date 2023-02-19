@@ -57,7 +57,6 @@ export default function LoginForm({ type }: { type: PathName }) {
       setUserId(data.user._id);
       localStorage.setItem('userId', data.user._id);
       queryClient.invalidateQueries(['auth']);
-      // localStorage.setItem('token', data.user.token);
       navigate('/');
     },
     onError: ({ response }: ILoginError) => {

@@ -3,7 +3,7 @@ import { useQuery } from 'react-query';
 import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
 
-import { getMediaDetail, getVideos, IMAGE_URL } from 'services/media';
+import { getMediaDetail, IMAGE_URL } from 'services/media';
 import { ChevronLeft, ChevronRight } from 'assets';
 import useTrendingMediaQuery from 'hooks/useTrendingMediaQuery';
 import { getMediaOverview, getMediaTitle } from 'utils/media';
@@ -17,7 +17,7 @@ export default function Popular() {
   const [viewIndex, setViewIndex] = useState(0);
   const [currentMedia, setCurrentMedia] = useState<IMediaResults>();
 
-  const { data, isLoading, isFetching } = useTrendingMediaQuery();
+  const { data } = useTrendingMediaQuery();
 
   const { data: detailData } = useQuery(
     ['media', 'details', currentMedia?.id],
