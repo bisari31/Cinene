@@ -1,7 +1,10 @@
 import { useLocation } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
-import LoginForm from 'components/user/LoginForm';
+import Form from 'components/user/login/Form';
+import ButtonWrapper from 'components/user/login/ButtonWrapper';
+
+export type PathName = 'login' | 'register';
 
 export default function LoginPage() {
   const { pathname } = useLocation();
@@ -10,7 +13,9 @@ export default function LoginPage() {
 
   return (
     <Wrapper>
-      <LoginForm type={getPathName()} />
+      <Form type={getPathName()}>
+        <ButtonWrapper type={getPathName()} />
+      </Form>
     </Wrapper>
   );
 }

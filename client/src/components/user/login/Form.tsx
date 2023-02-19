@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback } from 'react';
+import { useRef, useState, useCallback, ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
@@ -8,12 +8,16 @@ import { userIdState } from 'atom/atom';
 import { login, register } from 'services/user';
 import useInputTes from 'hooks/useInputTes';
 
-import Input from '../common/Input';
-import Button from '../common/Button';
+import { PathName } from 'pages/LoginPage';
+import Input from 'components/common/Input';
 
-type PathName = 'login' | 'register';
-
-export default function LoginForm({ type }: { type: PathName }) {
+export default function Form({
+  type,
+  children,
+}: {
+  type: PathName;
+  children: ReactNode;
+}) {
   const [
     email,
     emailErrorMessage,
@@ -113,7 +117,7 @@ export default function LoginForm({ type }: { type: PathName }) {
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <StyledForm onSubmit={handleSubmit}>
       <Input
         onBlur={handleEmailValidation}
         placeholder="이메일 주소"
@@ -156,26 +160,12 @@ export default function LoginForm({ type }: { type: PathName }) {
         />
       )}
       <p>{fetchErrorMessage}</p>
-      <ButtonWrapper>
-        <Button color="pink" size="fullWidth" type="submit">
-          {isLogin ? '로그인' : '회원가입'}
-        </Button>
-        {isLogin && (
-          <Button
-            color="yellow"
-            size="fullWidth"
-            type="button"
-            fontColor="black"
-          >
-            카카오톡 로그인
-          </Button>
-        )}
-      </ButtonWrapper>
-    </Form>
+      {children}
+    </StyledForm>
   );
 }
 
-const Form = styled.form`
+const StyledForm = styled.form`
   padding: 3em;
 
   & > p {
@@ -184,14 +174,5 @@ const Form = styled.form`
     font-weight: 300;
     height: 12.9px;
     text-align: center;
-  }
-`;
-
-const ButtonWrapper = styled.div`
-  & > button:nth-child(1) {
-    margin-top: 3.5em;
-  }
-  & > button:nth-child(2) {
-    margin-top: 1.5em;
   }
 `;

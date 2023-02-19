@@ -23,12 +23,14 @@ router.get('/', authenticate, async (req: IRequest<null>, res) => {
 
 router.post('/register', async (req: IRequest<IRegisterBody>, res) => {
   try {
-    const checkEmail = await User.findOne({ email: req.body.email });
-    if (checkEmail) {
+    const isDuplicatedEmail = await User.findOne({ email: req.body.email });
+    if (isDuplicatedEmail) {
       throw { message: '이미 가입된 이메일이 있습니다.' };
     }
-    const checkName = await User.findOne({ nickname: req.body.nickname });
-    if (checkName) {
+    const isDuplicatedNickname = await User.findOne({
+      nickname: req.body.nickname,
+    });
+    if (isDuplicatedNickname) {
       throw { message: '이미 가입된 닉네임이 있습니다.' };
     }
 
