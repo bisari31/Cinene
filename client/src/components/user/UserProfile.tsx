@@ -4,10 +4,10 @@ import { useMutation, useQueryClient } from 'react-query';
 import styled, { css } from 'styled-components';
 
 import { Edit, Upload } from 'assets';
-import useInput from 'hooks/useInput';
 import { changeNickname } from 'services/user';
-import useOutsideClick from 'hooks/useOutsideClick';
 import { nicknameRegex } from 'utils/regex';
+import useInput from 'hooks/useInput';
+import useOutsideClick from 'hooks/useOutsideClick';
 
 import Input from 'components/common/Input';
 

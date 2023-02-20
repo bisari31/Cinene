@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { useAuthQuery } from 'hooks/useAuthQuery';
 
-import MenuWrapper from 'components/user/MenuWrapper';
+import Menu from 'components/user/info/Menu';
 import UserProfile from 'components/user/UserProfile';
 
 export default function MyPage() {
@@ -10,7 +10,7 @@ export default function MyPage() {
   return (
     <MypageWrapper>
       <UserProfile user={data?.user}>
-        <MenuWrapper />
+        <Menu />
       </UserProfile>
     </MypageWrapper>
   );

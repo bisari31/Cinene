@@ -92,6 +92,7 @@ const UnregisterWrapper = styled.div`
   display: flex;
   flex: 1;
   flex-direction: column;
+  margin-top: 5em;
   form {
     width: 100%;
   }
