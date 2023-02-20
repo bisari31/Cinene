@@ -4,21 +4,23 @@ import styled, { css } from 'styled-components';
 import throttle from 'hooks/useThrottle';
 
 import Unregister from '../Unregister';
-import PasswordForm from '../PasswordForm';
+import PasswordForm from '../PasswordChange';
 
 interface Item {
   id: number;
   text: string;
-  type: 'password' | 'unregister';
+  type: 'passwordChange' | 'unregister';
   isActive: boolean;
 }
 
+const WIDTH = 200;
+
 export default function Menu() {
   const [list, setList] = useState<Item[]>([
-    { id: 1, text: '비밀번호 변경', type: 'password', isActive: true },
+    { id: 1, text: '비밀번호 변경', type: 'passwordChange', isActive: true },
     { id: 2, text: '회원 탈퇴', type: 'unregister', isActive: false },
   ]);
-  const [width, setWidth] = useState(200);
+  const [width, setWidth] = useState(WIDTH);
   const [target, setTarget] = useState<Item>(list[0]);
   const ulRef = useRef<HTMLUListElement>(null);
 
@@ -35,7 +37,7 @@ export default function Menu() {
 
   useEffect(() => {
     const getWidth = () => {
-      setWidth(ulRef.current?.firstElementChild?.clientWidth ?? 200);
+      setWidth(ulRef.current?.firstElementChild?.clientWidth ?? WIDTH);
     };
     const throttleWidth = throttle(getWidth, 1000);
     window.addEventListener('resize', throttleWidth);
@@ -54,7 +56,7 @@ export default function Menu() {
         ))}
         <SlideBar index={target.id - 1} width={width} />
       </ul>
-      {target.type === 'password' ? <PasswordForm /> : <Unregister />}
+      {target.type === 'passwordChange' ? <PasswordForm /> : <Unregister />}
     </Wrapper>
   );
 }
@@ -72,6 +74,7 @@ const Wrapper = styled.section`
       display: flex;
       padding: 3em 1em;
       form {
+        max-width: 400px;
         width: 100%;
       }
     }

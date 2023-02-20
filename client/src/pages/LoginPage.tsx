@@ -24,12 +24,8 @@ const Wrapper = styled.div`
   ${({ theme }) => css`
     align-items: center;
     display: flex;
-    height: 100vh;
     justify-content: center;
-    left: 0;
-    position: absolute;
-    top: 0;
-    width: 100vw;
+    margin-top: 5em;
     z-index: -1;
     form {
       background-color: ${theme.colors.navy};
@@ -37,6 +33,15 @@ const Wrapper = styled.div`
       max-width: 450px;
       position: relative;
       width: 100%;
+    }
+
+    @media ${theme.device.laptop} {
+      margin-top: 0;
+      height: 100vh;
+      left: 0;
+      position: absolute;
+      top: 0;
+      width: 100vw;
     }
   `}
 `;

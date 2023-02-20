@@ -32,8 +32,13 @@ export const register = async (body: IBody) => {
   return data;
 };
 
-export const deleteUser = async () => {
-  const { data } = await axios.delete('/users/deleteUser');
+export const unregister = async () => {
+  const { data } = await axios.delete('/users/unregister');
+  return data;
+};
+
+export const checkPassword = async (password: Pick<IBody, 'password'>) => {
+  const { data } = await axios.post('/users/check-password', password);
   return data;
 };
 export const changePassword = async (body: {
@@ -44,11 +49,6 @@ export const changePassword = async (body: {
     '/users/changePassword',
     body,
   );
-  return data;
-};
-
-export const checkPassword = async (body: { password: string }) => {
-  const { data } = await axios.post('/users/checkpassword', body);
   return data;
 };
 

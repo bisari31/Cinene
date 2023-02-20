@@ -54,7 +54,7 @@ router.post('/login', async (req: IRequest<IRegisterBody>, res) => {
     };
     const user = await User.findOne({ email: req.body.email });
     if (!user) throw errorMessage;
-    const password = await bcrypt.compare(req.body.password, user.password!);
+    const password = await bcrypt.compare(req.body.password, user.password);
     if (!password) throw errorMessage;
     const newUser = await user.generateToken();
     res
@@ -73,6 +73,33 @@ router.get('/logout', authenticate, async (req: IRequest<null>, res) => {
     res.clearCookie('auth').send({ success: true });
   } catch (err) {
     res.status(400).send({ success: false, message: '로그아웃 실패' });
+  }
+});
+
+router.post(
+  '/check-password',
+  authenticate,
+  async (req: IRequest<{ password: string }>, res) => {
+    try {
+      const user = await User.findOne({
+        _id: req.user?._id,
+      });
+      if (!user) throw Error();
+      const password = await bcrypt.compare(req.body.password, user.password);
+      if (!password) throw Error();
+      res.json({ success: true });
+    } catch (err) {
+      res.status(400).send({ success: false });
+    }
+  },
+);
+
+router.delete('/', authenticate, async (req: IRequest<null>, res) => {
+  try {
+    await User.deleteOne({ _id: req.user?._id });
+    res.json({ success: true });
+  } catch (err) {
+    res.json({ success: false });
   }
 });
 
