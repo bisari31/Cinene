@@ -3,8 +3,8 @@ import styled, { css } from 'styled-components';
 
 import throttle from 'hooks/useThrottle';
 
-import Unregister from '../Unregister';
-import PasswordForm from '../PasswordChange';
+import Unregister from './Unregister';
+import ChangePassword from './ChangePassword';
 
 interface Item {
   id: number;
@@ -15,7 +15,7 @@ interface Item {
 
 const WIDTH = 200;
 
-export default function Menu() {
+export default function Tab() {
   const [list, setList] = useState<Item[]>([
     { id: 1, text: '비밀번호 변경', type: 'passwordChange', isActive: true },
     { id: 2, text: '회원 탈퇴', type: 'unregister', isActive: false },
@@ -56,7 +56,7 @@ export default function Menu() {
         ))}
         <SlideBar index={target.id - 1} width={width} />
       </ul>
-      {target.type === 'passwordChange' ? <PasswordForm /> : <Unregister />}
+      {target.type === 'passwordChange' ? <ChangePassword /> : <Unregister />}
     </Wrapper>
   );
 }

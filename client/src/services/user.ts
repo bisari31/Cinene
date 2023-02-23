@@ -2,6 +2,8 @@ import axios from 'axios';
 
 interface ResponseData {
   success: boolean;
+  message: string;
+  type: 'email' | 'nickname' | 'login';
   user: IUser;
 }
 
@@ -33,20 +35,23 @@ export const register = async (body: IBody) => {
 };
 
 export const unregister = async () => {
-  const { data } = await axios.delete('/users/unregister');
+  const { data } = await axios.delete('/users');
   return data;
 };
 
 export const checkPassword = async (password: Pick<IBody, 'password'>) => {
-  const { data } = await axios.post('/users/check-password', password);
+  const { data } = await axios.post<ResponseData>(
+    '/users/check-password',
+    password,
+  );
   return data;
 };
 export const changePassword = async (body: {
   password: string;
-  newPassword: string;
+  nextPassword: string;
 }) => {
-  const { data } = await axios.put<{ success: boolean; message: string }>(
-    '/users/changePassword',
+  const { data } = await axios.patch<{ success: boolean; message: string }>(
+    '/users/change-password',
     body,
   );
   return data;

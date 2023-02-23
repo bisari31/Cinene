@@ -1,47 +1,52 @@
-import {
-  useState,
-  ChangeEvent,
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useCallback,
-} from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 import { regexObj, RegexType } from 'utils/regex';
 
-type Return = [
-  string,
-  string,
-  Dispatch<SetStateAction<boolean>>,
-  Handler,
-  Handler,
-];
-type Handler = (e: ChangeEvent<HTMLInputElement>) => void;
+// type Return = [
+//   string,
+//   string,
+//   React.Dispatch<React.SetStateAction<string>>,
+//   Handler<React.ChangeEvent<HTMLInputElement>>,
+//   Handler<React.FocusEvent<HTMLInputElement>>,
+//   React.RefObject<HTMLInputElement>,
+// ];
+// type Handler<T> = (e: T) => void;
 
-export default function useInputTes(type: RegexType): Return {
+export default function useInputTes(type: RegexType, password?: string) {
   const [value, setValue] = useState('');
-  const [isError, setIsError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [error, setError] = useState('');
+  const ref = useRef<HTMLInputElement>(null);
 
-  const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    setValue(e.target.value);
-  }, []);
-
-  const handleBlur = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      if (value.length >= 1) {
-        const { regex } = regexObj[type];
-        setErrorMessage(
-          regex.test(e.target.value) ? '' : regexObj[type].message,
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (password) {
+        setError(
+          password !== e.target.value ? '비밀번호가 일치하지 않습니다.' : '',
+        );
+      } else {
+        setError(
+          regexObj[type].regex.test(e.target.value)
+            ? ''
+            : regexObj[type].message,
         );
       }
+      setValue(e.target.value);
     },
-    [type, value],
+    [type, password],
   );
 
-  useEffect(() => {
-    if (isError) setErrorMessage(regexObj[type].message);
-  }, [isError, type]);
+  const handleBlur = useCallback((e: React.FocusEvent<HTMLInputElement>) => {
+    if (!e.target.value) {
+      setError('필수 입력 항목입니다.');
+    }
+  }, []);
 
-  return [value, errorMessage, setIsError, handleChange, handleBlur];
+  // useEffect(() => {
+  //   if (isError) {
+  //     return setError(regexObj[type].message);
+  //   }
+  //   setError('');
+  // }, [isError, type]);
+
+  return { value, setValue, error, setError, handleChange, handleBlur, ref };
 }

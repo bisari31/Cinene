@@ -155,7 +155,7 @@ export default function Slider({ children, title }: Props) {
       >
         {children}
       </ul>
-      {maxWidth ? (
+      {!!maxWidth && (
         <ButtonWrapper color="navy50">
           <button type="button" onClick={prevSlide}>
             <ChevronLeft />
@@ -164,8 +164,6 @@ export default function Slider({ children, title }: Props) {
             <ChevronRight />
           </button>
         </ButtonWrapper>
-      ) : (
-        ''
       )}
     </SliderWrapper>
   );

@@ -2,9 +2,9 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 
+import { userIdState } from 'atom/atom';
 import { unregister, checkPassword } from 'services/user';
 import useOutsideClick from 'hooks/useOutsideClick';
-import { userIdState } from 'atom/atom';
 import useInputTes from 'hooks/useInputTes';
 
 import Button from 'components/common/Button';
@@ -14,8 +14,14 @@ import Modal from 'components/common/Modal';
 
 export default function Unregister() {
   const setUserId = useSetRecoilState(userIdState);
-  const [password, errorMessage, setIsError, handleChange, handleBlur] =
-    useInputTes('password');
+  const {
+    value: password,
+    error,
+    setError,
+    handleChange,
+    handleBlur,
+    ref: inputRef,
+  } = useInputTes('password');
 
   const { ref, changeVisibility, isVisible, animationState } =
     useOutsideClick(300);
@@ -25,12 +31,19 @@ export default function Unregister() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      setIsError(false);
-      if (!password) return setIsError(true);
-      await checkPassword({ password });
+      if (!password) {
+        setError('필수 입력 항목입니다.');
+        return inputRef.current?.focus();
+      }
+      if (error) return;
+      const { success, message } = await checkPassword({ password });
+      if (!success) {
+        setError(message);
+        return inputRef.current?.focus();
+      }
       changeVisibility();
     } catch (err) {
-      setIsError(true);
+      setError('유저 정보 확인 실패');
     }
   };
 
@@ -43,7 +56,7 @@ export default function Unregister() {
       })
       .catch(() => {
         changeVisibility();
-        setIsError(true);
+        setError('회원탈퇴 실패');
       });
   };
 
@@ -51,10 +64,11 @@ export default function Unregister() {
     <UnregisterWrapper>
       <form onSubmit={handleSubmit}>
         <Input
+          ref={inputRef}
+          errorMessage={error}
           onBlur={handleBlur}
-          errorMessage={errorMessage}
           type="password"
-          placeholder="비밀번호를 입력해 주세요."
+          placeholder="비밀번호"
           value={password}
           onChange={handleChange}
         />

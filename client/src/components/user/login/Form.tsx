@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback, ReactNode } from 'react';
+import { useState, ReactNode, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
@@ -18,46 +18,56 @@ export default function Form({
   type: PathName;
   children: ReactNode;
 }) {
-  const [
-    email,
-    emailErrorMessage,
-    setEmailError,
-    handleEmailChange,
-    handleEmailValidation,
-  ] = useInputTes('email');
-  const [
-    password,
-    passwordErrorMessage,
-    setPasswordError,
-    handlePasswordChange,
-    handlePasswordValidation,
-  ] = useInputTes('password');
-  const [
-    confirmPassword,
-    confirmPasswordErrorMessage,
-    setConfirmPasswordError,
-    handleConfirmPasswordChange,
-    handleConfirmPasswordValidation,
-  ] = useInputTes('password');
-  const [
-    nickname,
-    nicknameErrorMessage,
-    setNicknameErrore,
-    handleNicknameChange,
-    handleNicknameValidation,
-  ] = useInputTes('nickname');
+  const {
+    error: emailError,
+    value: email,
+    handleBlur: handleEmailBlur,
+    handleChange: handleEmailChange,
+    ref: emailRef,
+    setError: setEmailError,
+  } = useInputTes('email');
+  const {
+    error: passwordError,
+    handleBlur: handlePasswordBlur,
+    value: password,
+    ref: passwordRef,
+    handleChange: handlePasswordChange,
+    setError: setPasswordError,
+    setValue: setPassword,
+  } = useInputTes('password');
+  const {
+    error: confirmPasswordError,
+    handleBlur: handleConfirmPasswordBlur,
+    handleChange: handleConfirmPasswordChange,
+    ref: confirmPasswordRef,
+    value: confirmPassword,
+    setError: setConfirmPasswordError,
+  } = useInputTes('password', password);
+  const {
+    error: nicknameError,
+    handleBlur: handleNicknameBlur,
+    handleChange: handleNicknameChange,
+    ref: nicknameRef,
+    value: nickname,
+    setError: setNicknameError,
+  } = useInputTes('nickname');
 
   const [fetchErrorMessage, setFetchErrorMessage] = useState('');
 
   const isLogin = type === 'login';
 
   const setUserId = useSetRecoilState(userIdState);
-  const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const { mutate: loginMutate } = useMutation(login, {
     onSuccess: (data) => {
+      if (!data.success) {
+        setFetchErrorMessage(data.message);
+        setPasswordError(' ');
+        setPassword('');
+        return passwordRef.current?.focus();
+      }
       setUserId(data.user._id);
       localStorage.setItem('userId', data.user._id);
       queryClient.invalidateQueries(['auth']);
@@ -69,18 +79,39 @@ export default function Form({
   });
 
   const { mutate: registerMutate } = useMutation(register, {
-    onSuccess: () => navigate('/login'),
+    onSuccess: (data) => {
+      if (!data.success) {
+        if (data.type === 'email') setEmailError(data.message);
+        if (data.type === 'nickname') setNicknameError(data.message);
+        return getFocus();
+      }
+      navigate('/login');
+    },
+
     onError: ({ response }: ILoginError) => {
       setFetchErrorMessage(response.data.message);
     },
   });
 
+  const getFocus = () => {
+    const refs = [emailRef, nicknameRef, passwordRef, confirmPasswordRef];
+    let index = 0;
+
+    if (emailError) index = 0;
+    else if (nicknameError) index = 1;
+    else if (passwordError) index = 2;
+    else if (confirmPasswordError) index = 3;
+
+    refs[index].current?.focus();
+  };
+
   const checkEmptyValue = () => {
-    if (!email) setEmailError(true);
-    if (!password) setPasswordError(true);
+    const message = '필수 입력 항목입니다.';
+    if (!email) setEmailError(message);
+    if (!password) setPasswordError(message);
     if (!isLogin) {
-      if (!nickname) setNicknameErrore(true);
-      if (!confirmPassword) setConfirmPasswordError(true);
+      if (!nickname) setNicknameError(message);
+      if (!confirmPassword) setConfirmPasswordError(message);
     }
 
     return isLogin
@@ -88,75 +119,75 @@ export default function Form({
       : !email || !password || !nickname || !confirmPassword;
   };
 
-  const matchPassword = useCallback(() => {
-    if (password !== confirmPassword) {
-      setFetchErrorMessage('패스워드가 일치하지 않습니다.');
-      return false;
-    }
-    return true;
-  }, [password, confirmPassword]);
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setFetchErrorMessage('');
     const isEmpty = checkEmptyValue();
     if (
       isEmpty ||
-      emailErrorMessage ||
-      passwordErrorMessage ||
-      nicknameErrorMessage
+      emailError ||
+      passwordError ||
+      nicknameError ||
+      confirmPasswordError
     )
-      return;
-    if (!isLogin) {
-      const isMatched = matchPassword();
-      if (!isMatched) return;
+      return getFocus();
+    if (!isLogin && password !== confirmPassword) {
+      return setConfirmPasswordError('비밀번호가 일치하지 않습니다.');
     }
     const body = { email, nickname, password };
     if (isLogin) return loginMutate(body);
     registerMutate(body);
   };
 
+  useEffect(() => {
+    if (password && fetchErrorMessage) {
+      setFetchErrorMessage('');
+    }
+  }, [password, fetchErrorMessage]);
+
   return (
     <StyledForm onSubmit={handleSubmit}>
       <Input
-        onBlur={handleEmailValidation}
+        onBlur={handleEmailBlur}
         placeholder="이메일 주소"
         label="이메일"
         value={email}
         onChange={handleEmailChange}
-        type="text"
-        ref={inputRef}
-        errorMessage={emailErrorMessage}
+        type="email"
+        errorMessage={emailError}
+        ref={emailRef}
       />
       {!isLogin && (
         <Input
           label="닉네임"
           placeholder="특수문자 제외 2~10자"
-          errorMessage={nicknameErrorMessage}
+          errorMessage={nicknameError}
           value={nickname}
           onChange={handleNicknameChange}
-          onBlur={handleNicknameValidation}
+          onBlur={handleNicknameBlur}
           type="text"
+          ref={nicknameRef}
         />
       )}
       <Input
-        errorMessage={passwordErrorMessage}
+        errorMessage={passwordError}
         label="비밀번호"
         placeholder="영문,숫자 포함 8~16자"
         value={password}
         onChange={handlePasswordChange}
         type="password"
-        onBlur={handlePasswordValidation}
+        onBlur={handlePasswordBlur}
+        ref={passwordRef}
       />
       {!isLogin && (
         <Input
-          errorMessage={confirmPasswordErrorMessage}
+          errorMessage={confirmPasswordError}
           label="비밀번호 확인"
           placeholder="영문,숫자 포함 8~16자"
           value={confirmPassword}
           onChange={handleConfirmPasswordChange}
           type="password"
-          onBlur={handleConfirmPasswordValidation}
+          onBlur={handleConfirmPasswordBlur}
+          ref={confirmPasswordRef}
         />
       )}
       <p>{fetchErrorMessage}</p>

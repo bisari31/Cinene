@@ -4,11 +4,11 @@ import styled, { css } from 'styled-components';
 interface IProps {
   placeholder?: string;
   value: string | undefined;
-  type: 'text' | 'password';
+  type: 'text' | 'password' | 'email';
   disabled?: boolean;
   label?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onBlur?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
   errorMessage?: string;
 }
 
@@ -16,14 +16,14 @@ function Input(
   { disabled = false, label = '', errorMessage = '', ...rest }: IProps,
   ref: React.ForwardedRef<HTMLInputElement>,
 ) {
-  useEffect(() => {
-    if (typeof ref === 'object') {
-      if (ref && !disabled) {
-        const { current } = ref;
-        current?.focus();
-      }
-    }
-  }, [ref, disabled]);
+  // useEffect(() => {
+  //   if (typeof ref === 'object') {
+  //     if (ref && errorMessage) {
+  //       const { current } = ref;
+  //       current?.focus();
+  //     }
+  //   }
+  // }, [ref, errorMessage]);
 
   return (
     <InputWrapper>
@@ -60,9 +60,11 @@ const StyledInput = styled.input<{ isError: boolean }>`
     font-size: 0.8rem;
     height: 4.3em;
     padding: 2em;
+    transition: 0.2s ease;
     width: 100%;
     &:focus {
-      border: ${isError ? `1px solid ${theme.colors.red}` : `none`};
+      box-shadow: 0 0 0 3px
+        ${isError ? `rgba(222, 58, 58, 50%)` : ` rgba(49, 132, 254,50%)`};
     }
   `}
 `;

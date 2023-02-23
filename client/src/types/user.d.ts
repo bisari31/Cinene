@@ -23,3 +23,10 @@ interface IAuthData {
   success: boolean;
   user?: IUser;
 }
+
+interface IObject {
+  value: string;
+  error: string;
+  setError: React.Dispatch<React.SetStateAction<string>>;
+  ref: React.RefObject<HTMLInputElement>;
+}

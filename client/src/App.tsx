@@ -6,7 +6,7 @@ import Layout from 'components/Layout';
 import LandingPage from 'pages/LandingPage';
 
 import MyPage from 'pages/MyPage';
-import DetailPage from 'pages/DetailPage';
+import DetailPage from 'pages/ContentDetailPage';
 import LoginPage from 'pages/LoginPage';
 import FavoritesPage from 'pages/FavoritesPage';
 import SearchPage from 'pages/SearchPage';
