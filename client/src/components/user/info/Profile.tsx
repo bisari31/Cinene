@@ -1,93 +1,93 @@
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useCallback, useState } from 'react';
 import dayjs from 'dayjs';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation } from 'react-query';
 import styled, { css } from 'styled-components';
 
 import { Edit, Upload } from 'assets';
 import { changeNickname } from 'services/user';
-import { nicknameRegex } from 'utils/regex';
+import { USER_IMAGE } from 'utils/imageUrl';
 import useInput from 'hooks/useInput';
-import useOutsideClick from 'hooks/useOutsideClick';
 
 import Input from 'components/common/Input';
-
-interface IError {
-  response: {
-    data: {
-      success: boolean;
-      message: string;
-    };
-  };
-}
+import { useAuthQuery } from 'hooks/useAuthQuery';
 
 interface IProps {
   children: React.ReactNode;
-  user?: IUser;
+  user: IUser | undefined;
 }
 
-export default function UserProfile({ children, user }: IProps) {
-  const queryClient = useQueryClient();
+export default function Profile({ children, user }: IProps) {
+  const { refetch } = useAuthQuery();
+  const [isChanged, setIsChanged] = useState(false);
+  const {
+    value: nickname,
+    handleChange: handleNicknameChange,
+    setValue: setNickname,
+    ref: inputRef,
+    error,
+    setError,
+  } = useInput('nickname');
 
   const { mutate } = useMutation(changeNickname, {
     onSuccess: (res) => {
-      queryClient.invalidateQueries(['auth', `${res.user._id}`]);
-      changeVisibility();
-      setErrorMsg('');
+      if (!res.success) return setError(res.message);
+      inputRef.current?.blur();
+      refetch();
     },
-    onError: (err: IError) => setErrorMsg(err.response.data.message),
   });
-  const [errorMsg, setErrorMsg] = useState('');
-  const {
-    input: nickname,
-    handleChange: handleChangeNickname,
-    setInput: setNickname,
-  } = useInput();
-  const { ref, isVisible: isEditing, changeVisibility } = useOutsideClick();
-  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!isEditing) return changeVisibility();
-    const result = nickname.match(nicknameRegex);
-    if (!result)
-      return setErrorMsg('닉네임이 올바르지 않습니다. (특수문자 제외 2~10자)');
-    if (nickname === user?.nickname) return changeVisibility();
-    mutate({ nickname });
+    if (error) return;
+    if (user?.nickname === nickname) return setError('닉네임이 같습니다.');
+    mutate(nickname);
+    setIsChanged(true);
   };
 
-  useEffect(() => {
-    setNickname(user?.nickname ?? '');
-  }, [setNickname, user]);
+  const handleFocus = useCallback(() => {
+    if (isChanged) setIsChanged(false);
+  }, [isChanged]);
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Escape') inputRef.current?.blur();
+    },
+    [inputRef],
+  );
+
+  const handleBlur = useCallback(
+    (prevNickname?: string) => {
+      if (!isChanged) setNickname(prevNickname ?? '');
+      setError('');
+    },
+    [setError, setNickname, isChanged],
+  );
 
   useEffect(() => {
-    if (!isEditing && user) {
-      setErrorMsg('');
-      setNickname(user.nickname);
-    }
-  }, [user, isEditing, setNickname]);
+    if (user) setNickname(user.nickname);
+  }, [user, setNickname]);
 
   return (
     <UserProfileWrapper>
       <Section>
         <ImgWrapper>
-          <img
-            src="https://blog.kakaocdn.net/dn/b8Kdun/btqCqM43uim/1sWJVkjEEy4LJMfR3mcqxK/img.jpg"
-            alt="profile"
-          />
+          <img src={USER_IMAGE} alt="profile" />
           <button type="button">
             <Upload />
           </button>
         </ImgWrapper>
         <NicknameWrapper>
-          <div ref={ref}>
-            <Form isEditing={isEditing} onSubmit={handleSubmit}>
+          <div>
+            <Form onSubmit={handleSubmit}>
               <Input
+                onKeyDown={handleKeyDown}
+                onFocus={handleFocus}
+                onBlur={() => handleBlur(user?.nickname)}
+                errorMessage={error}
                 ref={inputRef}
-                disabled={!isEditing}
-                errorMessage={errorMsg}
                 type="text"
                 value={nickname}
-                onChange={handleChangeNickname}
+                onChange={handleNicknameChange}
               />
               <button type="submit">
                 <Edit />
@@ -175,8 +175,8 @@ const NicknameWrapper = styled.div`
   `}
 `;
 
-const Form = styled.form<{ isEditing: boolean }>`
-  ${({ theme, isEditing }) => css`
+const Form = styled.form`
+  ${({ theme }) => css`
     display: flex;
     height: 50px;
     justify-content: center;
@@ -187,17 +187,12 @@ const Form = styled.form<{ isEditing: boolean }>`
       flex-direction: column;
       input {
         height: 100%;
-        background: ${isEditing ? theme.colors.gray50 : theme.colors.navy100};
-        border: ${isEditing ? `2px solid ${theme.colors.blue}` : 'none'};
-        color: ${isEditing ? theme.colors.black : theme.colors.white};
         font-size: 23px;
         font-weight: 500;
         margin: 0;
         padding: 0 1.5em;
         text-align: center;
         width: 100%;
-      }
-      input:hover {
         cursor: pointer;
       }
     }

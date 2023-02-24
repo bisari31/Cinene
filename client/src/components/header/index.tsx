@@ -1,12 +1,13 @@
 import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
 
 import useOutsideClick from 'hooks/useOutsideClick';
 import { useAuthQuery } from 'hooks/useAuthQuery';
 
-import { useEffect } from 'react';
 import { useSetRecoilState } from 'recoil';
 import { userIdState } from 'atom/atom';
+
 import AuthMenu from './AuthMenu';
 import SearchBar from './SearchBar';
 import SideMenu from './SideMenu';

@@ -3,7 +3,7 @@ import axios from 'axios';
 interface ResponseData {
   success: boolean;
   message: string;
-  type: 'email' | 'nickname' | 'login';
+  code?: number;
   user: IUser;
 }
 
@@ -57,7 +57,9 @@ export const changePassword = async (body: {
   return data;
 };
 
-export const changeNickname = async (body: { nickname: string }) => {
-  const { data } = await axios.put<ResponseData>('/users/changeNickname', body);
+export const changeNickname = async (nickname: string) => {
+  const { data } = await axios.patch<ResponseData>('/users/change-nickname', {
+    nickname,
+  });
   return data;
 };

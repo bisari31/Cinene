@@ -9,7 +9,6 @@ export const useAuthQuery = () => {
   const userId = useRecoilValue(userIdState);
   const prevUserId = usePrevious(userId);
 
-  console.log('authQuery rendering');
   const data = useQuery(['auth', userId], auth, {
     retry: 1,
     refetchOnWindowFocus: false,

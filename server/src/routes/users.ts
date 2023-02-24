@@ -3,7 +3,6 @@ import bcrypt from 'bcrypt';
 
 import User, { IUser } from '../models/user';
 import { authenticate, IRequest } from './middleware';
-import { json } from 'stream/consumers';
 
 const router = Router();
 const SALT_ROUNDS = 12;
@@ -17,7 +16,7 @@ interface IRegisterBody {
 interface IResponse {
   success: boolean;
   message?: string;
-  type?: 'nickname' | 'email' | 'login';
+  code?: number;
   user?: IUser;
 }
 
@@ -37,22 +36,22 @@ router.post(
   '/register',
   async (req: IRequest<IRegisterBody>, res: Response<IResponse>) => {
     try {
-      const checkedEmail = await User.findOne({ email: req.body.email });
-      if (checkedEmail) {
-        return res.json({
-          success: false,
-          message: '이미 가입된 이메일이 있습니다.',
-          type: 'email',
-        });
-      }
-      const checkedNickname = await User.findOne({
+      const hasEmail = await User.findOne({ email: req.body.email });
+      const hasNickname = await User.findOne({
         nickname: req.body.nickname,
       });
-      if (checkedNickname || checkedEmail) {
+      const getErrorCode = () => {
+        let code = 0;
+        if (hasNickname && hasEmail) code = 3;
+        else if (hasEmail) code = 1;
+        else if (hasNickname) code = 2;
+        return code;
+      };
+      const errorCode = getErrorCode();
+      if (errorCode) {
         return res.json({
           success: false,
-          message: '이미 가입된 닉네임이 있습니다.',
-          type: 'nickname',
+          code: errorCode,
         });
       }
       const hash = await bcrypt.hash(req.body.password, SALT_ROUNDS);
@@ -82,7 +81,6 @@ router.post(
         return res.json({
           success: false,
           message: '아이디 또는 비밀번호가 올바르지 않습니다.',
-          type: 'login',
         });
       }
       const newUser = await user.generateToken();
@@ -102,7 +100,7 @@ router.get(
   authenticate,
   async (req: IRequest<null>, res: Response<IResponse>) => {
     try {
-      await User.findByIdAndUpdate({ _id: req.user?._id }, { token: '' });
+      await User.findByIdAndUpdate(req.user?._id, { $set: { token: '' } });
       res.clearCookie('auth').send({ success: true });
     } catch (err) {
       res.status(400).send({ success: false, message: '로그아웃 실패' });
@@ -143,14 +141,29 @@ router.patch(
           message: '비밀번호가 일치하지 않습니다.',
         });
       const hash = await bcrypt.hash(req.body.nextPassword, SALT_ROUNDS);
-      const isChanged = await User.findOneAndUpdate(
-        { _id: req.user?._id },
-        { $set: { password: hash } },
-      );
+      const isChanged = await User.findByIdAndUpdate(req.user?._id, {
+        $set: { password: hash },
+      });
       if (!isChanged) throw Error();
       res.json({ success: true });
     } catch (err) {
       res.status(400).json({ success: false, message: '비밀번호 변경 실패' });
+    }
+  },
+);
+
+router.patch(
+  '/change-nickname',
+  authenticate,
+  async (req: IRequest<{ nickname: string }>, res: Response<IResponse>) => {
+    try {
+      const user = await User.findByIdAndUpdate(req.user?._id, {
+        $set: { nickname: req.body.nickname },
+      });
+      if (!user) throw Error;
+      res.json({ success: true, user });
+    } catch (err) {
+      res.json({ success: false, message: '닉네임이 이미 있습니다' });
     }
   },
 );

@@ -6,10 +6,16 @@ import { useMutation, useQueryClient } from 'react-query';
 
 import { userIdState } from 'atom/atom';
 import { login, register } from 'services/user';
-import useInputTes from 'hooks/useInputTes';
+import useInput from 'hooks/useInput';
 
 import { PathName } from 'pages/LoginPage';
 import Input from 'components/common/Input';
+
+export const ERROR_MESSAGE = {
+  email: '가입된 이메일이 이미 있습니다.',
+  nickname: '가입된 닉네임이 이미 있습니다.',
+  empty: '필수 입력 항목입니다.',
+};
 
 export default function Form({
   type,
@@ -19,14 +25,6 @@ export default function Form({
   children: ReactNode;
 }) {
   const {
-    error: emailError,
-    value: email,
-    handleBlur: handleEmailBlur,
-    handleChange: handleEmailChange,
-    ref: emailRef,
-    setError: setEmailError,
-  } = useInputTes('email');
-  const {
     error: passwordError,
     handleBlur: handlePasswordBlur,
     value: password,
@@ -34,7 +32,7 @@ export default function Form({
     handleChange: handlePasswordChange,
     setError: setPasswordError,
     setValue: setPassword,
-  } = useInputTes('password');
+  } = useInput('password');
   const {
     error: confirmPasswordError,
     handleBlur: handleConfirmPasswordBlur,
@@ -42,7 +40,7 @@ export default function Form({
     ref: confirmPasswordRef,
     value: confirmPassword,
     setError: setConfirmPasswordError,
-  } = useInputTes('password', password);
+  } = useInput('password', password);
   const {
     error: nicknameError,
     handleBlur: handleNicknameBlur,
@@ -50,9 +48,17 @@ export default function Form({
     ref: nicknameRef,
     value: nickname,
     setError: setNicknameError,
-  } = useInputTes('nickname');
+  } = useInput('nickname');
+  const {
+    error: emailError,
+    value: email,
+    handleBlur: handleEmailBlur,
+    handleChange: handleEmailChange,
+    ref: emailRef,
+    setError: setEmailError,
+  } = useInput('email');
 
-  const [fetchErrorMessage, setFetchErrorMessage] = useState('');
+  const [serverErrorMessage, setServerErrorMessage] = useState('');
 
   const isLogin = type === 'login';
 
@@ -63,10 +69,9 @@ export default function Form({
   const { mutate: loginMutate } = useMutation(login, {
     onSuccess: (data) => {
       if (!data.success) {
-        setFetchErrorMessage(data.message);
+        setServerErrorMessage(data.message);
         setPasswordError(' ');
-        setPassword('');
-        return passwordRef.current?.focus();
+        return setPassword('');
       }
       setUserId(data.user._id);
       localStorage.setItem('userId', data.user._id);
@@ -74,46 +79,30 @@ export default function Form({
       navigate('/');
     },
     onError: ({ response }: ILoginError) => {
-      setFetchErrorMessage(response.data.message);
+      setServerErrorMessage(response.data.message);
     },
   });
 
   const { mutate: registerMutate } = useMutation(register, {
     onSuccess: (data) => {
-      if (!data.success) {
-        if (data.type === 'email') setEmailError(data.message);
-        if (data.type === 'nickname') setNicknameError(data.message);
-        return getFocus();
-      }
-      navigate('/login');
+      if (data.success) return navigate('/login');
+      if (data.code === 1) return setEmailError(ERROR_MESSAGE.email);
+      if (data.code === 2) return setNicknameError(ERROR_MESSAGE.nickname);
+      setEmailError(ERROR_MESSAGE.email);
+      return setNicknameError(ERROR_MESSAGE.nickname);
     },
-
     onError: ({ response }: ILoginError) => {
-      setFetchErrorMessage(response.data.message);
+      setServerErrorMessage(response.data.message);
     },
   });
 
-  const getFocus = () => {
-    const refs = [emailRef, nicknameRef, passwordRef, confirmPasswordRef];
-    let index = 0;
-
-    if (emailError) index = 0;
-    else if (nicknameError) index = 1;
-    else if (passwordError) index = 2;
-    else if (confirmPasswordError) index = 3;
-
-    refs[index].current?.focus();
-  };
-
   const checkEmptyValue = () => {
-    const message = '필수 입력 항목입니다.';
-    if (!email) setEmailError(message);
-    if (!password) setPasswordError(message);
+    if (!email) setEmailError(ERROR_MESSAGE.empty);
+    if (!password) setPasswordError(ERROR_MESSAGE.empty);
     if (!isLogin) {
-      if (!nickname) setNicknameError(message);
-      if (!confirmPassword) setConfirmPasswordError(message);
+      if (!nickname) setNicknameError(ERROR_MESSAGE.empty);
+      if (!confirmPassword) setConfirmPasswordError(ERROR_MESSAGE.empty);
     }
-
     return isLogin
       ? !email || !password
       : !email || !password || !nickname || !confirmPassword;
@@ -122,14 +111,9 @@ export default function Form({
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const isEmpty = checkEmptyValue();
-    if (
-      isEmpty ||
-      emailError ||
-      passwordError ||
-      nicknameError ||
-      confirmPasswordError
-    )
-      return getFocus();
+    const isError =
+      emailError || passwordError || nicknameError || confirmPasswordError;
+    if (isEmpty || isError) return;
     if (!isLogin && password !== confirmPassword) {
       return setConfirmPasswordError('비밀번호가 일치하지 않습니다.');
     }
@@ -139,10 +123,10 @@ export default function Form({
   };
 
   useEffect(() => {
-    if (password && fetchErrorMessage) {
-      setFetchErrorMessage('');
+    if (password && serverErrorMessage) {
+      setServerErrorMessage('');
     }
-  }, [password, fetchErrorMessage]);
+  }, [password, serverErrorMessage]);
 
   return (
     <StyledForm onSubmit={handleSubmit}>
@@ -190,7 +174,7 @@ export default function Form({
           ref={confirmPasswordRef}
         />
       )}
-      <p>{fetchErrorMessage}</p>
+      <p>{serverErrorMessage}</p>
       {children}
     </StyledForm>
   );

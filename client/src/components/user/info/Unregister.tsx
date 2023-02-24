@@ -5,12 +5,13 @@ import { useSetRecoilState } from 'recoil';
 import { userIdState } from 'atom/atom';
 import { unregister, checkPassword } from 'services/user';
 import useOutsideClick from 'hooks/useOutsideClick';
-import useInputTes from 'hooks/useInputTes';
+import useInput from 'hooks/useInput';
 
 import Button from 'components/common/Button';
 import Input from 'components/common/Input';
 import Portal from 'components/common/Portal';
 import Modal from 'components/common/Modal';
+import { ERROR_MESSAGE } from '../login/Form';
 
 export default function Unregister() {
   const setUserId = useSetRecoilState(userIdState);
@@ -21,7 +22,7 @@ export default function Unregister() {
     handleChange,
     handleBlur,
     ref: inputRef,
-  } = useInputTes('password');
+  } = useInput('password');
 
   const { ref, changeVisibility, isVisible, animationState } =
     useOutsideClick(300);
@@ -31,33 +32,25 @@ export default function Unregister() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      if (!password) {
-        setError('필수 입력 항목입니다.');
-        return inputRef.current?.focus();
-      }
+      if (!password) return setError(ERROR_MESSAGE.empty);
       if (error) return;
       const { success, message } = await checkPassword({ password });
-      if (!success) {
-        setError(message);
-        return inputRef.current?.focus();
-      }
-      changeVisibility();
+      return success ? changeVisibility() : setError(message);
     } catch (err) {
       setError('유저 정보 확인 실패');
     }
   };
 
-  const handleUnregister = () => {
-    unregister()
-      .then(() => {
-        setUserId('');
-        localStorage.removeItem('auth');
-        navigate('/');
-      })
-      .catch(() => {
-        changeVisibility();
-        setError('회원탈퇴 실패');
-      });
+  const handleUnregister = async () => {
+    try {
+      await unregister();
+      setUserId('');
+      localStorage.removeItem('auth');
+      navigate('/');
+    } catch (err) {
+      changeVisibility();
+      setError('회원탈퇴 실패');
+    }
   };
 
   return (

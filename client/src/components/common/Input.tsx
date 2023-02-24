@@ -1,39 +1,26 @@
-import { useEffect, forwardRef, memo } from 'react';
+import { forwardRef, memo } from 'react';
 import styled, { css } from 'styled-components';
 
 interface IProps {
   placeholder?: string;
   value: string | undefined;
   type: 'text' | 'password' | 'email';
-  disabled?: boolean;
   label?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
   errorMessage?: string;
+  onFocus?: () => void;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
 function Input(
-  { disabled = false, label = '', errorMessage = '', ...rest }: IProps,
+  { label = '', errorMessage = '', ...rest }: IProps,
   ref: React.ForwardedRef<HTMLInputElement>,
 ) {
-  // useEffect(() => {
-  //   if (typeof ref === 'object') {
-  //     if (ref && errorMessage) {
-  //       const { current } = ref;
-  //       current?.focus();
-  //     }
-  //   }
-  // }, [ref, errorMessage]);
-
   return (
     <InputWrapper>
       <label htmlFor="">{label}</label>
-      <StyledInput
-        isError={!!errorMessage}
-        disabled={disabled}
-        ref={ref}
-        {...rest}
-      />
+      <StyledInput isError={!!errorMessage} ref={ref} {...rest} />
       <ErrorMessage>{errorMessage}</ErrorMessage>
     </InputWrapper>
   );

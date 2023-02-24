@@ -1,29 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { useMutation, useQueryClient } from 'react-query';
-import { useNavigate } from 'react-router-dom';
+import { useMutation } from 'react-query';
 import styled from 'styled-components';
 
 import { changePassword } from 'services/user';
 import useOutsideClick from 'hooks/useOutsideClick';
-import useInputTes from 'hooks/useInputTes';
+import useInput from 'hooks/useInput';
 
 import Button from 'components/common/Button';
 import Input from 'components/common/Input';
 import Modal from 'components/common/Modal';
 import Portal from 'components/common/Portal';
-import { checkEmptyValue, getFocus } from 'utils/login';
+import { ERROR_MESSAGE } from '../login/Form';
 
 export default function ChangePassword() {
-  const [fetchErrorMessage, setFetchErrorMessage] = useState('');
-  const {
-    error: passwordError,
-    handleBlur: handlePasswordBlur,
-    handleChange: handlePasswordChange,
-    setError: setPasswordError,
-    value: password,
-    ref: passwordRef,
-    setValue: setPassword,
-  } = useInputTes('password');
+  const [severErrorMessage, setServerErrorMessage] = useState('');
+
   const {
     error: nextPasswordError,
     handleBlur: handleNextPasswordBlur,
@@ -32,60 +23,56 @@ export default function ChangePassword() {
     setError: setNextPasswordError,
     ref: nextPasswordRef,
     setValue: setNextPassword,
-  } = useInputTes('password');
+  } = useInput('password');
+  const {
+    error: passwordError,
+    handleBlur: handlePasswordBlur,
+    handleChange: handlePasswordChange,
+    setError: setPasswordError,
+    value: password,
+    ref: passwordRef,
+    setValue: setPassword,
+  } = useInput('password');
 
   const { ref, isVisible, changeVisibility, animationState } =
     useOutsideClick();
 
-  const queryClient = useQueryClient();
-
   const { mutate } = useMutation(changePassword, {
     onSuccess: (data) => {
       if (!data.success) {
-        setPasswordError(data.message);
-        return passwordRef.current?.focus();
+        return setPasswordError(data.message);
       }
       setPassword('');
       setNextPassword('');
       changeVisibility();
-      // queryClient.invalidateQueries(['auth']);
     },
     onError: (err: ILoginError) => {
       setNextPassword('');
       setNextPasswordError(' ');
-      setFetchErrorMessage(err.response?.data.message);
+      setServerErrorMessage(err.response?.data.message);
     },
   });
-  const inputObj: IObject[] = [
-    {
-      value: password,
-      setError: setPasswordError,
-      error: passwordError,
-      ref: passwordRef,
-    },
-    {
-      value: nextPassword,
-      setError: setNextPasswordError,
-      error: nextPasswordError,
-      ref: nextPasswordRef,
-    },
-  ];
+
+  const checkEmptyValue = () => {
+    if (!password) setPasswordError(ERROR_MESSAGE.empty);
+    if (!nextPassword) setNextPasswordError(ERROR_MESSAGE.empty);
+
+    return !password || !nextPassword;
+  };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    checkEmptyValue(inputObj);
-    if (password === nextPassword) {
-      setNextPasswordError('비밀번호가 같습니다');
-      return nextPasswordRef.current?.focus();
-    }
-    const isError = getFocus(inputObj);
-    if (isError) return;
+    const isEmpty = checkEmptyValue();
+    const isError = passwordError || nextPasswordError;
+    if (isEmpty || isError) return;
+    if (password === nextPassword)
+      return setNextPasswordError('비밀번호가 같습니다');
     mutate({ password, nextPassword });
   };
 
   useEffect(() => {
-    if (fetchErrorMessage && nextPassword) setFetchErrorMessage('');
-  }, [fetchErrorMessage, nextPassword]);
+    if (severErrorMessage && nextPassword) setServerErrorMessage('');
+  }, [severErrorMessage, nextPassword]);
 
   return (
     <StyledDiv>
@@ -110,7 +97,7 @@ export default function ChangePassword() {
           errorMessage={nextPasswordError}
           onBlur={handleNextPasswordBlur}
         />
-        <p>{fetchErrorMessage}</p>
+        <p>{severErrorMessage}</p>
         <Button color="pink" size="fullWidth" type="submit">
           비밀번호 변경
         </Button>

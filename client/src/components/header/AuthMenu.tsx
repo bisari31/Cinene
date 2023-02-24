@@ -1,13 +1,11 @@
 import styled, { css } from 'styled-components';
-import { useEffect } from 'react';
-import { useSetRecoilState } from 'recoil';
 import { Link } from 'react-router-dom';
 import { lighten, darken } from 'polished';
 
-import { userIdState } from 'atom/atom';
 import { Heart, Search } from 'assets';
 
 import LogoutButton from 'components/common/LogoutButton';
+import { USER_IMAGE } from 'utils/imageUrl';
 
 interface Props {
   setIsVisible: () => void;
@@ -15,15 +13,6 @@ interface Props {
 }
 
 export default function AuthMenu({ setIsVisible, data }: Props) {
-  // const setUserId = useSetRecoilState(userIdState);
-
-  // useEffect(() => {
-  //   const item = localStorage.getItem('userId');
-  //   if (item) {
-  //     setUserId(item);
-  //   }
-  // }, [setUserId]);
-
   return (
     <AuthMenuWrapper>
       <ul>
@@ -41,10 +30,7 @@ export default function AuthMenu({ setIsVisible, data }: Props) {
           <>
             <UserInfo>
               <Link to="/mypage">
-                <img
-                  src="https://blog.kakaocdn.net/dn/b8Kdun/btqCqM43uim/1sWJVkjEEy4LJMfR3mcqxK/img.jpg"
-                  alt="user_image"
-                />
+                <img src={USER_IMAGE} alt="user_image" />
               </Link>
             </UserInfo>
             <BtnMenu className="logout_button">
