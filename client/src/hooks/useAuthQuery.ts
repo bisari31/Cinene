@@ -5,7 +5,7 @@ import { auth } from 'services/user';
 import { userIdState } from 'atom/atom';
 import usePrevious from './usePrevious';
 
-export const useAuthQuery = () => {
+export default function useAuthQuery() {
   const userId = useRecoilValue(userIdState);
   const prevUserId = usePrevious(userId);
 
@@ -16,4 +16,4 @@ export const useAuthQuery = () => {
   });
 
   return data;
-};
+}

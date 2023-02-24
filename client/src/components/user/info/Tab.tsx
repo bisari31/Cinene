@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 
-import throttle from 'hooks/useThrottle';
-
+import { throttle } from 'utils';
 import Unregister from './Unregister';
 import ChangePassword from './ChangePassword';
 
@@ -37,8 +36,10 @@ export default function Tab() {
 
   useEffect(() => {
     const getWidth = () => {
-      setWidth(ulRef.current?.firstElementChild?.clientWidth ?? WIDTH);
+      const { clientWidth } = ulRef.current?.firstElementChild as HTMLElement;
+      setWidth(clientWidth ?? WIDTH);
     };
+
     const throttleWidth = throttle(getWidth, 1000);
     window.addEventListener('resize', throttleWidth);
     return () => window.removeEventListener('resize', throttleWidth);

@@ -4,8 +4,7 @@ import { useSetRecoilState } from 'recoil';
 
 import { userIdState } from 'atom/atom';
 import { unregister, checkPassword } from 'services/user';
-import useOutsideClick from 'hooks/useOutsideClick';
-import useInput from 'hooks/useInput';
+import { useInput, useOutsideClick } from 'hooks';
 
 import Button from 'components/common/Button';
 import Input from 'components/common/Input';

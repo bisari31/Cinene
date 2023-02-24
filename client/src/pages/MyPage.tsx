@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { useAuthQuery } from 'hooks/useAuthQuery';
+import { useAuthQuery } from 'hooks';
 
 import Tab from 'components/user/info/Tab';
 import Profile from 'components/user/info/Profile';

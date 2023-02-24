@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 
 import { getLikes, upLike } from 'services/like';
-import { useAuthQuery } from './useAuthQuery';
+import useAuthQuery from './useAuthQuery';
 
 export interface IResponse {
   success: boolean;

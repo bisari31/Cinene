@@ -6,8 +6,7 @@ import { useRecoilValue } from 'recoil';
 import { createComment } from 'services/comments';
 import { contentIdState } from 'atom/atom';
 import { buttonEffect } from 'styles/css';
-import { useAuthQuery } from 'hooks/useAuthQuery';
-import useOutsideClick from 'hooks/useOutsideClick';
+import { useAuthQuery, useOutsideClick } from 'hooks';
 
 import LoginPortal from 'components/common/LoginPortal';
 

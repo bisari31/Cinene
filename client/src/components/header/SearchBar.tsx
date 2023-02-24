@@ -9,7 +9,7 @@ import { useQuery } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import styled, { css, keyframes } from 'styled-components';
 
-import useDebounce from 'hooks/useDebounce';
+import { useDebounce } from 'hooks';
 import { IMAGE_URL, searchMedia } from 'services/media';
 import { EMPTY_IMAGE, USER_IMAGE } from 'utils/imageUrl';
 

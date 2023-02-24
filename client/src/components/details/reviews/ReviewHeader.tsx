@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
-import useOutsideClick from 'hooks/useOutsideClick';
+import { useOutsideClick } from 'hooks';
+
 import LoginPortal from 'components/common/LoginPortal';
 
 interface IProps {

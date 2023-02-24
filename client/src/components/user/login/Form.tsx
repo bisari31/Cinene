@@ -6,7 +6,7 @@ import { useMutation, useQueryClient } from 'react-query';
 
 import { userIdState } from 'atom/atom';
 import { login, register } from 'services/user';
-import useInput from 'hooks/useInput';
+import { useInput } from 'hooks';
 
 import { PathName } from 'pages/LoginPage';
 import Input from 'components/common/Input';

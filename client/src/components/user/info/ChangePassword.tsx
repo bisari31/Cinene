@@ -3,8 +3,7 @@ import { useMutation } from 'react-query';
 import styled from 'styled-components';
 
 import { changePassword } from 'services/user';
-import useOutsideClick from 'hooks/useOutsideClick';
-import useInput from 'hooks/useInput';
+import { useInput, useOutsideClick } from 'hooks';
 
 import Button from 'components/common/Button';
 import Input from 'components/common/Input';

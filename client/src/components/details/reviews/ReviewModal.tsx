@@ -3,19 +3,12 @@ import { useState, useEffect, useRef, forwardRef, ForwardedRef } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 
 import { Star } from 'assets';
-import usePrevious from 'hooks/usePrevious';
 import { addRating } from 'services/review';
+import { usePrevious } from 'hooks';
 
 import Modal from 'components/common/Modal';
 import Portal from 'components/common/Portal';
 import { IReviewProps } from './index';
-
-interface IProps extends IReviewProps {
-  isVisible: boolean;
-  animationState: boolean;
-  changeVisibility: () => void;
-  hasReview: IDocument | null | undefined;
-}
 
 const RATING_MESSAGE = [
   '(별로에요)',
@@ -24,6 +17,13 @@ const RATING_MESSAGE = [
   '(좋아요)',
   '(최고에요)',
 ];
+
+interface IProps extends IReviewProps {
+  isVisible: boolean;
+  animationState: boolean;
+  changeVisibility: () => void;
+  hasReview: IDocument | null | undefined;
+}
 
 function ReviewModal(
   { isVisible, animationState, changeVisibility, data, hasReview }: IProps,

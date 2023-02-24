@@ -3,8 +3,7 @@ import styled from 'styled-components';
 
 import { Heart } from 'assets';
 import { Button, buttonEffect } from 'styles/css';
-import useOutsideClick from 'hooks/useOutsideClick';
-import useLike from 'hooks/useLike';
+import { useLike, useOutsideClick } from 'hooks';
 
 import LoginPortal from 'components/common/LoginPortal';
 

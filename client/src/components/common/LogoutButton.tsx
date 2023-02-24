@@ -1,5 +1,5 @@
 import { userIdState } from 'atom/atom';
-import useOutsideClick from 'hooks/useOutsideClick';
+import { useOutsideClick } from 'hooks';
 import { useSetRecoilState } from 'recoil';
 import { logout } from 'services/user';
 import styled from 'styled-components';

@@ -2,8 +2,8 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import styled, { css } from 'styled-components';
 
 import { ChevronLeft, ChevronRight } from 'assets';
-import throttle from 'hooks/useThrottle';
 import { buttonEffect } from 'styles/css';
+import { throttle } from 'utils';
 
 interface Props {
   children: React.ReactNode;

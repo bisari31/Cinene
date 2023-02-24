@@ -3,9 +3,8 @@ import styled, { keyframes } from 'styled-components';
 
 import { ColorsKey } from 'styles/theme';
 import { outside } from 'styles/css';
-import usePreventScrolling from 'hooks/usePreventScrolling';
+import { useEscapeClose, usePreventScrolling } from 'hooks';
 
-import useEscapeClose from 'hooks/useEscapeClose';
 import Button from './Button';
 
 interface Props {

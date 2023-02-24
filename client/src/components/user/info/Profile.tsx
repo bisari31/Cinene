@@ -6,10 +6,9 @@ import styled, { css } from 'styled-components';
 import { Edit, Upload } from 'assets';
 import { changeNickname } from 'services/user';
 import { USER_IMAGE } from 'utils/imageUrl';
-import useInput from 'hooks/useInput';
+import { useAuthQuery, useInput } from 'hooks';
 
 import Input from 'components/common/Input';
-import { useAuthQuery } from 'hooks/useAuthQuery';
 
 interface IProps {
   children: React.ReactNode;
