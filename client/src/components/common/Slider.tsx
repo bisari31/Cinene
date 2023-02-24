@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 
 import { ChevronLeft, ChevronRight } from 'assets';
 import { buttonEffect } from 'styles/css';
-import { throttle } from 'utils';
+import { useThrottle } from 'hooks';
 
 interface Props {
   children: React.ReactNode;
@@ -115,7 +115,7 @@ export default function Slider({ children, title }: Props) {
     }
   }, []);
 
-  const getThrottleWidth = throttle(getWidth, 1000);
+  const getThrottleWidth = useThrottle(getWidth, 1000);
 
   useEffect(() => {
     const checkOutSideClick = (element: React.RefObject<HTMLElement>) => {

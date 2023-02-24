@@ -1,27 +1,25 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import styled, { css } from 'styled-components';
 
-import { throttle } from 'utils';
+import { useDebounce } from 'hooks';
 import Unregister from './Unregister';
 import ChangePassword from './ChangePassword';
 
 interface Item {
   id: number;
   text: string;
-  type: 'passwordChange' | 'unregister';
+  type: 'changePassword' | 'unregister';
   isActive: boolean;
 }
 
-const WIDTH = 200;
-
 export default function Tab() {
   const [list, setList] = useState<Item[]>([
-    { id: 1, text: '비밀번호 변경', type: 'passwordChange', isActive: true },
+    { id: 1, text: '비밀번호 변경', type: 'changePassword', isActive: true },
     { id: 2, text: '회원 탈퇴', type: 'unregister', isActive: false },
   ]);
-  const [width, setWidth] = useState(WIDTH);
+  const [width, setWidth] = useState<number>(0);
   const [target, setTarget] = useState<Item>(list[0]);
-  const ulRef = useRef<HTMLUListElement>(null);
+  const liRef = useRef<HTMLLIElement>(null);
 
   const handleClick = (id: number) => {
     setList((prev) =>
@@ -34,22 +32,26 @@ export default function Tab() {
     setTarget(list[id - 1]);
   };
 
-  useEffect(() => {
-    const getWidth = () => {
-      const { clientWidth } = ulRef.current?.firstElementChild as HTMLElement;
-      setWidth(clientWidth ?? WIDTH);
-    };
-
-    const throttleWidth = throttle(getWidth, 1000);
-    window.addEventListener('resize', throttleWidth);
-    return () => window.removeEventListener('resize', throttleWidth);
+  const getElementWidth = useCallback(() => {
+    if (liRef.current) setWidth(liRef.current.clientWidth);
   }, []);
+
+  const debouncedHandler = useDebounce(getElementWidth, 500);
+
+  useEffect(() => {
+    getElementWidth();
+  }, [getElementWidth]);
+
+  useEffect(() => {
+    window.addEventListener('resize', debouncedHandler);
+    return () => window.removeEventListener('resize', debouncedHandler);
+  }, [debouncedHandler]);
 
   return (
     <Wrapper>
-      <ul ref={ulRef}>
+      <ul>
         {list.map((item) => (
-          <List key={item.id} isActive={item.isActive}>
+          <List key={item.id} isActive={item.isActive} ref={liRef}>
             <button type="button" onClick={() => handleClick(item.id)}>
               {item.text}
             </button>
@@ -57,7 +59,7 @@ export default function Tab() {
         ))}
         <SlideBar index={target.id - 1} width={width} />
       </ul>
-      {target.type === 'passwordChange' ? <ChangePassword /> : <Unregister />}
+      {target.type === 'changePassword' ? <ChangePassword /> : <Unregister />}
     </Wrapper>
   );
 }
