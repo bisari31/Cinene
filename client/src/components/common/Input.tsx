@@ -47,7 +47,7 @@ const StyledInput = styled.input<{ isError: boolean }>`
     font-size: 0.8rem;
     height: 4.3em;
     padding: 2em;
-    transition: 0.2s ease;
+    transition: box-shadow 0.2s ease;
     width: 100%;
     &:focus {
       box-shadow: 0 0 0 3px
