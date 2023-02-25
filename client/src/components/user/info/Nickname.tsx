@@ -1,10 +1,14 @@
 import styled from 'styled-components';
 import { useEffect, useCallback, useState } from 'react';
 import { useMutation } from 'react-query';
+import { useAuthQuery, useInput, useOutsideClick } from 'hooks';
+
 import { changeNickname } from 'services/user';
-import { useAuthQuery, useInput } from 'hooks';
 import { CheckMark, Edit } from 'assets/index';
+
 import Input from 'components/common/Input';
+import Portal from 'components/common/Portal';
+import Modal from 'components/common/Modal';
 
 export default function Nickname() {
   const [isChanged, setIsChanged] = useState(false);
@@ -18,10 +22,12 @@ export default function Nickname() {
     setError,
   } = useInput('nickname');
 
+  const { ref, isVisible, changeVisibility, animationState } =
+    useOutsideClick();
   const { refetch, data } = useAuthQuery();
   const { mutate } = useMutation(changeNickname, {
     onSuccess: (res) => {
-      if (!res.success) return setError(res.message);
+      if (!res.success) return setError(res.message ?? '');
       inputRef.current?.blur();
       refetch();
     },
@@ -34,6 +40,7 @@ export default function Nickname() {
       return setError('닉네임이 같습니다.');
     mutate(nickname);
     setIsChanged(true);
+    changeVisibility();
   };
 
   const handleFocus = useCallback(() => {
@@ -76,6 +83,20 @@ export default function Nickname() {
         onChange={handleNicknameChange}
       />
       {isChanging ? <CheckMark className="svg-check-mark" /> : <Edit />}
+
+      {isVisible && (
+        <Portal>
+          <Modal
+            ref={ref}
+            isVisible={animationState}
+            buttonText={['확인']}
+            color="pink"
+            executeFn={changeVisibility}
+          >
+            닉네임 변경 완료
+          </Modal>
+        </Portal>
+      )}
     </Form>
   );
 }

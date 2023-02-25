@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-interface ResponseData {
+interface Response {
   success: boolean;
   message: string;
   code?: number;
@@ -25,12 +25,12 @@ export const logout = async () => {
 };
 
 export const login = async (body: IBody) => {
-  const { data } = await axios.post<ResponseData>('/users/login', body);
+  const { data } = await axios.post<Response>('/users/login', body);
   return data;
 };
 
 export const register = async (body: IBody) => {
-  const { data } = await axios.post<ResponseData>('/users/register', body);
+  const { data } = await axios.post<Response>('/users/register', body);
   return data;
 };
 
@@ -40,7 +40,7 @@ export const unregister = async () => {
 };
 
 export const checkPassword = async (password: Pick<IBody, 'password'>) => {
-  const { data } = await axios.post<ResponseData>(
+  const { data } = await axios.post<Response>(
     '/users/check-password',
     password,
   );
@@ -58,7 +58,7 @@ export const changePassword = async (body: {
 };
 
 export const changeNickname = async (nickname: string) => {
-  const { data } = await axios.patch<ResponseData>('/users/change-nickname', {
+  const { data } = await axios.patch<Response>('/users/change-nickname', {
     nickname,
   });
   return data;
