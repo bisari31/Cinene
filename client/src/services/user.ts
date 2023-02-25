@@ -1,7 +1,9 @@
 import axios from 'axios';
 
-interface ResponseData {
+interface Response {
   success: boolean;
+  message: string;
+  code?: number;
   user: IUser;
 }
 
@@ -23,36 +25,41 @@ export const logout = async () => {
 };
 
 export const login = async (body: IBody) => {
-  const { data } = await axios.post<ResponseData>('/users/login', body);
+  const { data } = await axios.post<Response>('/users/login', body);
   return data;
 };
 
 export const register = async (body: IBody) => {
-  const { data } = await axios.post<ResponseData>('/users/register', body);
+  const { data } = await axios.post<Response>('/users/register', body);
   return data;
 };
 
-export const deleteUser = async () => {
-  const { data } = await axios.delete('/users/deleteUser');
+export const unregister = async () => {
+  const { data } = await axios.delete('/users');
+  return data;
+};
+
+export const checkPassword = async (password: Pick<IBody, 'password'>) => {
+  const { data } = await axios.post<Response>(
+    '/users/check-password',
+    password,
+  );
   return data;
 };
 export const changePassword = async (body: {
   password: string;
-  newPassword: string;
+  nextPassword: string;
 }) => {
-  const { data } = await axios.put<{ success: boolean; message: string }>(
-    '/users/changePassword',
+  const { data } = await axios.patch<{ success: boolean; message: string }>(
+    '/users/change-password',
     body,
   );
   return data;
 };
 
-export const checkPassword = async (body: { password: string }) => {
-  const { data } = await axios.post('/users/checkpassword', body);
-  return data;
-};
-
-export const changeNickname = async (body: { nickname: string }) => {
-  const { data } = await axios.put<ResponseData>('/users/changeNickname', body);
+export const changeNickname = async (nickname: string) => {
+  const { data } = await axios.patch<Response>('/users/change-nickname', {
+    nickname,
+  });
   return data;
 };

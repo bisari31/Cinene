@@ -1,11 +1,11 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import { useQuery } from 'react-query';
 
 import { getMediaDetail, getPersonDetail, IMAGE_URL } from 'services/media';
-import useOutsideClick from 'hooks/useOutsideClick';
-import useCurrentPathName from 'hooks/useCurrentPathName';
+
 import { EMPTY_IMAGE, USER_IMAGE } from 'utils/imageUrl';
+import { useCurrentPathName, useOutsideClick } from 'hooks';
 
 import Description from 'components/details/MediaDescription';
 import Portal from 'components/common/Portal';

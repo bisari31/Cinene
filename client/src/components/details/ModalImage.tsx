@@ -1,11 +1,10 @@
 import styled, { css } from 'styled-components';
 import { useEffect, useState } from 'react';
 
+import { useEscapeClose, usePreventScrolling } from 'hooks';
 import { outside } from 'styles/css';
 import { Close } from 'assets';
 import { EMPTY_IMAGE } from 'utils/imageUrl';
-import useEscapeClose from 'hooks/useEscapeClose';
-import usePreventScrolling from 'hooks/usePreventScrolling';
 
 interface Props {
   src: string;

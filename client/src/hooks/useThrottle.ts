@@ -1,16 +1,16 @@
-export default function throttle<T extends unknown[]>(
+import { useRef } from 'react';
+
+export default function useThrottle<T extends []>(
   cb: (...args: T) => void,
   delay: number,
 ) {
-  let trigger = false;
+  const timerId = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   return (...args: T) => {
-    if (!trigger) {
-      trigger = true;
-      setTimeout(() => {
-        cb(...args);
-        trigger = false;
-      }, delay);
-    }
+    if (timerId.current) return;
+    timerId.current = setTimeout(() => {
+      cb(...args);
+      timerId.current = null;
+    }, delay);
   };
 }

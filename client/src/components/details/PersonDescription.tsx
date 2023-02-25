@@ -1,9 +1,9 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { useQuery } from 'react-query';
 import styled, { css } from 'styled-components';
 
 import { getCombinedCredits } from 'services/media';
-import useCineneDataQuery from 'hooks/useCineneDataQuery';
+import { useCineneDataQuery } from 'hooks';
 
 import Average from 'components/main/Average';
 import SimilarMedia from './SimilarMedia';

@@ -5,12 +5,11 @@ import { Link } from 'react-router-dom';
 
 import { getMediaDetail, IMAGE_URL } from 'services/media';
 import { ChevronLeft, ChevronRight } from 'assets';
-import useTrendingMediaQuery from 'hooks/useTrendingMediaQuery';
 import { getMediaOverview, getMediaTitle } from 'utils/media';
-
 import { EMPTY_IMAGE } from 'utils/imageUrl';
 import { buttonEffect } from 'styles/css';
-import useCineneDataQuery from 'hooks/useCineneDataQuery';
+import { useCineneDataQuery, useTrendingMediaQuery } from 'hooks';
+
 import AverageButton from './Average';
 
 export default function Popular() {

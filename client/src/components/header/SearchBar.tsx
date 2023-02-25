@@ -9,9 +9,9 @@ import { useQuery } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import styled, { css, keyframes } from 'styled-components';
 
-import useDebounce from 'hooks/useDebounce';
 import { IMAGE_URL, searchMedia } from 'services/media';
 import { EMPTY_IMAGE, USER_IMAGE } from 'utils/imageUrl';
+import { useDebounce } from 'hooks';
 
 interface Props {
   isVisible?: boolean;
@@ -26,14 +26,16 @@ function SearchBar(
   const [text, setText] = useState('');
   const [targetIndex, setTargetIndex] = useState(-1);
   const [totalIndex, setTotalIndex] = useState(0);
-
+  const [debouncedText, setDebouncedText] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
   const divRef = useRef<HTMLDivElement>(null);
 
   const navigate = useNavigate();
 
+  const handleDebounceChange = useDebounce(() => setDebouncedText(text), 500);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setText(e.target.value);
+    handleDebounceChange();
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -80,10 +82,9 @@ function SearchBar(
     return item.poster_path ? url + item.poster_path : EMPTY_IMAGE;
   };
 
-  const debounceText = useDebounce(text, 500);
   const { data, isFetching } = useQuery(
-    ['search', debounceText],
-    () => searchMedia(debounceText),
+    ['search', debouncedText],
+    () => searchMedia(debouncedText),
     {
       staleTime: 1000 * 60 * 5,
       refetchOnWindowFocus: false,
@@ -93,7 +94,10 @@ function SearchBar(
 
   useEffect(() => {
     if (isVisible) inputRef.current?.focus();
-    return () => setText('');
+    return () => {
+      setText('');
+      setDebouncedText('');
+    };
   }, [isVisible, inputRef]);
 
   useEffect(() => {
@@ -117,7 +121,7 @@ function SearchBar(
           <div>
             <List noResults>
               <button type="button">
-                <span>{debounceText}의 검색 결과가 없습니다.</span>
+                <span>{debouncedText}의 검색 결과가 없습니다.</span>
               </button>
             </List>
           </div>

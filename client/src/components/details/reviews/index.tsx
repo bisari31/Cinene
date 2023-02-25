@@ -1,10 +1,9 @@
 import styled, { css } from 'styled-components';
-import { forwardRef, useEffect } from 'react';
+import { forwardRef } from 'react';
 import { useQuery } from 'react-query';
 
-import useOutsideClick from 'hooks/useOutsideClick';
-import { useAuthQuery } from 'hooks/useAuthQuery';
 import { getReviews } from 'services/review';
+import { useAuthQuery, useOutsideClick } from 'hooks';
 
 import ReviewHeader from './ReviewHeader';
 import ReviewModal from './ReviewModal';

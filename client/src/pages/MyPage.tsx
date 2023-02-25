@@ -1,17 +1,18 @@
 import styled from 'styled-components';
 
-import { useAuthQuery } from 'hooks/useAuthQuery';
+import { useAuthQuery } from 'hooks';
 
-import MenuWrapper from 'components/user/MenuWrapper';
-import UserProfile from 'components/user/UserProfile';
+import Tab from 'components/user/info/Tab';
+import Profile from 'components/user/info/Profile';
 
 export default function MyPage() {
   const { data } = useAuthQuery();
+
   return (
     <MypageWrapper>
-      <UserProfile user={data?.user}>
-        <MenuWrapper />
-      </UserProfile>
+      <Profile user={data?.user}>
+        <Tab />
+      </Profile>
     </MypageWrapper>
   );
 }

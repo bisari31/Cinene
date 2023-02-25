@@ -2,8 +2,8 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import styled, { css } from 'styled-components';
 
 import { ChevronLeft, ChevronRight } from 'assets';
-import throttle from 'hooks/useThrottle';
 import { buttonEffect } from 'styles/css';
+import { useThrottle } from 'hooks';
 
 interface Props {
   children: React.ReactNode;
@@ -115,7 +115,7 @@ export default function Slider({ children, title }: Props) {
     }
   }, []);
 
-  const getThrottleWidth = throttle(getWidth, 1000);
+  const getThrottleWidth = useThrottle(getWidth, 1000);
 
   useEffect(() => {
     const checkOutSideClick = (element: React.RefObject<HTMLElement>) => {
@@ -155,7 +155,7 @@ export default function Slider({ children, title }: Props) {
       >
         {children}
       </ul>
-      {maxWidth ? (
+      {!!maxWidth && (
         <ButtonWrapper color="navy50">
           <button type="button" onClick={prevSlide}>
             <ChevronLeft />
@@ -164,8 +164,6 @@ export default function Slider({ children, title }: Props) {
             <ChevronRight />
           </button>
         </ButtonWrapper>
-      ) : (
-        ''
       )}
     </SliderWrapper>
   );

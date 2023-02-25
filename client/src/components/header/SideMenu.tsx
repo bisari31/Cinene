@@ -3,8 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { ChevronLeft, Heart, Menu, Search } from 'assets';
 import { LeftButton } from 'styles/css';
-import useOutsideClick from 'hooks/useOutsideClick';
-import usePreventScrolling from 'hooks/usePreventScrolling';
+import { useOutsideClick, usePreventScrolling } from 'hooks';
 
 import LogoutButton from 'components/common/LogoutButton';
 

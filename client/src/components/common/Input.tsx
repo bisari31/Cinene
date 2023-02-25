@@ -1,39 +1,26 @@
-import { useEffect, forwardRef, memo } from 'react';
+import { forwardRef, memo } from 'react';
 import styled, { css } from 'styled-components';
 
 interface IProps {
   placeholder?: string;
   value: string | undefined;
-  type: 'text' | 'password';
-  disabled?: boolean;
+  type: 'text' | 'password' | 'email';
   label?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onBlur?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
   errorMessage?: string;
+  onFocus?: () => void;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
 function Input(
-  { disabled = false, label = '', errorMessage = '', ...rest }: IProps,
+  { label = '', errorMessage = '', ...rest }: IProps,
   ref: React.ForwardedRef<HTMLInputElement>,
 ) {
-  useEffect(() => {
-    if (typeof ref === 'object') {
-      if (ref && !disabled) {
-        const { current } = ref;
-        current?.focus();
-      }
-    }
-  }, [ref, disabled]);
-
   return (
     <InputWrapper>
       <label htmlFor="">{label}</label>
-      <StyledInput
-        isError={!!errorMessage}
-        disabled={disabled}
-        ref={ref}
-        {...rest}
-      />
+      <StyledInput isError={!!errorMessage} ref={ref} {...rest} />
       <ErrorMessage>{errorMessage}</ErrorMessage>
     </InputWrapper>
   );
@@ -60,9 +47,11 @@ const StyledInput = styled.input<{ isError: boolean }>`
     font-size: 0.8rem;
     height: 4.3em;
     padding: 2em;
+    transition: box-shadow 0.2s ease;
     width: 100%;
     &:focus {
-      border: ${isError ? `1px solid ${theme.colors.red}` : `none`};
+      box-shadow: 0 0 0 3px
+        ${isError ? `rgba(222, 58, 58, 50%)` : ` rgba(49, 132, 254,50%)`};
     }
   `}
 `;

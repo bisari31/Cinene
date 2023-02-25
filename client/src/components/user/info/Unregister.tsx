@@ -1,71 +1,70 @@
 import styled from 'styled-components';
-import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 
-import { checkPassword, deleteUser } from 'services/user';
-import useInput from 'hooks/useInput';
-import useOutsideClick from 'hooks/useOutsideClick';
 import { userIdState } from 'atom/atom';
+import { unregister, checkPassword } from 'services/user';
+import { useInput, useOutsideClick } from 'hooks';
 
 import Button from 'components/common/Button';
 import Input from 'components/common/Input';
 import Portal from 'components/common/Portal';
 import Modal from 'components/common/Modal';
+import { ERROR_MESSAGE } from '../login/Form';
 
 export default function Unregister() {
   const setUserId = useSetRecoilState(userIdState);
-  const { input: password, handleChange } = useInput();
-  const [errorMsg, setErrorMsg] = useState('');
-  const [isDisabled, setIsDisabled] = useState(false);
-  const navigate = useNavigate();
+  const {
+    value: password,
+    error,
+    setError,
+    handleChange,
+    handleBlur,
+    ref: inputRef,
+  } = useInput('password');
 
   const { ref, changeVisibility, isVisible, animationState } =
     useOutsideClick(300);
 
+  const navigate = useNavigate();
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await checkPassword({ password });
-      changeVisibility();
+      if (!password) return setError(ERROR_MESSAGE.empty);
+      if (error) return;
+      const { success, message } = await checkPassword({ password });
+      return success ? changeVisibility() : setError(message);
     } catch (err) {
-      if (axios.isAxiosError(err)) setErrorMsg(err.response?.data.message);
+      setError('유저 정보 확인 실패');
     }
   };
 
-  const handleClick = () => {
-    deleteUser().then(() => {
+  const handleUnregister = async () => {
+    try {
+      await unregister();
       setUserId('');
       localStorage.removeItem('auth');
       navigate('/');
-    });
+    } catch (err) {
+      changeVisibility();
+      setError('회원탈퇴 실패');
+    }
   };
-
-  useEffect(() => {
-    setErrorMsg('');
-  }, [password]);
-
-  useEffect(() => {
-    setIsDisabled(!!errorMsg.length || !password.length);
-  }, [errorMsg, password]);
 
   return (
     <UnregisterWrapper>
-      <form action="" onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit}>
         <Input
-          errorMessage={errorMsg}
+          ref={inputRef}
+          errorMessage={error}
+          onBlur={handleBlur}
           type="password"
-          placeholder="비밀번호를 입력해 주세요."
+          placeholder="비밀번호"
           value={password}
           onChange={handleChange}
         />
-        <Button
-          isDisabled={isDisabled}
-          type="submit"
-          color="pink"
-          size="fullWidth"
-        >
+        <Button type="submit" color="pink" size="fullWidth">
           회원 탈퇴
         </Button>
       </form>
@@ -76,7 +75,7 @@ export default function Unregister() {
             isVisible={animationState}
             buttonText={['아니요', '네']}
             closeFn={changeVisibility}
-            executeFn={handleClick}
+            executeFn={handleUnregister}
             color="pink"
           >
             정말 탈퇴하시겠습니까? 😭
@@ -92,6 +91,7 @@ const UnregisterWrapper = styled.div`
   display: flex;
   flex: 1;
   flex-direction: column;
+  margin-top: 5em;
   form {
     width: 100%;
   }

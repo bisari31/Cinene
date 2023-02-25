@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { useAuthQuery } from 'hooks/useAuthQuery';
+import { useAuthQuery } from 'hooks';
 
 import Button from 'components/common/Button';
 import Favorites from 'components/favorites';

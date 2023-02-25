@@ -6,8 +6,7 @@ import { USER_IMAGE } from 'utils/imageUrl';
 import { Button, buttonEffect } from 'styles/css';
 import { changeDaysAgo } from 'utils/days';
 import { Heart } from 'assets';
-import useOutsideClick from 'hooks/useOutsideClick';
-import useLike from 'hooks/useLike';
+import { useLike, useOutsideClick } from 'hooks';
 
 import LoginPortal from 'components/common/LoginPortal';
 import ReplyComments from './ReplyComments';

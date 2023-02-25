@@ -1,11 +1,11 @@
-import { memo, useRef, useEffect } from 'react';
+import { memo, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import { useQuery } from 'react-query';
 import dayjs from 'dayjs';
 
 import { getMediaOverview, getMediaTitle } from 'utils/media';
 import { getSimilarMedia } from 'services/media';
-import useCineneDataQuery from 'hooks/useCineneDataQuery';
+import { useCineneDataQuery } from 'hooks';
 
 import Average from 'components/main/Average';
 import SimilarMedia from './SimilarMedia';
