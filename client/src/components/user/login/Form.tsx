@@ -10,6 +10,7 @@ import { useInput } from 'hooks';
 
 import { PathName } from 'pages/LoginPage';
 import Input from 'components/common/Input';
+import { $CombinedState } from '@reduxjs/toolkit';
 
 export const ERROR_MESSAGE = {
   email: '가입된 이메일이 이미 있습니다.',
@@ -97,23 +98,27 @@ export default function Form({
   });
 
   const checkEmptyValue = () => {
-    if (!email) setEmailError(ERROR_MESSAGE.empty);
-    if (!password) setPasswordError(ERROR_MESSAGE.empty);
-    if (!isLogin) {
-      if (!nickname) setNicknameError(ERROR_MESSAGE.empty);
-      if (!confirmPassword) setConfirmPasswordError(ERROR_MESSAGE.empty);
-    }
-    return isLogin
-      ? !email || !password
-      : !email || !password || !nickname || !confirmPassword;
+    const values = [email, password, nickname, confirmPassword];
+    const setErrors = [
+      setEmailError,
+      setPasswordError,
+      setNicknameError,
+      setConfirmPasswordError,
+    ];
+    const result = values.filter((value, index) => {
+      if (index >= (isLogin ? 2 : 4)) return;
+      if (!value) setErrors[index](ERROR_MESSAGE.empty);
+      return !value.length;
+    });
+    return !!result.length;
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const isEmpty = checkEmptyValue();
+    const hasEmptyValue = checkEmptyValue();
     const isError =
       emailError || passwordError || nicknameError || confirmPasswordError;
-    if (isEmpty || isError) return;
+    if (hasEmptyValue || isError) return;
     if (!isLogin && password !== confirmPassword) {
       return setConfirmPasswordError('비밀번호가 일치하지 않습니다.');
     }
