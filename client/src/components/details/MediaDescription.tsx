@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import { useQuery } from 'react-query';
 import dayjs from 'dayjs';
 
-import { getMediaOverview, getMediaTitle } from 'utils/media';
+import { getMediaOverview, getMediaTitle } from 'utils/api';
 import { getSimilarMedia } from 'services/media';
 import { useCineneDataQuery } from 'hooks';
 

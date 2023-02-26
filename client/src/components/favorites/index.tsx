@@ -20,7 +20,6 @@ export default function Favorites({ data }: IProps) {
     enabled: data?.success,
     refetchOnWindowFocus: false,
   });
-
   useEffect(() => {
     setNewFavoritesData(
       favoritesData?.contents?.filter((item) =>

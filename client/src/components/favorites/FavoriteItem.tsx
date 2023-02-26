@@ -5,7 +5,8 @@ import { useMutation, useQueryClient } from 'react-query';
 import { Heart } from 'assets';
 import { buttonEffect } from 'styles/css';
 import { upLike } from 'services/like';
-import { checkEmptyImageUrl } from 'utils/imageUrl';
+import { IMAGE_URL } from 'services/media';
+import { EMPTY_IMAGE, USER_IMAGE } from 'utils/imageUrl';
 
 interface IProps {
   item: IFavoritesContent;
@@ -37,6 +38,15 @@ export default function FavoriteItem({ item }: IProps) {
     onSettled: () => queryClient.invalidateQueries(['favorites']),
   });
 
+  const getImageUrl = (content?: IFavoritesContents) => {
+    if (!content) return;
+    const { type, poster } = content;
+    if (poster) {
+      return `${IMAGE_URL}/w400/${poster}`;
+    }
+    return type === 'person' ? USER_IMAGE : EMPTY_IMAGE;
+  };
+
   const handleClickButton = (id: string) => {
     mutate({ type: 'contentId', id });
   };
@@ -44,10 +54,7 @@ export default function FavoriteItem({ item }: IProps) {
   return (
     <FavoriteItemWrapper key={item._id}>
       <Link to={`/${item.contentId.type}/${item.contentId.tmdbId}`}>
-        <img
-          src={checkEmptyImageUrl(item.contentId)}
-          alt={item.contentId.name}
-        />
+        <img src={getImageUrl(item.contentId)} alt={item.contentId.name} />
         <span>{item.contentId.name}</span>
       </Link>
       <Button

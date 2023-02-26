@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 import { getMediaDetail, IMAGE_URL } from 'services/media';
 import { ChevronLeft, ChevronRight } from 'assets';
-import { getMediaOverview, getMediaTitle } from 'utils/media';
+import { getMediaOverview, getMediaTitle } from 'utils/api';
 import { EMPTY_IMAGE } from 'utils/imageUrl';
 import { buttonEffect } from 'styles/css';
 import { useCineneDataQuery, useTrendingMediaQuery } from 'hooks';
