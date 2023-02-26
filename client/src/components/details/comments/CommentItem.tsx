@@ -4,9 +4,8 @@ import styled, { css } from 'styled-components';
 import { IComment } from 'types/comment';
 import { USER_IMAGE } from 'utils/imageUrl';
 import { Button, buttonEffect } from 'styles/css';
-import { changeDaysAgo } from 'utils/days';
 import { Heart } from 'assets';
-import { useLike, useOutsideClick } from 'hooks';
+import { useGetRelativeTime, useLike, useOutsideClick } from 'hooks';
 
 import LoginPortal from 'components/common/LoginPortal';
 import ReplyComments from './ReplyComments';
@@ -24,6 +23,7 @@ export default function CommentItem({
 }: IProps) {
   const [ReplyData, setReplyData] = useState<IComment[]>();
   const [openReplyComment, setOpenReplyComment] = useState(false);
+  const date = useGetRelativeTime(commentItem?.createdAt);
 
   const { ref, animationState, changeVisibility, isVisible } =
     useOutsideClick(300);
@@ -43,11 +43,7 @@ export default function CommentItem({
 
   return (
     <>
-      <Item
-        key={commentItem?._id}
-        date={changeDaysAgo(commentItem?.createdAt)}
-        isResponse={isResponse}
-      >
+      <Item key={commentItem?._id} date={date} isResponse={isResponse}>
         <img src={USER_IMAGE} alt="user_poster" />
         <div>
           <p>{commentItem?.userId.nickname}</p>

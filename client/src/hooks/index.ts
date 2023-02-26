@@ -11,6 +11,7 @@ import usePrevious from './usePrevious';
 import useTrendingMediaQuery from './useTrendingMediaQuery';
 import useDebounce from './useDebounce';
 import useThrottle from './useThrottle';
+import useGetRelativeTime from './useGetRelativeTime';
 
 export {
   useThrottle,
@@ -26,4 +27,5 @@ export {
   usePreventScrolling,
   useOutsideClick,
   usePrevious,
+  useGetRelativeTime,
 };
