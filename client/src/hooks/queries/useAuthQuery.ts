@@ -3,7 +3,7 @@ import { useRecoilValue } from 'recoil';
 
 import { auth } from 'services/user';
 import { userIdState } from 'atom/atom';
-import usePrevious from './usePrevious';
+import usePrevious from '../usePrevious';
 
 export default function useAuthQuery() {
   const userId = useRecoilValue(userIdState);
