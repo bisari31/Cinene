@@ -2,7 +2,6 @@ import useAuthQuery from './queries/useAuthQuery';
 import useCineneDataQuery from './queries/useCineneDataQuery';
 import useCurrentPathName from './useCurrentPathName';
 import useEscapeClose from './useEscapeClose';
-import useForwardRef from './useForwardRef';
 import useInput from './useInput';
 import useLike from './queries/useLikeQuery';
 import useOutsideClick from './useOutsideClick';
@@ -20,7 +19,6 @@ export {
   useCineneDataQuery,
   useCurrentPathName,
   useEscapeClose,
-  useForwardRef,
   useInput,
   useTrendingMediaQuery,
   useLike,
