@@ -70,13 +70,10 @@ export default function FavoriteItem({ item }: IProps) {
 
 const FavoriteItemWrapper = styled.li`
   display: flex;
-  height: 100%;
   position: relative;
-  width: 100%;
   a {
     height: 100%;
     width: 100%;
-
     img {
       border-radius: 10px;
       object-fit: cover;
@@ -112,17 +109,19 @@ const Button = styled.button`
   border: none;
   border-radius: 10px;
   display: flex;
-  height: 30px;
+  height: 13%;
   justify-content: center;
-  left: 1em;
+  left: 14px;
+  max-height: 40px;
+  max-width: 40px;
   position: absolute;
-  top: 1em;
-  width: 30px;
+  top: 14px;
+  width: 20%;
   svg {
     fill: ${({ theme }) => theme.colors.pink};
-    height: 25px;
+    height: 90%;
     stroke: none;
-    width: 25px;
+    width: 90%;
   }
   ${buttonEffect};
 `;

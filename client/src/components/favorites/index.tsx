@@ -13,6 +13,7 @@ interface IProps {
 
 export default function Favorites({ data }: IProps) {
   const [selectedType, setSelectedType] = useState(1);
+
   const [newFavoritesData, setNewFavoritesData] =
     useState<IFavoritesContent[]>();
 
@@ -20,6 +21,7 @@ export default function Favorites({ data }: IProps) {
     enabled: data?.success,
     refetchOnWindowFocus: false,
   });
+
   useEffect(() => {
     setNewFavoritesData(
       favoritesData?.contents?.filter((item) =>
@@ -51,7 +53,6 @@ const FavoritesWrapper = styled.div`
     margin-bottom: 4em;
     margin-top: 2em;
   }
-
   @media ${({ theme }) => theme.device.laptop} {
     ul {
       grid-template-columns: repeat(4, 1fr);
