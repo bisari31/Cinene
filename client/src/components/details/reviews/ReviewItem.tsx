@@ -1,5 +1,3 @@
-import { useEffect } from 'react';
-
 import { Star } from 'assets';
 import styled from 'styled-components';
 
@@ -7,11 +5,7 @@ import { USER_IMAGE } from 'utils/imageUrl';
 import { changeDaysAgo } from 'utils/days';
 import { Item } from '../comments/CommentItem';
 
-interface IProps {
-  review: IDocument;
-}
-
-export default function ReviewItem({ review }: IProps) {
+export default function ReviewItem({ review }: { review: IReview }) {
   return (
     <Item date={changeDaysAgo(review.createdAt)}>
       <img src={USER_IMAGE} alt="user_avatar" />

@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import { useQuery } from 'react-query';
 
@@ -51,10 +50,6 @@ export default function DetailPage() {
     }
     return EMPTY_IMAGE;
   };
-
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
 
   return (
     <DetailPageWrapper src={getBackdrop()}>

@@ -9,7 +9,6 @@ export const getReviews = async (
   userId?: string,
 ) => {
   if (!contentId || !contentType) return;
-  console.log(userId);
   const { data } = await axios.get<IReviewData>(
     `/reviews/${contentType}/${contentId}`,
     {
@@ -21,18 +20,13 @@ export const getReviews = async (
 };
 
 const createReview = async (obj: IAddReview) => {
-  try {
-    const { data } = await axios.post('/reviews', obj);
-    return data;
-  } catch (err) {
-    console.log(err);
-  }
+  const { data } = await axios.post<IReviewData>('/reviews', obj);
+  return data;
 };
 const modifyReview = async (obj: IAddReview) => {
-  try {
-    const { data } = await axios.patch(`/reviews/${obj.isEditing?._id}`, obj);
-    return data;
-  } catch (err) {
-    console.log(err);
-  }
+  const { data } = await axios.patch<IReviewData>(
+    `/reviews/${obj.isEditing?._id}`,
+    obj,
+  );
+  return data;
 };

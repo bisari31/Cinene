@@ -3,17 +3,18 @@ interface IAddReview {
   rating: number;
   contentType: string | undefined;
   contentId: string | undefined;
-  isEditing: IDocument | null;
+  isEditing: IReview | null;
 }
 
 interface IReviewData {
   success: boolean;
   message?: string;
-  documents: IDocument[];
-  hasReview: IDocument | null;
+  reviews?: IReview[];
+  review?: IReview;
+  hasReview?: IDocument | null;
 }
 
-interface IDocument {
+interface IReview {
   contentId: string;
   contentType: string;
   createdAt: string;

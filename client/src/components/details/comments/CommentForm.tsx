@@ -46,8 +46,6 @@ export default function CommentForm({ responseId }: IProps) {
     setText(e.target.value);
   };
 
-  console.log(data);
-
   return (
     <CommentFormWrapper onSubmit={handleSubmit} color="navy50">
       <textarea

@@ -22,7 +22,7 @@ interface IProps extends IReviewProps {
   isVisible: boolean;
   animationState: boolean;
   changeVisibility: () => void;
-  hasReview: IDocument | null | undefined;
+  hasReview: IReview | null | undefined;
 }
 
 function ReviewModal(
@@ -33,7 +33,6 @@ function ReviewModal(
   const [comment, setComment] = useState('');
   const [isCommentError, setIsCommentError] = useState(false);
   const [isRatingError, setIsRatingError] = useState(false);
-
   const previousRating = usePrevious(rating);
   const previousComment = usePrevious(comment);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -72,8 +71,9 @@ function ReviewModal(
   useEffect(() => {
     if (isVisible) {
       inputRef.current?.focus();
-      setComment('');
+      // setComment('');
     }
+    // return () => setIsCommentError(false);
   }, [inputRef, isVisible]);
 
   useEffect(() => {
@@ -89,11 +89,11 @@ function ReviewModal(
     }
   }, [isRatingError, rating]);
 
-  useEffect(() => {
-    if (isCommentError && comment !== previousComment) {
-      setIsCommentError(false);
-    }
-  }, [isCommentError, comment, previousComment]);
+  // useEffect(() => {
+  //   if (isCommentError && comment !== previousComment) {
+  //     setIsCommentError(false);
+  //   }
+  // }, [isCommentError, comment, previousComment]);
 
   if (!data) return null;
 
@@ -114,12 +114,12 @@ function ReviewModal(
         >
           <div>
             <div>
-              {[1, 2, 3, 4, 5].map((number) => (
+              {[1, 2, 3, 4, 5].map((value) => (
                 <Button
-                  isIncrease={previousRating < rating}
-                  isFilling={rating >= number}
-                  onClick={() => setRating(number)}
-                  key={number}
+                  isIncreased={rating > previousRating}
+                  yellow={rating >= value}
+                  onClick={() => setRating(value)}
+                  key={value}
                   type="button"
                 >
                   <Star />
@@ -193,13 +193,13 @@ const ModalContent = styled.div<{
   }
 `;
 
-const Button = styled.button<{ isFilling: boolean; isIncrease: boolean }>`
+const Button = styled.button<{ yellow: boolean; isIncreased: boolean }>`
   background: none;
   border: none;
   svg {
-    animation: ${({ isIncrease }) => isIncrease && 'pop 0.5s ease'};
-    fill: ${({ theme, isFilling }) =>
-      isFilling ? theme.colors.yellow : theme.colors.navy50};
+    animation: ${({ isIncreased }) => isIncreased && 'pop 0.5s ease'};
+    fill: ${({ theme, yellow }) =>
+      yellow ? theme.colors.yellow : theme.colors.navy50};
     stroke: none;
     width: 30px;
   }
