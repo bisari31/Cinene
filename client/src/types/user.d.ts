@@ -8,6 +8,7 @@ interface IUser {
   updatedAt: string;
   __v: number;
   _id: string;
+  active: boolean;
 }
 
 interface ILoginError {

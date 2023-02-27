@@ -56,6 +56,7 @@ export default function Form({
     handleChange: handleEmailChange,
     ref: emailRef,
     setError: setEmailError,
+    setValue: setEmail,
   } = useInput('email');
 
   const [serverErrorMessage, setServerErrorMessage] = useState('');
@@ -69,6 +70,12 @@ export default function Form({
   const { mutate: loginMutate } = useMutation(login, {
     onSuccess: (data) => {
       if (!data.success) {
+        if (data.code === 1) {
+          setPassword('');
+          setEmail('');
+          emailRef.current?.focus();
+          return setServerErrorMessage(data.message);
+        }
         setServerErrorMessage(data.message);
         setPasswordError(' ');
         return setPassword('');

@@ -10,6 +10,7 @@ export interface IUser {
   img: string;
   token?: string;
   createdAt: Date;
+  active: boolean;
 }
 
 interface IUserDocument extends IUser, Document {
@@ -51,6 +52,10 @@ const userSchema = new Schema<IUser>(
     token: {
       type: String,
       default: '',
+    },
+    active: {
+      type: Boolean,
+      default: true,
     },
   },
   {
