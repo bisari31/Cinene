@@ -33,7 +33,6 @@ function Reviews(
   );
 
   const handleClick = () => {
-    console.log(authData?.success);
     if (authData?.success) changeVisibility();
   };
 

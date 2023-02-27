@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 
-export default function useThrottle<T extends []>(
+export default function useThrottle<T extends unknown[]>(
   cb: (...args: T) => void,
   delay: number,
 ) {

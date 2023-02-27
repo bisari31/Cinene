@@ -33,10 +33,16 @@ function SearchBar(
 
   const navigate = useNavigate();
 
-  const handleDebounceChange = useDebounce(() => setDebouncedText(text), 500);
+  const handleDebounceChange = useDebounce<
+    [React.ChangeEvent<HTMLInputElement>]
+  >(
+    (e: React.ChangeEvent<HTMLInputElement>) =>
+      setDebouncedText(e.target.value),
+    500,
+  );
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setText(e.target.value);
-    handleDebounceChange();
+    handleDebounceChange(e);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -88,7 +94,6 @@ function SearchBar(
     () => searchMedia(debouncedText),
     {
       staleTime: 1000 * 60 * 5,
-      retry: false,
     },
   );
 
