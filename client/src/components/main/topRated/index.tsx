@@ -11,6 +11,14 @@ import TopRatedItem from './TopRatedItem';
 interface Props {
   type: 'cinene' | 'tmdb';
 }
+const TITLE = {
+  cinene: {
+    title: '씨네네 최고 평점',
+  },
+  tmdb: {
+    title: 'TMDB 최고 평점',
+  },
+};
 
 export default function TopRated({ type }: Props) {
   const { data } = useQuery(tmdbKeys.topRated(), getTopRatedMovie, {
@@ -21,18 +29,9 @@ export default function TopRated({ type }: Props) {
     enabled: type === 'cinene',
   });
 
-  const siteType = {
-    cinene: {
-      title: '씨네네 최고 평점',
-    },
-    tmdb: {
-      title: 'TMDB 최고 평점',
-    },
-  };
-
   return (
     <TopRatedWrapper>
-      <Slider title={siteType[type].title}>
+      <Slider title={TITLE[type].title}>
         <ul>
           {type === 'cinene'
             ? cinene?.contents.map((item) => (
