@@ -30,8 +30,8 @@ function ReviewModal(
   { isVisible, animationState, changeVisibility, data, hasReview }: IProps,
   ref: ForwardedRef<HTMLDivElement>,
 ) {
-  const [rating, setRating] = useState(0);
-  const [comment, setComment] = useState('');
+  const [rating, setRating] = useState(hasReview?.rating || 0);
+  const [comment, setComment] = useState(hasReview?.comment || '');
   const [isCommentError, setIsCommentError] = useState(false);
   const [isRatingError, setIsRatingError] = useState(false);
   const previousRating = usePrevious(rating);
@@ -56,6 +56,8 @@ function ReviewModal(
   const handleAddReview = () => {
     if (!comment || comment.length > 50) return setIsCommentError(true);
     if (!rating) return setIsRatingError(true);
+    if (comment === previousComment && rating === previousRating)
+      return changeVisibility();
     mutate({
       comment,
       rating,
@@ -94,8 +96,6 @@ function ReviewModal(
       setIsCommentError(false);
     }
   }, [isCommentError, comment, previousComment]);
-
-  if (!data) return null;
 
   return (
     <Portal>

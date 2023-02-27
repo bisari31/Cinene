@@ -37,7 +37,7 @@ export const cineneKeys = {
     'reviews',
   ],
   detail: (path?: MediaTypes, id?: number) => [...cineneKeys.default, path, id],
-  newdetail: (path?: MediaTypes, id?: number) => [
+  newDetail: (path?: MediaTypes, id?: number) => [
     ...cineneKeys.default,
     'new',
     path,

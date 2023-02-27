@@ -20,7 +20,7 @@ export default function useCineneDataQuery(
     },
   );
   const { data: newData } = useQuery(
-    cineneKeys.newdetail(type, id),
+    cineneKeys.newDetail(type, id),
     () =>
       addContent(type, {
         name: personName || name,
@@ -28,7 +28,8 @@ export default function useCineneDataQuery(
         tmdbId: body?.id,
       }),
     {
-      enabled: !data && !!body,
+      enabled: !!data?.message && !!body,
+      retry: false,
     },
   );
 
