@@ -8,6 +8,7 @@ import { usePrevious } from 'hooks';
 
 import Modal from 'components/common/Modal';
 import Portal from 'components/common/Portal';
+import { cineneKeys } from 'utils/keys';
 import { IReviewProps } from './index';
 
 const RATING_MESSAGE = [
@@ -41,8 +42,9 @@ function ReviewModal(
 
   const { mutate } = useMutation(addRating, {
     onSuccess: () => {
-      queryClient.invalidateQueries(['cinene', data?.type, data?.tmdbId]);
-      queryClient.invalidateQueries(['reviews', data?.type, data?._id]);
+      queryClient.invalidateQueries(
+        cineneKeys.detail(data?.type, data?.tmdbId),
+      );
       changeVisibility();
     },
   });

@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import styled, { css } from 'styled-components';
 
 import { Star } from 'assets';
@@ -8,18 +9,19 @@ interface IProps {
   isMedia?: boolean;
 }
 
-export default function Average({ tmdb, cinene, isMedia = true }: IProps) {
+function Average({ tmdb, cinene, isMedia = true }: IProps) {
   const sliceAverage = (num: number | undefined) => {
     if (num) return num.toFixed(1);
     return 0;
   };
 
+  console.log(cinene);
   return (
     <AverageWrapper>
       <div>
         <Star />
         <span>
-          <b>{cinene?.average?.toFixed(1) ?? 0} </b> / {cinene?.votes ?? 0}
+          <b>{cinene?.average.toFixed(1) ?? 0} </b> / {cinene?.votes ?? 0}
         </span>
       </div>
       {isMedia && (
@@ -30,6 +32,8 @@ export default function Average({ tmdb, cinene, isMedia = true }: IProps) {
     </AverageWrapper>
   );
 }
+
+export default memo(Average);
 
 const AverageWrapper = styled.div`
   ${({ theme }) => css`

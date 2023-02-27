@@ -6,7 +6,7 @@ import { EMPTY_IMAGE } from 'utils/imageUrl';
 import Slider from 'components/common/Slider';
 
 interface IProps {
-  seasons: ITvDetails['seasons'] | false;
+  seasons?: ITvDetails['seasons'] | false;
 }
 
 export default function Seasons({ seasons }: IProps) {

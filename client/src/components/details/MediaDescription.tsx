@@ -6,6 +6,7 @@ import dayjs from 'dayjs';
 import { getMediaOverview, getMediaTitle } from 'utils/api';
 import { getSimilarMedia } from 'services/tmdb';
 import { useCineneDataQuery } from 'hooks';
+import { tmdbKeys } from 'utils/keys';
 
 import Average from 'components/main/Average';
 import SimilarMedia from './SimilarMedia';
@@ -16,20 +17,20 @@ import Like from './LikeButton';
 import Reviews from './reviews/index';
 
 interface Props {
-  data: IMovieDetails | ITvDetails;
+  data?: IMovieDetails | ITvDetails;
   path: MediaTypes;
   id: number;
 }
 
 function Description({ path, data, id }: Props) {
-  const isMovieDetails = 'runtime' in data;
+  const isMovieDetails = data && 'runtime' in data;
 
   const title = getMediaTitle(data);
   const overview = getMediaOverview(data);
   const reviewRef = useRef<HTMLHeadingElement>(null);
 
   const { data: similarData } = useQuery(
-    [path, 'similar', id],
+    tmdbKeys.similar(path, id),
     () => getSimilarMedia(id, path),
     { staleTime: 1000 * 60 * 60 * 6 },
   );
@@ -37,8 +38,8 @@ function Description({ path, data, id }: Props) {
 
   const getReleaseDate = () => {
     if (isMovieDetails) return `개봉: ${data.release_date}`;
-    const last = data.last_air_date;
-    const first = data.first_air_date;
+    const last = data?.last_air_date;
+    const first = data?.first_air_date;
     const today = dayjs();
     const diff = today.diff(last, 'd');
 
@@ -58,7 +59,9 @@ function Description({ path, data, id }: Props) {
       <Genre>
         <p>{getReleaseDate()}</p>
         <p>
-          {isMovieDetails ? `${data.runtime}분` : `시즌 ${data.seasons.length}`}
+          {isMovieDetails
+            ? `${data.runtime}분`
+            : `시즌 ${data?.seasons.length}`}
         </p>
         {data?.genres.map((genre) => (
           <p className="genre_button" key={genre.id}>
@@ -68,7 +71,7 @@ function Description({ path, data, id }: Props) {
       </Genre>
 
       <p>{overview}</p>
-      <Seasons seasons={'seasons' in data && data.seasons} />
+      <Seasons seasons={data && 'seasons' in data && data.seasons} />
       <SimilarMedia
         data={similarData}
         title={`추천 ${path === 'movie' ? '영화' : 'TV'}`}

@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { getFavorites } from 'services/like';
 
+import { cineneKeys } from 'utils/keys';
 import Toggle from './Toggle';
 import FavoriteItem from './FavoriteItem';
 
@@ -17,9 +18,13 @@ export default function Favorites({ data }: IProps) {
   const [newFavoritesData, setNewFavoritesData] =
     useState<IFavoritesContent[]>();
 
-  const { data: favoritesData } = useQuery(['favorites'], getFavorites, {
-    enabled: data?.success,
-  });
+  const { data: favoritesData } = useQuery(
+    cineneKeys.favorites(),
+    getFavorites,
+    {
+      enabled: data?.success,
+    },
+  );
 
   useEffect(() => {
     setNewFavoritesData(

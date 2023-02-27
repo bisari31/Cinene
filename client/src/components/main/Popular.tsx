@@ -10,6 +10,7 @@ import { EMPTY_IMAGE } from 'utils/imageUrl';
 import { buttonEffect } from 'styles/css';
 import { useCineneDataQuery, useTrendingMediaQuery } from 'hooks';
 
+import { tmdbKeys } from 'utils/keys';
 import AverageButton from './Average';
 
 export default function Popular() {
@@ -19,7 +20,7 @@ export default function Popular() {
   const { data } = useTrendingMediaQuery();
 
   const { data: detailData } = useQuery(
-    ['media', 'details', currentMedia?.id],
+    tmdbKeys.detail(currentMedia?.media_type, currentMedia?.id),
     () => getMediaDetail(currentMedia?.id, currentMedia?.media_type),
     {
       staleTime: 1000 * 60 * 60 * 6,

@@ -6,7 +6,8 @@ import { useRecoilValue } from 'recoil';
 import { createComment } from 'services/comments';
 import { contentIdState } from 'atom/atom';
 import { buttonEffect } from 'styles/css';
-import { useAuthQuery, useOutsideClick } from 'hooks';
+import { useAuthQuery, useCurrentPathName, useOutsideClick } from 'hooks';
+import { cineneKeys } from 'utils/keys';
 
 import LoginPortal from 'components/common/LoginPortal';
 
@@ -26,7 +27,7 @@ export default function CommentForm({ responseId }: IProps) {
 
   const { mutate } = useMutation(createComment, {
     onSuccess: () => {
-      queryClient.invalidateQueries(['comments']);
+      queryClient.invalidateQueries(cineneKeys.comments(contentId));
       setText('');
     },
   });

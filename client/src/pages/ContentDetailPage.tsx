@@ -10,19 +10,24 @@ import Description from 'components/details/MediaDescription';
 import Portal from 'components/common/Portal';
 import ModalImage from 'components/details/ModalImage';
 import PersonDescription from 'components/details/PersonDescription';
+import { tmdbKeys } from 'utils/keys';
 
 export default function DetailPage() {
   const { ref, isVisible, changeVisibility } = useOutsideClick();
 
   const { id, path } = useCurrentPathName();
 
-  const { data } = useQuery([path, id], () => getMediaDetail(id, path), {
-    enabled: path !== 'person',
-    staleTime: 1000 * 60 * 60,
-  });
+  const { data } = useQuery(
+    tmdbKeys.detail(path, id),
+    () => getMediaDetail(id, path),
+    {
+      enabled: path !== 'person',
+      staleTime: 1000 * 60 * 60,
+    },
+  );
 
   const { data: personData } = useQuery(
-    [path, id],
+    tmdbKeys.detail(path, id),
     () => getPersonDetail(id, path),
     {
       enabled: path === 'person',
@@ -48,8 +53,6 @@ export default function DetailPage() {
     }
     return EMPTY_IMAGE;
   };
-
-  if (!data || !personData) return null;
 
   return (
     <DetailPageWrapper src={getBackdrop()}>

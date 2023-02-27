@@ -6,6 +6,7 @@ import { getComments } from 'services/comments';
 import { useSetRecoilState } from 'recoil';
 import { contentIdState } from 'atom/atom';
 
+import { cineneKeys } from 'utils/keys';
 import CommentForm from './CommentForm';
 import CommentItem from './CommentItem';
 
@@ -15,17 +16,13 @@ interface IProps {
 
 export default function Comments({ contentId }: IProps) {
   const setContentId = useSetRecoilState(contentIdState);
-  const { data } = useQuery(['comments', contentId], () =>
+  const { data } = useQuery(cineneKeys.comments(contentId), () =>
     getComments(contentId),
   );
 
   useEffect(() => {
     if (contentId) setContentId(contentId);
   }, [contentId, setContentId]);
-
-  useEffect(() => {
-    console.log(`data: ${data}`);
-  }, [data]);
 
   return (
     <Wrapper length={data?.comments.length}>

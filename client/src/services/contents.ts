@@ -8,6 +8,7 @@ interface IResponse {
 
 export const getContent = async (type?: string, id?: number) => {
   if (!type) return;
+
   const { data } = await axios.get<IResponse>(`/contents/${type}/${id}`);
   return data;
 };

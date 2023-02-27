@@ -1,5 +1,6 @@
 import { useQuery } from 'react-query';
 import { addContent, getContent } from 'services/contents';
+import { cineneKeys } from 'utils/keys';
 
 export default function useCineneDataQuery(
   body?: IMovieDetails | ITvDetails | IPerson,
@@ -10,13 +11,16 @@ export default function useCineneDataQuery(
   const name = body && 'name' in body ? body.name : body?.title;
   const poster =
     body && 'poster_path' in body ? body.poster_path : body?.profile_path;
-
-  const { data } = useQuery(['cinene', type, id], () => getContent(type, id), {
-    staleTime: 1000 * 60 * 5,
-    retry: false,
-  });
+  const { data } = useQuery(
+    cineneKeys.detail(type, id),
+    () => getContent(type, id),
+    {
+      staleTime: 1000 * 60 * 5,
+      retry: false,
+    },
+  );
   const { data: newData } = useQuery(
-    ['cinene', type, id],
+    cineneKeys.newdetail(type, id),
     () =>
       addContent(type, {
         name: personName || name,
@@ -24,7 +28,7 @@ export default function useCineneDataQuery(
         tmdbId: body?.id,
       }),
     {
-      enabled: !!data?.message && !!body,
+      enabled: !data && !!body,
     },
   );
 

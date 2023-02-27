@@ -7,11 +7,12 @@ import { useAuthQuery, useOutsideClick } from 'hooks';
 import { buttonEffect } from 'styles/css';
 
 import Button from 'components/common/Button';
+import { cineneKeys } from 'utils/keys';
 import ReviewModal from './ReviewModal';
 import ReviewList from './ReviewList';
 
 export interface IReviewProps {
-  data: ICineneData | undefined;
+  data?: ICineneData;
 }
 
 function Reviews(
@@ -27,16 +28,17 @@ function Reviews(
 
   const { data: authData } = useAuthQuery();
   const { data: reivewData } = useQuery(
-    ['reviews', data?.type, data?._id],
+    cineneKeys.reviews(data?.type, data?.tmdbId),
     () => getReviews(data?._id, data?.type, authData?.user?._id),
   );
 
   const handleClick = () => {
+    console.log(authData?.success);
     if (authData?.success) changeVisibility();
   };
 
   return (
-    <ReviewsWrapper length={data?.votes}>
+    <ReviewsWrapper length={reivewData?.reviews?.length}>
       <div>
         <h3 ref={ref}>리뷰</h3>
         <StyledButton

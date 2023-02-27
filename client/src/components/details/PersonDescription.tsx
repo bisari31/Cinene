@@ -6,13 +6,14 @@ import { getCombinedCredits } from 'services/tmdb';
 import { useCineneDataQuery } from 'hooks';
 
 import Average from 'components/main/Average';
+import { tmdbKeys } from 'utils/keys';
 import SimilarMedia from './SimilarMedia';
 import Comment from './comments';
 import Like from './LikeButton';
 import Reviews from './reviews';
 
 interface IProps {
-  data: IPerson;
+  data?: IPerson;
   path: MediaTypes;
   id: number;
 }
@@ -30,7 +31,7 @@ export default function PersonDescription({ data, path, id }: IProps) {
   };
 
   const { data: creditData } = useQuery(
-    [path, 'similar', id],
+    tmdbKeys.similar(path, id),
     () => getCombinedCredits(id),
     { staleTime: 1000 * 60 * 60 * 6 },
   );

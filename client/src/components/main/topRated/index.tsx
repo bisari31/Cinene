@@ -3,6 +3,7 @@ import { useQuery } from 'react-query';
 
 import { getTopRatedMovie } from 'services/tmdb';
 import { getTopRated } from 'services/contents';
+import { cineneKeys, tmdbKeys } from 'utils/keys';
 
 import Slider from 'components/common/Slider';
 import TopRatedItem from './TopRatedItem';
@@ -12,11 +13,11 @@ interface Props {
 }
 
 export default function TopRated({ type }: Props) {
-  const { data } = useQuery(['movie', 'topRated'], getTopRatedMovie, {
+  const { data } = useQuery(tmdbKeys.topRated(), getTopRatedMovie, {
     staleTime: 1000 * 60 * 60 * 6,
     enabled: type === 'tmdb',
   });
-  const { data: cinene } = useQuery(['cinene', 'topRated'], getTopRated, {
+  const { data: cinene } = useQuery(cineneKeys.topRated(), getTopRated, {
     enabled: type === 'cinene',
   });
 

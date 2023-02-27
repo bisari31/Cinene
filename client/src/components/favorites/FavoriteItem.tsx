@@ -7,6 +7,7 @@ import { buttonEffect } from 'styles/css';
 import { upLike } from 'services/like';
 import { IMAGE_URL } from 'services/tmdb';
 import { EMPTY_IMAGE, USER_IMAGE } from 'utils/imageUrl';
+import { cineneKeys } from 'utils/keys';
 
 interface IProps {
   item: IFavoritesContent;
@@ -17,12 +18,12 @@ export default function FavoriteItem({ item }: IProps) {
 
   const { mutate } = useMutation(upLike, {
     onMutate: async (data) => {
-      await queryClient.cancelQueries(['favorites']);
-      const previousData = queryClient.getQueryData<IFavoritesData>([
-        'favorites',
-      ]);
+      await queryClient.cancelQueries(cineneKeys.favorites());
+      const previousData = queryClient.getQueryData<IFavoritesData>(
+        cineneKeys.favorites(),
+      );
       if (previousData) {
-        queryClient.setQueryData<IFavoritesData>(['favorites'], {
+        queryClient.setQueryData<IFavoritesData>(cineneKeys.favorites(), {
           ...previousData,
           contents: previousData.contents.filter(
             (content) => content.contentId._id !== data.id,
@@ -33,9 +34,9 @@ export default function FavoriteItem({ item }: IProps) {
     },
     onError: (error, variables, context) => {
       if (context?.previousData)
-        queryClient.setQueryData(['favorites'], context.previousData);
+        queryClient.setQueryData(cineneKeys.favorites(), context.previousData);
     },
-    onSettled: () => queryClient.invalidateQueries(['favorites']),
+    onSettled: () => queryClient.invalidateQueries(cineneKeys.favorites()),
   });
 
   const getImageUrl = (content?: ICineneData) => {

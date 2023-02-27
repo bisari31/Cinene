@@ -31,6 +31,11 @@ router.get('/:type/:id', async (req, res) => {
 router.post('/', async (req: CustomRequest<IContent>, res) => {
   try {
     if (!req.body.name) return;
+    const hasCotent = await Content.findOne({
+      tmdbId: req.body.tmdbId,
+      type: req.body.type,
+    });
+    if (hasCotent) throw { hasCotent };
     const content = await Content.create({
       name: req.body.name,
       poster: req.body.poster,
@@ -41,7 +46,7 @@ router.post('/', async (req: CustomRequest<IContent>, res) => {
   } catch (err) {
     res
       .status(400)
-      .json({ success: false, message: '콘텐츠 생성 오류', content: null });
+      .json({ success: false, message: '콘텐츠 생성 오류', content: err });
   }
 });
 
