@@ -5,7 +5,7 @@ import { useMutation, useQueryClient } from 'react-query';
 import { Heart } from 'assets';
 import { buttonEffect } from 'styles/css';
 import { upLike } from 'services/like';
-import { IMAGE_URL } from 'services/media';
+import { IMAGE_URL } from 'services/tmdb';
 import { EMPTY_IMAGE, USER_IMAGE } from 'utils/imageUrl';
 
 interface IProps {
@@ -38,7 +38,7 @@ export default function FavoriteItem({ item }: IProps) {
     onSettled: () => queryClient.invalidateQueries(['favorites']),
   });
 
-  const getImageUrl = (content?: IFavoritesContents) => {
+  const getImageUrl = (content?: ICineneData) => {
     if (!content) return;
     const { type, poster } = content;
     if (poster) {

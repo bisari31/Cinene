@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { useQuery } from 'react-query';
 
-import { getTopRatedMovie } from 'services/media';
+import { getTopRatedMovie } from 'services/tmdb';
 import { getTopRated } from 'services/contents';
 
 import Slider from 'components/common/Slider';
@@ -17,7 +17,6 @@ export default function TopRated({ type }: Props) {
     enabled: type === 'tmdb',
   });
   const { data: cinene } = useQuery(['cinene', 'topRated'], getTopRated, {
-    refetchOnWindowFocus: false,
     enabled: type === 'cinene',
   });
 

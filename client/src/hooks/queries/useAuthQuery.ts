@@ -11,7 +11,6 @@ export default function useAuthQuery() {
 
   const data = useQuery(['auth', userId], auth, {
     retry: 1,
-    refetchOnWindowFocus: false,
     enabled: userId !== prevUserId,
   });
 

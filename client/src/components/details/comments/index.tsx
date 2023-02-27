@@ -15,12 +15,8 @@ interface IProps {
 
 export default function Comments({ contentId }: IProps) {
   const setContentId = useSetRecoilState(contentIdState);
-  const { data } = useQuery(
-    ['comments', contentId],
-    () => getComments(contentId),
-    {
-      refetchOnWindowFocus: false,
-    },
+  const { data } = useQuery(['comments', contentId], () =>
+    getComments(contentId),
   );
 
   useEffect(() => {

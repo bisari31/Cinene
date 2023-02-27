@@ -11,7 +11,7 @@ import ReviewModal from './ReviewModal';
 import ReviewList from './ReviewList';
 
 export interface IReviewProps {
-  data: IFavoritesContents | undefined;
+  data: ICineneData | undefined;
 }
 
 function Reviews(
@@ -29,9 +29,6 @@ function Reviews(
   const { data: reivewData } = useQuery(
     ['reviews', data?.type, data?._id],
     () => getReviews(data?._id, data?.type, authData?.user?._id),
-    {
-      refetchOnWindowFocus: false,
-    },
   );
 
   const handleClick = () => {

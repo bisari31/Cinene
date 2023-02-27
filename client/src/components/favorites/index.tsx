@@ -19,7 +19,6 @@ export default function Favorites({ data }: IProps) {
 
   const { data: favoritesData } = useQuery(['favorites'], getFavorites, {
     enabled: data?.success,
-    refetchOnWindowFocus: false,
   });
 
   useEffect(() => {

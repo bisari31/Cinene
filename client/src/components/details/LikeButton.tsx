@@ -8,7 +8,7 @@ import { useLike, useOutsideClick } from 'hooks';
 import LoginPortal from 'components/common/LoginPortal';
 
 interface IProps {
-  cinene: IFavoritesContents | null | undefined;
+  cinene: ICineneData | null | undefined;
 }
 
 function LikeButton(

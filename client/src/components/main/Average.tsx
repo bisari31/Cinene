@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import { Star } from 'assets';
 
 interface IProps {
-  cinene?: IFavoritesContents | null;
+  cinene?: ICineneData | null;
   tmdb?: number;
   isMedia?: boolean;
 }

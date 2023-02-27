@@ -2,11 +2,7 @@ import { useQuery } from 'react-query';
 import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
 
-import {
-  getNowPlayingMovie,
-  getUpcomingMovie,
-  IMAGE_URL,
-} from 'services/media';
+import { getNowPlayingMovie, getUpcomingMovie, IMAGE_URL } from 'services/tmdb';
 import { EMPTY_IMAGE } from 'utils/imageUrl';
 
 import Slider from 'components/common/Slider';

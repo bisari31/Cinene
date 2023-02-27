@@ -15,7 +15,7 @@ export const getTrendingMedia = async () => {
 
 export const getMediaDetail = async (id?: number, type?: string) => {
   if (!id || !type) return;
-  const { data } = await axios.get<IMovieTvDetails>(
+  const { data } = await axios.get<IMovieDetails | ITvDetails>(
     `${API_URL}/${type}/${id}`,
     {
       params,

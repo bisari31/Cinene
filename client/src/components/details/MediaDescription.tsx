@@ -4,7 +4,7 @@ import { useQuery } from 'react-query';
 import dayjs from 'dayjs';
 
 import { getMediaOverview, getMediaTitle } from 'utils/api';
-import { getSimilarMedia } from 'services/media';
+import { getSimilarMedia } from 'services/tmdb';
 import { useCineneDataQuery } from 'hooks';
 
 import Average from 'components/main/Average';
@@ -16,12 +16,14 @@ import Like from './LikeButton';
 import Reviews from './reviews/index';
 
 interface Props {
-  data: IMovieTvDetails | undefined;
-  path: string;
+  data: IMovieDetails | ITvDetails;
+  path: MediaTypes;
   id: number;
 }
 
 function Description({ path, data, id }: Props) {
+  const isMovieDetails = 'runtime' in data;
+
   const title = getMediaTitle(data);
   const overview = getMediaOverview(data);
   const reviewRef = useRef<HTMLHeadingElement>(null);
@@ -29,27 +31,23 @@ function Description({ path, data, id }: Props) {
   const { data: similarData } = useQuery(
     [path, 'similar', id],
     () => getSimilarMedia(id, path),
-    { refetchOnWindowFocus: false, staleTime: 1000 * 60 * 60 * 6 },
+    { staleTime: 1000 * 60 * 60 * 6 },
   );
-  const cineneData = useCineneDataQuery(path, id, data);
-  const setTitle = path === 'movie' ? '영화' : 'TV';
+  const cineneData = useCineneDataQuery(data, path, id);
 
-  const getReleaseDate = (releaseItem?: IMovieTvDetails) => {
-    if (releaseItem?.release_date)
-      return <p>개봉: {releaseItem.release_date}</p>;
-    if (releaseItem?.first_air_date) {
-      const last = releaseItem?.last_air_date;
-      const first = releaseItem?.first_air_date;
-      const today = dayjs();
-      const diff = today.diff(last, 'd');
+  const getReleaseDate = () => {
+    if (isMovieDetails) return `개봉: ${data.release_date}`;
+    const last = data.last_air_date;
+    const first = data.first_air_date;
+    const today = dayjs();
+    const diff = today.diff(last, 'd');
 
-      let result;
-      if (first === last) result = first;
-      else if (diff > 7) result = `${first} ~ ${last}`;
-      else result = `${first} ~ `;
+    let result;
+    if (first === last) result = first;
+    else if (diff > 7) result = `${first} ~ ${last}`;
+    else result = `${first} ~ `;
 
-      return <p>{result}</p>;
-    }
+    return result;
   };
 
   return (
@@ -58,11 +56,9 @@ function Description({ path, data, id }: Props) {
       <h2>{title}</h2>
       <Like ref={reviewRef} cinene={cineneData} />
       <Genre>
-        {getReleaseDate(data)}
+        <p>{getReleaseDate()}</p>
         <p>
-          {setTitle === '영화'
-            ? `${data?.runtime}분`
-            : `시즌 ${data?.seasons.length}`}
+          {isMovieDetails ? `${data.runtime}분` : `시즌 ${data.seasons.length}`}
         </p>
         {data?.genres.map((genre) => (
           <p className="genre_button" key={genre.id}>
@@ -72,8 +68,12 @@ function Description({ path, data, id }: Props) {
       </Genre>
 
       <p>{overview}</p>
-      <Seasons seasons={data?.seasons} />
-      <SimilarMedia data={similarData} title={`추천 ${setTitle}`} type={path} />
+      <Seasons seasons={'seasons' in data && data.seasons} />
+      <SimilarMedia
+        data={similarData}
+        title={`추천 ${path === 'movie' ? '영화' : 'TV'}`}
+        type={path}
+      />
       <Credits id={id} path={path} />
       <Reviews ref={reviewRef} data={cineneData} />
       <Comment contentId={cineneData?._id} />

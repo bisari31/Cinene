@@ -2,33 +2,29 @@ import { useQuery } from 'react-query';
 import { addContent, getContent } from 'services/contents';
 
 export default function useCineneDataQuery(
-  type: string | undefined,
-  id: number | undefined,
-  body?: IMovieTvDetails | IPerson,
+  body?: IMovieDetails | ITvDetails | IPerson,
+  type?: MediaTypes,
+  id?: number,
   personName?: string,
 ) {
-  const media = body as IMovieTvDetails;
-  const person = body as IPerson;
+  const name = body && 'name' in body ? body.name : body?.title;
+  const poster =
+    body && 'poster_path' in body ? body.poster_path : body?.profile_path;
 
   const { data } = useQuery(['cinene', type, id], () => getContent(type, id), {
     staleTime: 1000 * 60 * 5,
     retry: false,
-    refetchOnWindowFocus: false,
-    onSuccess: (a) => {
-      console.log(`a: `, a);
-    },
   });
   const { data: newData } = useQuery(
     ['cinene', type, id],
     () =>
       addContent(type, {
-        name: personName || media.name || media.title,
-        poster: media.poster_path || person.profile_path,
-        tmdbId: media.id || person.id,
+        name: personName || name,
+        poster,
+        tmdbId: body?.id,
       }),
     {
       enabled: !!data?.message && !!body,
-      // enabled: !data?.success,
     },
   );
 

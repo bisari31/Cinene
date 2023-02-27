@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 import { useQuery } from 'react-query';
 
-import { getMediaDetail, getPersonDetail, IMAGE_URL } from 'services/media';
+import { getMediaDetail, getPersonDetail, IMAGE_URL } from 'services/tmdb';
 
 import { EMPTY_IMAGE, USER_IMAGE } from 'utils/imageUrl';
 import { useCurrentPathName, useOutsideClick } from 'hooks';
@@ -18,7 +18,6 @@ export default function DetailPage() {
 
   const { data } = useQuery([path, id], () => getMediaDetail(id, path), {
     enabled: path !== 'person',
-    refetchOnWindowFocus: false,
     staleTime: 1000 * 60 * 60,
   });
 
@@ -26,7 +25,6 @@ export default function DetailPage() {
     [path, id],
     () => getPersonDetail(id, path),
     {
-      refetchOnWindowFocus: false,
       enabled: path === 'person',
       staleTime: 1000 * 60 * 60,
     },
@@ -50,6 +48,8 @@ export default function DetailPage() {
     }
     return EMPTY_IMAGE;
   };
+
+  if (!data || !personData) return null;
 
   return (
     <DetailPageWrapper src={getBackdrop()}>

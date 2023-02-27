@@ -10,7 +10,6 @@ import { useInput } from 'hooks';
 
 import { PathName } from 'pages/LoginPage';
 import Input from 'components/common/Input';
-import { $CombinedState } from '@reduxjs/toolkit';
 
 export const ERROR_MESSAGE = {
   email: '가입된 이메일이 이미 있습니다.',

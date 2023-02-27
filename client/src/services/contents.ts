@@ -2,7 +2,7 @@ import axios from 'axios';
 
 interface IResponse {
   success: boolean;
-  content: IFavoritesContents | undefined;
+  content: ICineneData | undefined;
   message?: string;
 }
 
@@ -16,8 +16,8 @@ export const addContent = async (
   type?: string,
   body?: {
     tmdbId?: number;
-    name: string;
-    poster: string;
+    name?: string;
+    poster?: string;
   },
 ) => {
   if (!body) return;

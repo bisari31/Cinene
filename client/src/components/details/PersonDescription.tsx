@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import { useQuery } from 'react-query';
 import styled, { css } from 'styled-components';
 
-import { getCombinedCredits } from 'services/media';
+import { getCombinedCredits } from 'services/tmdb';
 import { useCineneDataQuery } from 'hooks';
 
 import Average from 'components/main/Average';
@@ -12,8 +12,8 @@ import Like from './LikeButton';
 import Reviews from './reviews';
 
 interface IProps {
-  data?: IPerson;
-  path: string;
+  data: IPerson;
+  path: MediaTypes;
   id: number;
 }
 
@@ -32,12 +32,12 @@ export default function PersonDescription({ data, path, id }: IProps) {
   const { data: creditData } = useQuery(
     [path, 'similar', id],
     () => getCombinedCredits(id),
-    { refetchOnWindowFocus: false, staleTime: 1000 * 60 * 60 * 6 },
+    { staleTime: 1000 * 60 * 60 * 6 },
   );
 
-  const cineneData = useCineneDataQuery(path, id, data, getKoreanName(data));
+  const cineneData = useCineneDataQuery(data, path, id, getKoreanName(data));
 
-  const setCreditData = (array: IMediaResults[] | undefined) => {
+  const setCreditData = (array?: IMediaResults[]) => {
     const duplication = array?.reduce(
       (acc: IMediaResults[], cur: IMediaResults) => {
         if (acc.findIndex((prev) => prev.id === cur.id) === -1) {

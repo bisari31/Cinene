@@ -10,7 +10,7 @@ import usePrevious from './usePrevious';
 import useTrendingMediaQuery from './queries/useTrendingMediaQuery';
 import useDebounce from './useDebounce';
 import useThrottle from './useThrottle';
-import useGetRelativeTime from './useGetRelativeTime';
+import useGetRelativeTime from './useRelativeTime';
 
 export {
   useThrottle,

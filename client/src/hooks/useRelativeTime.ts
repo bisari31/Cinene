@@ -45,12 +45,12 @@ const TIME_UNITS: TimeUnit[] = [
   },
 ];
 
-export default function useGetRelativeTime(
+export default function useRelativeTime(
   createdAt?: string,
   updatedAt?: string,
 ) {
   return useMemo(() => {
-    const updated = updatedAt ? ' (수정됨)' : '';
+    const updated = updatedAt && updatedAt !== createdAt ? ' (수정됨)' : '';
     const today = dayjs();
     let result = '';
     // eslint-disable-next-line no-restricted-syntax

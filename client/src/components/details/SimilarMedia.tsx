@@ -1,14 +1,13 @@
-import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
 import { EMPTY_IMAGE } from 'utils/imageUrl';
-import { IMAGE_URL } from 'services/media';
+import { IMAGE_URL } from 'services/tmdb';
 
 import Slider from 'components/common/Slider';
 
 interface IProps {
-  data: IMediaResults[] | undefined;
+  data?: IMediaResults[];
   title: string;
   type?: string;
 }

@@ -9,7 +9,7 @@ import { useQuery } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import styled, { css, keyframes } from 'styled-components';
 
-import { IMAGE_URL, searchMedia } from 'services/media';
+import { IMAGE_URL, searchMedia } from 'services/tmdb';
 import { EMPTY_IMAGE, USER_IMAGE } from 'utils/imageUrl';
 import { useDebounce } from 'hooks';
 
@@ -87,7 +87,6 @@ function SearchBar(
     () => searchMedia(debouncedText),
     {
       staleTime: 1000 * 60 * 5,
-      refetchOnWindowFocus: false,
       retry: false,
     },
   );

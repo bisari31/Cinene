@@ -1,16 +1,16 @@
-interface IFavoritesContents {
+interface ICineneData {
   average: number;
   votes: number;
   name: string;
   poster: string;
   tmdbId: number;
-  type: 'movie' | 'tv' | 'person';
+  type: MediaTypes;
   __v: number;
   _id: string;
 }
 
 interface IFavoritesContent {
-  contentId: IFavoritesContents;
+  contentId: ICineneData;
   userId: string;
   __v: number;
   _id: string;
@@ -22,6 +22,6 @@ interface IFavoritesData {
 }
 
 interface ITopRatedData {
-  contents: IFavoritesContents[];
+  contents: ICineneData[];
   success: boolean;
 }

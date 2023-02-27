@@ -1,5 +1,5 @@
 import { Star } from 'assets';
-import useGetRelativeTime from 'hooks/useGetRelativeTime';
+import useGetRelativeTime from 'hooks/useRelativeTime';
 import styled from 'styled-components';
 
 import { USER_IMAGE } from 'utils/imageUrl';

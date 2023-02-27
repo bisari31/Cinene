@@ -71,9 +71,7 @@ function ReviewModal(
   useEffect(() => {
     if (isVisible) {
       inputRef.current?.focus();
-      // setComment('');
     }
-    // return () => setIsCommentError(false);
   }, [inputRef, isVisible]);
 
   useEffect(() => {
@@ -89,11 +87,11 @@ function ReviewModal(
     }
   }, [isRatingError, rating]);
 
-  // useEffect(() => {
-  //   if (isCommentError && comment !== previousComment) {
-  //     setIsCommentError(false);
-  //   }
-  // }, [isCommentError, comment, previousComment]);
+  useEffect(() => {
+    if (isCommentError && comment !== previousComment) {
+      setIsCommentError(false);
+    }
+  }, [isCommentError, comment, previousComment]);
 
   if (!data) return null;
 
