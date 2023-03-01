@@ -134,7 +134,7 @@ router.post(
 );
 
 router.patch(
-  '/change-password',
+  '/password',
   authenticate,
   async (
     req: IRequest<{ password: string; nextPassword: string }>,
@@ -160,7 +160,7 @@ router.patch(
 );
 
 router.patch(
-  '/change-nickname',
+  '/nickname',
   authenticate,
   async (req: IRequest<{ nickname: string }>, res: Response<IResponse>) => {
     try {

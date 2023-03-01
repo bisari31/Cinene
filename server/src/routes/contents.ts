@@ -50,7 +50,7 @@ router.post('/', async (req: CustomRequest<IContent>, res) => {
   }
 });
 
-router.get('/topRated', async (req, res) => {
+router.get('/top-rated', async (req, res) => {
   try {
     const contents = await Content.find().sort({ average: -1 }).limit(20);
     res.json({ success: true, contents });

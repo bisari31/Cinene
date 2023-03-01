@@ -30,6 +30,6 @@ export const addContent = async (
 };
 
 export const getTopRated = async () => {
-  const { data } = await axios.get<ITopRatedData>('/contents/topRated');
+  const { data } = await axios.get<ITopRatedData>('/contents/top-rated');
   return data;
 };
