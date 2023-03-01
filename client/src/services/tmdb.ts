@@ -3,7 +3,6 @@ import axios from 'axios';
 export const API_URL = 'https://api.themoviedb.org/3';
 export const IMAGE_URL = 'http://image.tmdb.org/t/p';
 
-// const params = { language: 'ko', sort_by: 'popularity.desc' };
 const params = { language: 'ko', api_key: process.env.REACT_APP_API_KEY };
 
 export const getTrendingMedia = async () => {
@@ -15,7 +14,7 @@ export const getTrendingMedia = async () => {
 
 export const getMediaDetail = async (id?: number, type?: string) => {
   if (!id || !type) return;
-  const { data } = await axios.get<IMovieTvDetails>(
+  const { data } = await axios.get<IMovieDetails | ITvDetails>(
     `${API_URL}/${type}/${id}`,
     {
       params,

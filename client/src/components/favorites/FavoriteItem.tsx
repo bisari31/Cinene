@@ -5,7 +5,9 @@ import { useMutation, useQueryClient } from 'react-query';
 import { Heart } from 'assets';
 import { buttonEffect } from 'styles/css';
 import { upLike } from 'services/like';
-import { checkEmptyImageUrl } from 'utils/imageUrl';
+import { IMAGE_URL } from 'services/tmdb';
+import { EMPTY_IMAGE, USER_IMAGE } from 'utils/imageUrl';
+import { cineneKeys } from 'utils/keys';
 
 interface IProps {
   item: IFavoritesContent;
@@ -16,12 +18,12 @@ export default function FavoriteItem({ item }: IProps) {
 
   const { mutate } = useMutation(upLike, {
     onMutate: async (data) => {
-      await queryClient.cancelQueries(['favorites']);
-      const previousData = queryClient.getQueryData<IFavoritesData>([
-        'favorites',
-      ]);
+      await queryClient.cancelQueries(cineneKeys.favorites());
+      const previousData = queryClient.getQueryData<IFavoritesData>(
+        cineneKeys.favorites(),
+      );
       if (previousData) {
-        queryClient.setQueryData<IFavoritesData>(['favorites'], {
+        queryClient.setQueryData<IFavoritesData>(cineneKeys.favorites(), {
           ...previousData,
           contents: previousData.contents.filter(
             (content) => content.contentId._id !== data.id,
@@ -32,10 +34,19 @@ export default function FavoriteItem({ item }: IProps) {
     },
     onError: (error, variables, context) => {
       if (context?.previousData)
-        queryClient.setQueryData(['favorites'], context.previousData);
+        queryClient.setQueryData(cineneKeys.favorites(), context.previousData);
     },
-    onSettled: () => queryClient.invalidateQueries(['favorites']),
+    onSettled: () => queryClient.invalidateQueries(cineneKeys.favorites()),
   });
+
+  const getImageUrl = (content?: ICineneData) => {
+    if (!content) return;
+    const { type, poster } = content;
+    if (poster) {
+      return `${IMAGE_URL}/w400/${poster}`;
+    }
+    return type === 'person' ? USER_IMAGE : EMPTY_IMAGE;
+  };
 
   const handleClickButton = (id: string) => {
     mutate({ type: 'contentId', id });
@@ -44,10 +55,7 @@ export default function FavoriteItem({ item }: IProps) {
   return (
     <FavoriteItemWrapper key={item._id}>
       <Link to={`/${item.contentId.type}/${item.contentId.tmdbId}`}>
-        <img
-          src={checkEmptyImageUrl(item.contentId)}
-          alt={item.contentId.name}
-        />
+        <img src={getImageUrl(item.contentId)} alt={item.contentId.name} />
         <span>{item.contentId.name}</span>
       </Link>
       <Button
@@ -63,13 +71,10 @@ export default function FavoriteItem({ item }: IProps) {
 
 const FavoriteItemWrapper = styled.li`
   display: flex;
-  height: 100%;
   position: relative;
-  width: 100%;
   a {
     height: 100%;
     width: 100%;
-
     img {
       border-radius: 10px;
       object-fit: cover;
@@ -105,17 +110,19 @@ const Button = styled.button`
   border: none;
   border-radius: 10px;
   display: flex;
-  height: 30px;
+  height: 13%;
   justify-content: center;
-  left: 1em;
+  left: 14px;
+  max-height: 40px;
+  max-width: 40px;
   position: absolute;
-  top: 1em;
-  width: 30px;
+  top: 14px;
+  width: 20%;
   svg {
     fill: ${({ theme }) => theme.colors.pink};
-    height: 25px;
+    height: 90%;
     stroke: none;
-    width: 25px;
+    width: 90%;
   }
   ${buttonEffect};
 `;

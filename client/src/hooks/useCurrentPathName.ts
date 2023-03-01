@@ -1,12 +1,12 @@
 import { useLocation, useParams } from 'react-router-dom';
 
+const REGEXP = /[a-z]{1,}/;
+
 export default function useCurrentPathName() {
   const location = useLocation();
   const params = useParams();
-  const regex = /[a-z]{1,}/;
 
-  const path = location.pathname.match(regex);
+  const path = location.pathname.match(REGEXP) || '';
 
-  if (!path) return { path: '', id: 0 };
-  return { path: path[0], id: Number(params.id) };
+  return { path: path[0] as MediaTypes, id: Number(params.id) };
 }

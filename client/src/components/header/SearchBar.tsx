@@ -9,9 +9,10 @@ import { useQuery } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import styled, { css, keyframes } from 'styled-components';
 
-import { IMAGE_URL, searchMedia } from 'services/media';
+import { IMAGE_URL, searchMedia } from 'services/tmdb';
 import { EMPTY_IMAGE, USER_IMAGE } from 'utils/imageUrl';
 import { useDebounce } from 'hooks';
+import { tmdbKeys } from 'utils/keys';
 
 interface Props {
   isVisible?: boolean;
@@ -32,10 +33,16 @@ function SearchBar(
 
   const navigate = useNavigate();
 
-  const handleDebounceChange = useDebounce(() => setDebouncedText(text), 500);
+  const handleDebounceChange = useDebounce<
+    [React.ChangeEvent<HTMLInputElement>]
+  >(
+    (e: React.ChangeEvent<HTMLInputElement>) =>
+      setDebouncedText(e.target.value),
+    500,
+  );
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setText(e.target.value);
-    handleDebounceChange();
+    handleDebounceChange(e);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -83,12 +90,10 @@ function SearchBar(
   };
 
   const { data, isFetching } = useQuery(
-    ['search', debouncedText],
+    tmdbKeys.search(debouncedText),
     () => searchMedia(debouncedText),
     {
       staleTime: 1000 * 60 * 5,
-      refetchOnWindowFocus: false,
-      retry: false,
     },
   );
 

@@ -20,9 +20,6 @@ export default function useLike(type: 'comments' | 'content', id?: string) {
   const { data } = useQuery(
     ['likes', type, id, { loggedIn: authData?.success }],
     () => getLikes(IdType, id, authData?.user?._id),
-    {
-      refetchOnWindowFocus: false,
-    },
   );
 
   const { mutate } = useMutation(upLike, {

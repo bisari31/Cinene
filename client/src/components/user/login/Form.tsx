@@ -10,7 +10,6 @@ import { useInput } from 'hooks';
 
 import { PathName } from 'pages/LoginPage';
 import Input from 'components/common/Input';
-import { $CombinedState } from '@reduxjs/toolkit';
 
 export const ERROR_MESSAGE = {
   email: '가입된 이메일이 이미 있습니다.',
@@ -57,6 +56,7 @@ export default function Form({
     handleChange: handleEmailChange,
     ref: emailRef,
     setError: setEmailError,
+    setValue: setEmail,
   } = useInput('email');
 
   const [serverErrorMessage, setServerErrorMessage] = useState('');
@@ -70,6 +70,12 @@ export default function Form({
   const { mutate: loginMutate } = useMutation(login, {
     onSuccess: (data) => {
       if (!data.success) {
+        if (data.code === 1) {
+          setPassword('');
+          setEmail('');
+          emailRef.current?.focus();
+          return setServerErrorMessage(data.message);
+        }
         setServerErrorMessage(data.message);
         setPasswordError(' ');
         return setPassword('');

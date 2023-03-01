@@ -3,13 +3,14 @@ import { useQuery } from 'react-query';
 import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
 
-import { getMediaDetail, IMAGE_URL } from 'services/media';
+import { getMediaDetail, IMAGE_URL } from 'services/tmdb';
 import { ChevronLeft, ChevronRight } from 'assets';
-import { getMediaOverview, getMediaTitle } from 'utils/media';
+import { getMediaOverview, getMediaTitle } from 'utils/api';
 import { EMPTY_IMAGE } from 'utils/imageUrl';
 import { buttonEffect } from 'styles/css';
 import { useCineneDataQuery, useTrendingMediaQuery } from 'hooks';
 
+import { tmdbKeys } from 'utils/keys';
 import AverageButton from './Average';
 
 export default function Popular() {
@@ -19,16 +20,17 @@ export default function Popular() {
   const { data } = useTrendingMediaQuery();
 
   const { data: detailData } = useQuery(
-    ['media', 'details', currentMedia?.id],
+    tmdbKeys.detail(currentMedia?.media_type, currentMedia?.id),
     () => getMediaDetail(currentMedia?.id, currentMedia?.media_type),
     {
       staleTime: 1000 * 60 * 60 * 6,
     },
   );
+
   const cineneData = useCineneDataQuery(
+    detailData,
     currentMedia?.media_type,
     currentMedia?.id,
-    detailData,
   );
 
   // const { data: videoData } = useQuery(
@@ -42,19 +44,17 @@ export default function Popular() {
   const handleSlide = (index: number) => {
     const maxIndex = data?.length;
     if (!maxIndex) return;
-    let newIndex = viewIndex + index;
-    if (newIndex > maxIndex - 1) newIndex = 0;
-    else if (newIndex < 0) newIndex = maxIndex - 1;
-    setViewIndex(newIndex);
+    let nextIndex = viewIndex + index;
+    if (nextIndex > maxIndex - 1) nextIndex = 0;
+    else if (nextIndex < 0) nextIndex = maxIndex - 1;
+    setViewIndex(nextIndex);
   };
 
   const title = getMediaTitle(detailData);
   const overview = getMediaOverview(detailData);
 
   useEffect(() => {
-    if (data) {
-      setCurrentMedia(data[viewIndex]);
-    }
+    if (data) setCurrentMedia(data[viewIndex]);
   }, [data, viewIndex]);
 
   useEffect(() => {

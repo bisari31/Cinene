@@ -51,14 +51,14 @@ export const changePassword = async (body: {
   nextPassword: string;
 }) => {
   const { data } = await axios.patch<{ success: boolean; message: string }>(
-    '/users/change-password',
+    '/users/password',
     body,
   );
   return data;
 };
 
 export const changeNickname = async (nickname: string) => {
-  const { data } = await axios.patch<Response>('/users/change-nickname', {
+  const { data } = await axios.patch<Response>('/users/nickname', {
     nickname,
   });
   return data;

@@ -1,4 +1,4 @@
-import { forwardRef, useEffect } from 'react';
+import { forwardRef } from 'react';
 import styled from 'styled-components';
 
 import { Heart } from 'assets';
@@ -8,7 +8,7 @@ import { useLike, useOutsideClick } from 'hooks';
 import LoginPortal from 'components/common/LoginPortal';
 
 interface IProps {
-  cinene: IFavoritesContents | null | undefined;
+  cinene: ICineneData | null | undefined;
 }
 
 function LikeButton(
@@ -35,10 +35,6 @@ function LikeButton(
       ref?.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   };
-
-  useEffect(() => {
-    console.log(cinene);
-  }, [cinene]);
 
   return (
     <ButtonWrapper color="navy50">

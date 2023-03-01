@@ -1,10 +1,12 @@
-import Slider from 'components/common/Slider';
-import { IMAGE_URL } from 'services/media';
 import styled from 'styled-components';
+
+import { IMAGE_URL } from 'services/tmdb';
 import { EMPTY_IMAGE } from 'utils/imageUrl';
 
+import Slider from 'components/common/Slider';
+
 interface IProps {
-  seasons: ITvDetails['seasons'] | undefined;
+  seasons?: ITvDetails['seasons'] | false;
 }
 
 export default function Seasons({ seasons }: IProps) {

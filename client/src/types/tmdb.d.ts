@@ -1,3 +1,5 @@
+type MediaTypes = 'movie' | 'tv' | 'person';
+
 interface IGenre_ids {
   id: number;
   name: string;
@@ -12,7 +14,7 @@ interface IMediaResults {
   original_language: string;
   original_title?: string;
   overview: string;
-  media_type: string;
+  media_type: MediaTypes;
   popularity: number;
   name?: string;
   poster_path: string;
@@ -71,8 +73,6 @@ interface IVideos {
     },
   ];
 }
-
-type IMovieTvDetails = IMovieDetails & ITvDetails;
 
 interface IMovieDetails {
   adult: false;

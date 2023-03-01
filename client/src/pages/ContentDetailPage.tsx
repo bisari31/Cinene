@@ -1,8 +1,7 @@
-import { useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import { useQuery } from 'react-query';
 
-import { getMediaDetail, getPersonDetail, IMAGE_URL } from 'services/media';
+import { getMediaDetail, getPersonDetail, IMAGE_URL } from 'services/tmdb';
 
 import { EMPTY_IMAGE, USER_IMAGE } from 'utils/imageUrl';
 import { useCurrentPathName, useOutsideClick } from 'hooks';
@@ -11,23 +10,26 @@ import Description from 'components/details/MediaDescription';
 import Portal from 'components/common/Portal';
 import ModalImage from 'components/details/ModalImage';
 import PersonDescription from 'components/details/PersonDescription';
+import { tmdbKeys } from 'utils/keys';
 
 export default function DetailPage() {
   const { ref, isVisible, changeVisibility } = useOutsideClick();
 
   const { id, path } = useCurrentPathName();
 
-  const { data } = useQuery([path, id], () => getMediaDetail(id, path), {
-    enabled: path !== 'person',
-    refetchOnWindowFocus: false,
-    staleTime: 1000 * 60 * 60,
-  });
+  const { data } = useQuery(
+    tmdbKeys.detail(path, id),
+    () => getMediaDetail(id, path),
+    {
+      enabled: path !== 'person',
+      staleTime: 1000 * 60 * 60,
+    },
+  );
 
   const { data: personData } = useQuery(
-    [path, id],
+    tmdbKeys.detail(path, id),
     () => getPersonDetail(id, path),
     {
-      refetchOnWindowFocus: false,
       enabled: path === 'person',
       staleTime: 1000 * 60 * 60,
     },
@@ -51,10 +53,6 @@ export default function DetailPage() {
     }
     return EMPTY_IMAGE;
   };
-
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
 
   return (
     <DetailPageWrapper src={getBackdrop()}>

@@ -1,19 +1,15 @@
-import { useEffect } from 'react';
-
 import { Star } from 'assets';
+import useGetRelativeTime from 'hooks/useRelativeTime';
 import styled from 'styled-components';
 
 import { USER_IMAGE } from 'utils/imageUrl';
-import { changeDaysAgo } from 'utils/days';
 import { Item } from '../comments/CommentItem';
 
-interface IProps {
-  review: IDocument;
-}
+export default function ReviewItem({ review }: { review: IReview }) {
+  const { createdAt, updatedAt } = review;
 
-export default function ReviewItem({ review }: IProps) {
   return (
-    <Item date={changeDaysAgo(review.createdAt)}>
+    <Item date={useGetRelativeTime(createdAt, updatedAt)}>
       <img src={USER_IMAGE} alt="user_avatar" />
       <div>
         <p>{review.userId.nickname}</p>

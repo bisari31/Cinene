@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { getFavorites } from 'services/like';
 
+import { cineneKeys } from 'utils/keys';
 import Toggle from './Toggle';
 import FavoriteItem from './FavoriteItem';
 
@@ -13,13 +14,17 @@ interface IProps {
 
 export default function Favorites({ data }: IProps) {
   const [selectedType, setSelectedType] = useState(1);
+
   const [newFavoritesData, setNewFavoritesData] =
     useState<IFavoritesContent[]>();
 
-  const { data: favoritesData } = useQuery(['favorites'], getFavorites, {
-    enabled: data?.success,
-    refetchOnWindowFocus: false,
-  });
+  const { data: favoritesData } = useQuery(
+    cineneKeys.favorites(),
+    getFavorites,
+    {
+      enabled: data?.success,
+    },
+  );
 
   useEffect(() => {
     setNewFavoritesData(
@@ -52,7 +57,6 @@ const FavoritesWrapper = styled.div`
     margin-bottom: 4em;
     margin-top: 2em;
   }
-
   @media ${({ theme }) => theme.device.laptop} {
     ul {
       grid-template-columns: repeat(4, 1fr);

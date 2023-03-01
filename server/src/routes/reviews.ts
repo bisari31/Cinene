@@ -1,8 +1,8 @@
-import { Request, Router } from 'express';
-import Content from '../models/content';
+import { Request, Router, Response } from 'express';
+
 import Review, { IReview } from '../models/review';
-import { authenticate } from './middleware';
-import { IRequest } from './middleware';
+
+import { authenticate, IRequest } from './middleware';
 
 interface CustomRequest extends Request {
   params: { type: string; id: string };
@@ -15,87 +15,79 @@ interface PatchRequst<T> extends IRequest<T> {
   params: { id: string };
 }
 
+interface IData {
+  message?: string;
+  success: boolean;
+  review?: IReview;
+  reviews?: IReview[];
+  hasReview?: null | IReview;
+}
+
 const router = Router();
 
-router.post('/', authenticate, async (req: IRequest<IReview>, res) => {
-  try {
-    const document = await Review.create({
-      contentId: req.body.contentId,
-      contentType: req.body.contentType,
-      rating: req.body.rating,
-      comment: req.body.comment,
-      userId: req.user?._id,
-    });
-    const content: IReview[] = await Review.find({
-      contentId: req.body.contentId,
-      contentType: req.body.contentType,
-    });
-    const total = content.reduce((acc, cur) => (acc += cur.rating), 0);
-    if (content) {
-      await Content.findOneAndUpdate(
-        { _id: document.contentId },
-        {
-          $set: {
-            average: total / content.length,
-            votes: content.length,
-          },
-        },
-      );
-    }
-    res.json({ success: true, document });
-  } catch (err) {
-    res.status(404).json({ success: false, message: 'sever error' });
-  }
-});
+router.post(
+  '/',
+  authenticate,
+  async (req: IRequest<IReview>, res: Response<IData>) => {
+    try {
+      const review = await Review.create({
+        contentId: req.body.contentId,
+        contentType: req.body.contentType,
+        rating: req.body.rating,
+        comment: req.body.comment,
+        userId: req.user?._id,
+      });
 
-router.patch('/:id', authenticate, async (req: PatchRequst<IReview>, res) => {
-  try {
-    const document = await Review.findOneAndUpdate(
-      { _id: req.params.id },
-      { $set: { comment: req.body.comment, rating: req.body.rating } },
-    );
-    const content: IReview[] = await Review.find({
-      contentId: req.body.contentId,
-      contentType: req.body.contentType,
-    });
-    const total = content.reduce((acc, cur) => (acc += cur.rating), 0);
-    if (content) {
-      await Content.findOneAndUpdate(
-        { _id: req.body.contentId },
-        {
-          $set: {
-            average: total / content.length,
-            votes: content.length,
-          },
-        },
-      );
-    }
-    res.json({ success: true, document });
-  } catch (err) {
-    res.status(404).json({ success: false, message: 'sever error' });
-  }
-});
+      await Review.updateRatings(req.body.contentId, req.body.contentType);
 
-router.get('/:type/:id', async (req: CustomRequest, res) => {
+      res.json({ success: true, review });
+    } catch (err) {
+      res.status(404).json(...err);
+    }
+  },
+);
+
+router.patch(
+  '/:id',
+  authenticate,
+  async (req: PatchRequst<IReview>, res: Response<IData>) => {
+    try {
+      const review = await Review.findOneAndUpdate(
+        { _id: req.params.id },
+        { $set: { comment: req.body.comment, rating: req.body.rating } },
+      );
+
+      await Review.updateRatings(req.body.contentId, req.body.contentType);
+
+      if (!review) throw { success: false, message: '리뷰 찾기 실패' };
+
+      res.json({ success: true, review });
+    } catch (err) {
+      res.status(404).json(...err);
+    }
+  },
+);
+
+router.get('/:type/:id', async (req: CustomRequest, res: Response<IData>) => {
   try {
     const { id, type } = req.params;
-    const documents = await Review.find({
+    const reviews = await Review.find({
       contentType: type,
       contentId: id,
     }).populate('userId');
+
     if (!req.query.userId) {
-      console.log('1');
-      return res.json({ success: true, documents, hasReview: null });
-    } else {
-      const myReview = await Review.findOne({
-        contentType: type,
-        contentId: id,
-        userId: req.query.userId,
-      });
-      res.json({ success: true, documents, hasReview: myReview });
+      return res.json({ success: true, reviews, hasReview: null });
     }
+
+    const myReview = await Review.findOne({
+      contentType: type,
+      contentId: id,
+      userId: req.query.userId,
+    });
+    res.json({ success: true, reviews, hasReview: myReview });
   } catch (err) {
-    res.status(400).json({ success: false, message: '서버 에러 ' });
+    res.status(400).json({ success: false, message: '서버 에러' });
   }
 });
 

@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
-import { IMAGE_URL } from 'services/media';
+import { IMAGE_URL } from 'services/tmdb';
 import { EMPTY_IMAGE } from 'utils/imageUrl';
 
-type Item = IFavoritesContents & IMediaResults;
+type Item = ICineneData & IMediaResults;
 
 interface IProps {
   item: Partial<Item>;

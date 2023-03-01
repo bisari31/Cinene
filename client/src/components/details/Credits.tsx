@@ -2,23 +2,22 @@ import { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
 import styled from 'styled-components';
 
-import { getMediaCredits, IMAGE_URL } from 'services/media';
+import { getMediaCredits, IMAGE_URL } from 'services/tmdb';
 import { USER_IMAGE } from 'utils/imageUrl';
 
 import Slider from 'components/common/Slider';
 import { Link } from 'react-router-dom';
+import { tmdbKeys } from 'utils/keys';
 
 interface Props {
   id: number;
-  path: string;
+  path: MediaTypes;
 }
 
 function Credits({ id, path }: Props) {
   const [directror, setDirector] = useState<Crew[]>();
-  const { data } = useQuery(
-    [path, 'credits', id],
-    () => getMediaCredits(id, path),
-    { refetchOnWindowFocus: false },
+  const { data } = useQuery(tmdbKeys.credits(path, id), () =>
+    getMediaCredits(id, path),
   );
 
   useEffect(() => {

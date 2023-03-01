@@ -14,27 +14,12 @@ export interface Response {
 }
 
 export const createComment = async (body: IBody) => {
-  try {
-    if (!body.contentId) return;
-    const { data } = await axios.post<Response>('/comments', body);
-    return data;
-  } catch (err) {
-    if (axios.isAxiosError(err)) {
-      console.log(err);
-    }
-  }
+  if (!body.contentId) return;
+  const { data } = await axios.post<Response>('/comments', body);
+  return data;
 };
 
 export const getComments = async (id?: string) => {
-  // try {
-  //   if (!id) return;
-  //   const { data } = await axios.get<Response>(`/comment/${id}`);
-  //   return data;
-  // } catch (err) {
-  //   if (axios.isAxiosError(err)) {
-  //     return err.response?.data;
-  //   }
-  // }
   if (!id) return;
   const { data } = await axios.get<Response>(`/comments/${id}`);
   return data;

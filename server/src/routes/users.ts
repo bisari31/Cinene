@@ -83,6 +83,13 @@ router.post(
           message: '아이디 또는 비밀번호가 올바르지 않습니다.',
         });
       }
+      if (!user.active)
+        return res.json({
+          success: false,
+          message: '탈퇴한 유저입니다.',
+          code: 1,
+        });
+
       const newUser = await user.generateToken();
       res
         .cookie('auth', newUser.token, {
@@ -127,7 +134,7 @@ router.post(
 );
 
 router.patch(
-  '/change-password',
+  '/password',
   authenticate,
   async (
     req: IRequest<{ password: string; nextPassword: string }>,
@@ -153,7 +160,7 @@ router.patch(
 );
 
 router.patch(
-  '/change-nickname',
+  '/nickname',
   authenticate,
   async (req: IRequest<{ nickname: string }>, res: Response<IResponse>) => {
     try {
@@ -173,7 +180,9 @@ router.delete(
   authenticate,
   async (req: IRequest<null>, res: Response<IResponse>) => {
     try {
-      await User.deleteOne({ _id: req.user?._id });
+      await User.findByIdAndUpdate(req.user?._id, {
+        $set: { active: false, token: '' },
+      });
       res.json({ success: true });
     } catch (err) {
       res.status(400).json({ success: false });

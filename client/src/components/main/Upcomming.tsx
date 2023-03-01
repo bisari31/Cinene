@@ -2,15 +2,12 @@ import { useQuery } from 'react-query';
 import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
 
-import {
-  getNowPlayingMovie,
-  getUpcomingMovie,
-  IMAGE_URL,
-} from 'services/media';
+import { getNowPlayingMovie, getUpcomingMovie, IMAGE_URL } from 'services/tmdb';
 import { EMPTY_IMAGE } from 'utils/imageUrl';
 
 import Slider from 'components/common/Slider';
 import dayjs from 'dayjs';
+import { tmdbKeys } from 'utils/keys';
 
 interface Props {
   type: 'upcoming' | 'now';
@@ -18,7 +15,7 @@ interface Props {
 
 export default function Upcomming({ type }: Props) {
   const { data: upcomingData } = useQuery(
-    ['movie', 'upcoming'],
+    tmdbKeys.upcoming(),
     getUpcomingMovie,
     {
       staleTime: 1000 * 60 * 60 * 6,
@@ -32,7 +29,7 @@ export default function Upcomming({ type }: Props) {
     },
   );
   const { data: nowData } = useQuery(
-    ['movie', 'nowPlaying'],
+    tmdbKeys.nowPlaying(),
     getNowPlayingMovie,
     {
       staleTime: 1000 * 60 * 60 * 6,

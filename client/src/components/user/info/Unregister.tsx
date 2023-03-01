@@ -44,7 +44,7 @@ export default function Unregister() {
     try {
       await unregister();
       setUserId('');
-      localStorage.removeItem('auth');
+      localStorage.removeItem('userId');
       navigate('/');
     } catch (err) {
       changeVisibility();

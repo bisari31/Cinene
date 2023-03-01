@@ -10,15 +10,11 @@ interface IResponse {
 type IdType = 'contentId' | 'commentId';
 
 export const getLikes = async (type: IdType, id?: string, userId?: string) => {
-  try {
-    if (!id) return;
-    const { data } = await axios.get<IResponse>(
-      `/likes/${type}/${id}${userId ? `?userId=${userId}` : ''}`,
-    );
-    return data;
-  } catch (err) {
-    console.log(err);
-  }
+  if (!id) return;
+  const { data } = await axios.get<IResponse>(
+    `/likes/${type}/${id}${userId ? `?userId=${userId}` : ''}`,
+  );
+  return data;
 };
 
 export const upLike = async (obj: { type: IdType; id?: string }) => {

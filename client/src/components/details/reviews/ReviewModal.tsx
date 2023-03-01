@@ -8,6 +8,7 @@ import { usePrevious } from 'hooks';
 
 import Modal from 'components/common/Modal';
 import Portal from 'components/common/Portal';
+import { cineneKeys } from 'utils/keys';
 import { IReviewProps } from './index';
 
 const RATING_MESSAGE = [
@@ -22,18 +23,17 @@ interface IProps extends IReviewProps {
   isVisible: boolean;
   animationState: boolean;
   changeVisibility: () => void;
-  hasReview: IDocument | null | undefined;
+  hasReview: IReview | null | undefined;
 }
 
 function ReviewModal(
   { isVisible, animationState, changeVisibility, data, hasReview }: IProps,
   ref: ForwardedRef<HTMLDivElement>,
 ) {
-  const [rating, setRating] = useState(0);
-  const [comment, setComment] = useState('');
+  const [rating, setRating] = useState(hasReview?.rating || 0);
+  const [comment, setComment] = useState(hasReview?.comment || '');
   const [isCommentError, setIsCommentError] = useState(false);
   const [isRatingError, setIsRatingError] = useState(false);
-
   const previousRating = usePrevious(rating);
   const previousComment = usePrevious(comment);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -42,8 +42,9 @@ function ReviewModal(
 
   const { mutate } = useMutation(addRating, {
     onSuccess: () => {
-      queryClient.invalidateQueries(['cinene', data?.type, data?.tmdbId]);
-      queryClient.invalidateQueries(['reviews', data?.type, data?._id]);
+      queryClient.invalidateQueries(
+        cineneKeys.detail(data?.type, data?.tmdbId),
+      );
       changeVisibility();
     },
   });
@@ -55,6 +56,8 @@ function ReviewModal(
   const handleAddReview = () => {
     if (!comment || comment.length > 50) return setIsCommentError(true);
     if (!rating) return setIsRatingError(true);
+    if (comment === previousComment && rating === previousRating)
+      return changeVisibility();
     mutate({
       comment,
       rating,
@@ -72,7 +75,6 @@ function ReviewModal(
   useEffect(() => {
     if (isVisible) {
       inputRef.current?.focus();
-      setComment('');
     }
   }, [inputRef, isVisible]);
 
@@ -95,8 +97,6 @@ function ReviewModal(
     }
   }, [isCommentError, comment, previousComment]);
 
-  if (!data) return null;
-
   return (
     <Portal>
       <Modal
@@ -114,12 +114,12 @@ function ReviewModal(
         >
           <div>
             <div>
-              {[1, 2, 3, 4, 5].map((number) => (
+              {[1, 2, 3, 4, 5].map((value) => (
                 <Button
-                  isIncrease={previousRating < rating}
-                  isFilling={rating >= number}
-                  onClick={() => setRating(number)}
-                  key={number}
+                  isIncreased={rating > previousRating}
+                  yellow={rating >= value}
+                  onClick={() => setRating(value)}
+                  key={value}
                   type="button"
                 >
                   <Star />
@@ -193,13 +193,13 @@ const ModalContent = styled.div<{
   }
 `;
 
-const Button = styled.button<{ isFilling: boolean; isIncrease: boolean }>`
+const Button = styled.button<{ yellow: boolean; isIncreased: boolean }>`
   background: none;
   border: none;
   svg {
-    animation: ${({ isIncrease }) => isIncrease && 'pop 0.5s ease'};
-    fill: ${({ theme, isFilling }) =>
-      isFilling ? theme.colors.yellow : theme.colors.navy50};
+    animation: ${({ isIncreased }) => isIncreased && 'pop 0.5s ease'};
+    fill: ${({ theme, yellow }) =>
+      yellow ? theme.colors.yellow : theme.colors.navy50};
     stroke: none;
     width: 30px;
   }
