@@ -3,11 +3,22 @@ import styled from 'styled-components';
 
 import ReviewItem from './ReviewItem';
 
-function ReviewList({ reviews }: { reviews?: IReview[] }) {
+interface IProps {
+  onClick: () => void;
+  reviews?: IReview[];
+  auth?: IUser;
+}
+
+function ReviewList({ reviews, auth, onClick }: IProps) {
   return (
     <ReviewListWrapper>
       {reviews?.map((review) => (
-        <ReviewItem key={review._id} review={review} />
+        <ReviewItem
+          key={review._id}
+          review={review}
+          auth={auth}
+          onClick={onClick}
+        />
       ))}
     </ReviewListWrapper>
   );

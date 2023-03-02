@@ -1,20 +1,51 @@
 import { Star } from 'assets';
 import useGetRelativeTime from 'hooks/useRelativeTime';
+import { useMutation, useQueryClient } from 'react-query';
 import styled from 'styled-components';
 
+import { deleteReview } from 'services/review';
 import { USER_IMAGE } from 'utils/imageUrl';
-import { Item } from '../comments/CommentItem';
+import { cineneKeys } from 'utils/keys';
+import { useCurrentPathName } from 'hooks';
 
-export default function ReviewItem({ review }: { review: IReview }) {
+import { Content, Item } from '../comments/CommentItem';
+
+interface IProps {
+  onClick: () => void;
+  review: IReview;
+  auth?: IUser;
+}
+
+export default function ReviewItem({ review, auth, onClick }: IProps) {
   const { createdAt, updatedAt } = review;
+  const { id, path } = useCurrentPathName();
+  const queryClient = useQueryClient();
+
+  const { mutate } = useMutation(deleteReview, {
+    onSuccess: () => queryClient.invalidateQueries(cineneKeys.detail(path, id)),
+  });
+
+  const handleDelete = () => mutate(review._id);
 
   return (
-    <Item date={useGetRelativeTime(createdAt, updatedAt)}>
+    <Item>
       <img src={USER_IMAGE} alt="user_avatar" />
-      <div>
-        <p>{review.userId.nickname}</p>
+      <Content date={useGetRelativeTime(createdAt, updatedAt)}>
+        <div>
+          <p>{review.userId.nickname}</p>
+          {review.userId._id === auth?._id && (
+            <>
+              <button type="button" onClick={onClick}>
+                수정
+              </button>
+              <button type="button" onClick={handleDelete}>
+                삭제
+              </button>
+            </>
+          )}
+        </div>
         <p>{review.comment}</p>
-      </div>
+      </Content>
       <SvgWrapper>
         {[1, 2, 3, 4, 5].map((star) => (
           <StyledButton

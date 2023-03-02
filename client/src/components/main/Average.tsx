@@ -15,7 +15,6 @@ function Average({ tmdb, cinene, isMedia = true }: IProps) {
     return 0;
   };
 
-  console.log(cinene);
   return (
     <AverageWrapper>
       <div>

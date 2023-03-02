@@ -87,7 +87,21 @@ router.get('/:type/:id', async (req: CustomRequest, res: Response<IData>) => {
     });
     res.json({ success: true, reviews, hasReview: myReview });
   } catch (err) {
-    res.status(400).json({ success: false, message: '서버 에러' });
+    res.status(500).json({ success: false, message: '서버 에러' });
+  }
+});
+
+router.delete('/:id', authenticate, async (req, res: Response<IData>) => {
+  try {
+    const review = await Review.findByIdAndDelete(req.params.id);
+    if (!review)
+      return res
+        .status(400)
+        .json({ success: false, message: '리뷰를 찾을 수 없음' });
+    await Review.updateRatings(review?.contentId, review?.contentType);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, message: '서버 에러' });
   }
 });
 
