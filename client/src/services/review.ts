@@ -19,6 +19,11 @@ export const getReviews = async (
   return data;
 };
 
+export const deleteReview = async (id: string) => {
+  const { data } = await axios.delete<IReviewData>(`/reviews/${id}`);
+  return data;
+};
+
 const createReview = async (obj: IAddReview) => {
   const { data } = await axios.post<IReviewData>('/reviews', obj);
   return data;

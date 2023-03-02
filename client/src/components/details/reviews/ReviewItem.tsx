@@ -1,8 +1,13 @@
 import { Star } from 'assets';
 import useGetRelativeTime from 'hooks/useRelativeTime';
+import { useMutation, useQueryClient } from 'react-query';
 import styled from 'styled-components';
 
+import { deleteReview } from 'services/review';
 import { USER_IMAGE } from 'utils/imageUrl';
+import { cineneKeys } from 'utils/keys';
+import { useCurrentPathName } from 'hooks';
+
 import { Content, Item } from '../comments/CommentItem';
 
 interface IProps {
@@ -13,6 +18,14 @@ interface IProps {
 
 export default function ReviewItem({ review, auth, onClick }: IProps) {
   const { createdAt, updatedAt } = review;
+  const { id, path } = useCurrentPathName();
+  const queryClient = useQueryClient();
+
+  const { mutate } = useMutation(deleteReview, {
+    onSuccess: () => queryClient.invalidateQueries(cineneKeys.detail(path, id)),
+  });
+
+  const handleDelete = () => mutate(review._id);
 
   return (
     <Item>
@@ -25,7 +38,9 @@ export default function ReviewItem({ review, auth, onClick }: IProps) {
               <button type="button" onClick={onClick}>
                 수정
               </button>
-              <button type="button">삭제</button>
+              <button type="button" onClick={handleDelete}>
+                삭제
+              </button>
             </>
           )}
         </div>
