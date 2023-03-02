@@ -17,7 +17,6 @@ interface IProps {
 }
 
 export default function ReviewItem({ review, auth, onClick }: IProps) {
-  const { createdAt, updatedAt } = review;
   const { id, path } = useCurrentPathName();
   const queryClient = useQueryClient();
 
@@ -30,7 +29,7 @@ export default function ReviewItem({ review, auth, onClick }: IProps) {
   return (
     <Item>
       <img src={USER_IMAGE} alt="user_avatar" />
-      <Content date={useGetRelativeTime(createdAt, updatedAt)}>
+      <Content date={useGetRelativeTime(review.createdAt, review.updatedAt)}>
         <div>
           <p>{review.userId.nickname}</p>
           {review.userId._id === auth?._id && (
