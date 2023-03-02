@@ -5,32 +5,32 @@ import { useDebounce } from 'hooks';
 import Unregister from './Unregister';
 import ChangePassword from './ChangePassword';
 
+const TAB: Item[] = [
+  {
+    id: 1,
+    text: '비밀번호 변경',
+    type: 'changePassword',
+  },
+  {
+    id: 2,
+    text: '회원 탈퇴',
+    type: 'unregister',
+  },
+];
+
 interface Item {
   id: number;
   text: string;
   type: 'changePassword' | 'unregister';
-  isActive: boolean;
 }
 
 export default function Tab() {
-  const [list, setList] = useState<Item[]>([
-    { id: 1, text: '비밀번호 변경', type: 'changePassword', isActive: true },
-    { id: 2, text: '회원 탈퇴', type: 'unregister', isActive: false },
-  ]);
+  const [activeIndex, setActiveIndex] = useState(0);
   const [width, setWidth] = useState<number>(0);
-  const [target, setTarget] = useState<Item>(list[0]);
+
   const liRef = useRef<HTMLLIElement>(null);
 
-  const handleClick = (id: number) => {
-    setList((prev) =>
-      prev.map((item) =>
-        item.id === id
-          ? { ...item, isActive: !item.isActive }
-          : { ...item, isActive: false },
-      ),
-    );
-    setTarget(list[id - 1]);
-  };
+  const handleClick = (index: number) => setActiveIndex(index);
 
   const getElementWidth = useCallback(() => {
     if (liRef.current) setWidth(liRef.current.clientWidth);
@@ -50,16 +50,20 @@ export default function Tab() {
   return (
     <Wrapper>
       <ul>
-        {list.map((item) => (
-          <List key={item.id} isActive={item.isActive} ref={liRef}>
-            <button type="button" onClick={() => handleClick(item.id)}>
+        {TAB.map((item, index) => (
+          <List key={item.id} isActive={index === activeIndex} ref={liRef}>
+            <button type="button" onClick={() => handleClick(index)}>
               {item.text}
             </button>
           </List>
         ))}
-        <SlideBar index={target.id - 1} width={width} />
+        <SlideBar index={activeIndex} width={width} />
       </ul>
-      {target.type === 'changePassword' ? <ChangePassword /> : <Unregister />}
+      {TAB[activeIndex].type === 'changePassword' ? (
+        <ChangePassword />
+      ) : (
+        <Unregister />
+      )}
     </Wrapper>
   );
 }
