@@ -40,16 +40,22 @@ function Reviews(
     <ReviewsWrapper length={reivewData?.reviews?.length}>
       <div>
         <h3 ref={ref}>리뷰</h3>
-        <StyledButton
-          onClick={handleClick}
-          color="navy50"
-          size="small"
-          type="button"
-        >
-          {reivewData?.hasReview ? '리뷰 수정' : '리뷰 작성'}
-        </StyledButton>
+        {!reivewData?.hasReview && (
+          <StyledButton
+            onClick={handleClick}
+            color="navy50"
+            size="small"
+            type="button"
+          >
+            리뷰 작성
+          </StyledButton>
+        )}
       </div>
-      <ReviewList reviews={reivewData?.reviews} />
+      <ReviewList
+        reviews={reivewData?.reviews}
+        auth={authData?.user}
+        onClick={handleClick}
+      />
       {isVisible && (
         <ReviewModal
           hasReview={reivewData?.hasReview}

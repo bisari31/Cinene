@@ -3,18 +3,34 @@ import useGetRelativeTime from 'hooks/useRelativeTime';
 import styled from 'styled-components';
 
 import { USER_IMAGE } from 'utils/imageUrl';
-import { Item } from '../comments/CommentItem';
+import { Content, Item } from '../comments/CommentItem';
 
-export default function ReviewItem({ review }: { review: IReview }) {
+interface IProps {
+  onClick: () => void;
+  review: IReview;
+  auth?: IUser;
+}
+
+export default function ReviewItem({ review, auth, onClick }: IProps) {
   const { createdAt, updatedAt } = review;
 
   return (
-    <Item date={useGetRelativeTime(createdAt, updatedAt)}>
+    <Item>
       <img src={USER_IMAGE} alt="user_avatar" />
-      <div>
-        <p>{review.userId.nickname}</p>
+      <Content date={useGetRelativeTime(createdAt, updatedAt)}>
+        <div>
+          <p>{review.userId.nickname}</p>
+          {review.userId._id === auth?._id && (
+            <>
+              <button type="button" onClick={onClick}>
+                수정
+              </button>
+              <button type="button">삭제</button>
+            </>
+          )}
+        </div>
         <p>{review.comment}</p>
-      </div>
+      </Content>
       <SvgWrapper>
         {[1, 2, 3, 4, 5].map((star) => (
           <StyledButton
