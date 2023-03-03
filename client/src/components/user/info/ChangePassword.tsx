@@ -33,8 +33,7 @@ export default function ChangePassword() {
     setValue: setPassword,
   } = useInput('password');
 
-  const { ref, isVisible, changeVisibility, animationState } =
-    useOutsideClick();
+  const { ref, isVisible, toggleModal, isMotionVisible } = useOutsideClick();
 
   const { mutate } = useMutation(changePassword, {
     onSuccess: (data) => {
@@ -43,7 +42,7 @@ export default function ChangePassword() {
       }
       setPassword('');
       setNextPassword('');
-      changeVisibility();
+      toggleModal();
     },
     onError: (err: ILoginError) => {
       setNextPassword('');
@@ -105,10 +104,10 @@ export default function ChangePassword() {
         <Portal>
           <Modal
             ref={ref}
-            isVisible={animationState}
+            isVisible={isMotionVisible}
             buttonText={['확인']}
             color="pink"
-            executeFn={changeVisibility}
+            executeFn={toggleModal}
           >
             비밀번호 변경 완료
           </Modal>

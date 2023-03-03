@@ -13,7 +13,7 @@ import PersonDescription from 'components/details/PersonDescription';
 import { tmdbKeys } from 'utils/keys';
 
 export default function DetailPage() {
-  const { ref, isVisible, changeVisibility } = useOutsideClick();
+  const { ref, isVisible, toggleModal } = useOutsideClick();
 
   const { id, path } = useCurrentPathName();
 
@@ -59,7 +59,7 @@ export default function DetailPage() {
       <div />
       <Content>
         <div>
-          <button type="button" onClick={() => changeVisibility()}>
+          <button type="button" onClick={() => toggleModal()}>
             <img src={getPoster(path, 'w500')} alt="poster" />
           </button>
         </div>
@@ -73,7 +73,7 @@ export default function DetailPage() {
         <Portal>
           <ModalImage
             modalRef={ref}
-            changeVisibility={changeVisibility}
+            toggleModal={toggleModal}
             isVisible={isVisible}
             src={getPoster(path, 'original')}
           />

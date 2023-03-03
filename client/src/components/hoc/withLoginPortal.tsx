@@ -14,22 +14,22 @@ export default function withLoginPortal<T, U = unknown>(
   function WithLoginPortal(props: T, ref: React.ForwardedRef<U>) {
     const navigate = useNavigate();
     const {
-      animationState,
-      changeVisibility,
+      isMotionVisible,
+      toggleModal,
       isVisible,
       ref: modalRef,
     } = useOutsideClick(300);
     return (
       <>
-        <Component toggleLoginModal={changeVisibility} ref={ref} {...props} />
+        <Component toggleLoginModal={toggleModal} ref={ref} {...props} />
         {isVisible && (
           <Portal>
             <Modal
               executeFn={() => navigate('/login')}
-              closeFn={changeVisibility}
+              closeFn={toggleModal}
               ref={modalRef}
               buttonText={['닫기', '로그인']}
-              isVisible={animationState}
+              isVisible={isMotionVisible}
               color="pink"
             >
               로그인이 필요합니다 😎

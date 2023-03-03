@@ -23,8 +23,7 @@ export default function Unregister() {
     ref: inputRef,
   } = useInput('password');
 
-  const { ref, changeVisibility, isVisible, animationState } =
-    useOutsideClick(300);
+  const { ref, toggleModal, isVisible, isMotionVisible } = useOutsideClick(300);
 
   const navigate = useNavigate();
 
@@ -34,7 +33,7 @@ export default function Unregister() {
       if (!password) return setError(ERROR_MESSAGE.empty);
       if (error) return;
       const { success, message } = await checkPassword({ password });
-      return success ? changeVisibility() : setError(message);
+      return success ? toggleModal() : setError(message);
     } catch (err) {
       setError('유저 정보 확인 실패');
     }
@@ -47,7 +46,7 @@ export default function Unregister() {
       localStorage.removeItem('userId');
       navigate('/');
     } catch (err) {
-      changeVisibility();
+      toggleModal();
       setError('회원탈퇴 실패');
     }
   };
@@ -72,9 +71,9 @@ export default function Unregister() {
         <Portal>
           <Modal
             ref={ref}
-            isVisible={animationState}
+            isVisible={isMotionVisible}
             buttonText={['아니요', '네']}
-            closeFn={changeVisibility}
+            closeFn={toggleModal}
             executeFn={handleUnregister}
             color="pink"
           >

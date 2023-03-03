@@ -25,27 +25,27 @@ const MENU_LIST = [
 ];
 
 export default function SideMenu({ data }: IProps) {
-  const { ref, changeVisibility, isVisible } = useOutsideClick();
+  const { ref, toggleModal, isVisible } = useOutsideClick();
 
   const navigate = useNavigate();
   usePreventScrolling(isVisible);
 
   const moveFavoritesPage = (pathname: string) => {
-    changeVisibility();
+    toggleModal();
     navigate(pathname);
   };
 
   return (
     <SideMenuWrapper>
       <Background isVisible={isVisible} />
-      <button type="button" onClick={changeVisibility}>
+      <button type="button" onClick={toggleModal}>
         <Menu />
       </button>
       <SideMenuBar ref={ref} isVisible={isVisible}>
         <button
           type="button"
           className="chevronleft_wrapper"
-          onClick={changeVisibility}
+          onClick={toggleModal}
         >
           <ChevronLeft />
         </button>

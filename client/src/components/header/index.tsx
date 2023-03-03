@@ -14,8 +14,7 @@ export default function Header() {
   const setUserId = useSetRecoilState(userIdState);
   const { data } = useAuthQuery();
 
-  const { ref, isVisible, changeVisibility, animationState } =
-    useOutsideClick(300);
+  const { ref, isVisible, toggleModal, isMotionVisible } = useOutsideClick(300);
 
   useEffect(() => {
     const item = localStorage.getItem('userId');
@@ -35,11 +34,11 @@ export default function Header() {
       <SearchWrapper isHidden={!isVisible}>
         <SearchBar
           ref={ref}
-          isVisible={animationState}
-          changeVisibility={changeVisibility}
+          isVisible={isMotionVisible}
+          toggleModal={toggleModal}
         />
       </SearchWrapper>
-      <AuthMenu data={data} setIsVisible={changeVisibility} />
+      <AuthMenu data={data} setIsVisible={toggleModal} />
     </HeaderWrapper>
   );
 }

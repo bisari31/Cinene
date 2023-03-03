@@ -16,12 +16,12 @@ import { tmdbKeys } from 'utils/keys';
 
 interface Props {
   isVisible?: boolean;
-  changeVisibility?: () => void;
+  toggleModal?: () => void;
   isMobile?: boolean;
 }
 
 function SearchBar(
-  { isVisible = true, changeVisibility = () => null, isMobile = false }: Props,
+  { isVisible = true, toggleModal = () => null, isMobile = false }: Props,
   ref: ForwardedRef<HTMLDivElement>,
 ) {
   const [text, setText] = useState('');
@@ -62,7 +62,7 @@ function SearchBar(
         break;
       }
       case 'Escape': {
-        changeVisibility();
+        toggleModal();
         break;
       }
       default:
@@ -72,7 +72,7 @@ function SearchBar(
 
   const handleClickNavigation = (item: newResults) => {
     navigate(`/${item.media_type}/${item.id}`);
-    if (!isMobile) changeVisibility();
+    if (!isMobile) toggleModal();
   };
 
   const getSearchTitle = (item: newResults) => {

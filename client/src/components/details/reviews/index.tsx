@@ -22,8 +22,8 @@ function Reviews(
   ref: React.ForwardedRef<HTMLHeadingElement>,
 ) {
   const {
-    animationState,
-    changeVisibility,
+    isMotionVisible,
+    toggleModal,
     isVisible,
     ref: modalRef,
   } = useOutsideClick(300);
@@ -35,8 +35,8 @@ function Reviews(
   );
 
   const handleClick = () => {
-    if (authData?.success) changeVisibility();
-    return toggleLoginModal();
+    if (authData?.success) toggleModal();
+    else toggleLoginModal();
   };
 
   return (
@@ -63,8 +63,8 @@ function Reviews(
         <ReviewModal
           hasReview={reivewData?.hasReview}
           data={data}
-          animationState={animationState}
-          changeVisibility={changeVisibility}
+          isMotionVisible={isMotionVisible}
+          toggleModal={toggleModal}
           isVisible={isVisible}
           ref={modalRef}
         />

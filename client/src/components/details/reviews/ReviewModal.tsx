@@ -20,14 +20,14 @@ const RATING_MESSAGE = [
 
 interface IProps {
   isVisible: boolean;
-  animationState: boolean;
-  changeVisibility: () => void;
+  isMotionVisible: boolean;
+  toggleModal: () => void;
   hasReview?: IReview | null;
   data?: ICineneData;
 }
 
 function ReviewModal(
-  { isVisible, animationState, changeVisibility, data, hasReview }: IProps,
+  { isVisible, isMotionVisible, toggleModal, data, hasReview }: IProps,
   ref: ForwardedRef<HTMLDivElement>,
 ) {
   const [rating, setRating] = useState(hasReview?.rating || 0);
@@ -45,7 +45,7 @@ function ReviewModal(
       queryClient.invalidateQueries(
         cineneKeys.detail(data?.type, data?.tmdbId),
       );
-      changeVisibility();
+      toggleModal();
     },
   });
 
@@ -57,7 +57,7 @@ function ReviewModal(
     if (!comment || comment.length > 50) return setIsCommentError(true);
     if (!rating) return setIsRatingError(true);
     if (comment === previousComment && rating === previousRating)
-      return changeVisibility();
+      return toggleModal();
     mutate({
       comment,
       rating,
@@ -103,8 +103,8 @@ function ReviewModal(
         height="40vh"
         ref={ref}
         executeFn={handleAddReview}
-        isVisible={animationState}
-        closeFn={changeVisibility}
+        isVisible={isMotionVisible}
+        closeFn={toggleModal}
         buttonText={['닫기', hasReview ? '수정' : '등록']}
         color="pink"
       >

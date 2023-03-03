@@ -22,8 +22,7 @@ export default function Nickname() {
     setError,
   } = useInput('nickname');
 
-  const { ref, isVisible, changeVisibility, animationState } =
-    useOutsideClick();
+  const { ref, isVisible, toggleModal, isMotionVisible } = useOutsideClick();
   const { refetch, data } = useAuthQuery();
   const { mutate } = useMutation(changeNickname, {
     onSuccess: (res) => {
@@ -40,7 +39,7 @@ export default function Nickname() {
       return setError('닉네임이 같습니다.');
     mutate(nickname);
     setIsChanged(true);
-    changeVisibility();
+    toggleModal();
   };
 
   const handleFocus = useCallback(() => {
@@ -88,10 +87,10 @@ export default function Nickname() {
         <Portal>
           <Modal
             ref={ref}
-            isVisible={animationState}
+            isVisible={isMotionVisible}
             buttonText={['확인']}
             color="pink"
-            executeFn={changeVisibility}
+            executeFn={toggleModal}
           >
             닉네임 변경 완료
           </Modal>
