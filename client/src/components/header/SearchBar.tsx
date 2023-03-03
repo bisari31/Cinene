@@ -38,7 +38,7 @@ function SearchBar(
   >(
     (e: React.ChangeEvent<HTMLInputElement>) =>
       setDebouncedText(e.target.value),
-    500,
+    300,
   );
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setText(e.target.value);
