@@ -8,15 +8,17 @@ import { buttonEffect } from 'styles/css';
 
 import Button from 'components/common/Button';
 import { cineneKeys } from 'utils/keys';
-import ReviewModal from './ReviewModal';
+import withLoginPortal from 'components/hoc/withLoginPortal';
 import ReviewList from './ReviewList';
+import ReviewModal from './ReviewModal';
 
-export interface IReviewProps {
+interface IProps {
   data?: ICineneData;
+  toggleLoginModal: () => void;
 }
 
 function Reviews(
-  { data }: IReviewProps,
+  { data, toggleLoginModal }: IProps,
   ref: React.ForwardedRef<HTMLHeadingElement>,
 ) {
   const {
@@ -34,6 +36,7 @@ function Reviews(
 
   const handleClick = () => {
     if (authData?.success) changeVisibility();
+    return toggleLoginModal();
   };
 
   return (
@@ -70,7 +73,9 @@ function Reviews(
   );
 }
 
-export default forwardRef(Reviews);
+export default withLoginPortal<{ data?: ICineneData }, HTMLHeadingElement>(
+  forwardRef(Reviews),
+);
 
 const ReviewsWrapper = styled.div<{ length: number | undefined }>`
   ${({ theme, length }) => css`

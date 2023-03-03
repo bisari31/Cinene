@@ -6,22 +6,20 @@ import { useRecoilValue } from 'recoil';
 import { createComment } from 'services/comments';
 import { contentIdState } from 'atom/atom';
 import { buttonEffect } from 'styles/css';
-import { useAuthQuery, useCurrentPathName, useOutsideClick } from 'hooks';
+import { useAuthQuery } from 'hooks';
 import { cineneKeys } from 'utils/keys';
 
-import LoginPortal from 'components/common/LoginPortal';
+import withLoginPortal from 'components/hoc/withLoginPortal';
 
 interface IProps {
   responseId?: string;
+  toggleLoginModal: () => void;
 }
 
-export default function CommentForm({ responseId }: IProps) {
+function CommentForm({ responseId, toggleLoginModal }: IProps) {
   const [text, setText] = useState('');
   const contentId = useRecoilValue(contentIdState);
   const queryClient = useQueryClient();
-
-  const { animationState, changeVisibility, isVisible, ref } =
-    useOutsideClick(300);
 
   const { data } = useAuthQuery();
 
@@ -34,7 +32,7 @@ export default function CommentForm({ responseId }: IProps) {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!data?.success) return changeVisibility();
+    if (!data?.success) return toggleLoginModal();
     if (!text) return;
     mutate({
       comment: text,
@@ -58,16 +56,11 @@ export default function CommentForm({ responseId }: IProps) {
         onChange={handleChange}
       />
       <button type="submit">등록</button>
-      {isVisible && (
-        <LoginPortal
-          ref={ref}
-          closeFn={changeVisibility}
-          isVisible={animationState}
-        />
-      )}
     </CommentFormWrapper>
   );
 }
+
+export default withLoginPortal<{ responseId?: string }>(CommentForm);
 
 const CommentFormWrapper = styled.form`
   ${({ theme }) => css`
