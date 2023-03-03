@@ -3,11 +3,11 @@ import { useNavigate } from 'react-router-dom';
 
 import { useAuthQuery } from 'hooks';
 
-export default function AuthHoc(
+export default function withAuth(
   Component: React.ComponentType,
   option = false,
 ) {
-  function Authentication() {
+  return function WithAuth() {
     const { data } = useAuthQuery();
     const navigate = useNavigate();
 
@@ -18,7 +18,5 @@ export default function AuthHoc(
     }, [data, navigate]);
 
     return <Component />;
-  }
-
-  return Authentication;
+  };
 }

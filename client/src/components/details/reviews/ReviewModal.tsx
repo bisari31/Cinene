@@ -9,7 +9,6 @@ import { usePrevious } from 'hooks';
 import Modal from 'components/common/Modal';
 import Portal from 'components/common/Portal';
 import { cineneKeys } from 'utils/keys';
-import { IReviewProps } from './index';
 
 const RATING_MESSAGE = [
   '(별로에요)',
@@ -19,11 +18,12 @@ const RATING_MESSAGE = [
   '(최고에요)',
 ];
 
-interface IProps extends IReviewProps {
+interface IProps {
   isVisible: boolean;
   animationState: boolean;
   changeVisibility: () => void;
-  hasReview: IReview | null | undefined;
+  hasReview?: IReview | null;
+  data?: ICineneData;
 }
 
 function ReviewModal(

@@ -5,32 +5,31 @@ import { IComment } from 'types/comment';
 import { USER_IMAGE } from 'utils/imageUrl';
 import { Button, buttonEffect } from 'styles/css';
 import { Heart } from 'assets';
-import { useGetRelativeTime, useLike, useOutsideClick } from 'hooks';
+import { useGetRelativeTime, useLike } from 'hooks';
 
-import LoginPortal from 'components/common/LoginPortal';
+import withLoginPortal from 'components/hoc/withLoginPortal';
 import ReplyComments from './ReplyComments';
 
 interface IProps {
   comments?: IComment[];
-  commentItem: IComment | undefined;
+  commentItem?: IComment;
   isResponse?: boolean;
+  toggleLoginModal: () => void;
 }
 
-export default function CommentItem({
+function CommentItem({
   commentItem,
   comments,
   isResponse = false,
+  toggleLoginModal,
 }: IProps) {
   const [ReplyData, setReplyData] = useState<IComment[]>();
   const [openReplyComment, setOpenReplyComment] = useState(false);
 
-  const { ref, animationState, changeVisibility, isVisible } =
-    useOutsideClick(300);
-
   const { authData, data, mutate } = useLike('comments', commentItem?._id);
 
   const handleClick = () => {
-    if (!authData?.success) return changeVisibility();
+    if (!authData?.success) return toggleLoginModal();
     mutate({ type: 'commentId', id: commentItem?._id });
   };
 
@@ -75,16 +74,15 @@ export default function CommentItem({
       {openReplyComment && (
         <ReplyComments comments={ReplyData} responseId={commentItem?._id} />
       )}
-      {isVisible && (
-        <LoginPortal
-          closeFn={changeVisibility}
-          isVisible={animationState}
-          ref={ref}
-        />
-      )}
     </>
   );
 }
+
+export default withLoginPortal<{
+  comments?: IComment[];
+  commentItem?: IComment;
+  isResponse?: boolean;
+}>(CommentItem);
 
 export const Item = styled.div<{ isResponse?: boolean }>`
   ${({ theme }) => css`

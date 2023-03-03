@@ -1,10 +1,10 @@
 import { Routes, Route } from 'react-router-dom';
-import AuthHoc from 'components/hoc';
+
+import withAuth from 'components/hoc/withAuth';
 import NotFound from 'components/NotFound';
 import Layout from 'components/Layout';
 
 import LandingPage from 'pages/LandingPage';
-
 import MyPage from 'pages/MyPage';
 import DetailPage from 'pages/ContentDetailPage';
 import LoginPage from 'pages/LoginPage';
@@ -12,11 +12,9 @@ import FavoritesPage from 'pages/FavoritesPage';
 import SearchPage from 'pages/SearchPage';
 
 export default function App() {
-  const AuthLoginPage = AuthHoc(LoginPage);
-  const AuthRegisterPage = AuthHoc(LoginPage);
-  // const AuthPostWritePage = AuthHoc(PostWritePage, true);
-  // const AuthPostModify = AuthHoc(PostDetailPage, true);
-  const AuthMypage = AuthHoc(MyPage, true);
+  const AuthLoginPage = withAuth(LoginPage);
+  const AuthRegisterPage = withAuth(LoginPage);
+  const AuthMypage = withAuth(MyPage, true);
 
   return (
     <Routes>

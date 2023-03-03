@@ -1,38 +1,31 @@
-import { forwardRef } from 'react';
 import styled from 'styled-components';
 
 import { Heart } from 'assets';
 import { Button, buttonEffect } from 'styles/css';
-import { useLike, useOutsideClick } from 'hooks';
+import { useLike } from 'hooks';
 
-import LoginPortal from 'components/common/LoginPortal';
+import withLoginPortal from 'components/hoc/withLoginPortal';
+import React from 'react';
 
 interface IProps {
-  cinene: ICineneData | null | undefined;
+  cinene?: ICineneData | null;
+  toggleLoginModal: () => void;
 }
 
 function LikeButton(
-  { cinene }: IProps,
+  { cinene, toggleLoginModal }: IProps,
   ref: React.ForwardedRef<HTMLHeadingElement>,
 ) {
-  const {
-    ref: modalRef,
-    animationState,
-    changeVisibility,
-    isVisible,
-  } = useOutsideClick(300);
-
   const { authData, data, mutate } = useLike('content', cinene?._id);
-
   const handleMutate = () => {
-    if (!authData?.success) return changeVisibility();
+    if (!authData?.success) return toggleLoginModal();
     mutate({ type: 'contentId', id: cinene?._id });
   };
 
   const handleMoveToReview = () => {
-    if (typeof ref === 'object') {
-      // eslint-disable-next-line react/destructuring-assignment
-      ref?.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (typeof ref === 'object' && ref) {
+      const { current } = ref;
+      current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   };
 
@@ -49,18 +42,16 @@ function LikeButton(
       >
         <Heart /> {data?.likes ?? '0'}
       </Button>
-      {isVisible && (
-        <LoginPortal
-          closeFn={changeVisibility}
-          isVisible={animationState}
-          ref={modalRef}
-        />
-      )}
     </ButtonWrapper>
   );
 }
 
-export default forwardRef(LikeButton);
+export default withLoginPortal<
+  {
+    cinene?: ICineneData;
+  },
+  HTMLHeadingElement
+>(React.forwardRef(LikeButton));
 
 const ButtonWrapper = styled.div`
   display: flex;

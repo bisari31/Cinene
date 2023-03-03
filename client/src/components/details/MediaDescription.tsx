@@ -69,7 +69,6 @@ function Description({ path, data, id }: Props) {
           </p>
         ))}
       </Genre>
-
       <p>{overview}</p>
       <Seasons seasons={data && 'seasons' in data && data.seasons} />
       <SimilarMedia
