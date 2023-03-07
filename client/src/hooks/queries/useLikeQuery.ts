@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 
-import { getLikes, upLike } from 'services/like';
+import { getLikes, like } from 'services/like';
 import { cineneKeys } from 'utils/keys';
 import useAuthQuery from './useAuthQuery';
 
@@ -21,7 +21,7 @@ export default function useLike(type: 'comments' | 'content', id?: string) {
     getLikes(IdType, id, authData?.user?._id),
   );
 
-  const { mutate } = useMutation(upLike, {
+  const { mutate } = useMutation(like, {
     onMutate: async () => {
       await queryClient.cancelQueries(
         cineneKeys.likes(type, id, authData?.success),

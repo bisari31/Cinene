@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import styled from 'styled-components';
 
@@ -15,9 +15,6 @@ interface IProps {
 export default function Favorites({ data }: IProps) {
   const [selectedType, setSelectedType] = useState(1);
 
-  const [newFavoritesData, setNewFavoritesData] =
-    useState<IFavoritesContent[]>();
-
   const { data: favoritesData } = useQuery(
     cineneKeys.favorites(),
     getFavorites,
@@ -26,21 +23,21 @@ export default function Favorites({ data }: IProps) {
     },
   );
 
-  useEffect(() => {
-    setNewFavoritesData(
-      favoritesData?.contents?.filter((item) =>
+  const selectedData = useMemo(
+    () =>
+      favoritesData?.contents.filter((item) =>
         selectedType === 1
           ? item.contentId.type !== 'person'
           : item.contentId.type === 'person',
       ),
-    );
-  }, [selectedType, favoritesData]);
+    [favoritesData?.contents, selectedType],
+  );
 
   return (
     <FavoritesWrapper>
       <Toggle selectedType={selectedType} setSelectedType={setSelectedType} />
       <ul>
-        {newFavoritesData?.map((item) => (
+        {selectedData?.map((item) => (
           <FavoriteItem key={item._id} item={item} />
         ))}
       </ul>

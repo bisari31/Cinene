@@ -1,43 +1,18 @@
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { useMutation, useQueryClient } from 'react-query';
 
 import { Heart } from 'assets';
 import { buttonEffect } from 'styles/css';
-import { upLike } from 'services/like';
 import { IMAGE_URL } from 'services/tmdb';
 import { EMPTY_IMAGE, USER_IMAGE } from 'utils/imageUrl';
-import { cineneKeys } from 'utils/keys';
+import useLikeMutation from 'hooks/queries/useLikeMutation';
 
 interface IProps {
   item: IFavoritesContent;
 }
 
 export default function FavoriteItem({ item }: IProps) {
-  const queryClient = useQueryClient();
-
-  const { mutate } = useMutation(upLike, {
-    onMutate: async (data) => {
-      await queryClient.cancelQueries(cineneKeys.favorites());
-      const previousData = queryClient.getQueryData<IFavoritesData>(
-        cineneKeys.favorites(),
-      );
-      if (previousData) {
-        queryClient.setQueryData<IFavoritesData>(cineneKeys.favorites(), {
-          ...previousData,
-          contents: previousData.contents.filter(
-            (content) => content.contentId._id !== data.id,
-          ),
-        });
-      }
-      return { previousData };
-    },
-    onError: (error, variables, context) => {
-      if (context?.previousData)
-        queryClient.setQueryData(cineneKeys.favorites(), context.previousData);
-    },
-    onSettled: () => queryClient.invalidateQueries(cineneKeys.favorites()),
-  });
+  const mutate = useLikeMutation();
 
   const getImageUrl = (content?: ICineneData) => {
     if (!content) return;
