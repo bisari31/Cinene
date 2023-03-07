@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import styled, { css } from 'styled-components';
 
 import { IComment } from 'types/comment';
@@ -23,7 +23,6 @@ function CommentItem({
   isResponse = false,
   toggleLoginModal,
 }: IProps) {
-  const [ReplyData, setReplyData] = useState<IComment[]>();
   const [openReplyComment, setOpenReplyComment] = useState(false);
 
   const { authData, data, mutate } = useLike('comments', commentItem?._id);
@@ -33,11 +32,9 @@ function CommentItem({
     mutate({ type: 'commentId', id: commentItem?._id });
   };
 
-  useEffect(() => {
-    setReplyData(
-      comments?.filter((item) => item.responseTo === commentItem?._id),
-    );
-  }, [comments, commentItem]);
+  const getReplyComments = () =>
+    comments?.filter((comment) => comment.responseTo === commentItem?._id);
+  const replyComments = getReplyComments();
 
   return (
     <>
@@ -66,13 +63,13 @@ function CommentItem({
               type="button"
               onClick={() => setOpenReplyComment((prev) => !prev)}
             >
-              답글 {ReplyData?.length}
+              답글 {replyComments?.length}
             </Button>
           )}
         </ButtonWrapper>
       </Item>
       {openReplyComment && (
-        <ReplyComments comments={ReplyData} responseId={commentItem?._id} />
+        <ReplyComments comments={replyComments} responseId={commentItem?._id} />
       )}
     </>
   );

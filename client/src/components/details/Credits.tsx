@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { memo } from 'react';
 import { useQuery } from 'react-query';
 import styled from 'styled-components';
 
@@ -15,14 +15,14 @@ interface Props {
 }
 
 function Credits({ id, path }: Props) {
-  const [directror, setDirector] = useState<Crew[]>();
   const { data } = useQuery(tmdbKeys.credits(path, id), () =>
     getMediaCredits(id, path),
   );
 
-  useEffect(() => {
-    setDirector(data?.crew.filter((person) => person.job === 'Director'));
-  }, [data]);
+  const getDirector = () =>
+    data?.crew.filter((preson) => preson.job === 'Director');
+
+  const director = getDirector();
 
   if (!data) return <div>loading...</div>;
 
@@ -31,7 +31,7 @@ function Credits({ id, path }: Props) {
   return (
     <CreditsWrapper>
       <Slider title="감독 / 출연진">
-        {directror?.map((crew) => (
+        {director?.map((crew) => (
           <li key={crew.id}>
             <Link to={`/person/${crew.id}`} draggable="false">
               <div>
@@ -80,7 +80,7 @@ function Credits({ id, path }: Props) {
   );
 }
 
-export default Credits;
+export default memo(Credits);
 
 const CreditsWrapper = styled.div`
   overflow: hidden;
