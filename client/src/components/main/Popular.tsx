@@ -14,14 +14,14 @@ import { tmdbKeys } from 'utils/keys';
 import AverageButton from './Average';
 
 export default function Popular() {
-  const [viewIndex, setViewIndex] = useState(0);
-  const [currentMedia, setCurrentMedia] = useState<IMediaResults>();
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   const { data } = useTrendingMediaQuery();
+  const currentData = data && data[currentIndex];
 
   const { data: detailData } = useQuery(
-    tmdbKeys.detail(currentMedia?.media_type, currentMedia?.id),
-    () => getMediaDetail(currentMedia?.id, currentMedia?.media_type),
+    tmdbKeys.detail(currentData?.media_type, currentData?.id),
+    () => getMediaDetail(currentData?.id, currentData?.media_type),
     {
       staleTime: 1000 * 60 * 60 * 6,
     },
@@ -29,8 +29,8 @@ export default function Popular() {
 
   const cineneData = useCineneDataQuery(
     detailData,
-    currentMedia?.media_type,
-    currentMedia?.id,
+    currentData?.media_type,
+    currentData?.id,
   );
 
   // const { data: videoData } = useQuery(
@@ -44,21 +44,17 @@ export default function Popular() {
   const handleSlide = (index: number) => {
     const maxIndex = data?.length;
     if (!maxIndex) return;
-    let nextIndex = viewIndex + index;
+    let nextIndex = currentIndex + index;
     if (nextIndex > maxIndex - 1) nextIndex = 0;
     else if (nextIndex < 0) nextIndex = maxIndex - 1;
-    setViewIndex(nextIndex);
+    setCurrentIndex(nextIndex);
   };
 
   const title = getMediaTitle(detailData);
   const overview = getMediaOverview(detailData);
 
   useEffect(() => {
-    if (data) setCurrentMedia(data[viewIndex]);
-  }, [data, viewIndex]);
-
-  useEffect(() => {
-    const slider = setTimeout(() => handleSlide(1), 40000);
+    const slider = setInterval(() => handleSlide(1), 10000);
     return () => clearTimeout(slider);
   });
 
@@ -66,8 +62,8 @@ export default function Popular() {
     <section>
       <Background
         src={
-          currentMedia
-            ? `${IMAGE_URL}/original/${currentMedia?.backdrop_path}`
+          currentData
+            ? `${IMAGE_URL}/original/${currentData?.backdrop_path}`
             : EMPTY_IMAGE
         }
       />
@@ -75,7 +71,7 @@ export default function Popular() {
         <div>
           <Category>
             <AverageButton
-              tmdb={currentMedia?.vote_average}
+              tmdb={currentData?.vote_average}
               cinene={cineneData}
             />
           </Category>
@@ -84,7 +80,7 @@ export default function Popular() {
             <p>{overview}</p>
           </Overview>
           <ButtonWrapper color="pink">
-            <Link to={`/${currentMedia?.media_type}/${currentMedia?.id}`}>
+            <Link to={`/${currentData?.media_type}/${currentData?.id}`}>
               자세히 보기
             </Link>
             <Button

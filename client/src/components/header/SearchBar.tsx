@@ -25,11 +25,18 @@ function SearchBar(
   ref: ForwardedRef<HTMLDivElement>,
 ) {
   const [text, setText] = useState('');
-  const [targetIndex, setTargetIndex] = useState(-1);
-  const [totalIndex, setTotalIndex] = useState(0);
   const [debouncedText, setDebouncedText] = useState('');
+  const [currentIndex, setCurrentIndex] = useState(-1);
   const inputRef = useRef<HTMLInputElement>(null);
-  const divRef = useRef<HTMLDivElement>(null);
+  const totalIndexRef = useRef(0);
+
+  const { data, isFetching } = useQuery(
+    tmdbKeys.search(debouncedText),
+    () => searchMedia(debouncedText),
+    {
+      staleTime: 1000 * 60 * 5,
+    },
+  );
 
   const navigate = useNavigate();
 
@@ -48,17 +55,17 @@ function SearchBar(
   const handleKeyDown = (e: React.KeyboardEvent) => {
     switch (e.key) {
       case 'ArrowDown': {
-        if (totalIndex === targetIndex) setTargetIndex(0);
-        else setTargetIndex(targetIndex + 1);
+        if (totalIndexRef.current === currentIndex) setCurrentIndex(0);
+        else setCurrentIndex(currentIndex + 1);
         break;
       }
       case 'ArrowUp': {
-        if (targetIndex === 0) setTargetIndex(totalIndex);
-        else setTargetIndex(targetIndex - 1);
+        if (currentIndex === 0) setCurrentIndex(totalIndexRef.current ?? 0);
+        else setCurrentIndex(currentIndex - 1);
         break;
       }
       case 'Enter': {
-        if (data) handleClickNavigation(data[targetIndex]);
+        if (data) handleClickNavigation(data[currentIndex]);
         break;
       }
       case 'Escape': {
@@ -89,27 +96,13 @@ function SearchBar(
     return item.poster_path ? url + item.poster_path : EMPTY_IMAGE;
   };
 
-  const { data, isFetching } = useQuery(
-    tmdbKeys.search(debouncedText),
-    () => searchMedia(debouncedText),
-    {
-      staleTime: 1000 * 60 * 5,
-    },
-  );
-
   useEffect(() => {
     if (isVisible) inputRef.current?.focus();
-    return () => {
-      setText('');
-      setDebouncedText('');
-    };
-  }, [isVisible, inputRef]);
+  }, [isVisible]);
 
   useEffect(() => {
-    if (!divRef.current) return;
-    setTotalIndex(divRef.current.childElementCount - 1);
-    setTargetIndex(-1);
-  }, [data, divRef]);
+    if (data && totalIndexRef) totalIndexRef.current = data.length;
+  }, [data]);
 
   return (
     <SearchBarWrapper isVisible={isVisible} hasData={!!data?.length} ref={ref}>
@@ -131,12 +124,12 @@ function SearchBar(
             </List>
           </div>
         ) : (
-          <div ref={divRef}>
+          <div>
             {data?.map((item, index) => (
-              <List key={item.id} isActive={index === targetIndex}>
+              <List key={item.id} isActive={index === currentIndex}>
                 <button
-                  onFocus={() => setTargetIndex(index)}
-                  onMouseOver={() => setTargetIndex(index)}
+                  onFocus={() => setCurrentIndex(index)}
+                  onMouseOver={() => setCurrentIndex(index)}
                   type="button"
                   onClick={() => handleClickNavigation(item)}
                 >

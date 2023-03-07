@@ -1,4 +1,4 @@
-import { useState, useEffect, forwardRef, ForwardedRef } from 'react';
+import { forwardRef, ForwardedRef } from 'react';
 import styled, { keyframes } from 'styled-components';
 
 import { ColorsKey } from 'styles/theme';
@@ -22,14 +22,10 @@ function Modal(
   { children, isVisible, color, buttonText, height, closeFn, executeFn }: Props,
   ref: ForwardedRef<HTMLDivElement>,
 ) {
-  const [scrollY, setScrollY] = useState<number>();
+  const { scrollY } = window;
 
   usePreventScrolling(isVisible);
   useEscapeClose(isVisible, closeFn || executeFn);
-
-  useEffect(() => {
-    setScrollY(window.scrollY);
-  }, [isVisible]);
 
   return (
     <OutSide height={scrollY}>

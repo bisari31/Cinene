@@ -32,15 +32,15 @@ export default function Tab() {
 
   const handleClick = (index: number) => setActiveIndex(index);
 
-  const getElementWidth = useCallback(() => {
+  const getElementWidth = () => {
     if (liRef.current) setWidth(liRef.current.clientWidth);
-  }, []);
+  };
 
   const debouncedHandler = useDebounce(getElementWidth, 500);
 
   useEffect(() => {
     getElementWidth();
-  }, [getElementWidth]);
+  }, []);
 
   useEffect(() => {
     window.addEventListener('resize', debouncedHandler);

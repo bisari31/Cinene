@@ -31,13 +31,15 @@ export default function Header() {
           <Link to="/">Cinene</Link>
         </h1>
       </Logo>
-      <SearchWrapper isHidden={!isVisible}>
-        <SearchBar
-          ref={ref}
-          isVisible={isMotionVisible}
-          toggleModal={toggleModal}
-        />
-      </SearchWrapper>
+      {isVisible && (
+        <SearchWrapper isHidden={!isVisible}>
+          <SearchBar
+            ref={ref}
+            isVisible={isMotionVisible}
+            toggleModal={toggleModal}
+          />
+        </SearchWrapper>
+      )}
       <AuthMenu data={data} setIsVisible={toggleModal} />
     </HeaderWrapper>
   );

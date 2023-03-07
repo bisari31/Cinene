@@ -49,8 +49,17 @@ function ReviewModal(
     },
   });
 
-  const handleChangeComment = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setComment(e.target.value);
+    if (isCommentError && e.target.value !== previousComment) {
+      setIsCommentError(false);
+    }
+  };
+  const handleRatingChange = (value: number) => {
+    if (isRatingError && value > 0) {
+      setIsRatingError(false);
+    }
+    setRating(value);
   };
 
   const handleAddReview = () => {
@@ -73,29 +82,8 @@ function ReviewModal(
   };
 
   useEffect(() => {
-    if (isVisible) {
-      inputRef.current?.focus();
-    }
+    if (isVisible) inputRef.current?.focus();
   }, [inputRef, isVisible]);
-
-  useEffect(() => {
-    if (hasReview) {
-      setRating(hasReview.rating);
-      setComment(hasReview.comment);
-    }
-  }, [hasReview]);
-
-  useEffect(() => {
-    if (isRatingError && rating > 0) {
-      setIsRatingError(false);
-    }
-  }, [isRatingError, rating]);
-
-  useEffect(() => {
-    if (isCommentError && comment !== previousComment) {
-      setIsCommentError(false);
-    }
-  }, [isCommentError, comment, previousComment]);
 
   return (
     <Portal>
@@ -118,7 +106,7 @@ function ReviewModal(
                 <Button
                   isIncreased={rating > previousRating}
                   yellow={rating >= value}
-                  onClick={() => setRating(value)}
+                  onClick={() => handleRatingChange(value)}
                   key={value}
                   type="button"
                 >
@@ -135,7 +123,7 @@ function ReviewModal(
             type="text"
             placeholder="한줄평을 남겨주세요 (50자 이하)"
             value={comment}
-            onChange={handleChangeComment}
+            onChange={handleCommentChange}
           />
         </ModalContent>
       </Modal>

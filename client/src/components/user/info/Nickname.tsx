@@ -66,7 +66,7 @@ export default function Nickname() {
 
   useEffect(() => {
     if (data?.user) setNickname(data?.user.nickname);
-  }, [data, setNickname]);
+  }, [data?.user, setNickname]);
 
   return (
     <Form onSubmit={handleSubmit} isEmpty={!nickname.length} isError={!!error}>

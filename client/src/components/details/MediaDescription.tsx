@@ -50,6 +50,7 @@ function Description({ path, data, id }: Props) {
 
     return result;
   };
+  const releaseDate = getReleaseDate();
 
   return (
     <DescriptionWrapper>
@@ -57,7 +58,7 @@ function Description({ path, data, id }: Props) {
       <h2>{title}</h2>
       <Like ref={reviewRef} cinene={cineneData} />
       <Genre>
-        <p>{getReleaseDate()}</p>
+        <p>{releaseDate}</p>
         <p>
           {isMovieDetails
             ? `${data.runtime}분`

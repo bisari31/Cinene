@@ -34,7 +34,7 @@ export default function useInput(type: RegexType, password?: string) {
 
   useEffect(() => {
     if (error) ref.current?.focus();
-  }, [error, ref]);
+  }, [error]);
 
   return { value, setValue, error, setError, handleChange, handleBlur, ref };
 }

@@ -19,14 +19,9 @@ export default function ModalImage({
   toggleModal,
   modalRef,
 }: Props) {
-  const [height, setHeight] = useState<number>();
-
+  const height = window.scrollY;
   useEscapeClose(isVisible, toggleModal);
   usePreventScrolling(isVisible);
-
-  useEffect(() => {
-    setHeight(window.scrollY);
-  }, [isVisible]);
 
   return (
     <OutSide height={height}>
