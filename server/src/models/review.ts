@@ -44,13 +44,26 @@ reviewSchema.statics.updateRatings = async function (
 ) {
   try {
     const reviews: IReview[] = await this.find({ contentId, contentType });
-    const totalRating = reviews.reduce((acc, cur) => (acc += cur.rating), 0);
-    await Content.findOneAndUpdate(
-      { _id: contentId },
-      {
-        $set: { average: totalRating / reviews.length, votes: reviews.length },
-      },
-    );
+
+    if (!reviews.length) {
+      await Content.findOneAndUpdate(
+        { _id: contentId },
+        {
+          $set: { average: 0, votes: 0 },
+        },
+      );
+    } else {
+      const totalRating = reviews.reduce((acc, cur) => (acc += cur.rating), 0);
+      await Content.findOneAndUpdate(
+        { _id: contentId },
+        {
+          $set: {
+            average: totalRating / reviews.length,
+            votes: reviews.length,
+          },
+        },
+      );
+    }
   } catch (err) {
     throw { success: false, message: '평점 업데이트 에러 발생' };
   }
