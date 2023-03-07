@@ -5,8 +5,8 @@ import styled, { css } from 'styled-components';
 import { getComments } from 'services/comments';
 import { useSetRecoilState } from 'recoil';
 import { contentIdState } from 'atom/atom';
-
 import { cineneKeys } from 'utils/keys';
+
 import CommentForm from './CommentForm';
 import CommentItem from './CommentItem';
 

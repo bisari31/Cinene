@@ -17,7 +17,7 @@ export const getLikes = async (type: IdType, id?: string, userId?: string) => {
   return data;
 };
 
-export const upLike = async (obj: { type: IdType; id?: string }) => {
+export const like = async (obj: { type: IdType; id?: string }) => {
   if (!obj.id) return;
   const { data } = await axios.post<IResponse>(`/likes/${obj.type}/${obj.id}`);
   return data;

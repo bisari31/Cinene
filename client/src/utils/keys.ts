@@ -30,11 +30,12 @@ export const cineneKeys = {
   topRated: () => [...cineneKeys.default, 'topRated'],
   favorites: () => [...cineneKeys.default, 'favorites'],
   comments: (id?: string) => [...cineneKeys.default, id, 'comments'],
-  reviews: (path?: MediaTypes, id?: number) => [
+  reviews: (path?: MediaTypes, id?: number, loggedIn?: boolean) => [
     ...cineneKeys.default,
     path,
     id,
     'reviews',
+    { loggedIn },
   ],
   detail: (path?: MediaTypes, id?: number) => [...cineneKeys.default, path, id],
   newDetail: (path?: MediaTypes, id?: number) => [
@@ -43,11 +44,12 @@ export const cineneKeys = {
     path,
     id,
   ],
-  likes: (path?: MediaTypes, id?: number) => [
+  likes: (path?: 'comments' | 'content', id?: string, loggedIn?: boolean) => [
     ...cineneKeys.default,
     path,
     id,
     'likes',
+    { loggedIn },
   ],
 };
 

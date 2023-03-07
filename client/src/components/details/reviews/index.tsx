@@ -30,7 +30,7 @@ function Reviews(
 
   const { data: authData } = useAuthQuery();
   const { data: reivewData } = useQuery(
-    cineneKeys.reviews(data?.type, data?.tmdbId),
+    cineneKeys.reviews(data?.type, data?.tmdbId, authData?.success),
     () => getReviews(data?._id, data?.type, authData?.user?._id),
   );
 
