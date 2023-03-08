@@ -60,7 +60,6 @@ export default function Form({
   } = useInput('email');
 
   const [serverErrorMessage, setServerErrorMessage] = useState('');
-
   const isLogin = type === 'login';
 
   const setUserId = useSetRecoilState(userIdState);
@@ -191,14 +190,4 @@ export default function Form({
   );
 }
 
-const StyledForm = styled.form`
-  padding: 3em;
-
-  & > p {
-    color: ${({ theme }) => theme.colors.red};
-    font-size: 0.8rem;
-    font-weight: 300;
-    height: 12.9px;
-    text-align: center;
-  }
-`;
+const StyledForm = styled.form``;

@@ -1,4 +1,4 @@
-import { model, Schema, Model, ObjectId } from 'mongoose';
+import { model, Schema, Model, ObjectId, BooleanExpression } from 'mongoose';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
@@ -28,6 +28,10 @@ export interface UserModel extends Model<IUser, {}, UserMethods> {
     password: string,
     isLogin?: boolean,
   ): Promise<false | IUserDocument>;
+  findUserInfo(
+    nickname: string,
+    email?: string,
+  ): Promise<{ success: boolean; code?: number }>;
 }
 
 const PRIVATE_KEY = process.env.PRIVATE_KEY!;
@@ -47,7 +51,7 @@ const userSchema = new Schema<IUser>(
     },
     img: {
       type: String,
-      default: 'default.jpg',
+      default: '',
     },
     token: {
       type: String,
@@ -101,6 +105,35 @@ userSchema.statics.findPassword = async function (
   } catch (err) {
     return false;
   }
+};
+
+userSchema.statics.findUserInfo = async function (
+  nickname: string,
+  email?: string,
+) {
+  let hasEmail = false;
+  if (email) {
+    const findEmail = await User.findOne({ email });
+    hasEmail = !!findEmail;
+  }
+  const hasNickname = await User.findOne({
+    nickname,
+  });
+  const getErrorCode = () => {
+    let code = 0;
+    if (hasNickname && hasEmail) code = 3;
+    else if (hasEmail) code = 1;
+    else if (hasNickname) code = 2;
+    return code;
+  };
+  const errorCode = getErrorCode();
+  if (errorCode) {
+    return {
+      success: false,
+      code: errorCode,
+    };
+  }
+  return { success: true };
 };
 
 const User = model<IUser, UserModel>('User', userSchema);

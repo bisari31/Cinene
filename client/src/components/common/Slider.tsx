@@ -132,7 +132,7 @@ export default function Slider({ children, title }: Props) {
 
   useEffect(() => {
     if (ref.current) ref.current.style.transform = `translateX(${currentX}px)`;
-  }, [currentX, ref]);
+  }, [currentX]);
 
   useEffect(() => {
     window.addEventListener('resize', getThrottleWidth);

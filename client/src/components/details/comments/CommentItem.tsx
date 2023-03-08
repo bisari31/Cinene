@@ -39,7 +39,7 @@ function CommentItem({
   return (
     <>
       <Item key={commentItem?._id} isResponse={isResponse}>
-        <img src={USER_IMAGE} alt="user_poster" />
+        <img src={commentItem?.userId.img || USER_IMAGE} alt="user_poster" />
         <Content date={useGetRelativeTime(commentItem?.createdAt)}>
           <div>
             <p>{commentItem?.userId.nickname}</p>

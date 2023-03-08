@@ -3,8 +3,12 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { ERROR_MESSAGE } from 'components/user/login/Form';
 import { regexObj, RegexType } from 'utils/regex';
 
-export default function useInput(type: RegexType, password?: string) {
-  const [value, setValue] = useState('');
+export default function useInput(
+  type: RegexType,
+  password?: string,
+  prevValue?: string,
+) {
+  const [value, setValue] = useState(prevValue ?? '');
   const [error, setError] = useState('');
   const ref = useRef<HTMLInputElement>(null);
 

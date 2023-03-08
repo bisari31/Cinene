@@ -22,6 +22,7 @@ export default function App() {
         <Route index element={<LandingPage />} />
         <Route path="/login" element={<AuthLoginPage />} />
         <Route path="/register" element={<AuthRegisterPage />} />
+        <Route path="/kakao-register" element={<AuthRegisterPage />} />
         <Route path="/mypage" element={<AuthMypage />} />
         <Route path="/movie/:id" element={<DetailPage />} />
         <Route path="/tv/:id" element={<DetailPage />} />

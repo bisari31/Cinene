@@ -28,7 +28,7 @@ export default function ReviewItem({ review, auth, onClick }: IProps) {
 
   return (
     <Item>
-      <img src={USER_IMAGE} alt="user_avatar" />
+      <img src={review.userId.img || USER_IMAGE} alt="user_avatar" />
       <Content date={useGetRelativeTime(review.createdAt, review.updatedAt)}>
         <div>
           <p>{review.userId.nickname}</p>

@@ -16,7 +16,7 @@ export default function Profile({ children, user }: IProps) {
     <UserProfileWrapper>
       <Section>
         <ImgWrapper>
-          <img src={USER_IMAGE} alt="profile" />
+          <img src={user?.img ?? USER_IMAGE} alt="profile" />
           <button type="button">
             <Upload />
           </button>

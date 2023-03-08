@@ -6,6 +6,7 @@ interface IProps {
   value: string | undefined;
   type: 'text' | 'password' | 'email';
   label?: string;
+  isDisabled?: boolean;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
   errorMessage?: string;
@@ -14,13 +15,18 @@ interface IProps {
 }
 
 function Input(
-  { label = '', errorMessage = '', ...rest }: IProps,
+  { label = '', errorMessage = '', isDisabled = false, ...rest }: IProps,
   ref: React.ForwardedRef<HTMLInputElement>,
 ) {
   return (
     <InputWrapper>
       <label htmlFor="">{label}</label>
-      <StyledInput isError={!!errorMessage} ref={ref} {...rest} />
+      <StyledInput
+        isError={!!errorMessage}
+        ref={ref}
+        {...rest}
+        disabled={isDisabled}
+      />
       <ErrorMessage>{errorMessage}</ErrorMessage>
     </InputWrapper>
   );

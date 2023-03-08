@@ -63,3 +63,14 @@ export const changeNickname = async (nickname: string) => {
   });
   return data;
 };
+
+export const kakaoLogin = async (code: string) => {
+  const { data } = await axios.get<{
+    success: boolean;
+    user: IUser;
+    id: string;
+    info?: { nickname?: string; email: string };
+  }>(`/users/kakao-login/${code}`);
+
+  return data;
+};

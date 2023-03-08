@@ -4,7 +4,7 @@ import User, { IUser } from '../models/user';
 export interface IRequest<T> extends Request {
   body: T;
   user?: IUser;
-  cookies: { auth?: string };
+  cookies: { auth?: string; kakao?: string };
 }
 
 export const authenticate = async (
