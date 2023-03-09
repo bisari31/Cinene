@@ -46,14 +46,16 @@ export default function FavoriteItem({ item }: IProps) {
 
 const FavoriteItemWrapper = styled.li`
   display: flex;
+  height: 100%;
   position: relative;
+  width: 100%;
   a {
     height: 100%;
     width: 100%;
     img {
       border-radius: 10px;
-      object-fit: cover;
       height: 100%;
+      object-fit: cover;
       width: 100%;
     }
     span {
