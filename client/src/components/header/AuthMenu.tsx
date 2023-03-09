@@ -30,7 +30,7 @@ export default function AuthMenu({ setIsVisible, data }: Props) {
           <>
             <UserInfo>
               <Link to="/mypage">
-                <img src={data.user?.img ?? USER_IMAGE} alt="user_image" />
+                <img src={data.user?.img || USER_IMAGE} alt="user_image" />
               </Link>
             </UserInfo>
             <BtnMenu className="logout_button">

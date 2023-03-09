@@ -206,13 +206,13 @@ router.get('/kakao-login/:code', async (req, res: Response<IResponse>) => {
       },
     );
 
-    const user = await User.findOne({ email: `kakao@${userData.id}` });
+    const user = await User.findOne({ email: `${userData.id}@kakao` });
     if (!user) {
       return res.cookie('kakao', data.access_token).json({
         success: true,
         info: {
           nickname: userData.properties.nickname ?? '',
-          email: `kakao@${userData.id}`,
+          email: `${userData.id}@kakao`,
         },
       });
     }
@@ -246,7 +246,7 @@ router.post(
         });
       }
       const user = await User.create({
-        email: `kakao@${data.id}`,
+        email: `${data.id}@kakao`,
         img: data.properties.profile_image ?? '',
         nickname: req.body.nickname,
       });
