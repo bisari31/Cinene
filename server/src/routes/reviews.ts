@@ -58,12 +58,10 @@ router.patch(
       );
 
       await Review.updateRatings(req.body.contentId, req.body.contentType);
-
-      if (!review) throw { success: false, message: '리뷰 찾기 실패' };
-
+      if (!review) throw Error();
       res.json({ success: true, review });
     } catch (err) {
-      res.status(404).json(...err);
+      res.status(404).json({ success: false, message: '리뷰 찾기 실패' });
     }
   },
 );
@@ -77,9 +75,9 @@ router.get('/:type/:id', async (req: CustomRequest, res: Response<IData>) => {
     }).populate('userId');
 
     if (!req.query.userId) {
-      return res.json({ success: true, reviews, hasReview: null });
+      res.json({ success: true, reviews, hasReview: null });
+      return;
     }
-
     const myReview = await Review.findOne({
       contentType: type,
       contentId: id,
@@ -94,12 +92,12 @@ router.get('/:type/:id', async (req: CustomRequest, res: Response<IData>) => {
 router.delete('/:id', authenticate, async (req, res: Response<IData>) => {
   try {
     const review = await Review.findByIdAndDelete(req.params.id);
-    if (!review)
-      return res
-        .status(400)
-        .json({ success: false, message: '리뷰를 찾을 수 없음' });
-    await Review.updateRatings(review?.contentId, review?.contentType);
-    res.json({ success: true });
+    if (!review) {
+      res.status(400).json({ success: false, message: '리뷰를 찾을 수 없음' });
+    } else {
+      await Review.updateRatings(review?.contentId, review?.contentType);
+      res.json({ success: true });
+    }
   } catch (err) {
     res.status(500).json({ success: false, message: '서버 에러' });
   }

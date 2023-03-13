@@ -1,4 +1,4 @@
-import { model, Schema, Model, ObjectId, BooleanExpression } from 'mongoose';
+import { model, Schema, Model, ObjectId } from 'mongoose';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
@@ -34,7 +34,7 @@ export interface UserModel extends Model<IUser, {}, UserMethods> {
   ): Promise<{ success: boolean; code?: number }>;
 }
 
-const PRIVATE_KEY = process.env.PRIVATE_KEY!;
+const { PRIVATE_KEY } = process.env;
 
 const userSchema = new Schema<IUser>(
   {
@@ -68,14 +68,10 @@ const userSchema = new Schema<IUser>(
 );
 
 userSchema.methods.generateToken = async function () {
-  try {
-    const token = jwt.sign(this._id.toString(), `${PRIVATE_KEY}`);
-    this.token = token;
-    const user: IUser = await this.save();
-    return user;
-  } catch (err) {
-    console.log(err);
-  }
+  const token = jwt.sign(this._id.toString(), `${PRIVATE_KEY}`);
+  this.token = token;
+  const user: IUser = await this.save();
+  return user;
 };
 
 userSchema.statics.findToken = async function (

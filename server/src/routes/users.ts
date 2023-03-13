@@ -1,4 +1,4 @@
-import { Response, Router, Request } from 'express';
+import { Response, Router } from 'express';
 import bcrypt from 'bcrypt';
 import axios from 'axios';
 
@@ -44,10 +44,11 @@ router.post(
         req.body.email,
       );
       if (code) {
-        return res.json({
+        res.json({
           success,
           code,
         });
+        return;
       }
       const hash = await bcrypt.hash(req.body.password, SALT_ROUNDS);
       const user = await User.create({
@@ -73,24 +74,24 @@ router.post(
         true,
       );
       if (!user) {
-        return res.json({
+        res.json({
           success: false,
           message: '아이디 또는 비밀번호가 올바르지 않습니다.',
         });
-      }
-      if (!user.active)
-        return res.json({
+      } else if (!user.active) {
+        res.json({
           success: false,
           message: '탈퇴한 유저입니다.',
           code: 1,
         });
-
-      const newUser = await user.generateToken();
-      res
-        .cookie('auth', newUser.token, {
-          expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365),
-        })
-        .json({ success: true, user: newUser });
+      } else {
+        const newUser = await user.generateToken();
+        res
+          .cookie('auth', newUser.token, {
+            expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365),
+          })
+          .json({ success: true, user: newUser });
+      }
     } catch (err) {
       res.status(400).send({ success: false, message: '서버 에러' });
     }
@@ -116,12 +117,12 @@ router.post(
   async (req: IRequest<{ password: string }>, res: Response<IResponse>) => {
     try {
       const user = await User.findPassword(req.user?._id, req.body.password);
-      if (!user)
-        return res.json({
+      if (!user) {
+        res.json({
           success: false,
           message: '비밀번호가 일치하지 않습니다.',
         });
-      res.json({ success: true });
+      } else res.json({ success: true });
     } catch (err) {
       res.status(400).send({ success: false });
     }
@@ -137,11 +138,13 @@ router.patch(
   ) => {
     try {
       const user = await User.findPassword(req.user?._id, req.body.password);
-      if (!user)
-        return res.json({
+      if (!user) {
+        res.json({
           success: false,
           message: '비밀번호가 일치하지 않습니다.',
         });
+        return;
+      }
       const hash = await bcrypt.hash(req.body.nextPassword, SALT_ROUNDS);
       const isChanged = await User.findByIdAndUpdate(req.user?._id, {
         $set: { password: hash },
@@ -208,13 +211,14 @@ router.get('/kakao-login/:code', async (req, res: Response<IResponse>) => {
 
     const user = await User.findOne({ email: `${userData.id}@kakao` });
     if (!user) {
-      return res.cookie('kakao', data.access_token).json({
+      res.cookie('kakao', data.access_token).json({
         success: true,
         info: {
           nickname: userData.properties.nickname ?? '',
           email: `${userData.id}@kakao`,
         },
       });
+      return;
     }
     const newUser = await user.generateToken();
     res
@@ -240,10 +244,11 @@ router.post(
       );
       const { success, code } = await User.findUserInfo(req.body.nickname);
       if (code) {
-        return res.json({
+        res.json({
           success,
           code,
         });
+        return;
       }
       const user = await User.create({
         email: `${data.id}@kakao`,

@@ -14,10 +14,13 @@ export const authenticate = async (
 ) => {
   try {
     const user = await User.findToken(req.cookies.auth);
-    if (!user) return res.send({ success: false });
+    if (!user) {
+      res.send({ success: false });
+      return;
+    }
     req.user = user;
     next();
   } catch (err) {
-    return res.send({ success: false, message: '로그인 실패' });
+    res.send({ success: false, message: '로그인 실패' });
   }
 };

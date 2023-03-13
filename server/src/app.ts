@@ -13,8 +13,8 @@ import likesRouter from './routes/likes';
 dotenv.config();
 const app = express();
 
-const PORT = process.env.PORT;
-const DB_URI = process.env.DB_URI!;
+const { PORT } = process.env;
+const DB_URI = process.env.DB_URL as string;
 
 mongoose.connect(DB_URI, { dbName: 'cinene' }, (err) => {
   if (err) console.log(err);
