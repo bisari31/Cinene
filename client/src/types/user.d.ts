@@ -3,21 +3,11 @@ interface IUser {
   email: string;
   img: string;
   nickname: string;
-  password: string;
-  token: string;
-  updatedAt: string;
+  refresh_token: string;
+  updatedAt: Date;
   __v: number;
   _id: string;
   active: boolean;
-}
-
-interface ILoginError {
-  response: {
-    data: {
-      success: boolean;
-      message: string;
-    };
-  };
 }
 
 interface IAuthData {

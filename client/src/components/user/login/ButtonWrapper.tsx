@@ -9,12 +9,12 @@ import { useQuery, useQueryClient } from 'react-query';
 import { userKeys } from 'utils/keys';
 import { kakaoLogin } from 'services/user';
 import { useSetRecoilState } from 'recoil';
-import { userIdState } from 'atom/atom';
+import { accessTokenState } from 'atom/atom';
 
 export default function ButtonWrapper({ type }: { type: PathName }) {
   const location = useLocation();
   const navigate = useNavigate();
-  const setUserId = useSetRecoilState(userIdState);
+  const setAccessToken = useSetRecoilState(accessTokenState);
   const isKakaoLogin = location.search.includes('code');
   const queryClient = useQueryClient();
 
@@ -29,7 +29,7 @@ export default function ButtonWrapper({ type }: { type: PathName }) {
             state: { nickname: res.info.nickname, email: res.info.email },
           });
         }
-        setUserId(res.user._id);
+        setAccessToken(res.user._id);
         localStorage.setItem('userId', res.user._id);
         queryClient.invalidateQueries(['auth']);
         navigate('/');

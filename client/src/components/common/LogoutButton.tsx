@@ -1,4 +1,4 @@
-import { userIdState } from 'atom/atom';
+import { accessTokenState } from 'atom/atom';
 import { useOutsideClick } from 'hooks';
 import { useSetRecoilState } from 'recoil';
 import { logout } from 'services/user';
@@ -9,14 +9,14 @@ import Modal from './Modal';
 import Portal from './Portal';
 
 export default function LogoutButton() {
-  const setUserId = useSetRecoilState(userIdState);
+  const setAccessToken = useSetRecoilState(accessTokenState);
   const { ref, isVisible, isMotionVisible, toggleModal } = useOutsideClick(300);
 
   const handleLogout = () => {
     toggleModal();
     logout().then(() => {
       localStorage.removeItem('userId');
-      setUserId('');
+      setAccessToken('');
     });
   };
 

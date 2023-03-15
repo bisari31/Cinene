@@ -11,16 +11,19 @@ export default function LoginPage() {
   const { pathname } = useLocation();
 
   const getPathName = () => pathname.slice(1) as 'login' | 'register';
+  const path = getPathName();
+
   const isKakaoForm = pathname.includes('kakao');
+
   return (
     <Wrapper>
       {isKakaoForm ? (
         <KakaoForm>
-          <ButtonWrapper type={getPathName()} />
+          <ButtonWrapper type={path} />
         </KakaoForm>
       ) : (
-        <Form type={getPathName()}>
-          <ButtonWrapper type={getPathName()} />
+        <Form type={path}>
+          <ButtonWrapper type={path} />
         </Form>
       )}
     </Wrapper>

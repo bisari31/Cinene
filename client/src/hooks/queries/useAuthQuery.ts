@@ -2,17 +2,17 @@ import { useQuery } from 'react-query';
 import { useRecoilValue } from 'recoil';
 
 import { auth } from 'services/user';
-import { userIdState } from 'atom/atom';
+import { accessTokenState } from 'atom/atom';
 import { userKeys } from 'utils/keys';
 import usePrevious from '../usePrevious';
 
 export default function useAuthQuery() {
-  const userId = useRecoilValue(userIdState);
-  const prevUserId = usePrevious(userId);
+  const accessToken = useRecoilValue(accessTokenState);
+  const prevAccessToken = usePrevious(accessToken);
 
-  const data = useQuery(userKeys.auth(userId), auth, {
+  const data = useQuery(userKeys.auth(accessToken), auth, {
     retry: 1,
-    enabled: userId !== prevUserId,
+    enabled: accessToken !== prevAccessToken,
   });
 
   return data;

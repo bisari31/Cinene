@@ -25,7 +25,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(morgan('dev'));
 
-app.use('/users', usersRouter);
+app.use('/auth', usersRouter);
 app.use('/contents', contentsRouter);
 app.use('/comments', commentRouter);
 app.use('/likes', likesRouter);

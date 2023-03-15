@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 
-import { userIdState } from 'atom/atom';
+import { accessTokenState } from 'atom/atom';
 import { unregister, checkPassword } from 'services/user';
 import { useInput, useOutsideClick } from 'hooks';
 
@@ -10,10 +10,10 @@ import Button from 'components/common/Button';
 import Input from 'components/common/Input';
 import Portal from 'components/common/Portal';
 import Modal from 'components/common/Modal';
-import { ERROR_MESSAGE } from '../login/Form';
+import { EMPTY_ERROR_MESSAGE } from '../login/Form';
 
 export default function Unregister() {
-  const setUserId = useSetRecoilState(userIdState);
+  const setAccessToken = useSetRecoilState(accessTokenState);
   const {
     value: password,
     error,
@@ -30,10 +30,10 @@ export default function Unregister() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      if (!password) return setError(ERROR_MESSAGE.empty);
+      if (!password) return setError(EMPTY_ERROR_MESSAGE);
       if (error) return;
-      const { success, message } = await checkPassword({ password });
-      return success ? toggleModal() : setError(message);
+      // const { success, message } = await checkPassword({ password });
+      // return success ? toggleModal() : setError(message);
     } catch (err) {
       setError('유저 정보 확인 실패');
     }
@@ -42,7 +42,7 @@ export default function Unregister() {
   const handleUnregister = async () => {
     try {
       await unregister();
-      setUserId('');
+      setAccessToken('');
       localStorage.removeItem('userId');
       navigate('/');
     } catch (err) {

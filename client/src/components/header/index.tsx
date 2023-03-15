@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useEffect } from 'react';
 
 import { useSetRecoilState } from 'recoil';
-import { userIdState } from 'atom/atom';
+import { accessTokenState } from 'atom/atom';
 import { useAuthQuery, useOutsideClick } from 'hooks';
 
 import AuthMenu from './AuthMenu';
@@ -11,17 +11,17 @@ import SearchBar from './SearchBar';
 import SideMenu from './SideMenu';
 
 export default function Header() {
-  const setUserId = useSetRecoilState(userIdState);
+  const setAccessToken = useSetRecoilState(accessTokenState);
   const { data } = useAuthQuery();
 
   const { ref, isVisible, toggleModal, isMotionVisible } = useOutsideClick(300);
 
   useEffect(() => {
-    const item = localStorage.getItem('userId');
+    const item = localStorage.getItem('accessToken');
     if (item) {
-      setUserId(item);
+      setAccessToken(item);
     }
-  }, [setUserId]);
+  }, [setAccessToken]);
 
   return (
     <HeaderWrapper>

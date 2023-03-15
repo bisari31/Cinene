@@ -9,7 +9,7 @@ import Button from 'components/common/Button';
 import Input from 'components/common/Input';
 import Modal from 'components/common/Modal';
 import Portal from 'components/common/Portal';
-import { ERROR_MESSAGE } from '../login/Form';
+import { EMPTY_ERROR_MESSAGE } from '../login/Form';
 
 export default function ChangePassword() {
   const [severErrorMessage, setServerErrorMessage] = useState('');
@@ -44,16 +44,16 @@ export default function ChangePassword() {
       setNextPassword('');
       toggleModal();
     },
-    onError: (err: ILoginError) => {
+    onError: (err: IAxiosError) => {
       setNextPassword('');
       setNextPasswordError(' ');
-      setServerErrorMessage(err.response?.data.message);
+      setServerErrorMessage(err.response.data.message || 'server error');
     },
   });
 
   const checkEmptyValue = () => {
-    if (!password) setPasswordError(ERROR_MESSAGE.empty);
-    if (!nextPassword) setNextPasswordError(ERROR_MESSAGE.empty);
+    if (!password) setPasswordError(EMPTY_ERROR_MESSAGE);
+    if (!nextPassword) setNextPasswordError(EMPTY_ERROR_MESSAGE);
 
     return !password || !nextPassword;
   };

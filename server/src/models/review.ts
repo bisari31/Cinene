@@ -1,31 +1,36 @@
-import { model, ObjectId, Schema, Types, Model } from 'mongoose';
+import { model, ObjectId, Schema, Types, Model, Document } from 'mongoose';
 
-import Content from './content';
+import Content, { IContent } from './content';
+import { IUser } from './user';
 
 export interface IReview {
-  _id: ObjectId;
-  userId: ObjectId;
-  contentId: ObjectId;
-  contentType: string;
+  author: ObjectId | IUser;
+  content: ObjectId | IContent;
+  content_type: string;
   comment: string;
   rating: number;
 }
 
-export interface ReviewModel extends Model<IReview> {
-  updateRatings: (contentId: any, contentType: any) => Promise<void>;
+interface IReviewDocument extends IReview, Document {}
+
+interface IReviewModel extends Model<IReviewDocument> {
+  updateRating: (
+    contentId: Pick<IReview, 'content'>,
+    contentType: Pick<IReview, 'content_type'>,
+  ) => Promise<void>;
 }
 
 const reviewSchema = new Schema<IReview>(
   {
-    userId: {
+    author: {
       type: Types.ObjectId,
       ref: 'User',
     },
-    contentId: {
+    content: {
       type: Types.ObjectId,
       ref: 'Content',
     },
-    contentType: {
+    content_type: {
       type: String,
     },
     comment: {
@@ -38,9 +43,9 @@ const reviewSchema = new Schema<IReview>(
   { timestamps: true },
 );
 
-reviewSchema.statics.updateRatings = async function (
-  contentId: Pick<IReview, 'contentId'>,
-  contentType: Pick<IReview, 'contentType'>,
+reviewSchema.statics.updateRating = async function (
+  contentId: Pick<IReview, 'content'>,
+  contentType: Pick<IReview, 'content_type'>,
 ) {
   try {
     const reviews: IReview[] = await this.find({ contentId, contentType });
@@ -53,7 +58,7 @@ reviewSchema.statics.updateRatings = async function (
         },
       );
     } else {
-      const totalRating = reviews.reduce((acc, cur) => (acc += cur.rating), 0);
+      const totalRating = reviews.reduce((acc, cur) => acc + cur.rating, 0);
       await Content.findOneAndUpdate(
         { _id: contentId },
         {
@@ -65,9 +70,10 @@ reviewSchema.statics.updateRatings = async function (
       );
     }
   } catch (err) {
-    throw { success: false, message: '평점 업데이트 에러 발생' };
+    const error = { success: false, message: '평점 업데이트 에러 발생' };
+    throw error;
   }
 };
 
-const Rating = model<IReview, ReviewModel>('Review', reviewSchema);
+const Rating = model<IReviewDocument, IReviewModel>('Review', reviewSchema);
 export default Rating;

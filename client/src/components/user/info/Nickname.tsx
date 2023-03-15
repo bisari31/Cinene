@@ -26,7 +26,7 @@ export default function Nickname() {
   const { refetch, data } = useAuthQuery();
   const { mutate } = useMutation(changeNickname, {
     onSuccess: (res) => {
-      if (!res.success) return setError(res.message ?? '');
+      // if (!res.success) return setError(res.message ?? '');
       inputRef.current?.blur();
       refetch();
     },
