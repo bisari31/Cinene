@@ -21,13 +21,12 @@ interface Props {
 export default function PersonDescription({ data, path, id }: Props) {
   const reviewRef = useRef<HTMLHeadingElement>(null);
 
-  const getKoreanName = (userData: Person | undefined) => {
-    if (!userData) return;
+  const getKoreanName = (userData?: Person) => {
+    if (!userData) return '';
+    const { also_known_as: names, name } = userData;
     const korean = /[가-힣]/;
-    const newName = userData?.also_known_as.filter((text) => korean.test(text));
-    return !newName?.length
-      ? userData?.name
-      : `${newName?.at(-1)} (${userData?.name})`;
+    const newName = names.filter((text) => korean.test(text));
+    return newName?.length ? `${newName?.at(-1)} (${userData?.name})` : name;
   };
 
   const { data: creditData } = useQuery(

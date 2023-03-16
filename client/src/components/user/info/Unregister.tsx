@@ -30,7 +30,10 @@ export default function Unregister() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      if (!password) return setError(EMPTY_ERROR_MESSAGE);
+      if (!password) {
+        setError(EMPTY_ERROR_MESSAGE);
+        return;
+      }
       if (error) return;
       // const { success, message } = await checkPassword({ password });
       // return success ? toggleModal() : setError(message);

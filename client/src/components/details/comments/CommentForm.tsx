@@ -30,7 +30,10 @@ function CommentForm({ responseId, toggleLoginModal }: Props) {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!authUser) return toggleLoginModal();
+    if (!authUser) {
+      toggleLoginModal();
+      return;
+    }
     if (!text) return;
     mutate({
       comment: text,

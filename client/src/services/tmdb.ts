@@ -13,7 +13,6 @@ export const getTrendingMedia = async () => {
 };
 
 export const getMediaDetail = async (id?: number, type?: string) => {
-  if (!id || !type) return;
   const { data } = await axios.get<MovieDetails | TvDetails>(
     `${API_URL}/${type}/${id}`,
     {
@@ -23,8 +22,7 @@ export const getMediaDetail = async (id?: number, type?: string) => {
   return data;
 };
 
-export const getPersonDetail = async (id?: number, type?: string) => {
-  if (!id || !type) return;
+export const getPersonDetail = async (id: number, type: string) => {
   const { data } = await axios.get<Person>(`${API_URL}/${type}/${id}`, {
     params,
   });
@@ -41,8 +39,7 @@ export const getCombinedCredits = async (id: number) => {
   return data;
 };
 
-export const getMediaCredits = async (id?: number, type?: string) => {
-  if (!id || !type) return;
+export const getMediaCredits = async (id: number, type: string) => {
   const { data } = await axios.get<Credits>(
     `${API_URL}/${type}/${id}/credits`,
     {
@@ -52,8 +49,7 @@ export const getMediaCredits = async (id?: number, type?: string) => {
   return data;
 };
 
-export const getSimilarMedia = async (id?: number, type?: string) => {
-  if (!id || !type) return;
+export const getSimilarMedia = async (id: number, type: string) => {
   const { data } = await axios.get<MediaData>(
     `${API_URL}/${type}/${id}/similar`,
     {
@@ -63,8 +59,7 @@ export const getSimilarMedia = async (id?: number, type?: string) => {
   return data.results;
 };
 
-export const getVideos = async (id?: number, type?: string) => {
-  if (!id || !type) return;
+export const getVideos = async (id: number, type: string) => {
   const { data } = await axios.get<Videos>(`${API_URL}/${type}/${id}/videos`, {
     params,
   });
@@ -101,7 +96,6 @@ export const getNowPlayingMovie = async () => {
   return data.results;
 };
 export const searchMedia = async (query: string) => {
-  if (!query) return;
   const { data } = await axios.get<SearchData>(`${API_URL}/search/multi`, {
     params: {
       query,

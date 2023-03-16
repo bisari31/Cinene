@@ -69,11 +69,15 @@ export default function Form({
       setNicknameError,
       setConfirmPasswordError,
     ];
-    return !!values.filter((value, index) => {
-      if (index >= (isLogin ? 2 : 4)) return;
-      if (!value) setErrors[index](EMPTY_ERROR_MESSAGE);
-      return !value.length;
+    const result = values.filter((value, index) => {
+      if (index >= (isLogin ? 2 : 4)) return false;
+      if (!value) {
+        setErrors[index](EMPTY_ERROR_MESSAGE);
+        return true;
+      }
+      return false;
     }).length;
+    return !!result;
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -86,7 +90,10 @@ export default function Form({
       setConfirmPasswordError('비밀번호가 일치하지 않습니다.');
     }
     const body = { email, nickname, password };
-    if (isLogin) return loginMutate(body);
+    if (isLogin) {
+      loginMutate(body);
+      return;
+    }
     registerMutate(body);
   };
 

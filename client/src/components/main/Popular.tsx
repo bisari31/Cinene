@@ -9,21 +9,22 @@ import { getMediaOverview, getMediaTitle } from 'utils/api';
 import { EMPTY_IMAGE } from 'utils/imageUrl';
 import { buttonEffect } from 'styles/css';
 import { useCineneDataQuery, useTrendingMediaQuery } from 'hooks';
-
 import { tmdbKeys } from 'utils/keys';
+
 import AverageButton from './Average';
 
 export default function Popular() {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const { data } = useTrendingMediaQuery();
-  const currentData = data && data[currentIndex];
+  const currentData = data?.[currentIndex];
 
   const { data: detailData } = useQuery(
     tmdbKeys.detail(currentData?.media_type, currentData?.id),
     () => getMediaDetail(currentData?.id, currentData?.media_type),
     {
       staleTime: 1000 * 60 * 60 * 6,
+      enabled: !!currentData,
     },
   );
 

@@ -38,7 +38,8 @@ export default function ChangePassword() {
   const { mutate } = useMutation(changePassword, {
     onSuccess: (data) => {
       if (!data.success) {
-        return setPasswordError(data.message);
+        setPasswordError(data.message);
+        return;
       }
       setPassword('');
       setNextPassword('');
@@ -63,8 +64,10 @@ export default function ChangePassword() {
     const isEmpty = checkEmptyValue();
     const isError = passwordError || nextPasswordError;
     if (isEmpty || isError) return;
-    if (password === nextPassword)
-      return setNextPasswordError('비밀번호가 같습니다');
+    if (password === nextPassword) {
+      setNextPasswordError('비밀번호가 같습니다');
+      return;
+    }
     mutate({ password, nextPassword });
   };
 

@@ -14,12 +14,9 @@ interface Props {
 export default function FavoriteItem({ item }: Props) {
   const mutate = useLikeMutation();
 
-  const getImageUrl = (content?: CineneData) => {
-    if (!content) return;
+  const getImageUrl = (content: CineneData) => {
     const { type, poster } = content;
-    if (poster) {
-      return `${IMAGE_URL}/w400/${poster}`;
-    }
+    if (poster) return `${IMAGE_URL}/w400/${poster}`;
     return type === 'person' ? USER_IMAGE : EMPTY_IMAGE;
   };
 

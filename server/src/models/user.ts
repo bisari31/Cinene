@@ -69,7 +69,7 @@ userSchema.methods.generateToken = async function (isExpired = false): Promise<{
   accessToken: string;
 }> {
   const accessToken = jwt.sign({ _id: this._id }, `${PRIVATE_KEY}`, {
-    expiresIn: '1000',
+    expiresIn: '2h',
   });
   if (isExpired) return { accessToken };
   const refreshToken = jwt.sign({ _id: this._id }, `${PRIVATE_KEY}`, {

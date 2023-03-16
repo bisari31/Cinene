@@ -66,7 +66,10 @@ export default function Slider({ children, title }: Props) {
     if (!isDown) return;
     setIsDragging(true);
     setX(e);
-    if (currentX > 0) return setCurrentX((prev) => prev / 2);
+    if (currentX > 0) {
+      setCurrentX((prev) => prev / 2);
+      return;
+    }
     if (maxWidth > currentX)
       setCurrentX((prev) => (prev - maxWidth) / 2 + maxWidth);
   };
@@ -120,7 +123,10 @@ export default function Slider({ children, title }: Props) {
   useEffect(() => {
     const checkOutSideClick = (element: React.RefObject<HTMLElement>) => {
       getTransition(element);
-      if (currentX > 0) return setCurrentX(0);
+      if (currentX > 0) {
+        setCurrentX(0);
+        return;
+      }
       if (currentX < maxWidth) setCurrentX(maxWidth);
     };
     if (!isDown) checkOutSideClick(ref);

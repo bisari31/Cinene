@@ -27,7 +27,10 @@ function CommentItem({
   const { auth, data, mutate } = useLike('comments', commentItem?._id);
 
   const handleClick = () => {
-    if (!auth) return toggleLoginModal();
+    if (!auth) {
+      toggleLoginModal();
+      return;
+    }
     mutate({ type: 'commentId', id: commentItem?._id });
   };
 

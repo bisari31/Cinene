@@ -63,10 +63,18 @@ function ReviewModal(
   };
 
   const handleAddReview = () => {
-    if (!comment || comment.length > 50) return setIsCommentError(true);
-    if (!rating) return setIsRatingError(true);
-    if (comment === previousComment && rating === previousRating)
-      return toggleModal();
+    if (!comment || comment.length > 50) {
+      setIsCommentError(true);
+      return;
+    }
+    if (!rating) {
+      setIsRatingError(true);
+      return;
+    }
+    if (comment === previousComment && rating === previousRating) {
+      toggleModal();
+      return;
+    }
     mutate({
       comment,
       rating,

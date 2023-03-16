@@ -35,7 +35,10 @@ export default function Nickname() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (error) return;
-    if (auth?.nickname === nickname) return setError('닉네임이 같습니다.');
+    if (auth?.nickname === nickname) {
+      setError('닉네임이 같습니다.');
+      return;
+    }
     mutate(nickname);
     setIsChanged(true);
     toggleModal();

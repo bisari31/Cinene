@@ -18,7 +18,10 @@ function LikeButton(
 ) {
   const { auth, data, mutate } = useLike('content', cinene?._id);
   const handleMutate = () => {
-    if (!auth) return toggleLoginModal();
+    if (!auth) {
+      toggleLoginModal();
+      return;
+    }
     mutate({ type: 'contentId', id: cinene?._id });
   };
 

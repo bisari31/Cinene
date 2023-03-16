@@ -6,7 +6,7 @@ import { KAKAO_URI } from 'utils/api';
 import { PathName } from 'pages/LoginPage';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from 'react-query';
-import { authKeys } from 'utils/keys';
+// import { authKeys } from 'utils/keys';
 import { kakaoLogin } from 'services/user';
 import { useSetRecoilState } from 'recoil';
 import {} from 'atom/atom';
