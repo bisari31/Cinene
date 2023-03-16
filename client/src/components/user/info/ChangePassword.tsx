@@ -44,7 +44,7 @@ export default function ChangePassword() {
       setNextPassword('');
       toggleModal();
     },
-    onError: (err: IAxiosError) => {
+    onError: (err: AxiosError) => {
       setNextPassword('');
       setNextPasswordError(' ');
       setServerErrorMessage(err.response.data.message || 'server error');

@@ -4,19 +4,21 @@ import styled, { css } from 'styled-components';
 import { Upload } from 'assets';
 import { USER_IMAGE } from 'utils/imageUrl';
 
+import { useAuthQuery } from 'hooks';
 import Nickname from './Nickname';
 
-interface IProps {
+interface Props {
   children: React.ReactNode;
-  user: IUser | undefined;
 }
 
-export default function Profile({ children, user }: IProps) {
+export default function Profile({ children }: Props) {
+  const { auth } = useAuthQuery();
+
   return (
     <UserProfileWrapper>
       <Section>
         <ImgWrapper>
-          <img src={user?.img || USER_IMAGE} alt="profile" />
+          <img src={auth?.img || USER_IMAGE} alt="profile" />
           <button type="button">
             <Upload />
           </button>
@@ -25,11 +27,11 @@ export default function Profile({ children, user }: IProps) {
           <div>
             <Nickname />
           </div>
-          <h3>{user?.email}</h3>
+          <h3>{auth?.email}</h3>
           <div>
             <span>
               가입일:
-              {dayjs(user?.createdAt).format(' YYYY년 MM월 DD일')}
+              {dayjs(auth?.createdAt).format(' YYYY년 MM월 DD일')}
             </span>
           </div>
         </NicknameWrapper>

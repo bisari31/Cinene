@@ -7,10 +7,6 @@ import { useOutsideClick, usePreventScrolling } from 'hooks';
 
 import LogoutButton from 'components/common/LogoutButton';
 
-interface IProps {
-  data?: IAuthData;
-}
-
 const MENU_LIST = [
   {
     name: '검색',
@@ -24,7 +20,11 @@ const MENU_LIST = [
   },
 ];
 
-export default function SideMenu({ data }: IProps) {
+interface Props {
+  auth: User | null;
+}
+
+export default function SideMenu({ auth }: Props) {
   const { ref, toggleModal, isVisible } = useOutsideClick();
 
   const navigate = useNavigate();
@@ -60,7 +60,7 @@ export default function SideMenu({ data }: IProps) {
             </button>
           </Item>
         ))}
-        {data?.success && <LogoutButton />}
+        {auth && <LogoutButton />}
       </SideMenuBar>
     </SideMenuWrapper>
   );

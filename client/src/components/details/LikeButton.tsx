@@ -7,18 +7,18 @@ import { useLike } from 'hooks';
 import withLoginPortal from 'components/hoc/withLoginPortal';
 import React from 'react';
 
-interface IProps {
-  cinene?: ICineneData | null;
+interface Props {
+  cinene?: CineneData | null;
   toggleLoginModal: () => void;
 }
 
 function LikeButton(
-  { cinene, toggleLoginModal }: IProps,
+  { cinene, toggleLoginModal }: Props,
   ref: React.ForwardedRef<HTMLHeadingElement>,
 ) {
-  const { authData, data, mutate } = useLike('content', cinene?._id);
+  const { auth, data, mutate } = useLike('content', cinene?._id);
   const handleMutate = () => {
-    if (!authData?.success) return toggleLoginModal();
+    if (!auth) return toggleLoginModal();
     mutate({ type: 'contentId', id: cinene?._id });
   };
 
@@ -48,7 +48,7 @@ function LikeButton(
 
 export default withLoginPortal<
   {
-    cinene?: ICineneData;
+    cinene?: CineneData;
   },
   HTMLHeadingElement
 >(React.forwardRef(LikeButton));

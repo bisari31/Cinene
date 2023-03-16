@@ -4,14 +4,14 @@ import styled, { css } from 'styled-components';
 import { IMAGE_URL } from 'services/tmdb';
 import { EMPTY_IMAGE } from 'utils/imageUrl';
 
-type Item = ICineneData & IMediaResults;
+type Item = CineneData & MediaResults;
 
-interface IProps {
+interface Props {
   item: Partial<Item>;
   type: 'cinene' | 'tmdb';
 }
 
-export default function TopRatedItem({ item, type }: IProps) {
+export default function TopRatedItem({ item, type }: Props) {
   const typeObj = {
     cinene: {
       link: `/${item.type}/${item.tmdbId}`,

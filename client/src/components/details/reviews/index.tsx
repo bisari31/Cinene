@@ -9,18 +9,21 @@ import { buttonEffect } from 'styles/css';
 import Button from 'components/common/Button';
 import { cineneKeys } from 'utils/keys';
 import withLoginPortal from 'components/hoc/withLoginPortal';
+import { useRecoilState } from 'recoil';
+import { authUserState } from 'atom/atom';
 import ReviewList from './ReviewList';
 import ReviewModal from './ReviewModal';
 
-interface IProps {
-  data?: ICineneData;
+interface Props {
+  data?: CineneData;
   toggleLoginModal: () => void;
 }
 
 function Reviews(
-  { data, toggleLoginModal }: IProps,
+  { data, toggleLoginModal }: Props,
   ref: React.ForwardedRef<HTMLHeadingElement>,
 ) {
+  const { auth } = useAuthQuery();
   const {
     isMotionVisible,
     toggleModal,
@@ -28,14 +31,13 @@ function Reviews(
     ref: modalRef,
   } = useOutsideClick(300);
 
-  const { data: authData } = useAuthQuery();
   const { data: reivewData } = useQuery(
-    cineneKeys.reviews(data?.type, data?.tmdbId, authData?.success),
-    () => getReviews(data?._id, data?.type, authData?.user?._id),
+    cineneKeys.reviews(data?.type, data?.tmdbId, !!auth),
+    () => getReviews(data?._id, data?.type, auth?._id),
   );
 
   const handleClick = () => {
-    if (authData?.success) toggleModal();
+    if (auth) toggleModal();
     else toggleLoginModal();
   };
 
@@ -56,7 +58,7 @@ function Reviews(
       </div>
       <ReviewList
         reviews={reivewData?.reviews}
-        auth={authData?.user}
+        auth={auth}
         onClick={handleClick}
       />
       {isVisible && (
@@ -73,7 +75,7 @@ function Reviews(
   );
 }
 
-export default withLoginPortal<{ data?: ICineneData }, HTMLHeadingElement>(
+export default withLoginPortal<{ data?: CineneData }, HTMLHeadingElement>(
   forwardRef(Reviews),
 );
 

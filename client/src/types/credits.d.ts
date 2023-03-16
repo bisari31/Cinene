@@ -1,10 +1,10 @@
-interface ICredits {
+interface Credits {
   cast: Cast[];
   crew: Crew[];
   id: number;
 }
 
-interface ISearchCrew {
+interface SearchCrew {
   results: Crew[];
 }
 
@@ -36,7 +36,7 @@ interface Crew {
   profile_path: string | null;
 }
 
-interface IPerson {
+interface Person {
   adult: boolean;
   also_known_as: string[];
   biography: null | string;

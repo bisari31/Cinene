@@ -2,12 +2,12 @@ import axios from 'axios';
 
 interface IResponse {
   success: boolean;
-  content: ICineneData | undefined;
+  content: CineneData | undefined;
   message?: string;
 }
 
 export const getContent = async (type?: string, id?: number) => {
-  if (!type) return;
+  if (!type) return null;
 
   const { data } = await axios.get<IResponse>(`/contents/${type}/${id}`);
   return data;
@@ -21,7 +21,7 @@ export const addContent = async (
     poster?: string;
   },
 ) => {
-  if (!body) return;
+  if (!body) return null;
   const { data } = await axios.post<IResponse>('/contents', {
     ...body,
     type,
@@ -30,6 +30,6 @@ export const addContent = async (
 };
 
 export const getTopRated = async () => {
-  const { data } = await axios.get<ITopRatedData>('/contents/top-rated');
+  const { data } = await axios.get<TopRatedData>('/contents/top-rated');
   return data;
 };

@@ -3,13 +3,13 @@ import styled, { css } from 'styled-components';
 
 import { Star } from 'assets';
 
-interface IProps {
-  cinene?: ICineneData | null;
+interface Props {
+  cinene?: CineneData | null;
   tmdb?: number;
   isMedia?: boolean;
 }
 
-function Average({ tmdb, cinene, isMedia = true }: IProps) {
+function Average({ tmdb, cinene, isMedia = true }: Props) {
   const sliceAverage = (num: number | undefined) => {
     if (num) return num.toFixed(1);
     return 0;

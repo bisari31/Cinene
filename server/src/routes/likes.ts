@@ -3,12 +3,12 @@ import { Request, Router } from 'express';
 // import { ICookiesRequest, authenticate } from './middleware';
 
 import Like from '../models/Like';
-import { IUser } from '../models/user';
+import { UserInterface } from '../models/user';
 
 interface CustomRequest extends Request {
   params: { id: string; type: 'commentId' | 'contentId' };
   query: { userId?: string };
-  user?: IUser;
+  user?: UserInterface;
 }
 
 const router = Router();

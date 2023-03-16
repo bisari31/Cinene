@@ -6,48 +6,50 @@ type Body = {
   nickname: string;
 };
 
-export const auth = async () => {
-  const accessToken = localStorage.getItem('accessToken');
-  const { data } = await axios.get<ICustomResponse & { accessToken?: string }>(
-    '/auth',
-    {
-      headers: { authorization: `Bearer ${accessToken}` },
-    },
+const bearer = (token: string) => ({
+  headers: { authorization: `Bearer ${token}` },
+});
+
+export const autheticate = async (token: string) => {
+  const { data } = await axios.get<User | { accessToken?: string }>(
+    '/user',
+    bearer(token),
   );
   return data;
 };
 
-export const logout = async () => {
-  const { data } = await axios.get<{ success: boolean }>('/auth/logout');
+export const logout = async (token: string) => {
+  const { data } = await axios.get<CustomResponse>(
+    '/user/logout',
+    bearer(token),
+  );
   return data;
 };
 
 export const login = async (body: Body) => {
   const { data } = await axios.post<
-    ICustomResponse & {
-      accessToken?: string;
-    }
-  >('/auth/login', body);
+    CustomResponse<{
+      accessToken: string;
+      user: User;
+    }>
+  >('/user/login', body);
   return data;
 };
 
 export const register = async (body: Body) => {
   const { data } = await axios.post<
-    ICustomResponse & {
-      hasNickname?: boolean;
-      hasEmail?: boolean;
-    }
-  >('/auth/register', body);
+    CustomResponse<{ hasNickname?: boolean; hasEmail?: boolean }>
+  >('/user/register', body);
   return data;
 };
 
 export const unregister = async () => {
-  const { data } = await axios.delete('/auth');
+  const { data } = await axios.delete('/user');
   return data;
 };
 
 export const checkPassword = async (password: Pick<Body, 'password'>) => {
-  const { data } = await axios.post<Response>('/auth/check-password', password);
+  const { data } = await axios.post<Response>('/user/check-password', password);
   return data;
 };
 export const changePassword = async (body: {
@@ -55,14 +57,14 @@ export const changePassword = async (body: {
   nextPassword: string;
 }) => {
   const { data } = await axios.patch<{ success: boolean; message: string }>(
-    '/auth/password',
+    '/user/password',
     body,
   );
   return data;
 };
 
 export const changeNickname = async (nickname: string) => {
-  const { data } = await axios.patch<Response>('/auth/nickname', {
+  const { data } = await axios.patch<Response>('/user/nickname', {
     nickname,
   });
   return data;
@@ -71,10 +73,10 @@ export const changeNickname = async (nickname: string) => {
 export const kakaoLogin = async (code: string) => {
   const { data } = await axios.get<{
     success: boolean;
-    user: IUser;
+    user: User;
     id: string;
     info?: { nickname?: string; email: string };
-  }>(`/auth/kakao-login/${code}`);
+  }>(`/user/kakao-login/${code}`);
 
   return data;
 };

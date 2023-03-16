@@ -24,6 +24,6 @@ export const like = async (obj: { type: IdType; id?: string }) => {
 };
 
 export const getFavorites = async () => {
-  const { data } = await axios.get<IFavoritesData>(`/likes/favorites`);
+  const { data } = await axios.get<FavoritesData>(`/likes/favorites`);
   return data;
 };

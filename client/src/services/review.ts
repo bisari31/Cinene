@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const addRating = (obj: IAddReview) =>
+export const addRating = (obj: AddReview) =>
   !obj.isEditing ? createReview(obj) : modifyReview(obj);
 
 export const getReviews = async (
@@ -8,8 +8,8 @@ export const getReviews = async (
   contentType: string | undefined,
   userId?: string,
 ) => {
-  if (!contentId || !contentType) return;
-  const { data } = await axios.get<IReviewData>(
+  if (!contentId || !contentType) return null;
+  const { data } = await axios.get<ReviewData>(
     `/reviews/${contentType}/${contentId}`,
     {
       params: { userId },
@@ -20,16 +20,16 @@ export const getReviews = async (
 };
 
 export const deleteReview = async (id: string) => {
-  const { data } = await axios.delete<IReviewData>(`/reviews/${id}`);
+  const { data } = await axios.delete<ReviewData>(`/reviews/${id}`);
   return data;
 };
 
-const createReview = async (obj: IAddReview) => {
-  const { data } = await axios.post<IReviewData>('/reviews', obj);
+const createReview = async (obj: AddReview) => {
+  const { data } = await axios.post<ReviewData>('/reviews', obj);
   return data;
 };
-const modifyReview = async (obj: IAddReview) => {
-  const { data } = await axios.patch<IReviewData>(
+const modifyReview = async (obj: AddReview) => {
+  const { data } = await axios.patch<ReviewData>(
     `/reviews/${obj.isEditing?._id}`,
     obj,
   );

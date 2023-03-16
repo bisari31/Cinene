@@ -10,13 +10,13 @@ import { useCurrentPathName } from 'hooks';
 
 import { Content, Item } from '../comments/CommentItem';
 
-interface IProps {
+interface Props {
   onClick: () => void;
-  review: IReview;
-  auth?: IUser;
+  review: Review;
+  auth: User | null;
 }
 
-export default function ReviewItem({ review, auth, onClick }: IProps) {
+export default function ReviewItem({ review, auth, onClick }: Props) {
   const { id, path } = useCurrentPathName();
   const queryClient = useQueryClient();
 

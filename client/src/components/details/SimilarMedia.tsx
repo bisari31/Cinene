@@ -6,13 +6,13 @@ import { IMAGE_URL } from 'services/tmdb';
 
 import Slider from 'components/common/Slider';
 
-interface IProps {
-  data?: IMediaResults[];
+interface Props {
+  data?: MediaResults[];
   title: string;
   type?: string;
 }
 
-export default function SimilarMedia({ data, title, type }: IProps) {
+export default function SimilarMedia({ data, title, type }: Props) {
   if (!data?.length) return null;
 
   return (

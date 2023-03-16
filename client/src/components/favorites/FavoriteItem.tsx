@@ -7,14 +7,14 @@ import { IMAGE_URL } from 'services/tmdb';
 import { EMPTY_IMAGE, USER_IMAGE } from 'utils/imageUrl';
 import useLikeMutation from 'hooks/queries/useLikeMutation';
 
-interface IProps {
-  item: IFavoritesContent;
+interface Props {
+  item: FavoritesContent;
 }
 
-export default function FavoriteItem({ item }: IProps) {
+export default function FavoriteItem({ item }: Props) {
   const mutate = useLikeMutation();
 
-  const getImageUrl = (content?: ICineneData) => {
+  const getImageUrl = (content?: CineneData) => {
     if (!content) return;
     const { type, poster } = content;
     if (poster) {

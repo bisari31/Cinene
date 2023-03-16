@@ -8,18 +8,18 @@ import { cineneKeys } from 'utils/keys';
 import Toggle from './Toggle';
 import FavoriteItem from './FavoriteItem';
 
-interface IProps {
-  data?: IAuthData;
+interface Props {
+  auth: User | null;
 }
 
-export default function Favorites({ data }: IProps) {
+export default function Favorites({ auth }: Props) {
   const [selectedType, setSelectedType] = useState(1);
 
   const { data: favoritesData } = useQuery(
     cineneKeys.favorites(),
     getFavorites,
     {
-      enabled: data?.success,
+      enabled: !!auth,
     },
   );
 

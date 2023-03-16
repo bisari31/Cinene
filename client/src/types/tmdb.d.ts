@@ -1,15 +1,15 @@
 type MediaTypes = 'movie' | 'tv' | 'person';
 
-interface IGenre_ids {
+interface Genre_ids {
   id: number;
   name: string;
 }
 
-interface IMediaResults {
+interface MediaResults {
   adult: boolean;
   backdrop_path: string;
   first_air_date?: string;
-  genre_ids: IGenre_ids[];
+  genre_ids: Genre_ids[];
   id: number;
   original_language: string;
   original_title?: string;
@@ -26,19 +26,19 @@ interface IMediaResults {
   vote_count: number;
 }
 
-interface ICombinedCredits {
-  crew: IMediaResults[];
-  cast: IMediaResults[];
+interface CombinedCredits {
+  crew: MediaResults[];
+  cast: MediaResults[];
 }
 
-interface IMediaData {
+interface MediaData {
   page: number;
-  results: IMediaResults[];
+  results: MediaResults[];
   total_pages: number;
   total_results: number;
 }
 
-interface newResults
+interface NewResults
   extends Pick<
       Crew,
       | 'known_for_department'
@@ -47,16 +47,16 @@ interface newResults
       | 'popularity'
       | 'profile_path'
     >,
-    IMediaResults {}
+    MediaResults {}
 
-interface ISearchData {
+interface SearchData {
   page: number;
-  results: newResults[];
+  results: NewResults[];
   total_pages: number;
   total_results: number;
 }
 
-interface IVideos {
+interface Videos {
   id: number;
   results: [
     {
@@ -74,7 +74,7 @@ interface IVideos {
   ];
 }
 
-interface IMovieDetails {
+interface MovieDetails {
   adult: false;
   backdrop_path: string;
   belongs_to_collection: null | object;
@@ -115,7 +115,7 @@ interface IMovieDetails {
   vote_count: number;
 }
 
-interface ITvDetails {
+interface TvDetails {
   adult: false;
   backdrop_path: string;
   created_by: {

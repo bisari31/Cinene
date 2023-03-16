@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { accessTokenState } from 'atom/atom';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
+
+import { authUserState } from 'atom/atom';
 import { login, register } from 'services/user';
 
 export default function useAuthMutation(
@@ -15,21 +16,17 @@ export default function useAuthMutation(
 ) {
   const [message, setMessage] = useState('');
 
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  const setAccessToken = useSetRecoilState(accessTokenState);
+  const setAuthUser = useSetRecoilState(authUserState);
 
   const { mutate: loginMutate } = useMutation(login, {
-    onSuccess: ({ accessToken }) => {
-      if (accessToken) {
-        setAccessToken(accessToken);
-        localStorage.setItem('accessToken', accessToken);
-        queryClient.invalidateQueries(['auth']);
-        navigate('/');
-      }
+    onSuccess: ({ accessToken, user }) => {
+      setAuthUser(user);
+      localStorage.setItem('accessToken', accessToken);
+      navigate('/');
     },
-    onError: (err: IAxiosError) => {
+    onError: (err: AxiosError) => {
       const { data, status } = err.response;
       if (status === 404) {
         setPassword('');
@@ -46,7 +43,7 @@ export default function useAuthMutation(
   const { mutate: registerMutate } = useMutation(register, {
     onSuccess: () => navigate('/login'),
     onError: (
-      err: IAxiosError<{
+      err: AxiosError<{
         hasNickname?: boolean;
         hasEmail?: boolean;
       }>,

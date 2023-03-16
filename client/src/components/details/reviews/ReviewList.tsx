@@ -3,13 +3,13 @@ import styled from 'styled-components';
 
 import ReviewItem from './ReviewItem';
 
-interface IProps {
+interface Props {
   onClick: () => void;
-  reviews?: IReview[];
-  auth?: IUser;
+  reviews?: Review[];
+  auth: User | null;
 }
 
-function ReviewList({ reviews, auth, onClick }: IProps) {
+function ReviewList({ reviews, auth, onClick }: Props) {
   return (
     <ReviewListWrapper>
       {reviews?.map((review) => (

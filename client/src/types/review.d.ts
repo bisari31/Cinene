@@ -1,20 +1,20 @@
-interface IAddReview {
+interface AddReview {
   comment: string;
   rating: number;
   contentType: string | undefined;
   contentId: string | undefined;
-  isEditing: IReview | null;
+  isEditing: Review | null;
 }
 
-interface IReviewData {
+interface ReviewData {
   success: boolean;
   message?: string;
-  reviews?: IReview[];
-  review?: IReview;
-  hasReview?: IDocument | null;
+  reviews?: Review[];
+  review?: Review;
+  hasReview?: Review | null;
 }
 
-interface IReview {
+interface Review {
   contentId: string;
   contentType: string;
   createdAt: string;
@@ -23,5 +23,5 @@ interface IReview {
   updatedAt: string;
   __v: number;
   _id: string;
-  userId: IUser;
+  userId: User;
 }

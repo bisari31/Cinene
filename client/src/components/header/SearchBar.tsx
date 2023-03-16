@@ -77,18 +77,18 @@ function SearchBar(
     }
   };
 
-  const handleClickNavigation = (item: newResults) => {
+  const handleClickNavigation = (item: NewResults) => {
     navigate(`/${item.media_type}/${item.id}`);
     if (!isMobile) toggleModal();
   };
 
-  const getSearchTitle = (item: newResults) => {
+  const getSearchTitle = (item: NewResults) => {
     if (item.media_type === 'tv') return `${item.name} (TV)`;
     if (item.media_type === 'movie') return `${item.title} (영화)`;
     return `${item.name} (인물)`;
   };
 
-  const getSearchImage = (item: newResults) => {
+  const getSearchImage = (item: NewResults) => {
     const url = `${IMAGE_URL}/w200/`;
     if (item.media_type === 'person') {
       return item.profile_path ? url + item.profile_path : USER_IMAGE;

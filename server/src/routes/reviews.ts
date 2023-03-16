@@ -2,7 +2,7 @@ import { Request, Router, Response } from 'express';
 
 // import { ICookiesRequest, authenticate } from './middleware';
 
-import Review, { IReview } from '../models/review';
+import Review, { ReviewInterface } from '../models/review';
 
 // interface CustomRequest extends Request {
 //   params: { type: string; id: string };
@@ -18,9 +18,9 @@ import Review, { IReview } from '../models/review';
 // interface IData {
 //   message?: string;
 //   success: boolean;
-//   review?: IReview;
-//   reviews?: IReview[];
-//   hasReview?: null | IReview;
+//   review?: ReviewInterface;
+//   reviews?: ReviewInterface[];
+//   hasReview?: null | ReviewInterface;
 // }
 
 const router = Router();
@@ -28,7 +28,7 @@ const router = Router();
 // router.post(
 //   '/',
 //   authenticate,
-//   async (req: ICustomRequest<IReview>, res: Response<IData>) => {
+//   async (req: ICustomRequest<ReviewInterface>, res: Response<IData>) => {
 //     try {
 //       const review = await Review.create({
 //         contentId: req.body.contentId,
@@ -50,7 +50,7 @@ const router = Router();
 // router.patch(
 //   '/:id',
 //   authenticate,
-//   async (req: PatchRequst<IReview>, res: Response<IData>) => {
+//   async (req: PatchRequst<ReviewInterface>, res: Response<IData>) => {
 //     try {
 //       const review = await Review.findOneAndUpdate(
 //         { _id: req.params.id },

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useEffect } from 'react';
 
 import { useSetRecoilState } from 'recoil';
-import { accessTokenState } from 'atom/atom';
+import { authUserState } from 'atom/atom';
 import { useAuthQuery, useOutsideClick } from 'hooks';
 
 import AuthMenu from './AuthMenu';
@@ -11,22 +11,22 @@ import SearchBar from './SearchBar';
 import SideMenu from './SideMenu';
 
 export default function Header() {
-  const setAccessToken = useSetRecoilState(accessTokenState);
-  const { data } = useAuthQuery();
+  // const setAuthUser = useSetRecoilState(authUserState);
+  const { auth } = useAuthQuery();
 
   const { ref, isVisible, toggleModal, isMotionVisible } = useOutsideClick(300);
 
-  useEffect(() => {
-    const item = localStorage.getItem('accessToken');
-    if (item) {
-      setAccessToken(item);
-    }
-  }, [setAccessToken]);
+  // useEffect(() => {
+  //   const item = localStorage.getItem('accessToken');
+  //   if (item) {
+  //     setAuthUser(item);
+  //   }
+  // }, [setAuthUser]);
 
   return (
     <HeaderWrapper>
       <Logo>
-        <SideMenu data={data} />
+        <SideMenu auth={auth} />
         <h1>
           <Link to="/">Cinene</Link>
         </h1>
@@ -40,7 +40,7 @@ export default function Header() {
           />
         </SearchWrapper>
       )}
-      <AuthMenu data={data} setIsVisible={toggleModal} />
+      <AuthMenu auth={auth} setIsVisible={toggleModal} />
     </HeaderWrapper>
   );
 }

@@ -3,7 +3,7 @@ import { addContent, getContent } from 'services/contents';
 import { cineneKeys } from 'utils/keys';
 
 export default function useCineneDataQuery(
-  body?: IMovieDetails | ITvDetails | IPerson,
+  body?: MovieDetails | TvDetails | Person,
   type?: MediaTypes,
   id?: number,
   personName?: string,

@@ -12,12 +12,8 @@ interface Props {
   type: 'cinene' | 'tmdb';
 }
 const TITLE = {
-  cinene: {
-    title: '씨네네 최고 평점',
-  },
-  tmdb: {
-    title: 'TMDB 최고 평점',
-  },
+  cinene: '씨네네 최고 평점',
+  tmdb: 'TMDB 최고 평점',
 };
 
 export default function TopRated({ type }: Props) {
@@ -31,7 +27,7 @@ export default function TopRated({ type }: Props) {
 
   return (
     <TopRatedWrapper>
-      <Slider title={TITLE[type].title}>
+      <Slider title={TITLE[type]}>
         <ul>
           {type === 'cinene'
             ? cinene?.contents.map((item) => (

@@ -1,16 +1,12 @@
 import styled from 'styled-components';
 
-import { useAuthQuery } from 'hooks';
-
 import Tab from 'components/user/info/Tab';
 import Profile from 'components/user/info/Profile';
 
 export default function MyPage() {
-  const { data } = useAuthQuery();
-
   return (
     <MypageWrapper>
-      <Profile user={data?.user}>
+      <Profile>
         <Tab />
       </Profile>
     </MypageWrapper>

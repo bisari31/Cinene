@@ -1,4 +1,4 @@
-interface ICineneData {
+interface CineneData {
   average: number;
   votes: number;
   name: string;
@@ -9,19 +9,19 @@ interface ICineneData {
   _id: string;
 }
 
-interface IFavoritesContent {
-  contentId: ICineneData;
+interface FavoritesContent {
+  contentId: CineneData;
   userId: string;
   __v: number;
   _id: string;
 }
 
-interface IFavoritesData {
-  contents: IFavoritesContent[];
+interface FavoritesData {
+  contents: FavoritesContent[];
   success: boolean;
 }
 
-interface ITopRatedData {
-  contents: ICineneData[];
+interface TopRatedData {
+  contents: CineneData[];
   success: boolean;
 }

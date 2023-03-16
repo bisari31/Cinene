@@ -12,16 +12,16 @@ import Comment from './comments';
 import Like from './LikeButton';
 import Reviews from './reviews';
 
-interface IProps {
-  data?: IPerson;
+interface Props {
+  data?: Person;
   path: MediaTypes;
   id: number;
 }
 
-export default function PersonDescription({ data, path, id }: IProps) {
+export default function PersonDescription({ data, path, id }: Props) {
   const reviewRef = useRef<HTMLHeadingElement>(null);
 
-  const getKoreanName = (userData: IPerson | undefined) => {
+  const getKoreanName = (userData: Person | undefined) => {
     if (!userData) return;
     const korean = /[가-힣]/;
     const newName = userData?.also_known_as.filter((text) => korean.test(text));
@@ -38,9 +38,9 @@ export default function PersonDescription({ data, path, id }: IProps) {
 
   const cineneData = useCineneDataQuery(data, path, id, getKoreanName(data));
 
-  const setCreditData = (array?: IMediaResults[]) => {
+  const setCreditData = (array?: MediaResults[]) => {
     const duplication = array?.reduce(
-      (acc: IMediaResults[], cur: IMediaResults) => {
+      (acc: MediaResults[], cur: MediaResults) => {
         if (acc.findIndex((prev) => prev.id === cur.id) === -1) {
           acc.push(cur);
         }

@@ -23,20 +23,19 @@ export default function Nickname() {
   } = useInput('nickname');
 
   const { ref, isVisible, toggleModal, isMotionVisible } = useOutsideClick();
-  const { refetch, data } = useAuthQuery();
+  const { auth, setAuth } = useAuthQuery();
   const { mutate } = useMutation(changeNickname, {
     onSuccess: (res) => {
       // if (!res.success) return setError(res.message ?? '');
       inputRef.current?.blur();
-      refetch();
+      // setAuth(res)
     },
   });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (error) return;
-    if (data?.user?.nickname === nickname)
-      return setError('닉네임이 같습니다.');
+    if (auth?.nickname === nickname) return setError('닉네임이 같습니다.');
     mutate(nickname);
     setIsChanged(true);
     toggleModal();
@@ -65,8 +64,8 @@ export default function Nickname() {
   );
 
   useEffect(() => {
-    if (data?.user) setNickname(data?.user.nickname);
-  }, [data?.user, setNickname]);
+    if (auth) setNickname(auth.nickname);
+  }, [auth, setNickname]);
 
   return (
     <Form onSubmit={handleSubmit} isEmpty={!nickname.length} isError={!!error}>
@@ -74,7 +73,7 @@ export default function Nickname() {
         placeholder="특수문자 제외 2~10자"
         onKeyDown={handleKeyDown}
         onFocus={handleFocus}
-        onBlur={() => handleBlur(data?.user?.nickname)}
+        onBlur={() => handleBlur(auth?.nickname)}
         errorMessage={error}
         ref={inputRef}
         type="text"

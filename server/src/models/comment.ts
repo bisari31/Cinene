@@ -1,16 +1,17 @@
 import { model, ObjectId, Schema, Types } from 'mongoose';
 
-import { IContent } from './content';
-import { IUser } from './user';
+import { ContentInterface } from './content';
+import { UserInterface } from './user';
 
-export interface IComment {
+export interface CommentInterface {
+  _id: ObjectId;
   comment: string;
-  author: ObjectId | IUser;
-  content: ObjectId | IContent;
-  parent_comment_author: ObjectId | IUser;
+  author: ObjectId | UserInterface;
+  content: ObjectId | ContentInterface;
+  parent_comment_author: ObjectId | UserInterface;
 }
 
-const commentSchema = new Schema<IComment>(
+const commentSchema = new Schema<CommentInterface>(
   {
     author: {
       type: Types.ObjectId,

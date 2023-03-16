@@ -12,12 +12,12 @@ const TOGGLE_OPTION = [
   },
 ];
 
-interface IProps {
+interface Props {
   selectedType: number;
   setSelectedType: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export default function Toggle({ selectedType, setSelectedType }: IProps) {
+export default function Toggle({ selectedType, setSelectedType }: Props) {
   return (
     <ToggleWrapper selectedType={selectedType}>
       <div>

@@ -53,7 +53,7 @@ export const cineneKeys = {
   ],
 };
 
-export const userKeys = {
-  default: ['user'],
-  auth: (id?: string) => [...userKeys.default, id],
+export const authKeys = {
+  default: ['auth'],
+  id: (id?: string) => [...authKeys.default, id],
 };

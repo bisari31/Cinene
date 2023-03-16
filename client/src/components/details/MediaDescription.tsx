@@ -17,7 +17,7 @@ import Like from './LikeButton';
 import Reviews from './reviews/index';
 
 interface Props {
-  data?: IMovieDetails | ITvDetails;
+  data?: MovieDetails | TvDetails;
   path: MediaTypes;
   id: number;
 }

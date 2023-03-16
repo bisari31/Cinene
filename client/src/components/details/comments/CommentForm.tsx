@@ -4,24 +4,22 @@ import { useMutation, useQueryClient } from 'react-query';
 import { useRecoilValue } from 'recoil';
 
 import { createComment } from 'services/comments';
-import { contentIdState } from 'atom/atom';
+import { authUserState, contentIdState } from 'atom/atom';
 import { buttonEffect } from 'styles/css';
-import { useAuthQuery } from 'hooks';
 import { cineneKeys } from 'utils/keys';
 
 import withLoginPortal from 'components/hoc/withLoginPortal';
 
-interface IProps {
+interface Props {
   responseId?: string;
   toggleLoginModal: () => void;
 }
 
-function CommentForm({ responseId, toggleLoginModal }: IProps) {
+function CommentForm({ responseId, toggleLoginModal }: Props) {
   const [text, setText] = useState('');
+  const authUser = useRecoilValue(authUserState);
   const contentId = useRecoilValue(contentIdState);
   const queryClient = useQueryClient();
-
-  const { data } = useAuthQuery();
 
   const { mutate } = useMutation(createComment, {
     onSuccess: () => {
@@ -32,7 +30,7 @@ function CommentForm({ responseId, toggleLoginModal }: IProps) {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!data?.success) return toggleLoginModal();
+    if (!authUser) return toggleLoginModal();
     if (!text) return;
     mutate({
       comment: text,
@@ -48,10 +46,8 @@ function CommentForm({ responseId, toggleLoginModal }: IProps) {
   return (
     <CommentFormWrapper onSubmit={handleSubmit} color="navy50">
       <textarea
-        readOnly={!data?.success}
-        placeholder={
-          data?.success ? '댓글을 입력해 주세요' : '로그인이 필요합니다'
-        }
+        readOnly={!authUser}
+        placeholder={authUser ? '댓글을 입력해 주세요' : '로그인이 필요합니다'}
         value={text}
         onChange={handleChange}
       />

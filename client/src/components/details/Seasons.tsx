@@ -5,11 +5,11 @@ import { EMPTY_IMAGE } from 'utils/imageUrl';
 
 import Slider from 'components/common/Slider';
 
-interface IProps {
-  seasons?: ITvDetails['seasons'] | false;
+interface Props {
+  seasons?: TvDetails['seasons'] | false;
 }
 
-export default function Seasons({ seasons }: IProps) {
+export default function Seasons({ seasons }: Props) {
   if (!seasons) return null;
 
   return (

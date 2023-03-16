@@ -7,12 +7,12 @@ import Button from 'components/common/Button';
 import Favorites from 'components/favorites';
 
 export default function FavoritesPage() {
-  const { data } = useAuthQuery();
+  const { auth } = useAuthQuery();
   const navigate = useNavigate();
 
   return (
     <FavoritesPageWrapper>
-      {!data?.success ? (
+      {!auth ? (
         <GuestForm>
           로그인이 필요한 서비스 입니다.
           <Button
@@ -25,7 +25,7 @@ export default function FavoritesPage() {
           </Button>
         </GuestForm>
       ) : (
-        <Favorites data={data} />
+        <Favorites auth={auth} />
       )}
     </FavoritesPageWrapper>
   );

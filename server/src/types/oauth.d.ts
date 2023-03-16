@@ -1,4 +1,4 @@
-export interface IKakaoTokenData {
+export interface KakaoTokenData {
   access_token: string;
   token_type: string;
   refresh_token: string;
@@ -7,7 +7,7 @@ export interface IKakaoTokenData {
   refresh_token_expires_in: number;
 }
 
-export interface IKakaoUserData {
+export interface KakaoUserData {
   id: number;
   connected_at: string;
   properties: {

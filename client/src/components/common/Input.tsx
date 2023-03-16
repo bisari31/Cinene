@@ -1,7 +1,7 @@
 import { forwardRef, memo } from 'react';
 import styled, { css } from 'styled-components';
 
-interface IProps {
+interface Props {
   placeholder?: string;
   value: string | undefined;
   type: 'text' | 'password' | 'email';
@@ -15,7 +15,7 @@ interface IProps {
 }
 
 function Input(
-  { label = '', errorMessage = '', isDisabled = false, ...rest }: IProps,
+  { label = '', errorMessage = '', isDisabled = false, ...rest }: Props,
   ref: React.ForwardedRef<HTMLInputElement>,
 ) {
   return (

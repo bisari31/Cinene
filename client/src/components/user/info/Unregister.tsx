@@ -2,9 +2,9 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 
-import { accessTokenState } from 'atom/atom';
+import { authUserState } from 'atom/atom';
 import { unregister, checkPassword } from 'services/user';
-import { useInput, useOutsideClick } from 'hooks';
+import { useAuthQuery, useInput, useOutsideClick } from 'hooks';
 
 import Button from 'components/common/Button';
 import Input from 'components/common/Input';
@@ -13,7 +13,7 @@ import Modal from 'components/common/Modal';
 import { EMPTY_ERROR_MESSAGE } from '../login/Form';
 
 export default function Unregister() {
-  const setAccessToken = useSetRecoilState(accessTokenState);
+  const { setAuth } = useAuthQuery();
   const {
     value: password,
     error,
@@ -42,8 +42,8 @@ export default function Unregister() {
   const handleUnregister = async () => {
     try {
       await unregister();
-      setAccessToken('');
-      localStorage.removeItem('userId');
+      setAuth(null);
+      localStorage.removeItem('accessToken');
       navigate('/');
     } catch (err) {
       toggleModal();

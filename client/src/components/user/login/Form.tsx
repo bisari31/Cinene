@@ -83,7 +83,7 @@ export default function Form({
       emailError || passwordError || nicknameError || confirmPasswordError;
     if (isEmpty || isError) return;
     if (!isLogin && password !== confirmPassword) {
-      return setConfirmPasswordError('비밀번호가 일치하지 않습니다.');
+      setConfirmPasswordError('비밀번호가 일치하지 않습니다.');
     }
     const body = { email, nickname, password };
     if (isLogin) return loginMutate(body);

@@ -10,11 +10,11 @@ import { cineneKeys } from 'utils/keys';
 import CommentForm from './CommentForm';
 import CommentItem from './CommentItem';
 
-interface IProps {
+interface Props {
   contentId: string | undefined;
 }
 
-export default function Comments({ contentId }: IProps) {
+export default function Comments({ contentId }: Props) {
   const setContentId = useSetRecoilState(contentIdState);
   const { data } = useQuery(cineneKeys.comments(contentId), () =>
     getComments(contentId),

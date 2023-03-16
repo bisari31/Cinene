@@ -7,11 +7,11 @@ export default function useLikeMutation() {
   const { mutate } = useMutation(like, {
     onMutate: async (data) => {
       await queryClient.cancelQueries(cineneKeys.favorites());
-      const previousData = queryClient.getQueryData<IFavoritesData>(
+      const previousData = queryClient.getQueryData<FavoritesData>(
         cineneKeys.favorites(),
       );
       if (previousData) {
-        queryClient.setQueryData<IFavoritesData>(cineneKeys.favorites(), {
+        queryClient.setQueryData<FavoritesData>(cineneKeys.favorites(), {
           ...previousData,
           contents: previousData.contents.filter(
             (content) => content.contentId._id !== data.id,

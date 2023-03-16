@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import styled, { css } from 'styled-components';
 
-import { IComment } from 'types/comment';
 import { USER_IMAGE } from 'utils/imageUrl';
 import { Button, buttonEffect } from 'styles/css';
 import { Heart } from 'assets';
@@ -10,9 +9,9 @@ import { useGetRelativeTime, useLike } from 'hooks';
 import withLoginPortal from 'components/hoc/withLoginPortal';
 import ReplyComments from './ReplyComments';
 
-interface IProps {
-  comments?: IComment[];
-  commentItem?: IComment;
+interface Props {
+  comments?: Comment[];
+  commentItem?: Comment;
   isResponse?: boolean;
   toggleLoginModal: () => void;
 }
@@ -22,13 +21,13 @@ function CommentItem({
   comments,
   isResponse = false,
   toggleLoginModal,
-}: IProps) {
+}: Props) {
   const [openReplyComment, setOpenReplyComment] = useState(false);
 
-  const { authData, data, mutate } = useLike('comments', commentItem?._id);
+  const { auth, data, mutate } = useLike('comments', commentItem?._id);
 
   const handleClick = () => {
-    if (!authData?.success) return toggleLoginModal();
+    if (!auth) return toggleLoginModal();
     mutate({ type: 'commentId', id: commentItem?._id });
   };
 
@@ -76,8 +75,8 @@ function CommentItem({
 }
 
 export default withLoginPortal<{
-  comments?: IComment[];
-  commentItem?: IComment;
+  comments?: Comment[];
+  commentItem?: Comment;
   isResponse?: boolean;
 }>(CommentItem);
 

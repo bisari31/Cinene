@@ -1,16 +1,14 @@
 import styled from 'styled-components';
 
-import { IComment } from 'types/comment';
-
 import CommentForm from './CommentForm';
 import CommentItem from './CommentItem';
 
-interface IProps {
-  comments: IComment[] | undefined;
+interface Props {
+  comments: Comment[] | undefined;
   responseId: string | undefined;
 }
 
-export default function ReplyComments({ comments, responseId }: IProps) {
+export default function ReplyComments({ comments, responseId }: Props) {
   return (
     <ReplyCommentsWrapper>
       {comments?.map((item) => (

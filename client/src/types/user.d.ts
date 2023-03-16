@@ -1,4 +1,4 @@
-interface IUser {
+interface User {
   createdAt: string;
   email: string;
   img: string;
@@ -8,16 +8,4 @@ interface IUser {
   __v: number;
   _id: string;
   active: boolean;
-}
-
-interface IAuthData {
-  success: boolean;
-  user?: IUser;
-}
-
-interface IObject {
-  value: string;
-  error: string;
-  setError: React.Dispatch<React.SetStateAction<string>>;
-  ref: React.RefObject<HTMLInputElement>;
 }

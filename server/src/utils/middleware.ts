@@ -2,15 +2,16 @@ import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { ObjectId } from 'mongoose';
 
-import User, { PRIVATE_KEY } from '../models/user';
+import User, { UserInterface, PRIVATE_KEY } from '../models/user';
 
-export interface IMiddleWareRequest extends Request {
+export interface MiddlewareRequest extends Request {
   cookies: { refreshToken: string };
   accessToken?: string;
+  user?: Omit<UserInterface, 'password'>;
 }
 
 const authenticate = async (
-  req: IMiddleWareRequest,
+  req: MiddlewareRequest,
   res: Response,
   next: NextFunction,
 ) => {
@@ -21,7 +22,9 @@ const authenticate = async (
     if (accessToken) {
       jwt.verify(accessToken, `${PRIVATE_KEY}`);
       next();
+      return;
     }
+    response();
   } catch (err) {
     if (err instanceof jwt.TokenExpiredError) {
       try {
@@ -32,7 +35,10 @@ const authenticate = async (
         if (user?.refresh_token !== req.cookies.refreshToken) throw Error();
         const { accessToken } = await user.generateToken(true);
         req.accessToken = accessToken;
+        const { password, ...rest } = user.toObject<UserInterface>();
+        req.user = rest;
         next();
+        return;
       } catch (error) {
         response();
       }

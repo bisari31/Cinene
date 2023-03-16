@@ -18,16 +18,16 @@ const RATING_MESSAGE = [
   '(최고에요)',
 ];
 
-interface IProps {
+interface Props {
   isVisible: boolean;
   isMotionVisible: boolean;
   toggleModal: () => void;
-  hasReview?: IReview | null;
-  data?: ICineneData;
+  hasReview?: Review | null;
+  data?: CineneData;
 }
 
 function ReviewModal(
-  { isVisible, isMotionVisible, toggleModal, data, hasReview }: IProps,
+  { isVisible, isMotionVisible, toggleModal, data, hasReview }: Props,
   ref: ForwardedRef<HTMLDivElement>,
 ) {
   const [rating, setRating] = useState(hasReview?.rating || 0);

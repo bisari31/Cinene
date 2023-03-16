@@ -1,9 +1,11 @@
-interface ICustomResponse {
+interface DefaultData {
   success: boolean;
   message?: string;
 }
 
-interface IAxiosError<T = unknown> extends Error {
+type CustomResponse<T = unknown> = DefaultData & T;
+
+interface AxiosError<T = unknown> extends Error {
   response: {
     data: ICustomResponse & T;
     status: number;

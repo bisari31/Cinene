@@ -1,11 +1,11 @@
-export const getMediaTitle = (data?: IMovieDetails | ITvDetails) => {
-  if (!data) return;
+export const getMediaTitle = (data?: MovieDetails | TvDetails) => {
+  if (!data) return null;
   if ('title' in data) return data.title;
   return data.name;
 };
 
-export const getMediaOverview = (data?: IMovieDetails | ITvDetails) => {
-  if (!data) return;
+export const getMediaOverview = (data?: MovieDetails | TvDetails) => {
+  if (!data) return null;
   return 'overview' in data && data.overview;
 };
 

@@ -1,6 +1,7 @@
-import { Model, model, Schema, Document } from 'mongoose';
+import { Model, model, Schema, Document, ObjectId } from 'mongoose';
 
-export interface IContent {
+export interface ContentInterface {
+  _id: ObjectId;
   content_type: string;
   title: string;
   poster_url: string;
@@ -9,13 +10,13 @@ export interface IContent {
   votes: number;
 }
 
-interface IContentDocument extends IContent, Document {}
-interface IContentModel extends Model<IContentDocument> {
-  increaseLikes(id: string): Promise<IContent>;
-  decreaseLikes(id: string): Promise<IContent>;
+interface ContentDocument extends Omit<ContentInterface, '_id'>, Document {}
+interface ContentModel extends Model<ContentDocument> {
+  increaseLikes(id: string): Promise<ContentInterface>;
+  decreaseLikes(id: string): Promise<ContentInterface>;
 }
 
-const contentSchema = new Schema<IContent>({
+const contentSchema = new Schema<Omit<ContentInterface, '_id'>>({
   content_type: {
     type: String,
   },
@@ -58,9 +59,6 @@ contentSchema.statics.decreaseLikes = async function (id: string) {
   }
 };
 
-const Content = model<IContentDocument, IContentModel>(
-  'Content',
-  contentSchema,
-);
+const Content = model<ContentDocument, ContentModel>('Content', contentSchema);
 
 export default Content;

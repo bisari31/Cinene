@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { IComment } from 'types/comment';
 
 interface IBody {
   comment: string;
@@ -10,7 +9,7 @@ interface IBody {
 export interface Response {
   success: boolean;
   message?: string;
-  comments: IComment[];
+  comments: Comment[];
 }
 
 export const createComment = async (body: IBody) => {
