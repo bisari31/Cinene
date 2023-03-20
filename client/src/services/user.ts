@@ -6,23 +6,21 @@ type Body = {
   nickname: string;
 };
 
-const bearer = (token: string) => ({
-  headers: { authorization: `Bearer ${token}` },
-});
+export const bearer = () => {
+  const token = localStorage.getItem('accessToken');
+  return { headers: { authorization: `Bearer ${token}` } };
+};
 
-export const autheticate = async (token: string) => {
+export const autheticate = async () => {
   const { data } = await axios.get<User | { accessToken?: string }>(
     '/user',
-    bearer(token),
+    bearer(),
   );
   return data;
 };
 
-export const logout = async (token: string) => {
-  const { data } = await axios.get<CustomResponse>(
-    '/user/logout',
-    bearer(token),
-  );
+export const logout = async () => {
+  const { data } = await axios.get<CustomResponse>('/user/logout', bearer());
   return data;
 };
 

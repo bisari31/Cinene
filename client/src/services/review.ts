@@ -1,7 +1,22 @@
 import axios from 'axios';
+import { bearer } from './user';
 
-export const addRating = (obj: AddReview) =>
-  !obj.isEditing ? createReview(obj) : modifyReview(obj);
+interface Body {
+  comment: string;
+  rating: number;
+  hasReview?: string | null;
+  content_type?: string;
+  content?: string;
+}
+
+interface ReviewData {
+  reviews?: Review[];
+  review?: Review;
+  hasReview?: Review | null;
+}
+
+export const addReview = async (obj: Body) =>
+  obj.hasReview ? modifyReview(obj) : createReview(obj);
 
 export const getReviews = async (
   contentId: string | undefined,
@@ -11,27 +26,29 @@ export const getReviews = async (
   if (!contentId || !contentType) return null;
   const { data } = await axios.get<ReviewData>(
     `/reviews/${contentType}/${contentId}`,
-    {
-      params: { userId },
-    },
+    { params: { userId } },
   );
 
   return data;
 };
 
 export const deleteReview = async (id: string) => {
-  const { data } = await axios.delete<ReviewData>(`/reviews/${id}`);
+  const { data } = await axios.delete<CustomResponse>(
+    `/reviews/${id}`,
+    bearer(),
+  );
   return data;
 };
 
-const createReview = async (obj: AddReview) => {
-  const { data } = await axios.post<ReviewData>('/reviews', obj);
+const createReview = async (obj: Body) => {
+  const { data } = await axios.post<CustomResponse>('/reviews', obj, bearer());
   return data;
 };
-const modifyReview = async (obj: AddReview) => {
+const modifyReview = async (obj: Body) => {
   const { data } = await axios.patch<ReviewData>(
-    `/reviews/${obj.isEditing?._id}`,
+    `/reviews/${obj.hasReview}`,
     obj,
+    bearer(),
   );
   return data;
 };

@@ -9,8 +9,6 @@ import { buttonEffect } from 'styles/css';
 import Button from 'components/common/Button';
 import { cineneKeys } from 'utils/keys';
 import withLoginPortal from 'components/hoc/withLoginPortal';
-import { useRecoilState } from 'recoil';
-import { authUserState } from 'atom/atom';
 import ReviewList from './ReviewList';
 import ReviewModal from './ReviewModal';
 

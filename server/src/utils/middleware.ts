@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { ObjectId } from 'mongoose';
+import { userInfo } from 'os';
 
 import User, { UserInterface, PRIVATE_KEY } from '../models/user';
 
@@ -20,7 +21,13 @@ const authenticate = async (
   try {
     const accessToken = req.headers.authorization?.split(' ')[1];
     if (accessToken) {
-      jwt.verify(accessToken, `${PRIVATE_KEY}`);
+      const { _id } = <{ _id: ObjectId }>(
+        jwt.verify(accessToken, `${PRIVATE_KEY}`)
+      );
+      const { password, ...rest } = await User.findById(
+        _id,
+      ).lean<UserInterface>();
+      req.user = rest;
       next();
       return;
     }

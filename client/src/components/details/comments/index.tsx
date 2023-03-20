@@ -11,7 +11,7 @@ import CommentForm from './CommentForm';
 import CommentItem from './CommentItem';
 
 interface Props {
-  contentId: string | undefined;
+  contentId?: string;
 }
 
 export default function Comments({ contentId }: Props) {
@@ -41,7 +41,7 @@ export default function Comments({ contentId }: Props) {
   );
 }
 
-const Wrapper = styled.div<{ length: number | undefined }>`
+const Wrapper = styled.div<{ length?: number }>`
   ${({ theme, length }) => css`
     margin-bottom: 3rem;
     h3 {

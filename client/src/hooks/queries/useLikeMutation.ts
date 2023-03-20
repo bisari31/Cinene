@@ -5,7 +5,7 @@ import { cineneKeys } from 'utils/keys';
 export default function useLikeMutation() {
   const queryClient = useQueryClient();
   const { mutate } = useMutation(like, {
-    onMutate: async (data) => {
+    onMutate: async (type, id) => {
       await queryClient.cancelQueries(cineneKeys.favorites());
       const previousData = queryClient.getQueryData<FavoritesData>(
         cineneKeys.favorites(),

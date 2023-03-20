@@ -1,10 +1,10 @@
 interface Comment {
   comment: string;
-  contentId: string;
+  content: string;
   createdAt: string;
   updatedAt: string;
   responseTo: string;
-  userId: User;
+  author: User;
   __v: number;
   _id: string;
 }

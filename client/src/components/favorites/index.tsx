@@ -32,6 +32,7 @@ export default function Favorites({ auth }: Props) {
       ),
     [favoritesData?.contents, selectedType],
   );
+  console.log(favoritesData);
 
   return (
     <FavoritesWrapper>

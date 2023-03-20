@@ -11,7 +11,7 @@ import { tmdbKeys } from 'utils/keys';
 
 interface Props {
   id: number;
-  path: MediaTypes;
+  path: MediaType;
 }
 
 function Credits({ id, path }: Props) {

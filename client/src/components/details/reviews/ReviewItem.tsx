@@ -17,6 +17,7 @@ interface Props {
 }
 
 export default function ReviewItem({ review, auth, onClick }: Props) {
+  const { author, comment, rating, createdAt, updatedAt, _id } = review;
   const { id, path } = useCurrentPathName();
   const queryClient = useQueryClient();
 
@@ -24,15 +25,15 @@ export default function ReviewItem({ review, auth, onClick }: Props) {
     onSuccess: () => queryClient.invalidateQueries(cineneKeys.detail(path, id)),
   });
 
-  const handleDelete = () => mutate(review._id);
+  const handleDelete = () => mutate(_id);
 
   return (
     <Item>
-      <img src={review.userId.img || USER_IMAGE} alt="user_avatar" />
-      <Content date={useGetRelativeTime(review.createdAt, review.updatedAt)}>
+      <img src={author.img || USER_IMAGE} alt="user_avatar" />
+      <Content date={useGetRelativeTime(createdAt, updatedAt)}>
         <div>
-          <p>{review.userId.nickname}</p>
-          {review.userId._id === auth?._id && (
+          <p>{author.nickname}</p>
+          {author._id === auth?._id && (
             <>
               <button type="button" onClick={onClick}>
                 수정
@@ -43,12 +44,12 @@ export default function ReviewItem({ review, auth, onClick }: Props) {
             </>
           )}
         </div>
-        <p>{review.comment}</p>
+        <p>{comment}</p>
       </Content>
       <SvgWrapper>
         {[1, 2, 3, 4, 5].map((star) => (
           <StyledButton
-            isFilling={star <= review.rating}
+            isFilling={star <= rating}
             key={star}
             type="button"
             disabled

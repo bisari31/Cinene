@@ -41,12 +41,16 @@ function CommentItem({
   return (
     <>
       <Item key={commentItem?._id} isResponse={isResponse}>
-        <img src={commentItem?.userId.img || USER_IMAGE} alt="user_poster" />
+        <img src={commentItem?.author.img || USER_IMAGE} alt="user_poster" />
         <Content date={useGetRelativeTime(commentItem?.createdAt)}>
           <div>
-            <p>{commentItem?.userId.nickname}</p>
-            {/* <button type="button">수정</button>
-            <button type="button">삭제</button> */}
+            <p>{commentItem?.author.nickname}</p>
+            {/* {auth?._id === commentItem?.author._id && (
+              <>
+                <button type="button">수정</button>
+                <button type="button">삭제</button>
+              </>
+            )} */}
           </div>
           <p>{commentItem?.comment}</p>
         </Content>

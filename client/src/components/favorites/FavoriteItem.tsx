@@ -20,9 +20,7 @@ export default function FavoriteItem({ item }: Props) {
     return type === 'person' ? USER_IMAGE : EMPTY_IMAGE;
   };
 
-  const handleClickButton = (id: string) => {
-    mutate({ type: 'contentId', id });
-  };
+  const handleClickButton = (id: string) => mutate('contentId', id);
 
   return (
     <FavoriteItemWrapper key={item._id}>

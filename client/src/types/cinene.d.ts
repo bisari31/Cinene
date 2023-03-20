@@ -4,7 +4,7 @@ interface CineneData {
   name: string;
   poster: string;
   tmdbId: number;
-  type: MediaTypes;
+  type: MediaType;
   __v: number;
   _id: string;
 }

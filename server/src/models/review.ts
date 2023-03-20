@@ -1,12 +1,12 @@
 import { model, ObjectId, Schema, Types, Model, Document } from 'mongoose';
 
-import Content, { ContentInterface } from './content';
+import Content from './content';
 import { UserInterface } from './user';
 
 export interface ReviewInterface {
   _id: ObjectId;
   author: ObjectId | UserInterface;
-  content: ObjectId | ContentInterface;
+  content: ObjectId;
   content_type: string;
   comment: string;
   rating: number;
@@ -26,7 +26,6 @@ const reviewSchema = new Schema<Omit<ReviewInterface, '_id'>>(
     },
     content: {
       type: Types.ObjectId,
-      ref: 'Content',
     },
     content_type: {
       type: String,

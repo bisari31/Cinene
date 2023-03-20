@@ -77,23 +77,25 @@ function SearchBar(
     }
   };
 
-  const handleClickNavigation = (item: NewResults) => {
+  const handleClickNavigation = (item: SearchResults) => {
     navigate(`/${item.media_type}/${item.id}`);
     if (!isMobile) toggleModal();
   };
 
-  const getSearchTitle = (item: NewResults) => {
-    if (item.media_type === 'tv') return `${item.name} (TV)`;
-    if (item.media_type === 'movie') return `${item.title} (영화)`;
-    return `${item.name} (인물)`;
+  const getSearchTitle = (item: SearchResults) => {
+    const { media_type: type } = item;
+    if (type === 'tv' && 'name' in item) return `${item.name} (TV)`;
+    if (type === 'movie' && 'title' in item) return `${item.title} (영화)`;
+    if (type === 'person' && 'name' in item) return `${item.name} (인물)`;
+    return '정보 없음';
   };
 
-  const getSearchImage = (item: NewResults) => {
+  const getSearchImage = (item: SearchResults) => {
     const url = `${IMAGE_URL}/w200/`;
-    if (item.media_type === 'person') {
+    if (item.media_type === 'person' && 'profile_path' in item) {
       return item.profile_path ? url + item.profile_path : USER_IMAGE;
     }
-    return item.poster_path ? url + item.poster_path : EMPTY_IMAGE;
+    return 'poster_path' in item ? url + item.poster_path : EMPTY_IMAGE;
   };
 
   useEffect(() => {
@@ -135,7 +137,7 @@ function SearchBar(
                 >
                   <img
                     src={getSearchImage(item)}
-                    alt={item.name || item.title}
+                    alt={'name' in item ? item.name : item.title}
                   />
 
                   <span>{getSearchTitle(item)}</span>

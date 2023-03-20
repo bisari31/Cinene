@@ -55,7 +55,7 @@ export default function Upcomming({ type }: Props) {
     return dday === 0 ? 'D-Day' : `D-${dday}`;
   };
 
-  const getMovieImage = (item: MediaResults) => {
+  const getMovieImage = (item: MovieResult) => {
     if (item.backdrop_path)
       return `${IMAGE_URL}/original/${item.backdrop_path}`;
     if (item.poster_path) return `${IMAGE_URL}/original/${item.poster_path}`;

@@ -13,19 +13,14 @@ export const getContent = async (type?: string, id?: number) => {
   return data;
 };
 
-export const addContent = async (
-  type?: string,
-  body?: {
-    tmdbId?: number;
-    name?: string;
-    poster?: string;
-  },
-) => {
+export const addContent = async (body?: {
+  type?: string;
+  tmdbId?: number;
+  name?: string;
+  poster?: string | null;
+}) => {
   if (!body) return null;
-  const { data } = await axios.post<IResponse>('/contents', {
-    ...body,
-    type,
-  });
+  const { data } = await axios.post<IResponse>('/contents', body);
   return data;
 };
 

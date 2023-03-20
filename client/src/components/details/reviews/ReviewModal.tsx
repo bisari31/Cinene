@@ -3,7 +3,7 @@ import { useState, useEffect, useRef, forwardRef, ForwardedRef } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 
 import { Star } from 'assets';
-import { addRating } from 'services/review';
+import { addReview } from 'services/review';
 import { usePrevious } from 'hooks';
 
 import Modal from 'components/common/Modal';
@@ -40,7 +40,7 @@ function ReviewModal(
 
   const queryClient = useQueryClient();
 
-  const { mutate } = useMutation(addRating, {
+  const { mutate } = useMutation(addReview, {
     onSuccess: () => {
       queryClient.invalidateQueries(
         cineneKeys.detail(data?.type, data?.tmdbId),
@@ -78,9 +78,9 @@ function ReviewModal(
     mutate({
       comment,
       rating,
-      contentId: data?._id,
-      contentType: data?.type,
-      isEditing: hasReview || null,
+      content: data?._id,
+      content_type: data?.type,
+      hasReview: hasReview?._id,
     });
   };
 

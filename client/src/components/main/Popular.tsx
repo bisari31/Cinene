@@ -18,7 +18,6 @@ export default function Popular() {
 
   const { data } = useTrendingMediaQuery();
   const currentData = data?.[currentIndex];
-
   const { data: detailData } = useQuery(
     tmdbKeys.detail(currentData?.media_type, currentData?.id),
     () => getMediaDetail(currentData?.id, currentData?.media_type),
@@ -33,14 +32,6 @@ export default function Popular() {
     currentData?.media_type,
     currentData?.id,
   );
-
-  // const { data: videoData } = useQuery(
-  //   ['media', 'video', currentMedia?.id],
-  //   () => getVideos(currentMedia?.id, currentMedia?.media_type),
-  //   {
-  //     staleTime: 1000 * 60 * 60 * 6,
-  //   },
-  // );
 
   const handleSlide = (index: number) => {
     const maxIndex = data?.length;
@@ -97,18 +88,6 @@ export default function Popular() {
           </ButtonWrapper>
         </div>
       </Item>
-      {/* <VideoWrapper>
-        {videoData && (
-          <ReactPlayer
-            controls
-            playing
-            url={`https://youtu.be/${videoData.key}`}
-            muted
-            width={500}
-            height={300}
-          />
-        )}
-      </VideoWrapper> */}
     </section>
   );
 }

@@ -1,82 +1,101 @@
-type MediaTypes = 'movie' | 'tv' | 'person';
+type MediaType = 'movie' | 'tv' | 'person';
 
-interface Genre_ids {
-  id: number;
-  name: string;
+type Results = TvResult | MovieResult;
+type SearchResults = TvResult | MovieResult | PsersonResult;
+
+interface PsersonResult extends Omit<Person, 'credit_id'> {
+  media_type: MediaType;
 }
 
-interface MediaResults {
+interface Credits {
+  cast: Cast[];
+  crew: Crew[];
+}
+
+interface PersonDetails
+  extends Omit<Person, 'credit_id' | 'original_name' | 'known_for'> {
+  also_known_as: string[];
+  biography: string;
+  birthday: string;
+  deathday: null | string;
+  homepage: string;
+  imdb_id: string;
+  place_of_birth: string;
+}
+
+interface Person {
   adult: boolean;
-  backdrop_path: string;
-  first_air_date?: string;
-  genre_ids: Genre_ids[];
+  credit_id: string;
+  gender: number;
   id: number;
-  original_language: string;
-  original_title?: string;
-  overview: string;
-  media_type: MediaTypes;
+  known_for_department: string;
+  name: string;
+  original_name: string;
+  profile_path: string | null;
   popularity: number;
-  name?: string;
-  poster_path: string;
-  original_name?: string;
-  release_date: string;
-  title?: string;
-  video: boolean;
+  known_for: Results[];
+}
+
+interface Cast extends Person {
+  cast_id: number;
+  character: string;
+  order: number;
+}
+
+interface Crew extends Person {
+  department: string;
+  job: string;
+}
+
+interface Result {
+  adult: boolean;
+  genre_ids: number[];
+  backdrop_path: string | null;
+  id: number;
+  media_type: MediaType;
   vote_average: number;
   vote_count: number;
+  poster_path: string | null;
+  popularity: number;
+  overview: string;
+  original_language: string;
 }
 
-interface CombinedCredits {
-  crew: MediaResults[];
-  cast: MediaResults[];
+interface TvResult extends Result {
+  first_air_date: string;
+  name: string;
+  origin_country: string[];
+  original_name: string;
 }
 
-interface MediaData {
+interface MovieResult extends Result {
+  original_title: string;
+  release_date: string;
+  title: string;
+  video: false;
+}
+
+interface TrendingData {
   page: number;
-  results: MediaResults[];
+  results: Results[];
   total_pages: number;
   total_results: number;
 }
-
-interface NewResults
-  extends Pick<
-      Crew,
-      | 'known_for_department'
-      | 'media_type'
-      | 'name'
-      | 'popularity'
-      | 'profile_path'
-    >,
-    MediaResults {}
+interface MoviesData {
+  page: number;
+  results: MovieResult[];
+  total_pages: number;
+  total_results: number;
+}
 
 interface SearchData {
   page: number;
-  results: NewResults[];
+  results: SearchResults[];
   total_pages: number;
   total_results: number;
 }
 
-interface Videos {
-  id: number;
-  results: [
-    {
-      iso_639_1: string;
-      iso_3166_1: string;
-      name: string;
-      key: string;
-      site: string;
-      size: 1080;
-      type: string;
-      official: boolean;
-      published_at: string;
-      id: string;
-    },
-  ];
-}
-
-interface MovieDetails {
-  adult: false;
-  backdrop_path: string;
+interface MovieDetails extends Omit<MovieResult, 'media_type'> {
   belongs_to_collection: null | object;
   budget: number;
   genres: {
@@ -84,13 +103,7 @@ interface MovieDetails {
     name: string;
   }[];
   homepage: string;
-  id: number;
   imdb_id: string;
-  original_language: string;
-  original_title: string;
-  overview: string;
-  popularity: number;
-  poster_path: string;
   production_companies: {
     id: number;
     logo_path: string | null;
@@ -103,21 +116,14 @@ interface MovieDetails {
     name: string;
     origin_country: string;
   }[];
-  release_date: string;
   revenue: number;
   runtime: number;
   spoken_languages: { english_name: string; iso_639_1: string; name: string }[];
   status: string;
   tagline: string;
-  title: string;
-  video: boolean;
-  vote_average: number;
-  vote_count: number;
 }
 
-interface TvDetails {
-  adult: false;
-  backdrop_path: string;
+interface TvDetails extends Omit<TvResult, 'media_type'> {
   created_by: {
     credit_id: string;
     gender: number;
@@ -126,13 +132,11 @@ interface TvDetails {
     profile_path: string;
   }[];
   episode_run_time: number[];
-  first_air_date: string;
   genres: {
     id: number;
     name: string;
   }[];
   homepage: string;
-  id: number;
   in_production: boolean;
   languages: string[];
   last_air_date: string;
@@ -150,7 +154,6 @@ interface TvDetails {
     vote_average: number;
     vote_count: number;
   };
-  name: string;
   networks: {
     id: number;
     logo_path: string;
@@ -160,12 +163,6 @@ interface TvDetails {
   next_episode_to_air: null;
   number_of_episodes: number;
   number_of_seasons: number;
-  origin_country: string[];
-  original_language: string;
-  original_name: string;
-  overview: string;
-  popularity: number;
-  poster_path: string;
   production_companies: {
     id: number;
     logo_path: string;
@@ -186,6 +183,4 @@ interface TvDetails {
   status: string;
   tagline: string;
   type: string;
-  vote_average: number;
-  vote_count: number;
 }

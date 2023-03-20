@@ -31,11 +31,9 @@ export default function TopRated({ type }: Props) {
         <ul>
           {type === 'cinene'
             ? cinene?.contents.map((item) => (
-                <TopRatedItem key={item._id} type="cinene" item={item} />
+                <TopRatedItem key={item._id} item={item} />
               ))
-            : data?.map((item) => (
-                <TopRatedItem key={item.id} type="tmdb" item={item} />
-              ))}
+            : data?.map((item) => <TopRatedItem key={item.id} item={item} />)}
         </ul>
       </Slider>
     </TopRatedWrapper>

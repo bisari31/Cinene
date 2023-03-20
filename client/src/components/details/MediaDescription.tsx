@@ -18,13 +18,12 @@ import Reviews from './reviews/index';
 
 interface Props {
   data?: MovieDetails | TvDetails;
-  path: MediaTypes;
+  path: MediaType;
   id: number;
 }
 
 function Description({ path, data, id }: Props) {
   const isMovieDetails = data && 'runtime' in data;
-
   const title = getMediaTitle(data);
   const overview = getMediaOverview(data);
   const reviewRef = useRef<HTMLHeadingElement>(null);
@@ -75,7 +74,6 @@ function Description({ path, data, id }: Props) {
       <SimilarMedia
         data={similarData}
         title={`추천 ${path === 'movie' ? '영화' : 'TV'}`}
-        type={path}
       />
       <Credits id={id} path={path} />
       <Reviews ref={reviewRef} data={cineneData} />

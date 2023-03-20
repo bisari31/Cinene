@@ -1,10 +1,11 @@
 import { useQuery } from 'react-query';
+
 import { addContent, getContent } from 'services/contents';
 import { cineneKeys } from 'utils/keys';
 
 export default function useCineneDataQuery(
-  body?: MovieDetails | TvDetails | Person,
-  type?: MediaTypes,
+  body?: MovieDetails | TvDetails | PersonDetails,
+  type?: MediaType,
   id?: number,
   personName?: string,
 ) {
@@ -22,7 +23,8 @@ export default function useCineneDataQuery(
   const { data: newData } = useQuery(
     cineneKeys.newDetail(type, id),
     () =>
-      addContent(type, {
+      addContent({
+        type,
         name: personName || name,
         poster,
         tmdbId: body?.id,

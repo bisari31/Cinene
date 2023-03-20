@@ -1,74 +1,85 @@
 import { Request, Router } from 'express';
+import { ContentInterface } from '../models/content';
 
-// import { ICookiesRequest, authenticate } from './middleware';
-
-import Like from '../models/Like';
-import { UserInterface } from '../models/user';
-
-interface CustomRequest extends Request {
-  params: { id: string; type: 'commentId' | 'contentId' };
-  query: { userId?: string };
-  user?: UserInterface;
-}
+import Like, { LikeInterface } from '../models/Like';
+import { CustomRequest, CustomResponse } from '../types/express';
+import authenticate from '../utils/middleware';
 
 const router = Router();
 
-// router.get('/:type/:id', async (req: CustomRequest, res) => {
-//   try {
-//     const { type, id } = req.params;
-//     const likes = await Like.find({ [type]: id });
-//     if (!req.query.userId) {
-//       return res.json({ success: true, likes: likes.length, isLike: false });
-//     }
-//     const document = await Like.findOne({
-//       userId: req.query.userId,
-//       [type]: id,
-//     });
-//     res.json({
-//       success: true,
-//       likes: likes.length,
-//       isLike: !!document,
-//     });
-//   } catch (err) {
-//     res.status(400).json({ success: false, message: '좋아요 조회 실패' });
-//     console.error(err);
-//   }
-// });
+router.get(
+  '/:type/:id',
+  async (
+    req: Request<{ type: string; id: string }, {}, {}, { userId: string }>,
+    res: CustomResponse<{ likes?: number; isLike?: boolean }>,
+  ) => {
+    try {
+      const { type, id } = req.params;
+      const likes = await Like.find({ [type]: id });
+      if (!req.query.userId) {
+        res.json({ success: true, likes: likes.length, isLike: false });
+        return;
+      }
+      const document = await Like.findOne({
+        liked_by: req.query.userId,
+        [type]: id,
+      });
+      res.json({
+        success: true,
+        likes: likes.length,
+        isLike: !!document,
+      });
+    } catch (err) {
+      res.status(400).json({ success: false, message: '좋아요 조회 실패' });
+    }
+  },
+);
 
-// router.post('/:type/:id', authenticate, async (req: CustomRequest, res) => {
-//   try {
-//     const { type } = req.params;
-//     const document = await Like.findOne({
-//       userId: req.user?._id,
-//       [type]: req.params.id,
-//     });
-//     if (document) {
-//       await Like.deleteOne({ _id: document._id });
-//       return res.json({ success: true });
-//     }
-//     await Like.create({
-//       [type]: req.params.id,
-//       userId: req.user?._id,
-//     });
-//     return res.json({ success: true });
-//   } catch (err) {
-//     res.status(400).json({ success: false, message: '좋아요 증감 실패' });
-//     console.error(err);
-//   }
-// });
+router.post(
+  '/:type/:id',
+  authenticate,
+  async (
+    req: CustomRequest<{ type: string; id: string }>,
+    res: CustomResponse,
+  ) => {
+    try {
+      const { type, id } = req.params;
+      const document = await Like.findOne({
+        liked_by: req.user?._id,
+        [type]: id,
+      });
+      if (document) {
+        await Like.findByIdAndDelete(document._id);
+        res.json({ success: true });
+        return;
+      }
+      await Like.create({
+        [type]: id,
+        liked_by: req.user?._id,
+      });
+      res.json({ success: true });
+    } catch (err) {
+      res.status(400).json({ success: false, message: '좋아요 증감 실패' });
+    }
+  },
+);
 
-// router.get('/favorites', authenticate, async (req: IRequest<null>, res) => {
-//   try {
-//     console.log('qwe');
-//     const contents = await Like.find({ userId: req.user?._id })
-//       .exists('contentId', true)
-//       .populate('contentId');
+router.get(
+  '/favorites',
+  authenticate,
+  async (req: CustomRequest, res: CustomResponse<{ contents?: any }>) => {
+    try {
+      const contents = await Like.find({ liked_by: req.user?._id })
+        .exists('content', true)
+        .populate('content');
 
-//     res.json({ success: true, contents });
-//   } catch (err) {
-//     res
-//       .status(400)
-//       .json({ success: false, message: '즐겨찾기 목록 조회 실패' });
-//   }
-// });
+      res.json({ success: true, contents });
+    } catch (err) {
+      res
+        .status(400)
+        .json({ success: false, message: '즐겨찾기 목록 조회 실패' });
+    }
+  },
+);
+
 export default router;

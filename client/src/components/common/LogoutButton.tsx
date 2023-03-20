@@ -11,13 +11,12 @@ import Portal from './Portal';
 
 export default function LogoutButton() {
   const setAuthUser = useSetRecoilState(authUserState);
-  const accessToken = localStorage.getItem('accessToken');
   const { ref, isVisible, isMotionVisible, toggleModal } = useOutsideClick(300);
 
   const handleLogout = async () => {
     toggleModal();
     try {
-      await logout(accessToken ?? '');
+      await logout();
     } finally {
       localStorage.removeItem('accessToken');
       setAuthUser(null);

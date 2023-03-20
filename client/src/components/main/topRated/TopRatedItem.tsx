@@ -4,36 +4,23 @@ import styled, { css } from 'styled-components';
 import { IMAGE_URL } from 'services/tmdb';
 import { EMPTY_IMAGE } from 'utils/imageUrl';
 
-type Item = CineneData & MediaResults;
-
 interface Props {
-  item: Partial<Item>;
-  type: 'cinene' | 'tmdb';
+  item: CineneData | MovieResult;
 }
 
-export default function TopRatedItem({ item, type }: Props) {
-  const typeObj = {
-    cinene: {
-      link: `/${item.type}/${item.tmdbId}`,
-      src: item.poster ? `${IMAGE_URL}/w500/${item.poster}` : EMPTY_IMAGE,
-      alt: item.name,
-    },
-    tmdb: {
-      link: `/movie/${item.id}`,
-      src: item.poster_path
-        ? `${IMAGE_URL}/w500/${item.poster_path}`
-        : EMPTY_IMAGE,
-      alt: item.title,
-    },
-  };
+export default function TopRatedItem({ item }: Props) {
+  const img = 'poster' in item ? item.poster : item.poster_path;
+  const link =
+    'id' in item ? `movie/${item.id}` : `${item.type}/${item.tmdbId}`;
+  const title = 'name' in item ? item.name : item.title;
 
   return (
     <List>
-      <Link to={typeObj[type].link} draggable="false">
+      <Link to={link} draggable="false">
         <img
           draggable="false"
-          src={typeObj[type].src}
-          alt={typeObj[type].alt}
+          src={img ? `${IMAGE_URL}/w500/${img}` : EMPTY_IMAGE}
+          alt={title}
         />
       </Link>
     </List>

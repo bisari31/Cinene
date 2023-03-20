@@ -1,14 +1,13 @@
 import { model, ObjectId, Schema, Types } from 'mongoose';
 
-import { ContentInterface } from './content';
 import { UserInterface } from './user';
 
 export interface CommentInterface {
   _id: ObjectId;
   comment: string;
   author: ObjectId | UserInterface;
-  content: ObjectId | ContentInterface;
-  parent_comment_author: ObjectId | UserInterface;
+  content: ObjectId;
+  responseTo: ObjectId;
 }
 
 const commentSchema = new Schema<CommentInterface>(
@@ -22,11 +21,9 @@ const commentSchema = new Schema<CommentInterface>(
     },
     content: {
       type: Types.ObjectId,
-      ref: 'Content',
     },
-    parent_comment_author: {
+    responseTo: {
       type: Types.ObjectId,
-      ref: 'User',
     },
   },
   { timestamps: true },

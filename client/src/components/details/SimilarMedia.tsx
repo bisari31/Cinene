@@ -7,33 +7,27 @@ import { IMAGE_URL } from 'services/tmdb';
 import Slider from 'components/common/Slider';
 
 interface Props {
-  data?: MediaResults[];
+  data?: Results[];
   title: string;
-  type?: string;
 }
 
-export default function SimilarMedia({ data, title, type }: Props) {
-  if (!data?.length) return null;
-
+export default function SimilarMedia({ data, title }: Props) {
   return (
     <SimilarMediaWrapper>
       <Slider title={title}>
-        {data?.map((media) => (
-          <List key={media.id}>
-            <Link
-              to={`/${type || media.media_type}/${media.id}`}
-              draggable="false"
-            >
+        {data?.map((item) => (
+          <List key={item.id}>
+            <Link to={`/${item.media_type}/${item.id}`} draggable="false">
               <img
                 draggable="false"
                 src={
-                  media.poster_path
-                    ? `${IMAGE_URL}/w200/${media.poster_path}`
+                  item.poster_path
+                    ? `${IMAGE_URL}/w200/${item.poster_path}`
                     : EMPTY_IMAGE
                 }
-                alt={media.name || media.title}
+                alt={'title' in item ? item.title : item.name}
               />
-              <p>{media.name || media.title}</p>
+              <p>{'title' in item ? item.title : item.name}</p>
             </Link>
           </List>
         ))}
