@@ -34,9 +34,9 @@ function CommentItem({
   const handleClick = () => {
     if (!auth) {
       toggleLoginModal();
-      return;
+    } else {
+      mutate({ type: 'comment', id: commentItem?._id });
     }
-    mutate({ type: 'comment', id: commentItem?._id });
   };
 
   const getReplyComments = () =>

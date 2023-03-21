@@ -8,7 +8,7 @@ import { getSimilarMedia } from 'services/tmdb';
 import { tmdbKeys } from 'utils/keys';
 
 import Average from 'components/main/Average';
-import SimilarMedia from './content/similar';
+import SimilarMedia from './content/similarMedia';
 import useCineneDataQuery from './hooks/useCineneDataQuery';
 import Credits from './content/credits';
 import Seasons from './content/seasons';

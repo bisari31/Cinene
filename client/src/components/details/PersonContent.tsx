@@ -9,7 +9,7 @@ import Average from 'components/main/Average';
 import useCineneDataQuery from './hooks/useCineneDataQuery';
 import useSortData from './hooks/useSortData';
 import LikeButton from './content/like/LikeButton';
-import SimilarMedia from './content/similar';
+import SimilarMedia from './content/similarMedia';
 import Reviews from './content/reviews';
 import Comments from './content/comments';
 
