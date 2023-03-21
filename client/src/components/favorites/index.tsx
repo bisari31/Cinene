@@ -13,7 +13,7 @@ interface Props {
 }
 
 export default function Favorites({ auth }: Props) {
-  const [selectedType, setSelectedType] = useState(1);
+  const [selectedType, setSelectedType] = useState(0);
 
   const { data: favoritesData } = useQuery(
     cineneKeys.favorites(),
@@ -25,14 +25,11 @@ export default function Favorites({ auth }: Props) {
 
   const selectedData = useMemo(
     () =>
-      favoritesData?.contents.filter((item) =>
-        selectedType === 1
-          ? item.contentId.type !== 'person'
-          : item.contentId.type === 'person',
+      favoritesData?.contents.filter(({ content: { content_type: type } }) =>
+        selectedType === 0 ? type !== 'person' : type === 'person',
       ),
     [favoritesData?.contents, selectedType],
   );
-  console.log(favoritesData);
 
   return (
     <FavoritesWrapper>

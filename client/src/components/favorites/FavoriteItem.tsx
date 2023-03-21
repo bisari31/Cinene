@@ -12,26 +12,27 @@ interface Props {
 }
 
 export default function FavoriteItem({ item }: Props) {
+  const { content, _id } = item;
   const mutate = useLikeMutation();
 
-  const getImageUrl = (content: CineneData) => {
-    const { type, poster } = content;
+  const getImageUrl = (data: CineneData) => {
+    const { content_type: type, poster_url: poster } = data;
     if (poster) return `${IMAGE_URL}/w400/${poster}`;
     return type === 'person' ? USER_IMAGE : EMPTY_IMAGE;
   };
 
-  const handleClickButton = (id: string) => mutate('contentId', id);
+  const handleClickButton = (id: string) => mutate({ type: 'content', id });
 
   return (
-    <FavoriteItemWrapper key={item._id}>
-      <Link to={`/${item.contentId.type}/${item.contentId.tmdbId}`}>
-        <img src={getImageUrl(item.contentId)} alt={item.contentId.name} />
-        <span>{item.contentId.name}</span>
+    <FavoriteItemWrapper key={_id}>
+      <Link to={`/${content.content_type}/${content.tmdbId}`}>
+        <img src={getImageUrl(content)} alt={content.title} />
+        <span>{content.title}</span>
       </Link>
       <Button
         color="navy50"
         type="button"
-        onClick={() => handleClickButton(item.contentId._id)}
+        onClick={() => handleClickButton(content._id)}
       >
         <Heart />
       </Button>

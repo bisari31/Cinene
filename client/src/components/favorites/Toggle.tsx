@@ -3,11 +3,11 @@ import React from 'react';
 
 const TOGGLE_OPTION = [
   {
-    id: 1,
+    id: 0,
     name: '미디어',
   },
   {
-    id: 2,
+    id: 1,
     name: '배우',
   },
 ];
@@ -21,13 +21,9 @@ export default function Toggle({ selectedType, setSelectedType }: Props) {
   return (
     <ToggleWrapper selectedType={selectedType}>
       <div>
-        {TOGGLE_OPTION.map((toggle) => (
-          <button
-            key={toggle.id}
-            type="button"
-            onClick={() => setSelectedType(toggle.id)}
-          >
-            {toggle.name}
+        {TOGGLE_OPTION.map(({ id, name }) => (
+          <button key={id} type="button" onClick={() => setSelectedType(id)}>
+            {name}
           </button>
         ))}
         <div className="toggle_bar" />
@@ -59,7 +55,7 @@ const ToggleWrapper = styled.div<{ selectedType: number }>`
     .toggle_bar {
       background-color: ${({ theme }) => theme.colors.navy50};
       height: 100%;
-      left: ${({ selectedType }) => (selectedType === 1 ? '0' : '50%')};
+      left: ${({ selectedType }) => (selectedType === 0 ? '0' : '50%')};
       position: absolute;
       transition: 0.5s ease;
       width: 50%;

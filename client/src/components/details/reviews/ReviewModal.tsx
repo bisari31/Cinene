@@ -43,7 +43,7 @@ function ReviewModal(
   const { mutate } = useMutation(addReview, {
     onSuccess: () => {
       queryClient.invalidateQueries(
-        cineneKeys.detail(data?.type, data?.tmdbId),
+        cineneKeys.detail(data?.content_type, data?.tmdbId),
       );
       toggleModal();
     },
@@ -79,7 +79,7 @@ function ReviewModal(
       comment,
       rating,
       content: data?._id,
-      content_type: data?.type,
+      content_type: data?.content_type,
       hasReview: hasReview?._id,
     });
   };

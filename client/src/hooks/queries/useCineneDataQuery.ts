@@ -24,9 +24,9 @@ export default function useCineneDataQuery(
     cineneKeys.newDetail(type, id),
     () =>
       addContent({
-        type,
-        name: personName || name,
-        poster,
+        content_type: type,
+        poster_url: poster,
+        title: personName || name,
         tmdbId: body?.id,
       }),
     {

@@ -14,10 +14,10 @@ export const getContent = async (type?: string, id?: number) => {
 };
 
 export const addContent = async (body?: {
-  type?: string;
+  content_type?: string;
   tmdbId?: number;
-  name?: string;
-  poster?: string | null;
+  title?: string;
+  poster_url?: string | null;
 }) => {
   if (!body) return null;
   const { data } = await axios.post<IResponse>('/contents', body);

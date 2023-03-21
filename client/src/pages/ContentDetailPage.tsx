@@ -8,7 +8,7 @@ import { useCurrentPathName, useOutsideClick } from 'hooks';
 
 import Description from 'components/details/MediaDescription';
 import Portal from 'components/common/Portal';
-import ModalImage from 'components/details/ModalImage';
+import ModalImage from 'components/details/ImageModal';
 import PersonDescription from 'components/details/PersonDescription';
 import { tmdbKeys } from 'utils/keys';
 

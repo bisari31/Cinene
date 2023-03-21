@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useMemo } from 'react';
 import { useQuery } from 'react-query';
 import styled, { css } from 'styled-components';
 
@@ -11,6 +11,7 @@ import SimilarMedia from './SimilarMedia';
 import Comment from './comments';
 import Like from './LikeButton';
 import Reviews from './reviews';
+import useSortData from './hooks/useSortData';
 
 interface Props {
   data?: PersonDetails;
@@ -38,36 +39,8 @@ export default function PersonDescription({ data, path, id }: Props) {
   );
 
   const cineneData = useCineneDataQuery(data, path, id, getKoreanName(data));
-
-  // const setCreditData = (array?: MediaResults[]) => {
-  //   const duplication = array?.reduce(
-  //     (acc: MediaResults[], cur: MediaResults) => {
-  //       if (acc.findIndex((prev) => prev.id === cur.id) === -1) {
-  //         acc.push(cur);
-  //       }
-  //       return acc;
-  //     },
-  //     [],
-  //   );
-  //   return duplication?.sort(
-  //     (a, b) =>
-  //       new Date(b.release_date || (b.first_air_date as string)).getTime() -
-  //       new Date(a.release_date || (a.first_air_date as string)).getTime(),
-  //   );
-  // };
-
-  const setCreditData = (array: CombinedCreditsCastAndCrew[]) => {
-    const removedDuclication = array.reduce(
-      (acc: CombinedCreditsCastAndCrew[], cur: CombinedCreditsCastAndCrew) => {
-        if (acc.findIndex((item) => item.id === cur.id) === -1) {
-          acc.push(cur);
-        }
-        return acc;
-      },
-      [],
-    );
-    return removedDuclication;
-  };
+  const cast = useSortData(creditData?.cast);
+  const crew = useSortData(creditData?.crew);
 
   return (
     <PersonDescriptionWrapper>
@@ -78,10 +51,10 @@ export default function PersonDescription({ data, path, id }: Props) {
         <p>{data?.birthday ? `출생: ${data.birthday}` : '정보 없음'}</p>
       </div>
       {!!creditData?.cast.length && (
-        <SimilarMedia data={setCreditData(creditData.cast)} title="출연 작품" />
+        <SimilarMedia data={cast} title="출연 작품" />
       )}
       {!!creditData?.crew.length && (
-        <SimilarMedia data={setCreditData(creditData.crew)} title="제작 작품" />
+        <SimilarMedia data={crew} title="제작 작품" />
       )}
       <Reviews ref={reviewRef} data={cineneData} />
       <Comment contentId={cineneData?._id} />

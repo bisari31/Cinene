@@ -30,7 +30,7 @@ function SearchBar(
   const inputRef = useRef<HTMLInputElement>(null);
   const totalIndexRef = useRef(0);
 
-  const { data, isFetching } = useQuery(
+  const { data } = useQuery(
     tmdbKeys.search(debouncedText),
     () => searchMedia(debouncedText),
     {
@@ -95,7 +95,9 @@ function SearchBar(
     if (item.media_type === 'person' && 'profile_path' in item) {
       return item.profile_path ? url + item.profile_path : USER_IMAGE;
     }
-    return 'poster_path' in item ? url + item.poster_path : EMPTY_IMAGE;
+    return 'poster_path' in item && item.poster_path
+      ? url + item.poster_path
+      : EMPTY_IMAGE;
   };
 
   useEffect(() => {
@@ -117,7 +119,8 @@ function SearchBar(
           onChange={handleChange}
           placeholder="영화,방송,인물을 검색할 수 있습니다."
         />
-        {data?.length === 0 ? (
+
+        {text.length && text === debouncedText && !data?.length ? (
           <div>
             <List noResults>
               <button type="button">
@@ -144,15 +147,6 @@ function SearchBar(
                 </button>
               </List>
             ))}
-          </div>
-        )}
-        {isFetching && (
-          <div>
-            <List noResults>
-              <button type="button">
-                <span>검색중.....</span>
-              </button>
-            </List>
           </div>
         )}
       </div>

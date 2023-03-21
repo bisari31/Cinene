@@ -6,19 +6,14 @@ import ReviewItem from './ReviewItem';
 interface Props {
   onClick: () => void;
   reviews?: Review[];
-  auth: User | null;
+  toggleLoginModal: () => void;
 }
 
-function ReviewList({ reviews, auth, onClick }: Props) {
+function ReviewList({ reviews, ...rest }: Props) {
   return (
     <ReviewListWrapper>
       {reviews?.map((review) => (
-        <ReviewItem
-          key={review._id}
-          review={review}
-          auth={auth}
-          onClick={onClick}
-        />
+        <ReviewItem key={review._id} review={review} {...rest} />
       ))}
     </ReviewListWrapper>
   );

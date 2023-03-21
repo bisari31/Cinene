@@ -1,17 +1,17 @@
 interface CineneData {
+  content_type: MediaType;
+  title: string;
+  poster_url: string;
+  tmdbId: number;
   average: number;
   votes: number;
-  name: string;
-  poster: string;
-  tmdbId: number;
-  type: MediaType;
   __v: number;
   _id: string;
 }
 
 interface FavoritesContent {
-  contentId: CineneData;
-  userId: string;
+  content: CineneData;
+  liked_by: string;
   __v: number;
   _id: string;
 }
@@ -19,6 +19,7 @@ interface FavoritesContent {
 interface FavoritesData {
   contents: FavoritesContent[];
   success: boolean;
+  accessToken?: string;
 }
 
 interface TopRatedData {

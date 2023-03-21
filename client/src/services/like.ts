@@ -1,33 +1,37 @@
 import axios from 'axios';
-import { bearer } from './user';
+import { bearer, getAccessToken } from './user';
 
-interface IResponse {
-  success: boolean;
+interface Data {
   likes?: number;
-  message?: string;
   isLike?: boolean;
 }
 
-type Type = 'contentId' | 'commentId';
+type Type = 'content' | 'comment';
 
 export const getLikes = async (type: Type, id?: string, userId?: string) => {
   if (!id) return null;
-  const { data } = await axios.get<IResponse>(`/likes/${type}/${id}`, {
-    params: { userId },
-  });
+  const { data } = await axios.get<CustomResponse<Data>>(
+    `/likes/${type}/${id}`,
+    {
+      params: { userId },
+    },
+  );
   return data;
 };
 
-export const like = async (type: Type, id?: string) => {
-  if (id) return null;
-  const { data } = await axios.post<IResponse>(
-    `/likes/${type}/${id}`,
+export const like = async (obj: { type: Type; id?: string }) => {
+  if (!obj.id) return null;
+  const { data } = await axios.post<CustomResponse<Data>>(
+    `/likes/${obj.type}/${obj.id}`,
+    null,
     bearer(),
   );
+  getAccessToken(data);
   return data;
 };
 
 export const getFavorites = async () => {
   const { data } = await axios.get<FavoritesData>(`/likes/favorites`, bearer());
+  getAccessToken(data);
   return data;
 };

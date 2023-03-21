@@ -11,8 +11,14 @@ export const bearer = () => {
   return { headers: { authorization: `Bearer ${token}` } };
 };
 
+export const getAccessToken = (data: { accessToken?: string }) => {
+  if (data.accessToken) {
+    localStorage.setItem('accessToken', data.accessToken);
+  }
+};
+
 export const autheticate = async () => {
-  const { data } = await axios.get<User | { accessToken?: string }>(
+  const { data } = await axios.get<CustomResponse<{ user: User }>>(
     '/user',
     bearer(),
   );
@@ -62,9 +68,14 @@ export const changePassword = async (body: {
 };
 
 export const changeNickname = async (nickname: string) => {
-  const { data } = await axios.patch<Response>('/user/nickname', {
-    nickname,
-  });
+  const { data } = await axios.patch<CustomResponse<{ user: User }>>(
+    '/user/nickname',
+    {
+      nickname,
+    },
+    bearer(),
+  );
+  getAccessToken(data);
   return data;
 };
 

@@ -1,11 +1,18 @@
+import { AxiosError } from 'axios';
 import { useMutation, useQueryClient } from 'react-query';
+import { useNavigate } from 'react-router-dom';
+
 import { like } from 'services/like';
 import { cineneKeys } from 'utils/keys';
+import useAuthQuery from './useAuthQuery';
 
 export default function useLikeMutation() {
+  const { setAuth } = useAuthQuery();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
+
   const { mutate } = useMutation(like, {
-    onMutate: async (type, id) => {
+    onMutate: async (data) => {
       await queryClient.cancelQueries(cineneKeys.favorites());
       const previousData = queryClient.getQueryData<FavoritesData>(
         cineneKeys.favorites(),
@@ -14,15 +21,20 @@ export default function useLikeMutation() {
         queryClient.setQueryData<FavoritesData>(cineneKeys.favorites(), {
           ...previousData,
           contents: previousData.contents.filter(
-            (content) => content.contentId._id !== data.id,
+            ({ content }) => content._id !== data.id,
           ),
         });
       }
       return { previousData };
     },
-    onError: (error, variables, context) => {
-      if (context?.previousData)
+    onError: (err: AxiosError, variables, context) => {
+      if (err.response?.status === 401) {
+        setAuth(null);
+        navigate('/login');
+      }
+      if (context?.previousData) {
         queryClient.setQueryData(cineneKeys.favorites(), context.previousData);
+      }
     },
     onSettled: () => queryClient.invalidateQueries(cineneKeys.favorites()),
   });

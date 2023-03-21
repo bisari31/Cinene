@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { bearer } from './user';
+import { bearer, getAccessToken } from './user';
 
 interface Body {
   comment: string;
@@ -14,6 +14,7 @@ export const createComment = async (body: Body) => {
     body,
     bearer(),
   );
+  getAccessToken(data);
   return data;
 };
 

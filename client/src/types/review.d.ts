@@ -1,6 +1,6 @@
 interface Review {
-  contentId: string;
-  contentType: string;
+  content: string;
+  content_type: string;
   createdAt: string;
   rating: number;
   comment: string;

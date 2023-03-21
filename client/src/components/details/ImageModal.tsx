@@ -13,7 +13,7 @@ interface Props {
   modalRef: React.RefObject<HTMLDivElement>;
 }
 
-export default function ModalImage({
+export default function ImageModal({
   src,
   isVisible,
   toggleModal,

@@ -24,14 +24,18 @@ function CommentItem({
 }: Props) {
   const [openReplyComment, setOpenReplyComment] = useState(false);
 
-  const { auth, data, mutate } = useLike('comments', commentItem?._id);
+  const { auth, data, mutate } = useLike(
+    'comments',
+    commentItem?._id,
+    toggleLoginModal,
+  );
 
   const handleClick = () => {
     if (!auth) {
       toggleLoginModal();
       return;
     }
-    mutate({ type: 'commentId', id: commentItem?._id });
+    mutate({ type: 'comment', id: commentItem?._id });
   };
 
   const getReplyComments = () =>

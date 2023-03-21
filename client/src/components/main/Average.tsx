@@ -10,7 +10,7 @@ interface Props {
 }
 
 function Average({ tmdb, cinene, isMedia = true }: Props) {
-  const sliceAverage = (num: number | undefined) => {
+  const sliceAverage = (num?: number) => {
     if (num) return num.toFixed(1);
     return 0;
   };

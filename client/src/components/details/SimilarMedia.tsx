@@ -8,16 +8,20 @@ import Slider from 'components/common/Slider';
 
 interface Props {
   data?: Results[];
+  path?: string;
   title: string;
 }
 
-export default function SimilarMedia({ data, title }: Props) {
+export default function SimilarMedia({ data, title, path }: Props) {
   return (
-    <SimilarMediaWrapper>
+    <div>
       <Slider title={title}>
         {data?.map((item) => (
           <List key={item.id}>
-            <Link to={`/${item.media_type}/${item.id}`} draggable="false">
+            <Link
+              to={`/${path ?? item.media_type}/${item.id}`}
+              draggable="false"
+            >
               <img
                 draggable="false"
                 src={
@@ -32,11 +36,9 @@ export default function SimilarMedia({ data, title }: Props) {
           </List>
         ))}
       </Slider>
-    </SimilarMediaWrapper>
+    </div>
   );
 }
-
-const SimilarMediaWrapper = styled.div``;
 
 const List = styled.li`
   img {

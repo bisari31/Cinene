@@ -49,16 +49,15 @@ export default function Upcomming({ type }: Props) {
   };
 
   const getDday = (day: string) => {
-    const today = dayjs();
+    const today = dayjs().format('YYYY-MM-DD');
     const releaseDate = dayjs(day);
-    const dday = releaseDate.diff(today, 'day');
+    const dday = releaseDate.diff(today, 'd');
     return dday === 0 ? 'D-Day' : `D-${dday}`;
   };
 
   const getMovieImage = (item: MovieResult) => {
-    if (item.backdrop_path)
-      return `${IMAGE_URL}/original/${item.backdrop_path}`;
-    if (item.poster_path) return `${IMAGE_URL}/original/${item.poster_path}`;
+    if (item.backdrop_path) return `${IMAGE_URL}/w500/${item.backdrop_path}`;
+    if (item.poster_path) return `${IMAGE_URL}/w500/${item.poster_path}`;
     return EMPTY_IMAGE;
   };
 

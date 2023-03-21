@@ -1,7 +1,7 @@
 import styled from 'styled-components';
-import { useEffect, useCallback, useState } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import { useMutation } from 'react-query';
-import { useAuthQuery, useInput, useOutsideClick } from 'hooks';
+import { useInput, useOutsideClick } from 'hooks';
 
 import { changeNickname } from 'services/user';
 import { CheckMark, Edit } from 'assets/index';
@@ -10,7 +10,12 @@ import Input from 'components/common/Input';
 import Portal from 'components/common/Portal';
 import Modal from 'components/common/Modal';
 
-export default function Nickname() {
+interface Props {
+  auth: User | null;
+  setAuth: React.Dispatch<React.SetStateAction<User | null>>;
+}
+
+export default function Nickname({ auth, setAuth }: Props) {
   const [isChanged, setIsChanged] = useState(false);
   const [isChanging, setIsChanging] = useState(false);
   const {
@@ -23,12 +28,20 @@ export default function Nickname() {
   } = useInput('nickname');
 
   const { ref, isVisible, toggleModal, isMotionVisible } = useOutsideClick();
-  const { auth, setAuth } = useAuthQuery();
   const { mutate } = useMutation(changeNickname, {
-    onSuccess: (res) => {
-      // if (!res.success) return setError(res.message ?? '');
+    onSuccess: (data) => {
+      setAuth(data.user);
+      setIsChanged(true);
+      toggleModal();
       inputRef.current?.blur();
-      // setAuth(res)
+    },
+    onError: ({ response }: AxiosError<{ message: string }>) => {
+      if (response.status === 409) {
+        setError(response.data.message);
+      }
+      if (response.status === 500) {
+        setError(response.data.message);
+      }
     },
   });
 
@@ -40,8 +53,6 @@ export default function Nickname() {
       return;
     }
     mutate(nickname);
-    setIsChanged(true);
-    toggleModal();
   };
 
   const handleFocus = useCallback(() => {

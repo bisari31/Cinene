@@ -9,10 +9,9 @@ interface Props {
 }
 
 export default function TopRatedItem({ item }: Props) {
-  const img = 'poster' in item ? item.poster : item.poster_path;
+  const img = 'poster_url' in item ? item.poster_url : item.poster_path;
   const link =
-    'id' in item ? `movie/${item.id}` : `${item.type}/${item.tmdbId}`;
-  const title = 'name' in item ? item.name : item.title;
+    'id' in item ? `movie/${item.id}` : `${item.content_type}/${item.tmdbId}`;
 
   return (
     <List>
@@ -20,7 +19,7 @@ export default function TopRatedItem({ item }: Props) {
         <img
           draggable="false"
           src={img ? `${IMAGE_URL}/w500/${img}` : EMPTY_IMAGE}
-          alt={title}
+          alt={item.title}
         />
       </Link>
     </List>

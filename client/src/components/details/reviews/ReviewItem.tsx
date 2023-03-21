@@ -6,26 +6,35 @@ import styled from 'styled-components';
 import { deleteReview } from 'services/review';
 import { USER_IMAGE } from 'utils/imageUrl';
 import { cineneKeys } from 'utils/keys';
-import { useCurrentPathName } from 'hooks';
+import { useAuthQuery, useCurrentPathName } from 'hooks';
 
 import { Content, Item } from '../comments/CommentItem';
 
 interface Props {
   onClick: () => void;
   review: Review;
-  auth: User | null;
+  toggleLoginModal: () => void;
 }
 
-export default function ReviewItem({ review, auth, onClick }: Props) {
+export default function ReviewItem({
+  review,
+  onClick,
+  toggleLoginModal,
+}: Props) {
+  const { auth, setAuth } = useAuthQuery();
   const { author, comment, rating, createdAt, updatedAt, _id } = review;
   const { id, path } = useCurrentPathName();
   const queryClient = useQueryClient();
 
   const { mutate } = useMutation(deleteReview, {
     onSuccess: () => queryClient.invalidateQueries(cineneKeys.detail(path, id)),
+    onError: (err: AxiosError) => {
+      if (err.response.status === 401) {
+        setAuth(null);
+        toggleLoginModal();
+      }
+    },
   });
-
-  const handleDelete = () => mutate(_id);
 
   return (
     <Item>
@@ -38,7 +47,7 @@ export default function ReviewItem({ review, auth, onClick }: Props) {
               <button type="button" onClick={onClick}>
                 수정
               </button>
-              <button type="button" onClick={handleDelete}>
+              <button type="button" onClick={() => mutate(_id)}>
                 삭제
               </button>
             </>

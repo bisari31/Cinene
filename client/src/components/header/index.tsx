@@ -2,26 +2,31 @@ import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { useEffect } from 'react';
 
-import { useSetRecoilState } from 'recoil';
-import { authUserState } from 'atom/atom';
 import { useAuthQuery, useOutsideClick } from 'hooks';
 
+import { autheticate, getAccessToken } from 'services/user';
 import AuthMenu from './AuthMenu';
 import SearchBar from './SearchBar';
 import SideMenu from './SideMenu';
 
 export default function Header() {
-  // const setAuthUser = useSetRecoilState(authUserState);
-  const { auth } = useAuthQuery();
+  const { auth, setAuth } = useAuthQuery();
 
   const { ref, isVisible, toggleModal, isMotionVisible } = useOutsideClick(300);
 
-  // useEffect(() => {
-  //   const item = localStorage.getItem('accessToken');
-  //   if (item) {
-  //     setAuthUser(item);
-  //   }
-  // }, [setAuthUser]);
+  useEffect(() => {
+    const getAuth = async () => {
+      try {
+        const data = await autheticate();
+        setAuth(data.user);
+        getAccessToken(data);
+      } catch (err) {
+        setAuth(null);
+        localStorage.removeItem('accessToken');
+      }
+    };
+    getAuth();
+  }, [setAuth]);
 
   return (
     <HeaderWrapper>

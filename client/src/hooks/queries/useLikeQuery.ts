@@ -10,10 +10,14 @@ export interface IResponse {
   isLike: boolean;
 }
 
-export default function useLike(type: 'comments' | 'content', id?: string) {
-  const { auth } = useAuthQuery();
+export default function useLike(
+  type: 'comments' | 'content',
+  id: string | undefined,
+  toggle: () => void,
+) {
+  const { auth, setAuth } = useAuthQuery();
 
-  const IdType = type === 'comments' ? 'commentId' : 'contentId';
+  const IdType = type === 'comments' ? 'comment' : 'content';
 
   const queryClient = useQueryClient();
 
@@ -41,12 +45,17 @@ export default function useLike(type: 'comments' | 'content', id?: string) {
       }
       return { previousData };
     },
-    onError: (err, variables, context) => {
-      if (context?.previousData)
+    onError: (err: AxiosError, variables, context) => {
+      if (err.response.status === 401) {
+        setAuth(null);
+        toggle();
+      }
+      if (context?.previousData) {
         queryClient.setQueryData(
           cineneKeys.likes(type, id, !!auth),
           context.previousData,
         );
+      }
     },
     onSettled: () => queryClient.invalidateQueries(cineneKeys.likes(type, id)),
   });

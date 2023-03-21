@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 import { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { createComment } from 'services/comments';
 import { authUserState, contentIdState } from 'atom/atom';
@@ -17,7 +17,7 @@ interface Props {
 
 function CommentForm({ responseId, toggleLoginModal }: Props) {
   const [text, setText] = useState('');
-  const authUser = useRecoilValue(authUserState);
+  const [auth, setAuth] = useRecoilState(authUserState);
   const contentId = useRecoilValue(contentIdState);
   const queryClient = useQueryClient();
 
@@ -26,11 +26,17 @@ function CommentForm({ responseId, toggleLoginModal }: Props) {
       queryClient.invalidateQueries(cineneKeys.comments(contentId));
       setText('');
     },
+    onError: (err: AxiosError) => {
+      if (err.response.status === 401) {
+        setAuth(null);
+        toggleLoginModal();
+      }
+    },
   });
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!authUser) {
+    if (!auth) {
       toggleLoginModal();
       return;
     }
@@ -49,8 +55,8 @@ function CommentForm({ responseId, toggleLoginModal }: Props) {
   return (
     <CommentFormWrapper onSubmit={handleSubmit} color="navy50">
       <textarea
-        readOnly={!authUser}
-        placeholder={authUser ? '댓글을 입력해 주세요' : '로그인이 필요합니다'}
+        readOnly={!auth}
+        placeholder={auth ? '댓글을 입력해 주세요' : '로그인이 필요합니다'}
         value={text}
         onChange={handleChange}
       />

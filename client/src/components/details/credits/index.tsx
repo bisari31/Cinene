@@ -24,9 +24,7 @@ function Credits({ id, path }: Props) {
 
   const director = getDirector();
 
-  if (!data) return <div>loading...</div>;
-
-  if (!data.cast.length && !data.crew.length) return null;
+  if (!data?.cast.length && !data?.crew.length) return null;
 
   return (
     <CreditsWrapper>
@@ -52,7 +50,7 @@ function Credits({ id, path }: Props) {
             </Link>
           </li>
         ))}
-        {data.cast.map((actor) => (
+        {data?.cast.map((actor) => (
           <li key={actor.id + Math.random()}>
             <Link to={`/person/${actor.id}`} draggable="false">
               <div>

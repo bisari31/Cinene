@@ -16,13 +16,17 @@ function LikeButton(
   { cinene, toggleLoginModal }: Props,
   ref: React.ForwardedRef<HTMLHeadingElement>,
 ) {
-  const { auth, data, mutate } = useLike('content', cinene?._id);
+  const { auth, data, mutate } = useLike(
+    'content',
+    cinene?._id,
+    toggleLoginModal,
+  );
   const handleMutate = () => {
     if (!auth) {
       toggleLoginModal();
       return;
     }
-    mutate({ type: 'contentId', id: cinene?._id });
+    mutate({ type: 'content', id: cinene?._id });
   };
 
   const handleMoveToReview = () => {

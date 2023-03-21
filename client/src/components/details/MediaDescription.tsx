@@ -10,8 +10,8 @@ import { tmdbKeys } from 'utils/keys';
 
 import Average from 'components/main/Average';
 import SimilarMedia from './SimilarMedia';
-import Credits from './Credits';
-import Seasons from './Seasons';
+import Credits from './credits';
+import Seasons from './seasons';
 import Comment from './comments';
 import Like from './LikeButton';
 import Reviews from './reviews/index';
@@ -72,6 +72,7 @@ function Description({ path, data, id }: Props) {
       <p>{overview}</p>
       <Seasons seasons={data && 'seasons' in data && data.seasons} />
       <SimilarMedia
+        path={path}
         data={similarData}
         title={`추천 ${path === 'movie' ? '영화' : 'TV'}`}
       />

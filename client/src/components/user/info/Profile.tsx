@@ -12,7 +12,7 @@ interface Props {
 }
 
 export default function Profile({ children }: Props) {
-  const { auth } = useAuthQuery();
+  const { auth, setAuth } = useAuthQuery();
 
   return (
     <UserProfileWrapper>
@@ -25,7 +25,7 @@ export default function Profile({ children }: Props) {
         </ImgWrapper>
         <NicknameWrapper>
           <div>
-            <Nickname />
+            <Nickname auth={auth} setAuth={setAuth} />
           </div>
           <h3>{auth?.email}</h3>
           <div>

@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import { forwardRef } from 'react';
+import { forwardRef, useCallback } from 'react';
 import { useQuery } from 'react-query';
 
 import { getReviews } from 'services/review';
@@ -30,14 +30,14 @@ function Reviews(
   } = useOutsideClick(300);
 
   const { data: reivewData } = useQuery(
-    cineneKeys.reviews(data?.type, data?.tmdbId, !!auth),
-    () => getReviews(data?._id, data?.type, auth?._id),
+    cineneKeys.reviews(data?.content_type, data?.tmdbId, !!auth),
+    () => getReviews(data?._id, data?.content_type, auth?._id),
   );
 
-  const handleClick = () => {
+  const handleClick = useCallback(() => {
     if (auth) toggleModal();
     else toggleLoginModal();
-  };
+  }, [auth, toggleLoginModal, toggleModal]);
 
   return (
     <ReviewsWrapper length={reivewData?.reviews?.length}>
@@ -56,8 +56,8 @@ function Reviews(
       </div>
       <ReviewList
         reviews={reivewData?.reviews}
-        auth={auth}
         onClick={handleClick}
+        toggleLoginModal={toggleLoginModal}
       />
       {isVisible && (
         <ReviewModal

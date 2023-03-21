@@ -51,8 +51,8 @@ interface Result {
   adult: boolean;
   genre_ids: number[];
   backdrop_path: string | null;
-  id: number;
   media_type: MediaType;
+  id: number;
   vote_average: number;
   vote_count: number;
   poster_path: string | null;
@@ -81,6 +81,7 @@ interface TrendingData {
   total_pages: number;
   total_results: number;
 }
+
 interface MoviesData {
   page: number;
   results: MovieResult[];

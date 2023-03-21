@@ -19,12 +19,10 @@ export default function KakaoForm({ children }: { children: React.ReactNode }) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const join = await axios.post('/users/kakao-register', { nickname });
-    console.log(join);
   };
 
   useEffect(() => {
     nicknameRef.current?.focus();
-    // console.log(document.cookie);
   }, [nicknameRef]);
 
   return (
