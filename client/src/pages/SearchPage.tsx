@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components';
 import { ChevronLeft } from 'assets';
 import { LeftButton } from 'styles/css';
 
-import SearchBar from 'components/header/SearchBar';
+import SearchBar from 'components/header/searchbar/SearchBar';
 
 export default function SearchPage() {
   const navigate = useNavigate();

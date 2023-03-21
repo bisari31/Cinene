@@ -6,7 +6,7 @@ import { useSetRecoilState } from 'recoil';
 import { authUserState } from 'atom/atom';
 import { login, register } from 'services/user';
 
-export default function useAuthMutation(
+export default function useLoginMutation(
   setPassword: React.Dispatch<React.SetStateAction<string>>,
   setEmail: React.Dispatch<React.SetStateAction<string>>,
   setPasswordError: React.Dispatch<React.SetStateAction<string>>,

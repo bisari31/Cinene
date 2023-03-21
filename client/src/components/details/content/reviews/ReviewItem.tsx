@@ -6,8 +6,9 @@ import styled from 'styled-components';
 import { deleteReview } from 'services/review';
 import { USER_IMAGE } from 'utils/imageUrl';
 import { cineneKeys } from 'utils/keys';
-import { useAuthQuery, useCurrentPathName } from 'hooks';
 
+import { useCurrentPathName } from 'hooks';
+import useAuthQuery from 'components/header/hooks/useAuthQuery';
 import { Content, Item } from '../comments/CommentItem';
 
 interface Props {

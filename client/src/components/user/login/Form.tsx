@@ -1,10 +1,11 @@
 import { useState, ReactNode, useEffect } from 'react';
 import styled from 'styled-components';
+
 import { useInput } from 'hooks';
+import useLoginMutation from 'components/user/hooks/useLoginMutation';
 
 import { PathName } from 'pages/LoginPage';
 import Input from 'components/common/Input';
-import useAuthMutation from 'hooks/queries/useAuthMutation';
 
 export const EMPTY_ERROR_MESSAGE = '필수 입력 항목입니다.';
 
@@ -52,7 +53,7 @@ export default function Form({
     setValue: setEmail,
   } = useInput('email');
 
-  const { loginMutate, registerMutate, message, setMessage } = useAuthMutation(
+  const { loginMutate, registerMutate, message, setMessage } = useLoginMutation(
     setPassword,
     setEmail,
     setPasswordError,

@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from 'react-query';
 
 import { getLikes, like } from 'services/like';
 import { cineneKeys } from 'utils/keys';
-import useAuthQuery from './useAuthQuery';
+import useAuthQuery from '../../header/hooks/useAuthQuery';
 
 export interface IResponse {
   success: boolean;

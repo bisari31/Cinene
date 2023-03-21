@@ -2,10 +2,10 @@ import styled from 'styled-components';
 
 import { Heart } from 'assets';
 import { Button, buttonEffect } from 'styles/css';
-import { useLike } from 'hooks';
 
 import withLoginPortal from 'components/hoc/withLoginPortal';
 import React from 'react';
+import useLike from '../../hooks/useLikeQuery';
 
 interface Props {
   cinene?: CineneData | null;

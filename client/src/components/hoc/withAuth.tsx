@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useAuthQuery } from 'hooks';
+import useAuthQuery from 'components/header/hooks/useAuthQuery';
 
 export default function withAuth(
   Component: React.ComponentType,

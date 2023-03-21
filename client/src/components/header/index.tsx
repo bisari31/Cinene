@@ -2,16 +2,16 @@ import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { useEffect } from 'react';
 
-import { useAuthQuery, useOutsideClick } from 'hooks';
-
 import { autheticate, getAccessToken } from 'services/user';
+import { useOutsideClick } from 'hooks';
+import useAuthQuery from './hooks/useAuthQuery';
+
 import AuthMenu from './AuthMenu';
-import SearchBar from './SearchBar';
+import SearchBar from './searchbar/SearchBar';
 import SideMenu from './SideMenu';
 
 export default function Header() {
   const { auth, setAuth } = useAuthQuery();
-
   const { ref, isVisible, toggleModal, isMotionVisible } = useOutsideClick(300);
 
   useEffect(() => {

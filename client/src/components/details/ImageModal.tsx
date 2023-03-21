@@ -1,5 +1,4 @@
 import styled, { css } from 'styled-components';
-import { useEffect, useState } from 'react';
 
 import { useEscapeClose, usePreventScrolling } from 'hooks';
 import { outside } from 'styles/css';

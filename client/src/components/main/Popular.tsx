@@ -8,9 +8,10 @@ import { ChevronLeft, ChevronRight } from 'assets';
 import { getMediaOverview, getMediaTitle } from 'utils/api';
 import { EMPTY_IMAGE } from 'utils/imageUrl';
 import { buttonEffect } from 'styles/css';
-import { useCineneDataQuery, useTrendingMediaQuery } from 'hooks';
 import { tmdbKeys } from 'utils/keys';
 
+import useCineneDataQuery from 'components/details/hooks/useCineneDataQuery';
+import useTrendingMediaQuery from './hooks/useTrendingMediaQuery';
 import AverageButton from './Average';
 
 export default function Popular() {

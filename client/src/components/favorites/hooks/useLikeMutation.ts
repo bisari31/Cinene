@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { like } from 'services/like';
 import { cineneKeys } from 'utils/keys';
-import useAuthQuery from './useAuthQuery';
+import useAuthQuery from '../../header/hooks/useAuthQuery';
 
 export default function useLikeMutation() {
   const { setAuth } = useAuthQuery();

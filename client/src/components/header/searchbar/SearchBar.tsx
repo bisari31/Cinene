@@ -105,6 +105,7 @@ function SearchBar(
   }, [isVisible]);
 
   useEffect(() => {
+    console.log(data);
     if (data && totalIndexRef) totalIndexRef.current = data.length;
   }, [data]);
 

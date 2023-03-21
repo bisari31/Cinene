@@ -1,20 +1,20 @@
-import { memo, useRef } from 'react';
+import { memo, useRef, useMemo } from 'react';
 import styled, { css } from 'styled-components';
 import { useQuery } from 'react-query';
 import dayjs from 'dayjs';
 
 import { getMediaOverview, getMediaTitle } from 'utils/api';
 import { getSimilarMedia } from 'services/tmdb';
-import { useCineneDataQuery } from 'hooks';
 import { tmdbKeys } from 'utils/keys';
 
 import Average from 'components/main/Average';
-import SimilarMedia from './SimilarMedia';
-import Credits from './credits';
-import Seasons from './seasons';
-import Comment from './comments';
-import Like from './LikeButton';
-import Reviews from './reviews/index';
+import SimilarMedia from './content/similar';
+import useCineneDataQuery from './hooks/useCineneDataQuery';
+import Credits from './content/credits';
+import Seasons from './content/seasons';
+import Comment from './content/comments';
+import Like from './content/like/LikeButton';
+import Reviews from './content/reviews/index';
 
 interface Props {
   data?: MovieDetails | TvDetails;
@@ -22,7 +22,7 @@ interface Props {
   id: number;
 }
 
-function Description({ path, data, id }: Props) {
+function MediaContent({ path, data, id }: Props) {
   const isMovieDetails = data && 'runtime' in data;
   const title = getMediaTitle(data);
   const overview = getMediaOverview(data);
@@ -49,7 +49,6 @@ function Description({ path, data, id }: Props) {
 
     return result;
   };
-  const releaseDate = getReleaseDate();
 
   return (
     <DescriptionWrapper>
@@ -57,7 +56,7 @@ function Description({ path, data, id }: Props) {
       <h2>{title}</h2>
       <Like ref={reviewRef} cinene={cineneData} />
       <Genre>
-        <p>{releaseDate}</p>
+        <p>{getReleaseDate()}</p>
         <p>
           {isMovieDetails
             ? `${data.runtime}분`
@@ -83,7 +82,7 @@ function Description({ path, data, id }: Props) {
   );
 }
 
-export default memo(Description);
+export default memo(MediaContent);
 
 const DescriptionWrapper = styled.div`
   ${({ theme }) => css`

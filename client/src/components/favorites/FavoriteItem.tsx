@@ -5,7 +5,7 @@ import { Heart } from 'assets';
 import { buttonEffect } from 'styles/css';
 import { IMAGE_URL } from 'services/tmdb';
 import { EMPTY_IMAGE, USER_IMAGE } from 'utils/imageUrl';
-import useLikeMutation from 'hooks/queries/useLikeMutation';
+import useLikeMutation from 'components/favorites/hooks/useLikeMutation';
 
 interface Props {
   item: FavoritesContent;

@@ -3,9 +3,10 @@ import { forwardRef, useCallback } from 'react';
 import { useQuery } from 'react-query';
 
 import { getReviews } from 'services/review';
-import { useAuthQuery, useOutsideClick } from 'hooks';
 import { buttonEffect } from 'styles/css';
 
+import { useOutsideClick } from 'hooks';
+import useAuthQuery from 'components/header/hooks/useAuthQuery';
 import Button from 'components/common/Button';
 import { cineneKeys } from 'utils/keys';
 import withLoginPortal from 'components/hoc/withLoginPortal';

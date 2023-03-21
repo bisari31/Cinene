@@ -1,17 +1,17 @@
-import { useRef, useMemo } from 'react';
+import { useRef } from 'react';
 import { useQuery } from 'react-query';
 import styled, { css } from 'styled-components';
 
+import { tmdbKeys } from 'utils/keys';
 import { getCombinedCredits } from 'services/tmdb';
-import { useCineneDataQuery } from 'hooks';
 
 import Average from 'components/main/Average';
-import { tmdbKeys } from 'utils/keys';
-import SimilarMedia from './SimilarMedia';
-import Comment from './comments';
-import Like from './LikeButton';
-import Reviews from './reviews';
+import useCineneDataQuery from './hooks/useCineneDataQuery';
 import useSortData from './hooks/useSortData';
+import LikeButton from './content/like/LikeButton';
+import SimilarMedia from './content/similar';
+import Reviews from './content/reviews';
+import Comments from './content/comments';
 
 interface Props {
   data?: PersonDetails;
@@ -19,7 +19,7 @@ interface Props {
   id: number;
 }
 
-export default function PersonDescription({ data, path, id }: Props) {
+export default function PersonContent({ data, path, id }: Props) {
   const reviewRef = useRef<HTMLHeadingElement>(null);
 
   const getKoreanName = (userData?: PersonDetails) => {
@@ -46,7 +46,7 @@ export default function PersonDescription({ data, path, id }: Props) {
     <PersonDescriptionWrapper>
       <Average isMedia={false} cinene={cineneData} />
       <h2>{getKoreanName(data)}</h2>
-      <Like ref={reviewRef} cinene={cineneData} />
+      <LikeButton ref={reviewRef} cinene={cineneData} />
       <div>
         <p>{data?.birthday ? `출생: ${data.birthday}` : '정보 없음'}</p>
       </div>
@@ -57,7 +57,7 @@ export default function PersonDescription({ data, path, id }: Props) {
         <SimilarMedia data={crew} title="제작 작품" />
       )}
       <Reviews ref={reviewRef} data={cineneData} />
-      <Comment contentId={cineneData?._id} />
+      <Comments contentId={cineneData?._id} />
     </PersonDescriptionWrapper>
   );
 }

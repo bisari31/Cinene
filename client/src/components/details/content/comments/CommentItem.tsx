@@ -4,10 +4,11 @@ import styled, { css } from 'styled-components';
 import { USER_IMAGE } from 'utils/imageUrl';
 import { Button, buttonEffect } from 'styles/css';
 import { Heart } from 'assets';
-import { useGetRelativeTime, useLike } from 'hooks';
 
 import withLoginPortal from 'components/hoc/withLoginPortal';
+import { useGetRelativeTime } from 'hooks';
 import ReplyComments from './ReplyComments';
+import useLike from '../../hooks/useLikeQuery';
 
 interface Props {
   comments?: Comment[];
