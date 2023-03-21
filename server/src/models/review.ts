@@ -46,8 +46,8 @@ reviewSchema.statics.updateRating = async function (
 ) {
   try {
     const reviews: ReviewInterface[] = await this.find({
-      contentId,
-      contentType,
+      content: contentId,
+      content_type: contentType,
     });
 
     if (!reviews.length) {

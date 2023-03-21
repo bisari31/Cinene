@@ -15,14 +15,15 @@ router.get(
   ) => {
     try {
       const { type, id } = req.params;
-      const likes = await Like.find({ [type]: id });
+      const typed = type === 'content' ? 'content' : 'comment';
+      const likes = await Like.find({ [typed]: id });
       if (!req.query.userId) {
         res.json({ success: true, likes: likes.length, isLike: false });
         return;
       }
       const document = await Like.findOne({
         liked_by: req.query.userId,
-        [type]: id,
+        [typed]: id,
       });
       res.json({
         success: true,
@@ -43,21 +44,22 @@ router.post(
     res: CustomResponse,
   ) => {
     try {
-      const { type, id } = req.params;
+      const { id, type } = req.params;
+      const typed = type === 'content' ? 'content' : 'comment';
       const document = await Like.findOne({
         liked_by: req.user?._id,
-        [type]: id,
+        [typed]: id,
       });
       if (document) {
         await Like.findByIdAndDelete(document._id);
-        res.json({ success: true });
+        res.json({ success: true, accessToken: req.accessToken });
         return;
       }
       await Like.create({
-        [type]: id,
+        [typed]: id,
         liked_by: req.user?._id,
       });
-      res.json({ success: true });
+      res.json({ success: true, accessToken: req.accessToken });
     } catch (err) {
       res.status(400).json({ success: false, message: '좋아요 증감 실패' });
     }
@@ -67,13 +69,17 @@ router.post(
 router.get(
   '/favorites',
   authenticate,
-  async (req: CustomRequest, res: CustomResponse<{ contents?: any }>) => {
+  async (
+    req: CustomRequest,
+    res: CustomResponse<{ contents?: ContentInterface[] }>,
+  ) => {
     try {
-      const contents = await Like.find({ liked_by: req.user?._id })
+      const contents = await Like.find<ContentInterface>({
+        liked_by: req.user?._id,
+      })
         .exists('content', true)
         .populate('content');
-
-      res.json({ success: true, contents });
+      res.json({ success: true, contents, accessToken: req.accessToken });
     } catch (err) {
       res
         .status(400)

@@ -23,7 +23,7 @@ router.post(
         author: req.user?._id,
       });
       await Review.updateRating(content, contentType);
-      res.json({ success: true });
+      res.json({ success: true, accessToken: req.accessToken });
     } catch (err) {
       res.status(400).json({ success: false, message: '리뷰 등록 실패' });
     }
@@ -45,7 +45,7 @@ router.patch(
       });
       if (!review) throw Error();
       await Review.updateRating(content, ContentType);
-      res.json({ success: true });
+      res.json({ success: true, accessToken: req.accessToken });
     } catch (err) {
       res.status(400).json({ success: false, message: '리뷰 수정 실패' });
     }
@@ -73,9 +73,9 @@ router.get(
         return;
       }
       const myReview = await Review.findOne({
-        contentType: type,
-        contentId: id,
-        userId: req.query.userId,
+        content_type: type,
+        content: id,
+        author: req.query.userId,
       });
       res.json({ success: true, reviews, hasReview: myReview });
     } catch (err) {
@@ -92,7 +92,7 @@ router.delete(
       const review = await Review.findByIdAndDelete(req.params.id);
       if (!review) throw Error();
       await Review.updateRating(review?.content, review?.content_type);
-      res.json({ success: true });
+      res.json({ success: true, accessToken: req.accessToken });
     } catch (err) {
       res.status(400).json({ success: false, message: '리뷰 삭제 실패' });
     }

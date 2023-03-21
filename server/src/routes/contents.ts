@@ -40,7 +40,6 @@ router.post('/', async (req: Request<{}, {}, ContentInterface>, res) => {
       content_type: contentType,
       poster_url: posterUrl,
     } = req.body;
-
     const hasCotent = await Content.findOne({
       tmdbId,
       content_type: contentType,

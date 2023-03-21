@@ -24,7 +24,7 @@ router.post(
         author: req.user?._id,
         responseTo: req.body.responseTo,
       });
-      res.status(201).json({ success: true });
+      res.status(201).json({ success: true, accessToken: req.accessToken });
     } catch (err) {
       res.status(400).json({ success: false, message: '댓글 등록 실패' });
     }

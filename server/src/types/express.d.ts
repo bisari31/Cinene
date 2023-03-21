@@ -11,6 +11,7 @@ export interface CustomRequest<T = unknown, U = unknown, V = unknown>
 interface DefaultData {
   success: boolean;
   message?: string;
+  accessToken?: string;
 }
 
 export type CustomResponse<T = unknown> = Response<DefaultData & T>;

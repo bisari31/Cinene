@@ -1,8 +1,9 @@
 import { Schema, Types, model, ObjectId } from 'mongoose';
+import { ContentInterface } from './content';
 
 export interface LikeInterface {
   _id: ObjectId;
-  content: ObjectId;
+  content: ObjectId | ContentInterface;
   comment: ObjectId;
   liked_by: ObjectId;
 }
@@ -10,6 +11,7 @@ export interface LikeInterface {
 const likeSchema = new Schema<Omit<LikeInterface, '_id'>>({
   content: {
     type: Types.ObjectId,
+    ref: 'Content',
   },
   comment: {
     type: Types.ObjectId,

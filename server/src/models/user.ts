@@ -24,7 +24,7 @@ export interface UserDocument extends Omit<UserInterface, '_id'>, Document {
 interface UserModel extends Model<UserDocument> {
   findToken(token: string | undefined): Promise<false | UserDocument>;
   findPassword(
-    email: string,
+    email: string | undefined,
     password: string,
   ): Promise<{ success: boolean; user?: UserDocument }>;
   checkDuplicateUserInfo(
@@ -94,7 +94,7 @@ userSchema.statics.findToken = async function (
 };
 
 userSchema.statics.findPassword = async function (
-  email: string,
+  email: string | undefined,
   password: string,
 ): Promise<{ success: boolean; user?: UserDocument }> {
   try {

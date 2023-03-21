@@ -2,7 +2,7 @@ import { Response, Router, Request } from 'express';
 import bcrypt from 'bcrypt';
 import axios from 'axios';
 
-import { MongooseError, ObjectId } from 'mongoose';
+import { Error, MongooseError, ObjectId } from 'mongoose';
 import { KakaoTokenData, KakaoUserData } from '../types/oauth';
 import authenticate, { MiddlewareRequest } from '../utils/middleware';
 
@@ -19,16 +19,10 @@ router.get(
   async (
     req: CustomRequest<{ name: string }>,
     res: CustomResponse<{
-      accessToken?: string;
-      user?: Omit<UserInterface, 'password'>;
+      user?: Omit<UserInterface, 'password'> | null;
     }>,
   ) => {
-    try {
-      res.json({ success: true, accessToken: req.accessToken, user: req.user });
-    } catch (err) {
-      if (err instanceof Error)
-        res.status(500).json({ success: false, message: err.message });
-    }
+    res.json({ success: true, accessToken: req.accessToken, user: req.user });
   },
 );
 
@@ -72,7 +66,6 @@ router.post(
   async (
     req: Request<{}, {}, { email: string; password: string }>,
     res: CustomResponse<{
-      accessToken?: string;
       user?: Omit<UserInterface, 'password'>;
     }>,
   ) => {
@@ -127,26 +120,26 @@ router.get(
   },
 );
 
-// router.post(
-//   '/check-password',
-//   authenticate,
-//   async (
-//     req: CustomRequest<{ password: string }>,
-//     res: Response<CustomResponse>,
-//   ) => {
-//     try {
-//       const user = await User.findPassword(req.user?._id, req.body.password);
-//       if (!user) {
-//         res.json({
-//           success: false,
-//           message: '비밀번호가 일치하지 않습니다.',
-//         });
-//       } else res.json({ success: true });
-//     } catch (err) {
-//       res.status(400).send({ success: false });
-//     }
-//   },
-// );
+router.post(
+  '/check-password',
+  authenticate,
+  async (
+    req: CustomRequest<{}, {}, { password: string }>,
+    res: CustomResponse,
+  ) => {
+    try {
+      const user = await User.findPassword(req.user?.email, req.body.password);
+      if (!user) {
+        res.json({
+          success: false,
+          message: '비밀번호가 일치하지 않습니다.',
+        });
+      } else res.json({ success: true });
+    } catch (err) {
+      res.status(400).send({ success: false });
+    }
+  },
+);
 
 // router.patch(
 //   '/password',
@@ -176,39 +169,49 @@ router.get(
 //   },
 // );
 
-// router.patch(
-//   '/nickname',
-//   authenticate,
-//   async (
-//     req: CustomRequest<{ nickname: string }>,
-//     res: Response<CustomResponse>,
-//   ) => {
-//     try {
-//       const user = await User.findByIdAndUpdate(req.user?._id, {
-//         $set: { nickname: req.body.nickname },
-//       });
-//       if (!user) throw Error;
-//       res.json({ success: true, user });
-//     } catch (err) {
-//       res.json({ success: false, message: '닉네임이 이미 있습니다' });
-//     }
-//   },
-// );
+router.patch(
+  '/nickname',
+  authenticate,
+  async (
+    req: CustomRequest<{}, {}, { nickname: string }>,
+    res: CustomResponse<{ user?: Omit<UserInterface, 'password'> }>,
+  ) => {
+    try {
+      const { password, ...rest } = await User.findByIdAndUpdate(
+        req.user?._id,
+        {
+          $set: { nickname: req.body.nickname },
+        },
+        { new: true },
+      ).lean<UserInterface>();
+      if (!rest) throw Error;
+      res.json({ success: true, user: rest, accessToken: req.accessToken });
+    } catch (err) {
+      if (err.name === 'MongoServerError' && err.code === 11000) {
+        res
+          .status(409)
+          .json({ success: false, message: '닉네임이 이미 있습니다' });
+      } else {
+        res.status(500).json({ success: false, message: '서버 에러' });
+      }
+    }
+  },
+);
 
-// router.delete(
-//   '/',
-//   authenticate,
-//   async (req: CustomRequest<null>, res: Response<CustomResponse>) => {
-//     try {
-//       await User.findByIdAndUpdate(req.user?._id, {
-//         $set: { active: false, token: '' },
-//       });
-//       res.json({ success: true });
-//     } catch (err) {
-//       res.status(400).json({ success: false });
-//     }
-//   },
-// );
+router.delete(
+  '/',
+  authenticate,
+  async (req: CustomRequest, res: CustomResponse) => {
+    try {
+      await User.findByIdAndUpdate(req.user?._id, {
+        $set: { active: false, refresh_token: '' },
+      });
+      res.json({ success: true });
+    } catch (err) {
+      res.status(400).json({ success: false });
+    }
+  },
+);
 
 // router.get(
 //   '/kakao-login/:code',
