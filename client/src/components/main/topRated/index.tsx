@@ -6,6 +6,7 @@ import { getTopRated } from 'services/contents';
 import { cineneKeys, tmdbKeys } from 'utils/keys';
 
 import Slider from 'components/common/Slider';
+import { staleTime } from 'utils/queryOptions';
 import TopRatedItem from './TopRatedItem';
 
 interface Props {
@@ -18,7 +19,7 @@ const TITLE = {
 
 export default function TopRated({ type }: Props) {
   const { data } = useQuery(tmdbKeys.topRated(), getTopRatedMovie, {
-    staleTime: 1000 * 60 * 60 * 6,
+    ...staleTime,
     enabled: type === 'tmdb',
   });
   const { data: cinene } = useQuery(cineneKeys.topRated(), getTopRated, {

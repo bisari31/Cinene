@@ -9,6 +9,9 @@ import { usePrevious } from 'hooks';
 import Modal from 'components/common/Modal';
 import Portal from 'components/common/Portal';
 import { cineneKeys } from 'utils/keys';
+import { LoginPortalProps } from 'components/hoc/withLoginPortal';
+import { useSetRecoilState } from 'recoil';
+import { authUserState } from 'atom/atom';
 
 const RATING_MESSAGE = [
   '(별로에요)',
@@ -18,7 +21,7 @@ const RATING_MESSAGE = [
   '(최고에요)',
 ];
 
-interface Props {
+interface Props extends LoginPortalProps {
   isVisible: boolean;
   isMotionVisible: boolean;
   toggleModal: () => void;
@@ -27,13 +30,21 @@ interface Props {
 }
 
 function ReviewModal(
-  { isVisible, isMotionVisible, toggleModal, data, hasReview }: Props,
+  {
+    isVisible,
+    isMotionVisible,
+    toggleModal,
+    data,
+    hasReview,
+    toggleLoginModal,
+  }: Props,
   ref: ForwardedRef<HTMLDivElement>,
 ) {
   const [rating, setRating] = useState(hasReview?.rating || 0);
   const [comment, setComment] = useState(hasReview?.comment || '');
   const [isCommentError, setIsCommentError] = useState(false);
   const [isRatingError, setIsRatingError] = useState(false);
+  const setAuth = useSetRecoilState(authUserState);
   const previousRating = usePrevious(rating);
   const previousComment = usePrevious(comment);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -46,6 +57,12 @@ function ReviewModal(
         cineneKeys.detail(data?.content_type, data?.tmdbId),
       );
       toggleModal();
+    },
+    onError: ({ response }: AxiosError) => {
+      if (response.status === 401) {
+        setAuth(null);
+        toggleLoginModal();
+      }
     },
   });
 

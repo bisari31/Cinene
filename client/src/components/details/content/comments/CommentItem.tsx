@@ -5,19 +5,18 @@ import { USER_IMAGE } from 'utils/imageUrl';
 import { Button, buttonEffect } from 'styles/css';
 import { Heart } from 'assets';
 
-import withLoginPortal from 'components/hoc/withLoginPortal';
+import { LoginPortalProps } from 'components/hoc/withLoginPortal';
 import { useGetRelativeTime } from 'hooks';
 import ReplyComments from './ReplyComments';
 import useLike from '../../hooks/useLikeQuery';
 
-interface Props {
+interface Props extends LoginPortalProps {
   comments?: Comment[];
   commentItem?: Comment;
   isResponse?: boolean;
-  toggleLoginModal: () => void;
 }
 
-function CommentItem({
+export default function CommentItem({
   commentItem,
   comments,
   isResponse = false,
@@ -80,17 +79,15 @@ function CommentItem({
         </ButtonWrapper>
       </Item>
       {openReplyComment && (
-        <ReplyComments comments={replyComments} responseId={commentItem?._id} />
+        <ReplyComments
+          comments={replyComments}
+          responseId={commentItem?._id}
+          toggleLoginModal={toggleLoginModal}
+        />
       )}
     </>
   );
 }
-
-export default withLoginPortal<{
-  comments?: Comment[];
-  commentItem?: Comment;
-  isResponse?: boolean;
-}>(CommentItem);
 
 export const Item = styled.div<{ isResponse?: boolean }>`
   ${({ theme }) => css`

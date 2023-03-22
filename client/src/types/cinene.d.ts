@@ -22,6 +22,11 @@ interface FavoritesData {
   accessToken?: string;
 }
 
+interface LikeData {
+  likes: number;
+  isLike: boolean;
+}
+
 interface TopRatedData {
   contents: CineneData[];
   success: boolean;

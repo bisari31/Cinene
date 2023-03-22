@@ -1,38 +1,38 @@
-import { memo } from 'react';
 import styled, { css } from 'styled-components';
 
 import { Star } from 'assets';
 
 interface Props {
-  cinene?: CineneData | null;
-  tmdb?: number;
+  cineneData?: CineneData;
+  tmdbAverage?: number;
   isMedia?: boolean;
 }
 
-function Average({ tmdb, cinene, isMedia = true }: Props) {
-  const sliceAverage = (num?: number) => {
-    if (num) return num.toFixed(1);
-    return 0;
-  };
+export default function Average({
+  tmdbAverage,
+  cineneData,
+  isMedia = false,
+}: Props) {
+  const sliceAverage = (num?: number) => (num ? num.toFixed(1) : 0);
+  const average = sliceAverage(tmdbAverage);
 
   return (
     <AverageWrapper>
       <div>
         <Star />
         <span>
-          <b>{cinene?.average.toFixed(1) ?? 0} </b> / {cinene?.votes ?? 0}
+          <b>{cineneData?.average.toFixed(1) ?? 0} </b> /{' '}
+          {cineneData?.votes ?? 0}
         </span>
       </div>
       {isMedia && (
         <div>
-          <span>TMDB {sliceAverage(tmdb)}</span>
+          <span>TMDB {average}</span>
         </div>
       )}
     </AverageWrapper>
   );
 }
-
-export default memo(Average);
 
 const AverageWrapper = styled.div`
   ${({ theme }) => css`

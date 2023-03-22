@@ -1,8 +1,7 @@
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { IMAGE_URL } from 'services/tmdb';
-import { USER_IMAGE } from 'utils/imageUrl';
+import useImageUrl from 'components/details/hooks/useImageUrl';
 
 interface Props {
   item: Crew | Cast;
@@ -10,6 +9,7 @@ interface Props {
 }
 
 export default function CreditItem({ item, isDirector = false }: Props) {
+  const { getPoster } = useImageUrl();
   const character = 'character' in item ? `${item.character} 역` : '정보 없음';
   return (
     <CreditItemWrapper>
@@ -17,11 +17,7 @@ export default function CreditItem({ item, isDirector = false }: Props) {
         <div>
           <img
             draggable="false"
-            src={
-              item.profile_path
-                ? `${IMAGE_URL}/w200/${item.profile_path}`
-                : USER_IMAGE
-            }
+            src={getPoster(item.profile_path, '200', true)}
             alt={item.name}
           />
         </div>

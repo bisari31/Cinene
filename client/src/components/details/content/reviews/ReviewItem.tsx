@@ -9,12 +9,12 @@ import { cineneKeys } from 'utils/keys';
 
 import { useCurrentPathName } from 'hooks';
 import useAuthQuery from 'components/header/hooks/useAuthQuery';
+import { LoginPortalProps } from 'components/hoc/withLoginPortal';
 import { Content, Item } from '../comments/CommentItem';
 
-interface Props {
+interface Props extends LoginPortalProps {
   onClick: () => void;
   review: Review;
-  toggleLoginModal: () => void;
 }
 
 export default function ReviewItem({

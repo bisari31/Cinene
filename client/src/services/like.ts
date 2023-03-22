@@ -1,16 +1,11 @@
 import axios from 'axios';
 import { bearer, getAccessToken } from './user';
 
-interface Data {
-  likes?: number;
-  isLike?: boolean;
-}
-
 type Type = 'content' | 'comment';
 
 export const getLikes = async (type: Type, id?: string, userId?: string) => {
   if (!id) return null;
-  const { data } = await axios.get<CustomResponse<Data>>(
+  const { data } = await axios.get<CustomResponse<LikeData>>(
     `/likes/${type}/${id}`,
     {
       params: { userId },
@@ -21,7 +16,7 @@ export const getLikes = async (type: Type, id?: string, userId?: string) => {
 
 export const like = async (obj: { type: Type; id?: string }) => {
   if (!obj.id) return null;
-  const { data } = await axios.post<CustomResponse<Data>>(
+  const { data } = await axios.post<CustomResponse>(
     `/likes/${obj.type}/${obj.id}`,
     null,
     bearer(),

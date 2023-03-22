@@ -5,7 +5,7 @@ export const authUserState = atom<User | null>({
   default: null,
 });
 
-export const contentIdState = atom({
+export const contentIdState = atom<string | undefined>({
   key: 'contentIdState',
   default: '',
 });

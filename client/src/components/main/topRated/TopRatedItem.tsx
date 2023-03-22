@@ -1,14 +1,14 @@
 import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
-import { IMAGE_URL } from 'services/tmdb';
-import { EMPTY_IMAGE } from 'utils/imageUrl';
+import useImageUrl from 'components/details/hooks/useImageUrl';
 
 interface Props {
   item: CineneData | MovieResult;
 }
 
 export default function TopRatedItem({ item }: Props) {
+  const { getPoster } = useImageUrl();
   const img = 'poster_url' in item ? item.poster_url : item.poster_path;
   const link =
     'id' in item ? `movie/${item.id}` : `${item.content_type}/${item.tmdbId}`;
@@ -16,11 +16,7 @@ export default function TopRatedItem({ item }: Props) {
   return (
     <List>
       <Link to={link} draggable="false">
-        <img
-          draggable="false"
-          src={img ? `${IMAGE_URL}/w500/${img}` : EMPTY_IMAGE}
-          alt={item.title}
-        />
+        <img draggable="false" src={getPoster(img, '300')} alt={item.title} />
       </Link>
     </List>
   );

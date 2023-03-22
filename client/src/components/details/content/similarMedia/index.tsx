@@ -1,34 +1,49 @@
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
-import { EMPTY_IMAGE } from 'utils/imageUrl';
-import { IMAGE_URL } from 'services/tmdb';
-
 import Slider from 'components/common/Slider';
+import useSimilarQuery from 'components/details/hooks/useSimilarQuery';
+import useUniqueSortedData from 'components/details/hooks/useUniqueSortedData';
+import useImageUrl from 'components/details/hooks/useImageUrl';
 
 interface Props {
-  data?: Results[];
-  path?: string;
-  title: string;
+  path: MediaType;
+  id: number;
+  type?: 'crew' | 'cast';
 }
 
-export default function SimilarMedia({ data, title, path }: Props) {
+export default function SimilarMedia({ id, path, type }: Props) {
+  const { filmographyData, similarData } = useSimilarQuery(id, path, type);
+  const data = useUniqueSortedData(
+    type && filmographyData ? filmographyData[type] : similarData,
+  );
+  const { getPoster } = useImageUrl();
+
+  const getTitle = () => {
+    if (path === 'movie') {
+      return '추천 영화';
+    }
+    if (path === 'tv') {
+      return '추천 시리즈';
+    }
+    return type === 'cast' ? '출연 작품' : '제작 작품';
+  };
+  const title = getTitle();
+
+  if (!data?.length) return null;
+
   return (
     <div>
       <Slider title={title}>
         {data?.map((item) => (
           <List key={item.id}>
             <Link
-              to={`/${path ?? item.media_type}/${item.id}`}
+              to={`/${item.media_type ?? path}/${item.id}`}
               draggable="false"
             >
               <img
                 draggable="false"
-                src={
-                  item.poster_path
-                    ? `${IMAGE_URL}/w200/${item.poster_path}`
-                    : EMPTY_IMAGE
-                }
+                src={getPoster(item.poster_path, '200')}
                 alt={'title' in item ? item.title : item.name}
               />
               <p>{'title' in item ? item.title : item.name}</p>

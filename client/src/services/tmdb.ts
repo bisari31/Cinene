@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-export const API_URL = 'https://api.themoviedb.org/3';
 export const IMAGE_URL = 'http://image.tmdb.org/t/p';
+export const API_URL = 'https://api.themoviedb.org/3';
 
 const params = { language: 'ko', api_key: process.env.REACT_APP_API_KEY };
 
@@ -16,6 +16,7 @@ export const getTrendingMedia = async () => {
 };
 
 export const getMediaDetail = async (id?: number, type?: string) => {
+  if (!id || !type) return undefined;
   const { data } = await axios.get<MovieDetails | TvDetails>(
     `${API_URL}/${type}/${id}`,
     {
@@ -25,14 +26,15 @@ export const getMediaDetail = async (id?: number, type?: string) => {
   return data;
 };
 
-export const getPersonDetail = async (id: number, type: string) => {
+export const getPersonDetail = async (id?: number, type?: string) => {
+  if (!id || !type) return undefined;
   const { data } = await axios.get<PersonDetails>(`${API_URL}/${type}/${id}`, {
     params,
   });
   return data;
 };
 
-export const getCombinedCredits = async (id: number) => {
+export const getFilmography = async (id: number) => {
   const { data } = await axios.get<CombinedCredits>(
     `${API_URL}/person/${id}/combined_credits`,
     {
@@ -42,7 +44,7 @@ export const getCombinedCredits = async (id: number) => {
   return data;
 };
 
-export const getMediaCredits = async (id: number, type: string) => {
+export const getCasts = async (id: number, type: string) => {
   const { data } = await axios.get<Credits>(
     `${API_URL}/${type}/${id}/credits`,
     {
@@ -91,7 +93,7 @@ export const getNowPlayingMovie = async () => {
   });
   return data.results;
 };
-export const searchMedia = async (query: string) => {
+export const getSearchResults = async (query: string) => {
   const { data } = await axios.get<SearchData>(`${API_URL}/search/multi`, {
     params: {
       query,

@@ -3,7 +3,6 @@ import styled, { css } from 'styled-components';
 import { useEscapeClose, usePreventScrolling } from 'hooks';
 import { outside } from 'styles/css';
 import { Close } from 'assets';
-import { EMPTY_IMAGE } from 'utils/imageUrl';
 
 interface Props {
   src: string;
@@ -26,7 +25,7 @@ export default function ImageModal({
     <OutSide height={height}>
       <Modal ref={modalRef}>
         <div />
-        <img src={src ?? EMPTY_IMAGE} alt="poster" />
+        <img src={src} alt="poster" />
         <button type="button" onClick={() => toggleModal()}>
           <Close />
         </button>

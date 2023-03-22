@@ -1,8 +1,7 @@
-import { memo } from 'react';
 import { useQuery } from 'react-query';
 import styled from 'styled-components';
 
-import { getMediaCredits } from 'services/tmdb';
+import { getCasts } from 'services/tmdb';
 
 import Slider from 'components/common/Slider';
 import { tmdbKeys } from 'utils/keys';
@@ -13,15 +12,15 @@ interface Props {
   path: MediaType;
 }
 
-function Credits({ id, path }: Props) {
+export default function Credits({ id, path }: Props) {
   const { data } = useQuery(tmdbKeys.credits(path, id), () =>
-    getMediaCredits(id, path),
+    getCasts(id, path),
   );
 
   const getDirector = () =>
     data?.crew.filter((preson) => preson.job === 'Director');
 
-  const director = getDirector();
+  const directors = getDirector();
 
   if (!data?.cast.length && !data?.crew.length) return null;
 
@@ -29,21 +28,19 @@ function Credits({ id, path }: Props) {
     <CreditsWrapper>
       <Slider title="감독 / 출연진">
         <ul>
-          {director?.map((crew) => (
+          {directors?.map((crew) => (
             <CreditItem key={crew.id} item={crew} isDirector />
           ))}
         </ul>
         <ul>
-          {data?.cast.map((actor) => (
-            <CreditItem key={actor.id} item={actor} />
+          {data?.cast.map((cast) => (
+            <CreditItem key={cast.id} item={cast} />
           ))}
         </ul>
       </Slider>
     </CreditsWrapper>
   );
 }
-
-export default memo(Credits);
 
 const CreditsWrapper = styled.div`
   overflow: hidden;

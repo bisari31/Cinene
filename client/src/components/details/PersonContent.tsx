@@ -1,66 +1,48 @@
-import { useRef } from 'react';
-import { useQuery } from 'react-query';
+import { useRef, memo } from 'react';
 import styled, { css } from 'styled-components';
 
-import { tmdbKeys } from 'utils/keys';
-import { getCombinedCredits } from 'services/tmdb';
-
 import Average from 'components/main/Average';
-import useCineneDataQuery from './hooks/useCineneDataQuery';
-import useSortData from './hooks/useSortData';
 import LikeButton from './content/like/LikeButton';
 import SimilarMedia from './content/similarMedia';
 import Reviews from './content/reviews';
 import Comments from './content/comments';
 
 interface Props {
-  data?: PersonDetails;
+  tmdbData?: PersonDetails;
+  cineneData?: CineneData;
   path: MediaType;
   id: number;
 }
 
-export default function PersonContent({ data, path, id }: Props) {
+function PersonContent({ tmdbData, cineneData, path, id }: Props) {
   const reviewRef = useRef<HTMLHeadingElement>(null);
 
-  const getKoreanName = (userData?: PersonDetails) => {
-    if (!userData) return '';
-    const { also_known_as: names, name } = userData;
-    const re = /[가-힣]/;
-    const koreanName = names?.filter((text) => re.test(text));
-    return koreanName?.length
-      ? `${koreanName?.at(-1)} (${userData?.name})`
-      : name;
+  const getKoreanName = (data?: PersonDetails) => {
+    if (!data) return '';
+    const { also_known_as: names, name } = data;
+    const regex = /[가-힣]/;
+    const koreanName = names?.filter((text) => regex.test(text));
+    return koreanName?.length ? `${koreanName?.at(-1)} (${data?.name})` : name;
   };
-
-  const { data: creditData } = useQuery(
-    tmdbKeys.similar(path, id),
-    () => getCombinedCredits(id),
-    { staleTime: 1000 * 60 * 60 * 6 },
-  );
-
-  const cineneData = useCineneDataQuery(data, path, id, getKoreanName(data));
-  const cast = useSortData(creditData?.cast);
-  const crew = useSortData(creditData?.crew);
+  const koreanName = getKoreanName(tmdbData);
 
   return (
     <PersonDescriptionWrapper>
-      <Average isMedia={false} cinene={cineneData} />
-      <h2>{getKoreanName(data)}</h2>
+      <Average cineneData={cineneData} />
+      <h2>{koreanName}</h2>
       <LikeButton ref={reviewRef} cinene={cineneData} />
       <div>
-        <p>{data?.birthday ? `출생: ${data.birthday}` : '정보 없음'}</p>
+        <p>{tmdbData?.birthday ? `출생: ${tmdbData.birthday}` : '정보 없음'}</p>
       </div>
-      {!!creditData?.cast.length && (
-        <SimilarMedia data={cast} title="출연 작품" />
-      )}
-      {!!creditData?.crew.length && (
-        <SimilarMedia data={crew} title="제작 작품" />
-      )}
+      <SimilarMedia id={id} path={path} type="cast" />
+      <SimilarMedia id={id} path={path} type="crew" />
       <Reviews ref={reviewRef} data={cineneData} />
-      <Comments contentId={cineneData?._id} />
+      <Comments />
     </PersonDescriptionWrapper>
   );
 }
+
+export default memo(PersonContent);
 
 const PersonDescriptionWrapper = styled.div`
   ${({ theme }) => css`

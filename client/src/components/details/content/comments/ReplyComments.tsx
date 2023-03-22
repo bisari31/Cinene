@@ -1,24 +1,34 @@
 import styled from 'styled-components';
 
+import { LoginPortalProps } from 'components/hoc/withLoginPortal';
+
 import CommentForm from './CommentForm';
 import CommentItem from './CommentItem';
 
-interface Props {
-  comments: Comment[] | undefined;
-  responseId: string | undefined;
+interface Props extends LoginPortalProps {
+  comments?: Comment[];
+  responseId?: string;
 }
 
-export default function ReplyComments({ comments, responseId }: Props) {
+export default function ReplyComments({
+  comments,
+  responseId,
+  toggleLoginModal,
+}: Props) {
   return (
     <ReplyCommentsWrapper>
       {comments?.map((item) => (
         <CommentItem
+          toggleLoginModal={toggleLoginModal}
           key={item._id}
           commentItem={item}
           isResponse={!!responseId}
         />
       ))}
-      <CommentForm responseId={responseId} />
+      <CommentForm
+        responseId={responseId}
+        toggleLoginModal={toggleLoginModal}
+      />
     </ReplyCommentsWrapper>
   );
 }

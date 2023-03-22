@@ -1,83 +1,42 @@
-import { memo, useRef, useMemo } from 'react';
+import { memo, useRef } from 'react';
 import styled, { css } from 'styled-components';
-import { useQuery } from 'react-query';
-import dayjs from 'dayjs';
-
-import { getMediaOverview, getMediaTitle } from 'utils/api';
-import { getSimilarMedia } from 'services/tmdb';
-import { tmdbKeys } from 'utils/keys';
 
 import Average from 'components/main/Average';
 import SimilarMedia from './content/similarMedia';
-import useCineneDataQuery from './hooks/useCineneDataQuery';
 import Credits from './content/credits';
 import Seasons from './content/seasons';
 import Comment from './content/comments';
-import Like from './content/like/LikeButton';
+import LikeButton from './content/like/LikeButton';
 import Reviews from './content/reviews/index';
+import Genre from './content/genre';
 
 interface Props {
-  data?: MovieDetails | TvDetails;
+  tmdbData?: MovieDetails | TvDetails;
+  cineneData?: CineneData;
   path: MediaType;
   id: number;
 }
 
-function MediaContent({ path, data, id }: Props) {
-  const isMovieDetails = data && 'runtime' in data;
-  const title = getMediaTitle(data);
-  const overview = getMediaOverview(data);
+function MediaContent({ path, tmdbData, id, cineneData }: Props) {
   const reviewRef = useRef<HTMLHeadingElement>(null);
-
-  const { data: similarData } = useQuery(
-    tmdbKeys.similar(path, id),
-    () => getSimilarMedia(id, path),
-    { staleTime: 1000 * 60 * 60 * 6 },
-  );
-  const cineneData = useCineneDataQuery(data, path, id);
-
-  const getReleaseDate = () => {
-    if (isMovieDetails) return `개봉: ${data.release_date}`;
-    const last = data?.last_air_date;
-    const first = data?.first_air_date;
-    const today = dayjs();
-    const diff = today.diff(last, 'd');
-
-    let result;
-    if (first === last) result = first;
-    else if (diff > 7) result = `${first} ~ ${last}`;
-    else result = `${first} ~ `;
-
-    return result;
-  };
-
   return (
     <DescriptionWrapper>
-      <Average tmdb={data?.vote_average} cinene={cineneData} />
-      <h2>{title}</h2>
-      <Like ref={reviewRef} cinene={cineneData} />
-      <Genre>
-        <p>{getReleaseDate()}</p>
-        <p>
-          {isMovieDetails
-            ? `${data.runtime}분`
-            : `시즌 ${data?.seasons.length}`}
-        </p>
-        {data?.genres.map((genre) => (
-          <p className="genre_button" key={genre.id}>
-            {genre.name}
-          </p>
-        ))}
-      </Genre>
-      <p>{overview}</p>
-      <Seasons seasons={data && 'seasons' in data && data.seasons} />
-      <SimilarMedia
-        path={path}
-        data={similarData}
-        title={`추천 ${path === 'movie' ? '영화' : 'TV'}`}
+      <Average
+        tmdbAverage={tmdbData?.vote_average}
+        cineneData={cineneData}
+        isMedia
       />
+      <h2>
+        {tmdbData && 'title' in tmdbData ? tmdbData.title : tmdbData?.name}
+      </h2>
+      <LikeButton ref={reviewRef} cinene={cineneData} />
+      <Genre data={tmdbData} />
+      <p>{tmdbData?.overview}</p>
+      {path === 'tv' && <Seasons data={tmdbData as TvDetails} />}
+      <SimilarMedia path={path} id={id} />
       <Credits id={id} path={path} />
       <Reviews ref={reviewRef} data={cineneData} />
-      <Comment contentId={cineneData?._id} />
+      <Comment />
     </DescriptionWrapper>
   );
 }
@@ -95,27 +54,6 @@ const DescriptionWrapper = styled.div`
       font-size: 0.9rem;
       line-height: 1.8;
       margin: 3rem 0;
-    }
-  `}
-`;
-
-const Genre = styled.div`
-  ${({ theme }) => css`
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.8em 1em;
-    margin-top: 1em;
-    p {
-      background-color: ${theme.colors.pink};
-      border-radius: 7px;
-      color: ${theme.colors.white};
-      display: inline-block;
-      font-size: 0.78rem;
-      font-weight: 400;
-      padding: 0.6em 0.8em;
-    }
-    .genre_button {
-      background-color: ${theme.colors.navy50};
     }
   `}
 `;

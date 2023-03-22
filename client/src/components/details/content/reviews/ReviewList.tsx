@@ -1,12 +1,12 @@
+import { LoginPortalProps } from 'components/hoc/withLoginPortal';
 import { memo } from 'react';
 import styled from 'styled-components';
 
 import ReviewItem from './ReviewItem';
 
-interface Props {
+interface Props extends LoginPortalProps {
   onClick: () => void;
   reviews?: Review[];
-  toggleLoginModal: () => void;
 }
 
 function ReviewList({ reviews, ...rest }: Props) {

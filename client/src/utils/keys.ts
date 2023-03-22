@@ -11,11 +11,17 @@ export const tmdbKeys = {
     id,
     'credit',
   ],
-  similar: (path?: MediaType, id?: number) => [
+  similar: (path: MediaType, id: number) => [
     ...tmdbKeys.default,
     path,
     id,
     'similar',
+  ],
+  filmography: (path: MediaType, id: number) => [
+    ...tmdbKeys.default,
+    path,
+    id,
+    'filmography',
   ],
   detail: (path?: MediaType, id?: number) => [
     ...tmdbKeys.default,
@@ -52,8 +58,3 @@ export const cineneKeys = {
     { loggedIn },
   ],
 };
-
-// export const authKeys = {
-//   default: ['auth'],
-//   id: (id?: string) => [...authKeys.default, id],
-// };

@@ -4,21 +4,13 @@ import { getLikes, like } from 'services/like';
 import { cineneKeys } from 'utils/keys';
 import useAuthQuery from '../../header/hooks/useAuthQuery';
 
-export interface IResponse {
-  success: boolean;
-  likes: number;
-  isLike: boolean;
-}
-
 export default function useLike(
   type: 'comments' | 'content',
   id: string | undefined,
-  toggle: () => void,
+  toggleLoginModal: () => void,
 ) {
   const { auth, setAuth } = useAuthQuery();
-
   const IdType = type === 'comments' ? 'comment' : 'content';
-
   const queryClient = useQueryClient();
 
   const { data } = useQuery(cineneKeys.likes(type, id, !!auth), () =>
@@ -28,27 +20,24 @@ export default function useLike(
   const { mutate } = useMutation(like, {
     onMutate: async () => {
       await queryClient.cancelQueries(cineneKeys.likes(type, id, !!auth));
-      const previousData = queryClient.getQueryData<IResponse>(
+      const previousData = queryClient.getQueryData<CustomResponse<LikeData>>(
         cineneKeys.likes(type, id, !!auth),
       );
       if (previousData) {
-        queryClient.setQueryData<IResponse>(
-          cineneKeys.likes(type, id, !!auth),
-          {
-            ...previousData,
-            isLike: !previousData.isLike,
-            likes: previousData.isLike
-              ? previousData.likes - 1
-              : previousData.likes + 1,
-          },
-        );
+        queryClient.setQueryData(cineneKeys.likes(type, id, !!auth), {
+          ...previousData,
+          isLike: !previousData.isLike,
+          likes: previousData.isLike
+            ? previousData.likes - 1
+            : previousData.likes + 1,
+        });
       }
       return { previousData };
     },
     onError: (err: AxiosError, variables, context) => {
       if (err.response.status === 401) {
         setAuth(null);
-        toggle();
+        toggleLoginModal();
       }
       if (context?.previousData) {
         queryClient.setQueryData(

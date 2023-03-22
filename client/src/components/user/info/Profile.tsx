@@ -13,6 +13,7 @@ interface Props {
 
 export default function Profile({ children }: Props) {
   const { auth, setAuth } = useAuthQuery();
+  const createdAt = dayjs(auth?.createdAt).format(' YYYY년 MM월 DD일');
 
   return (
     <UserProfileWrapper>
@@ -31,7 +32,7 @@ export default function Profile({ children }: Props) {
           <div>
             <span>
               가입일:
-              {dayjs(auth?.createdAt).format(' YYYY년 MM월 DD일')}
+              {createdAt}
             </span>
           </div>
         </NicknameWrapper>

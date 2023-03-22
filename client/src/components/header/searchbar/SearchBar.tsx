@@ -1,18 +1,15 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  forwardRef,
-  ForwardedRef,
-} from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useQuery } from 'react-query';
 import { useNavigate } from 'react-router-dom';
-import styled, { css, keyframes } from 'styled-components';
+import styled, { css } from 'styled-components';
 
-import { IMAGE_URL, searchMedia } from 'services/tmdb';
-import { EMPTY_IMAGE, USER_IMAGE } from 'utils/imageUrl';
-import { useDebounce } from 'hooks';
+import { getSearchResults } from 'services/tmdb';
 import { tmdbKeys } from 'utils/keys';
+import { slideDown, slideUp } from 'styles/css';
+import { staleTime } from 'utils/queryOptions';
+import SearchItem, { List } from './SearchItem';
+
+import useSearchState from '../hooks/useSearchState';
 
 interface Props {
   isVisible?: boolean;
@@ -21,36 +18,22 @@ interface Props {
 }
 
 function SearchBar(
-  { isVisible = true, toggleModal = () => null, isMobile = false }: Props,
-  ref: ForwardedRef<HTMLDivElement>,
+  { isVisible = true, toggleModal, isMobile = false }: Props,
+  ref: React.ForwardedRef<HTMLDivElement>,
 ) {
-  const [text, setText] = useState('');
-  const [debouncedText, setDebouncedText] = useState('');
+  const { text, debouncedText, handleChange } = useSearchState();
   const [currentIndex, setCurrentIndex] = useState(-1);
   const inputRef = useRef<HTMLInputElement>(null);
   const totalIndexRef = useRef(0);
+  const navigate = useNavigate();
 
   const { data } = useQuery(
     tmdbKeys.search(debouncedText),
-    () => searchMedia(debouncedText),
+    () => getSearchResults(debouncedText),
     {
-      staleTime: 1000 * 60 * 5,
+      ...staleTime,
     },
   );
-
-  const navigate = useNavigate();
-
-  const handleDebounceChange = useDebounce<
-    [React.ChangeEvent<HTMLInputElement>]
-  >(
-    (e: React.ChangeEvent<HTMLInputElement>) =>
-      setDebouncedText(e.target.value),
-    300,
-  );
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setText(e.target.value);
-    handleDebounceChange(e);
-  };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     switch (e.key) {
@@ -69,7 +52,7 @@ function SearchBar(
         break;
       }
       case 'Escape': {
-        toggleModal();
+        if (toggleModal) toggleModal();
         break;
       }
       default:
@@ -77,35 +60,19 @@ function SearchBar(
     }
   };
 
-  const handleClickNavigation = (item: SearchResults) => {
-    navigate(`/${item.media_type}/${item.id}`);
-    if (!isMobile) toggleModal();
-  };
-
-  const getSearchTitle = (item: SearchResults) => {
-    const { media_type: type } = item;
-    if (type === 'tv' && 'name' in item) return `${item.name} (TV)`;
-    if (type === 'movie' && 'title' in item) return `${item.title} (영화)`;
-    if (type === 'person' && 'name' in item) return `${item.name} (인물)`;
-    return '정보 없음';
-  };
-
-  const getSearchImage = (item: SearchResults) => {
-    const url = `${IMAGE_URL}/w200/`;
-    if (item.media_type === 'person' && 'profile_path' in item) {
-      return item.profile_path ? url + item.profile_path : USER_IMAGE;
-    }
-    return 'poster_path' in item && item.poster_path
-      ? url + item.poster_path
-      : EMPTY_IMAGE;
-  };
+  const handleClickNavigation = useCallback(
+    (item: SearchResults) => {
+      navigate(`/${item.media_type}/${item.id}`);
+      if (!isMobile && toggleModal) toggleModal();
+    },
+    [isMobile, navigate, toggleModal],
+  );
 
   useEffect(() => {
     if (isVisible) inputRef.current?.focus();
   }, [isVisible]);
 
   useEffect(() => {
-    console.log(data);
     if (data && totalIndexRef) totalIndexRef.current = data.length;
   }, [data]);
 
@@ -132,21 +99,14 @@ function SearchBar(
         ) : (
           <div>
             {data?.map((item, index) => (
-              <List key={item.id} isActive={index === currentIndex}>
-                <button
-                  onFocus={() => setCurrentIndex(index)}
-                  onMouseOver={() => setCurrentIndex(index)}
-                  type="button"
-                  onClick={() => handleClickNavigation(item)}
-                >
-                  <img
-                    src={getSearchImage(item)}
-                    alt={'name' in item ? item.name : item.title}
-                  />
-
-                  <span>{getSearchTitle(item)}</span>
-                </button>
-              </List>
+              <SearchItem
+                setCurrentIndex={setCurrentIndex}
+                onClick={handleClickNavigation}
+                key={item.id}
+                data={item}
+                index={index}
+                isActive={index === currentIndex}
+              />
             ))}
           </div>
         )}
@@ -155,27 +115,7 @@ function SearchBar(
   );
 }
 
-export default forwardRef(SearchBar);
-
-const slideDown = keyframes`
-from {
-  transform: translateY(-100px);
-  opacity: 0;
-}
-to {
-  transform: translateY(0);
-  opacity: 1;
-}
-`;
-const slideUp = keyframes`
-0% {
-  transform: translateY(0);
-  opacity: 1;
-}
-80% {
-  transform: translateY(-100px);
-  opacity: 0;
-}`;
+export default React.forwardRef(SearchBar);
 
 const SearchBarWrapper = styled.div<{
   hasData: boolean;
@@ -215,37 +155,6 @@ const SearchBarWrapper = styled.div<{
           font-weight: 300;
         }
       }
-    }
-  `}
-`;
-
-const List = styled.div<{ noResults?: boolean; isActive?: boolean }>`
-  ${({ theme, noResults, isActive }) => css`
-    border-radius: inherit;
-    height: 60px;
-    overflow: hidden;
-    button {
-      padding: 0 1em;
-      width: 100%;
-      height: 100%;
-      border: none;
-      pointer-events: ${noResults && 'none'};
-      color: #fff;
-      display: flex;
-      align-items: center;
-      background: none;
-      background-color: ${isActive && theme.colors.navy};
-      border-radius: inherit;
-      img {
-        border-radius: inherit;
-        height: 55px;
-        margin-right: 1em;
-        object-fit: cover;
-        width: 45px;
-      }
-    }
-    & + & {
-      margin-top: 0.5em;
     }
   `}
 `;

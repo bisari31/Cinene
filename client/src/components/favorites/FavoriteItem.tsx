@@ -1,32 +1,35 @@
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { LoginPortalProps } from 'components/hoc/withLoginPortal';
 import { Heart } from 'assets';
 import { buttonEffect } from 'styles/css';
-import { IMAGE_URL } from 'services/tmdb';
-import { EMPTY_IMAGE, USER_IMAGE } from 'utils/imageUrl';
-import useLikeMutation from 'components/favorites/hooks/useLikeMutation';
 
-interface Props {
+import useLikeMutation from 'components/favorites/hooks/useLikeMutation';
+import useImageUrl from 'components/details/hooks/useImageUrl';
+
+interface Props extends LoginPortalProps {
   item: FavoritesContent;
 }
 
-export default function FavoriteItem({ item }: Props) {
+export default function FavoriteItem({ item, toggleLoginModal }: Props) {
   const { content, _id } = item;
-  const mutate = useLikeMutation();
-
-  const getImageUrl = (data: CineneData) => {
-    const { content_type: type, poster_url: poster } = data;
-    if (poster) return `${IMAGE_URL}/w400/${poster}`;
-    return type === 'person' ? USER_IMAGE : EMPTY_IMAGE;
-  };
+  const mutate = useLikeMutation(toggleLoginModal);
+  const { getPoster } = useImageUrl();
 
   const handleClickButton = (id: string) => mutate({ type: 'content', id });
 
   return (
     <FavoriteItemWrapper key={_id}>
       <Link to={`/${content.content_type}/${content.tmdbId}`}>
-        <img src={getImageUrl(content)} alt={content.title} />
+        <img
+          src={getPoster(
+            content.poster_url,
+            '400',
+            content.content_type === 'person',
+          )}
+          alt={content.title}
+        />
         <span>{content.title}</span>
       </Link>
       <Button

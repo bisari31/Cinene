@@ -1,34 +1,58 @@
+import { useEffect } from 'react';
 import styled, { css } from 'styled-components';
+import { useSetRecoilState } from 'recoil';
+
+import { contentIdState } from 'atom/atom';
 
 import { useCurrentPathName, useOutsideClick } from 'hooks';
-
 import Portal from 'components/common/Portal';
 import MediaContent from './MediaContent';
 import ImageModal from './ImageModal';
 import useDetailQuery from './hooks/useDetailQuery';
 import PersonContent from './PersonContent';
+import useImageUrl from './hooks/useImageUrl';
 
 export default function Details() {
+  const setContentId = useSetRecoilState(contentIdState);
   const { ref, isVisible, toggleModal } = useOutsideClick();
   const { id, path } = useCurrentPathName();
-  const { mediaData, personData, backdrop, getPoster } = useDetailQuery(
-    id,
-    path,
-  );
+  const { mediaData, personData, cineneData } = useDetailQuery(id, path);
+  const { getPoster } = useImageUrl();
+
+  useEffect(() => {
+    setContentId(cineneData?._id);
+  }, [cineneData, setContentId]);
 
   return (
-    <DetailsWrapper src={backdrop}>
+    <DetailsWrapper src={getPoster(mediaData?.backdrop_path, 'full')}>
       <div />
       <Content>
         <div>
           <button type="button" onClick={toggleModal}>
-            <img src={getPoster(path, 'w500')} alt="poster" />
+            <img
+              src={getPoster(
+                mediaData?.poster_path || personData?.profile_path,
+                '300',
+                path === 'person',
+              )}
+              alt="poster"
+            />
           </button>
         </div>
         {path === 'person' ? (
-          <PersonContent path={path} id={id} data={personData} />
+          <PersonContent
+            path={path}
+            id={id}
+            tmdbData={personData}
+            cineneData={cineneData}
+          />
         ) : (
-          <MediaContent path={path} id={id} data={mediaData} />
+          <MediaContent
+            path={path}
+            id={id}
+            tmdbData={mediaData}
+            cineneData={cineneData}
+          />
         )}
       </Content>
       {isVisible && (
@@ -37,7 +61,11 @@ export default function Details() {
             modalRef={ref}
             toggleModal={toggleModal}
             isVisible={isVisible}
-            src={getPoster(path, 'original')}
+            src={getPoster(
+              mediaData?.poster_path || personData?.profile_path,
+              'full',
+              path === 'person',
+            )}
           />
         </Portal>
       )}

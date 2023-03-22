@@ -1,15 +1,16 @@
+import React from 'react';
 import styled from 'styled-components';
 
 import { Heart } from 'assets';
 import { Button, buttonEffect } from 'styles/css';
 
-import withLoginPortal from 'components/hoc/withLoginPortal';
-import React from 'react';
+import withLoginPortal, {
+  LoginPortalProps,
+} from 'components/hoc/withLoginPortal';
 import useLike from '../../hooks/useLikeQuery';
 
-interface Props {
-  cinene?: CineneData | null;
-  toggleLoginModal: () => void;
+interface Props extends LoginPortalProps {
+  cinene?: CineneData;
 }
 
 function LikeButton(
@@ -24,9 +25,9 @@ function LikeButton(
   const handleMutate = () => {
     if (!auth) {
       toggleLoginModal();
-      return;
+    } else {
+      mutate({ type: 'content', id: cinene?._id });
     }
-    mutate({ type: 'content', id: cinene?._id });
   };
 
   const handleMoveToReview = () => {

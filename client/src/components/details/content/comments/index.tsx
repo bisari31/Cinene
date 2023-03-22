@@ -1,28 +1,22 @@
-import { useEffect } from 'react';
 import { useQuery } from 'react-query';
 import styled, { css } from 'styled-components';
+import { useRecoilValue } from 'recoil';
 
 import { getComments } from 'services/comments';
-import { useSetRecoilState } from 'recoil';
-import { contentIdState } from 'atom/atom';
 import { cineneKeys } from 'utils/keys';
+import { contentIdState } from 'atom/atom';
 
+import withLoginPortal, {
+  LoginPortalProps,
+} from 'components/hoc/withLoginPortal';
 import CommentForm from './CommentForm';
 import CommentItem from './CommentItem';
 
-interface Props {
-  contentId?: string;
-}
-
-export default function Comments({ contentId }: Props) {
-  const setContentId = useSetRecoilState(contentIdState);
+function Comments({ toggleLoginModal }: LoginPortalProps) {
+  const contentId = useRecoilValue(contentIdState);
   const { data } = useQuery(cineneKeys.comments(contentId), () =>
     getComments(contentId),
   );
-
-  useEffect(() => {
-    if (contentId) setContentId(contentId);
-  }, [contentId, setContentId]);
 
   return (
     <Wrapper length={data?.comments.length}>
@@ -31,15 +25,18 @@ export default function Comments({ contentId }: Props) {
         .filter((item) => !item.responseTo)
         .map((item) => (
           <CommentItem
+            toggleLoginModal={toggleLoginModal}
             key={item._id}
             commentItem={item}
             comments={data.comments}
           />
         ))}
-      <CommentForm />
+      <CommentForm toggleLoginModal={toggleLoginModal} />
     </Wrapper>
   );
 }
+
+export default withLoginPortal(Comments);
 
 const Wrapper = styled.div<{ length?: number }>`
   ${({ theme, length }) => css`

@@ -3,16 +3,20 @@ import { useQuery } from 'react-query';
 import styled from 'styled-components';
 
 import { getFavorites } from 'services/like';
-
 import { cineneKeys } from 'utils/keys';
+
+import withLoginPortal, {
+  LoginPortalProps,
+} from 'components/hoc/withLoginPortal';
 import Toggle from './Toggle';
 import FavoriteItem from './FavoriteItem';
 
-interface Props {
+interface Props extends LoginPortalProps {
   auth: User | null;
+  setAuth: React.Dispatch<React.SetStateAction<User | null>>;
 }
 
-export default function Favorites({ auth }: Props) {
+function Favorites({ auth, setAuth, toggleLoginModal }: Props) {
   const [selectedType, setSelectedType] = useState(0);
 
   const { data: favoritesData } = useQuery(
@@ -20,6 +24,12 @@ export default function Favorites({ auth }: Props) {
     getFavorites,
     {
       enabled: !!auth,
+      retry: 1,
+      onError: ({ response }: AxiosError) => {
+        if (response.status === 401) {
+          setAuth(null);
+        }
+      },
     },
   );
 
@@ -36,12 +46,20 @@ export default function Favorites({ auth }: Props) {
       <Toggle selectedType={selectedType} setSelectedType={setSelectedType} />
       <ul>
         {selectedData?.map((item) => (
-          <FavoriteItem key={item._id} item={item} />
+          <FavoriteItem
+            key={item._id}
+            item={item}
+            toggleLoginModal={toggleLoginModal}
+          />
         ))}
       </ul>
     </FavoritesWrapper>
   );
 }
+export default withLoginPortal<{
+  auth: User | null;
+  setAuth: React.Dispatch<React.SetStateAction<User | null>>;
+}>(Favorites);
 
 const FavoritesWrapper = styled.div`
   ul {

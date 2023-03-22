@@ -3,22 +3,20 @@ import { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
+import { LoginPortalProps } from 'components/hoc/withLoginPortal';
 import { createComment } from 'services/comments';
 import { authUserState, contentIdState } from 'atom/atom';
 import { buttonEffect } from 'styles/css';
 import { cineneKeys } from 'utils/keys';
 
-import withLoginPortal from 'components/hoc/withLoginPortal';
-
-interface Props {
+interface Props extends LoginPortalProps {
   responseId?: string;
-  toggleLoginModal: () => void;
 }
 
-function CommentForm({ responseId, toggleLoginModal }: Props) {
+export default function CommentForm({ responseId, toggleLoginModal }: Props) {
+  const contentId = useRecoilValue(contentIdState);
   const [text, setText] = useState('');
   const [auth, setAuth] = useRecoilState(authUserState);
-  const contentId = useRecoilValue(contentIdState);
   const queryClient = useQueryClient();
 
   const { mutate } = useMutation(createComment, {
@@ -36,16 +34,16 @@ function CommentForm({ responseId, toggleLoginModal }: Props) {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!text) return;
     if (!auth) {
       toggleLoginModal();
-      return;
+    } else {
+      mutate({
+        comment: text,
+        contentId,
+        responseTo: responseId,
+      });
     }
-    if (!text) return;
-    mutate({
-      comment: text,
-      contentId,
-      responseTo: responseId,
-    });
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -64,8 +62,6 @@ function CommentForm({ responseId, toggleLoginModal }: Props) {
     </CommentFormWrapper>
   );
 }
-
-export default withLoginPortal<{ responseId?: string }>(CommentForm);
 
 const CommentFormWrapper = styled.form`
   ${({ theme }) => css`

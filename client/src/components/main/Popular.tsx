@@ -1,38 +1,26 @@
 import { useState, useEffect } from 'react';
-import { useQuery } from 'react-query';
 import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
 
-import { getMediaDetail, IMAGE_URL } from 'services/tmdb';
 import { ChevronLeft, ChevronRight } from 'assets';
-import { getMediaOverview, getMediaTitle } from 'utils/api';
-import { EMPTY_IMAGE } from 'utils/imageUrl';
 import { buttonEffect } from 'styles/css';
-import { tmdbKeys } from 'utils/keys';
 
-import useCineneDataQuery from 'components/details/hooks/useCineneDataQuery';
+import useDetailQuery from 'components/details/hooks/useDetailQuery';
+import useImageUrl from 'components/details/hooks/useImageUrl';
 import useTrendingMediaQuery from './hooks/useTrendingMediaQuery';
-import AverageButton from './Average';
+import Average from './Average';
 
 export default function Popular() {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const { data } = useTrendingMediaQuery();
   const currentData = data?.[currentIndex];
-  const { data: detailData } = useQuery(
-    tmdbKeys.detail(currentData?.media_type, currentData?.id),
-    () => getMediaDetail(currentData?.id, currentData?.media_type),
-    {
-      staleTime: 1000 * 60 * 60 * 6,
-      enabled: !!currentData,
-    },
-  );
 
-  const cineneData = useCineneDataQuery(
-    detailData,
-    currentData?.media_type,
+  const { mediaData, cineneData } = useDetailQuery(
     currentData?.id,
+    currentData?.media_type,
   );
+  const { getPoster } = useImageUrl();
 
   const handleSlide = (index: number) => {
     const maxIndex = data?.length;
@@ -43,9 +31,6 @@ export default function Popular() {
     setCurrentIndex(nextIndex);
   };
 
-  const title = getMediaTitle(detailData);
-  const overview = getMediaOverview(detailData);
-
   useEffect(() => {
     const slider = setInterval(() => handleSlide(1), 10000);
     return () => clearTimeout(slider);
@@ -53,24 +38,22 @@ export default function Popular() {
 
   return (
     <section>
-      <Background
-        src={
-          currentData
-            ? `${IMAGE_URL}/original/${currentData?.backdrop_path}`
-            : EMPTY_IMAGE
-        }
-      />
+      <Background src={getPoster(currentData?.backdrop_path, 'full')} />
       <Item>
         <div>
           <Category>
-            <AverageButton
-              tmdb={currentData?.vote_average}
-              cinene={cineneData}
+            <Average
+              tmdbAverage={currentData?.vote_average}
+              cineneData={cineneData}
             />
           </Category>
           <Overview>
-            <p>{title}</p>
-            <p>{overview}</p>
+            <p>
+              {mediaData && 'title' in mediaData
+                ? mediaData.title
+                : mediaData?.name}
+            </p>
+            <p>{mediaData?.overview}</p>
           </Overview>
           <ButtonWrapper color="pink">
             <Link to={`/${currentData?.media_type}/${currentData?.id}`}>
@@ -213,10 +196,4 @@ const Button = styled.button`
     stroke-width: 1;
     width: 30px;
   }
-`;
-
-const VideoWrapper = styled.div`
-  position: absolute;
-  right: 300px;
-  top: 300px;
 `;

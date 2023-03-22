@@ -1,34 +1,28 @@
 import styled from 'styled-components';
 
-import { IMAGE_URL } from 'services/tmdb';
-import { EMPTY_IMAGE } from 'utils/imageUrl';
-
 import Slider from 'components/common/Slider';
+import useImageUrl from 'components/details/hooks/useImageUrl';
 
 interface Props {
-  seasons?: TvDetails['seasons'] | false;
+  data?: TvDetails;
 }
 
-export default function Seasons({ seasons }: Props) {
-  if (!seasons) return null;
-
+export default function Seasons({ data }: Props) {
+  const { getPoster } = useImageUrl();
+  if (!data || !data.seasons?.length) return null;
   return (
     <SeasonsWrapper>
       <Slider title="시즌">
-        {seasons?.map((tv) => (
-          <List key={tv.id}>
+        {data.seasons?.map((season) => (
+          <List key={season.id}>
             <img
               draggable="false"
-              src={
-                tv.poster_path
-                  ? `${IMAGE_URL}/w200/${tv.poster_path}`
-                  : EMPTY_IMAGE
-              }
-              alt={tv.name}
+              src={getPoster(season.poster_path, '200')}
+              alt={season.name}
             />
             <p>
-              {tv.name}
-              <time dateTime={tv.air_date}>{` (${tv.air_date})`}</time>
+              {season.name}
+              <time dateTime={season.air_date}>{` (${season.air_date})`}</time>
             </p>
           </List>
         ))}

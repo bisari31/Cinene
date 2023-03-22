@@ -9,13 +9,14 @@ import { useOutsideClick } from 'hooks';
 import useAuthQuery from 'components/header/hooks/useAuthQuery';
 import Button from 'components/common/Button';
 import { cineneKeys } from 'utils/keys';
-import withLoginPortal from 'components/hoc/withLoginPortal';
+import withLoginPortal, {
+  LoginPortalProps,
+} from 'components/hoc/withLoginPortal';
 import ReviewList from './ReviewList';
 import ReviewModal from './ReviewModal';
 
-interface Props {
+interface Props extends LoginPortalProps {
   data?: CineneData;
-  toggleLoginModal: () => void;
 }
 
 function Reviews(
@@ -62,6 +63,7 @@ function Reviews(
       />
       {isVisible && (
         <ReviewModal
+          toggleLoginModal={toggleLoginModal}
           hasReview={reivewData?.hasReview}
           data={data}
           isMotionVisible={isMotionVisible}

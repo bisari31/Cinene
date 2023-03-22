@@ -1,14 +1,12 @@
 import { AxiosError } from 'axios';
 import { useMutation, useQueryClient } from 'react-query';
-import { useNavigate } from 'react-router-dom';
 
 import { like } from 'services/like';
 import { cineneKeys } from 'utils/keys';
 import useAuthQuery from '../../header/hooks/useAuthQuery';
 
-export default function useLikeMutation() {
+export default function useLikeMutation(toggleLoginModal: () => void) {
   const { setAuth } = useAuthQuery();
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const { mutate } = useMutation(like, {
@@ -18,7 +16,7 @@ export default function useLikeMutation() {
         cineneKeys.favorites(),
       );
       if (previousData) {
-        queryClient.setQueryData<FavoritesData>(cineneKeys.favorites(), {
+        queryClient.setQueryData(cineneKeys.favorites(), {
           ...previousData,
           contents: previousData.contents.filter(
             ({ content }) => content._id !== data.id,
@@ -30,7 +28,7 @@ export default function useLikeMutation() {
     onError: (err: AxiosError, variables, context) => {
       if (err.response?.status === 401) {
         setAuth(null);
-        navigate('/login');
+        toggleLoginModal();
       }
       if (context?.previousData) {
         queryClient.setQueryData(cineneKeys.favorites(), context.previousData);
