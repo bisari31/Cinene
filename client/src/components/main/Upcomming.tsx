@@ -2,23 +2,25 @@ import { useQuery } from 'react-query';
 import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
 
-import { getNowPlayingMovie, getUpcomingMovie, IMAGE_URL } from 'services/tmdb';
-import { EMPTY_IMAGE } from 'utils/imageUrl';
+import { getNowPlayingMovie, getUpcomingMovie } from 'services/tmdb';
 
 import Slider from 'components/common/Slider';
 import dayjs from 'dayjs';
 import { tmdbKeys } from 'utils/keys';
+import { staleTime } from 'utils/queryOptions';
+import useImageUrl from 'components/details/hooks/useImageUrl';
 
 interface Props {
   type: 'upcoming' | 'now';
 }
 
 export default function Upcomming({ type }: Props) {
+  const { getPoster } = useImageUrl();
   const { data: upcomingData } = useQuery(
     tmdbKeys.upcoming(),
     getUpcomingMovie,
     {
-      staleTime: 1000 * 60 * 60 * 6,
+      ...staleTime,
       enabled: type === 'upcoming',
       select: (prevData) => {
         const day = dayjs();
@@ -32,7 +34,7 @@ export default function Upcomming({ type }: Props) {
     tmdbKeys.nowPlaying(),
     getNowPlayingMovie,
     {
-      staleTime: 1000 * 60 * 60 * 6,
+      ...staleTime,
       enabled: type === 'now',
     },
   );
@@ -49,17 +51,10 @@ export default function Upcomming({ type }: Props) {
   };
 
   const getDday = (day: string) => {
-    const today = dayjs();
+    const today = dayjs().format('YYYY-MM-DD');
     const releaseDate = dayjs(day);
-    const dday = releaseDate.diff(today, 'day');
+    const dday = releaseDate.diff(today, 'd');
     return dday === 0 ? 'D-Day' : `D-${dday}`;
-  };
-
-  const getMovieImage = (item: IMediaResults) => {
-    if (item.backdrop_path)
-      return `${IMAGE_URL}/original/${item.backdrop_path}`;
-    if (item.poster_path) return `${IMAGE_URL}/original/${item.poster_path}`;
-    return EMPTY_IMAGE;
   };
 
   return (
@@ -71,7 +66,10 @@ export default function Upcomming({ type }: Props) {
               <Link to={`/movie/${movie.id}`} draggable="false">
                 <img
                   draggable="false"
-                  src={getMovieImage(movie)}
+                  src={getPoster(
+                    movie.backdrop_path || movie.poster_path,
+                    '400',
+                  )}
                   alt={movie.title}
                 />
                 <p>{movie.title}</p>

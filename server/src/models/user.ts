@@ -1,42 +1,39 @@
-import { model, Schema, Model, ObjectId, BooleanExpression } from 'mongoose';
+import { model, Schema, Model, Document, ObjectId } from 'mongoose';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
-export interface IUser {
+export const { PRIVATE_KEY } = process.env;
+
+export interface UserInterface {
   _id: ObjectId;
   email: string;
   password: string;
   nickname: string;
   img: string;
-  token?: string;
-  createdAt: Date;
+  refresh_token: string;
   active: boolean;
 }
 
-interface IUserDocument extends IUser, Document {
-  generateToken(): Promise<IUser>;
+export interface UserDocument extends Omit<UserInterface, '_id'>, Document {
+  generateToken(isExpired?: boolean): Promise<{
+    refreshToken?: string;
+    accessToken: string;
+  }>;
 }
 
-export interface UserMethods {
-  generateToken(): Promise<IUser>;
-}
-
-export interface UserModel extends Model<IUser, {}, UserMethods> {
-  findToken(token: string | undefined): Promise<false | IUserDocument>;
+interface UserModel extends Model<UserDocument> {
+  findToken(token: string | undefined): Promise<false | UserDocument>;
   findPassword(
-    id: string | ObjectId | undefined,
+    email: string | undefined,
     password: string,
-    isLogin?: boolean,
-  ): Promise<false | IUserDocument>;
-  findUserInfo(
+  ): Promise<{ success: boolean; user?: UserDocument }>;
+  checkDuplicateUserInfo(
     nickname: string,
-    email?: string,
-  ): Promise<{ success: boolean; code?: number }>;
+    email: string,
+  ): Promise<{ hasEmail: boolean; hasNickname: boolean }>;
 }
 
-const PRIVATE_KEY = process.env.PRIVATE_KEY!;
-
-const userSchema = new Schema<IUser>(
+const userSchema = new Schema<Omit<UserInterface, '_id'>>(
   {
     email: {
       type: String,
@@ -53,7 +50,7 @@ const userSchema = new Schema<IUser>(
       type: String,
       default: '',
     },
-    token: {
+    refresh_token: {
       type: String,
       default: '',
     },
@@ -67,23 +64,28 @@ const userSchema = new Schema<IUser>(
   },
 );
 
-userSchema.methods.generateToken = async function () {
-  try {
-    const token = jwt.sign(this._id.toString(), `${PRIVATE_KEY}`);
-    this.token = token;
-    const user: IUser = await this.save();
-    return user;
-  } catch (err) {
-    console.log(err);
-  }
+userSchema.methods.generateToken = async function (isExpired = false): Promise<{
+  refreshToken?: string;
+  accessToken: string;
+}> {
+  const accessToken = jwt.sign({ _id: this._id }, `${PRIVATE_KEY}`, {
+    expiresIn: '2h',
+  });
+  if (isExpired) return { accessToken };
+  const refreshToken = jwt.sign({ _id: this._id }, `${PRIVATE_KEY}`, {
+    expiresIn: '14 days',
+  });
+  this.refresh_token = refreshToken;
+  await this.save();
+  return { refreshToken, accessToken };
 };
 
 userSchema.statics.findToken = async function (
   token: string,
-): Promise<false | IUser> {
+): Promise<false | UserInterface> {
   try {
     const id = jwt.verify(token, `${PRIVATE_KEY}`);
-    const user: IUser = await this.findOne({ _id: id });
+    const user: UserInterface = await this.findOne({ _id: id });
     if (!user) throw Error;
     return user;
   } catch (err) {
@@ -92,50 +94,45 @@ userSchema.statics.findToken = async function (
 };
 
 userSchema.statics.findPassword = async function (
-  id: string | ObjectId | undefined,
+  email: string | undefined,
   password: string,
-  isLogin?: boolean,
-): Promise<false | IUser> {
+): Promise<{ success: boolean; user?: UserDocument }> {
   try {
-    const _id = isLogin ? 'email' : '_id';
-    const user: IUser = await this.findOne({ [_id]: id });
+    const user: UserDocument = await this.findOne({ email });
+    if (!user) throw Error();
     const comparePassword = await bcrypt.compare(password, user.password);
-    if (!user || !comparePassword) return false;
-    return user;
+    if (!comparePassword) throw Error();
+    return { success: true, user };
   } catch (err) {
-    return false;
+    return { success: false };
   }
 };
+// userSchema.statics.findPassword = async function (
+//   id: string | ObjectId | undefined,
+//   password: string,
+//   isLogin?: boolean,
+// ): Promise<false | User> {
+//   try {
+//     const _id = isLogin ? 'email' : '_id';
+//     const user: User = await this.findOne({ [_id]: id });
+//     const comparePassword = await bcrypt.compare(password, user.password);
+//     if (!user || !comparePassword) return false;
+//     return user;
+//   } catch (err) {
+//     return false;
+//   }
+// };
 
-userSchema.statics.findUserInfo = async function (
+userSchema.statics.checkDuplicateUserInfo = async function (
   nickname: string,
-  email?: string,
+  email: string,
 ) {
-  let hasEmail = false;
-  if (email) {
-    const findEmail = await User.findOne({ email });
-    hasEmail = !!findEmail;
-  }
-  const hasNickname = await User.findOne({
-    nickname,
-  });
-  const getErrorCode = () => {
-    let code = 0;
-    if (hasNickname && hasEmail) code = 3;
-    else if (hasEmail) code = 1;
-    else if (hasNickname) code = 2;
-    return code;
-  };
-  const errorCode = getErrorCode();
-  if (errorCode) {
-    return {
-      success: false,
-      code: errorCode,
-    };
-  }
-  return { success: true };
+  const hasEmail = await this.findOne({ email });
+  const hasNickname = await this.findOne({ nickname });
+
+  return { hasEmail: !!hasEmail, hasNickname: !!hasNickname };
 };
 
-const User = model<IUser, UserModel>('User', userSchema);
+const User = model<UserDocument, UserModel>('User', userSchema);
 
 export default User;

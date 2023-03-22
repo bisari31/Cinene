@@ -1,26 +1,27 @@
 import axios from 'axios';
-import { IComment } from 'types/comment';
+import { bearer, getAccessToken } from './user';
 
-interface IBody {
+interface Body {
   comment: string;
   contentId?: string;
   responseTo?: string;
 }
 
-export interface Response {
-  success: boolean;
-  message?: string;
-  comments: IComment[];
-}
-
-export const createComment = async (body: IBody) => {
-  if (!body.contentId) return;
-  const { data } = await axios.post<Response>('/comments', body);
+export const createComment = async (body: Body) => {
+  if (!body.contentId) return null;
+  const { data } = await axios.post<CustomResponse>(
+    '/comments',
+    body,
+    bearer(),
+  );
+  getAccessToken(data);
   return data;
 };
 
 export const getComments = async (id?: string) => {
-  if (!id) return;
-  const { data } = await axios.get<Response>(`/comments/${id}`);
+  if (!id) return null;
+  const { data } = await axios.get<CustomResponse<{ comments: Comment[] }>>(
+    `/comments/${id}`,
+  );
   return data;
 };

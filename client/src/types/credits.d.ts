@@ -1,54 +1,27 @@
-interface ICredits {
-  cast: Cast[];
-  crew: Crew[];
-  id: number;
+type CombinedCreditsCast = CombinedCreditCastMovie | CombinedCreditCastTv;
+type CombinedCreditsCrew = CombinedCreditCrewTv | CombinedCreditCrewMovie;
+type CombinedCreditCastMovie = MovieResult &
+  Pick<Person, 'credit_id'> &
+  Pick<Cast, 'character' | 'order'>;
+
+type CombinedCreditCastTv = TvResult &
+  Pick<Person, 'credit_id'> &
+  Pick<Cast, 'character' | 'order'> &
+  Pick<CombinedCreditCrewTv, 'episode_count'>;
+
+type CombinedCreditCrewTv = Pick<Person, 'credit_id'> &
+  TvResult &
+  Pick<Crew, 'department' | 'job'> & {
+    episode_count: number;
+  };
+
+type CombinedCreditCrewMovie = Pick<Person, 'credit_id'> &
+  MovieResult &
+  Pick<Crew, 'department' | 'job'>;
+
+interface CombinedCredits {
+  cast: CombinedCreditsCast[];
+  crew: CombinedCreditsCrew[];
 }
 
-interface ISearchCrew {
-  results: Crew[];
-}
-
-interface Cast {
-  adult: boolean;
-  character: string;
-  credit_id: string;
-  gender: number;
-  id: number;
-  known_for_department: string;
-  name: string;
-  order: number;
-  original_name: string;
-  popularity: number;
-  profile_path: string;
-}
-
-interface Crew {
-  adult: boolean;
-  credit_id: string;
-  department: string;
-  gender: number;
-  id: number;
-  job: string;
-  known_for_department: string;
-  name: string;
-  original_name: string;
-  popularity: number;
-  profile_path: string | null;
-}
-
-interface IPerson {
-  adult: boolean;
-  also_known_as: string[];
-  biography: null | string;
-  birthday: string;
-  deathday: null | string;
-  gender: number;
-  homepage: string;
-  id: number;
-  imdb_id: string;
-  known_for_department: string;
-  name: string;
-  place_of_birth: string;
-  popularity: number;
-  profile_path: string;
-}
+type CombinedCreditsCastAndCrew = CombinedCreditsCast | CombinedCreditsCrew;

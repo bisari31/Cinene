@@ -1,7 +1,7 @@
 import styled from 'styled-components';
-import { useEffect, useCallback, useState } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import { useMutation } from 'react-query';
-import { useAuthQuery, useInput, useOutsideClick } from 'hooks';
+import { useInput, useOutsideClick } from 'hooks';
 
 import { changeNickname } from 'services/user';
 import { CheckMark, Edit } from 'assets/index';
@@ -10,7 +10,12 @@ import Input from 'components/common/Input';
 import Portal from 'components/common/Portal';
 import Modal from 'components/common/Modal';
 
-export default function Nickname() {
+interface Props {
+  auth: User | null;
+  setAuth: React.Dispatch<React.SetStateAction<User | null>>;
+}
+
+export default function Nickname({ auth, setAuth }: Props) {
   const [isChanged, setIsChanged] = useState(false);
   const [isChanging, setIsChanging] = useState(false);
   const {
@@ -23,23 +28,31 @@ export default function Nickname() {
   } = useInput('nickname');
 
   const { ref, isVisible, toggleModal, isMotionVisible } = useOutsideClick();
-  const { refetch, data } = useAuthQuery();
   const { mutate } = useMutation(changeNickname, {
-    onSuccess: (res) => {
-      if (!res.success) return setError(res.message ?? '');
+    onSuccess: (data) => {
+      setAuth(data.user);
+      setIsChanged(true);
+      toggleModal();
       inputRef.current?.blur();
-      refetch();
+    },
+    onError: ({ response }: AxiosError<{ message: string }>) => {
+      if (response.status === 409) {
+        setError(response.data.message);
+      }
+      if (response.status === 500) {
+        setError(response.data.message);
+      }
     },
   });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (error) return;
-    if (data?.user?.nickname === nickname)
-      return setError('닉네임이 같습니다.');
+    if (auth?.nickname === nickname) {
+      setError('닉네임이 같습니다.');
+      return;
+    }
     mutate(nickname);
-    setIsChanged(true);
-    toggleModal();
   };
 
   const handleFocus = useCallback(() => {
@@ -65,8 +78,8 @@ export default function Nickname() {
   );
 
   useEffect(() => {
-    if (data?.user) setNickname(data?.user.nickname);
-  }, [data?.user, setNickname]);
+    if (auth) setNickname(auth.nickname);
+  }, [auth, setNickname]);
 
   return (
     <Form onSubmit={handleSubmit} isEmpty={!nickname.length} isError={!!error}>
@@ -74,7 +87,7 @@ export default function Nickname() {
         placeholder="특수문자 제외 2~10자"
         onKeyDown={handleKeyDown}
         onFocus={handleFocus}
-        onBlur={() => handleBlur(data?.user?.nickname)}
+        onBlur={() => handleBlur(auth?.nickname)}
         errorMessage={error}
         ref={inputRef}
         type="text"

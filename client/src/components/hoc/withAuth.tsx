@@ -1,21 +1,21 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useAuthQuery } from 'hooks';
+import useAuthQuery from 'components/header/hooks/useAuthQuery';
 
 export default function withAuth(
   Component: React.ComponentType,
   option = false,
 ) {
   return function WithAuth() {
-    const { data } = useAuthQuery();
+    const { auth } = useAuthQuery();
     const navigate = useNavigate();
 
     useEffect(() => {
-      if (data?.success) {
+      if (auth) {
         if (!option) navigate('/');
-      } else if (!data?.success && option) navigate('/login');
-    }, [data, navigate]);
+      } else if (!auth && option) navigate('/login');
+    }, [auth, navigate]);
 
     return <Component />;
   };

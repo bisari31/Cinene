@@ -6,10 +6,12 @@ import { useOutsideClick } from 'hooks';
 import Modal from 'components/common/Modal';
 import Portal from 'components/common/Portal';
 
+export interface LoginPortalProps {
+  toggleLoginModal: () => void;
+}
+
 export default function withLoginPortal<T, U = unknown>(
-  Component: React.ComponentType<{
-    toggleLoginModal: () => void;
-  }>,
+  Component: React.ComponentType<T & LoginPortalProps>,
 ) {
   function WithLoginPortal(props: T, ref: React.ForwardedRef<U>) {
     const navigate = useNavigate();
@@ -21,7 +23,7 @@ export default function withLoginPortal<T, U = unknown>(
     } = useOutsideClick(300);
     return (
       <>
-        <Component toggleLoginModal={toggleModal} ref={ref} {...props} />
+        <Component toggleLoginModal={toggleModal} {...props} ref={ref} />
         {isVisible && (
           <Portal>
             <Modal

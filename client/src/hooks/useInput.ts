@@ -1,6 +1,6 @@
+import { EMPTY_ERROR_MESSAGE } from 'components/user/login/Form';
 import { useState, useEffect, useCallback, useRef } from 'react';
 
-import { ERROR_MESSAGE } from 'components/user/login/Form';
 import { regexObj, RegexType } from 'utils/regex';
 
 export default function useInput(
@@ -32,7 +32,7 @@ export default function useInput(
 
   const handleBlur = useCallback((e: React.FocusEvent<HTMLInputElement>) => {
     if (!e.target.value) {
-      setError(ERROR_MESSAGE.empty);
+      setError(EMPTY_ERROR_MESSAGE);
     }
   }, []);
 

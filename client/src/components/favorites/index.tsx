@@ -3,32 +3,40 @@ import { useQuery } from 'react-query';
 import styled from 'styled-components';
 
 import { getFavorites } from 'services/like';
-
 import { cineneKeys } from 'utils/keys';
+
+import withLoginPortal, {
+  LoginPortalProps,
+} from 'components/hoc/withLoginPortal';
 import Toggle from './Toggle';
 import FavoriteItem from './FavoriteItem';
 
-interface IProps {
-  data?: IAuthData;
+interface Props extends LoginPortalProps {
+  auth: User | null;
+  setAuth: React.Dispatch<React.SetStateAction<User | null>>;
 }
 
-export default function Favorites({ data }: IProps) {
-  const [selectedType, setSelectedType] = useState(1);
+function Favorites({ auth, setAuth, toggleLoginModal }: Props) {
+  const [selectedType, setSelectedType] = useState(0);
 
   const { data: favoritesData } = useQuery(
     cineneKeys.favorites(),
     getFavorites,
     {
-      enabled: data?.success,
+      enabled: !!auth,
+      retry: 1,
+      onError: ({ response }: AxiosError) => {
+        if (response.status === 401) {
+          setAuth(null);
+        }
+      },
     },
   );
 
   const selectedData = useMemo(
     () =>
-      favoritesData?.contents.filter((item) =>
-        selectedType === 1
-          ? item.contentId.type !== 'person'
-          : item.contentId.type === 'person',
+      favoritesData?.contents.filter(({ content: { content_type: type } }) =>
+        selectedType === 0 ? type !== 'person' : type === 'person',
       ),
     [favoritesData?.contents, selectedType],
   );
@@ -38,12 +46,20 @@ export default function Favorites({ data }: IProps) {
       <Toggle selectedType={selectedType} setSelectedType={setSelectedType} />
       <ul>
         {selectedData?.map((item) => (
-          <FavoriteItem key={item._id} item={item} />
+          <FavoriteItem
+            key={item._id}
+            item={item}
+            toggleLoginModal={toggleLoginModal}
+          />
         ))}
       </ul>
     </FavoritesWrapper>
   );
 }
+export default withLoginPortal<{
+  auth: User | null;
+  setAuth: React.Dispatch<React.SetStateAction<User | null>>;
+}>(Favorites);
 
 const FavoritesWrapper = styled.div`
   ul {

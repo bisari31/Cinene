@@ -5,19 +5,25 @@ export const tmdbKeys = {
   upcoming: () => [...tmdbKeys.default, 'upcoming'],
   topRated: () => [...tmdbKeys.default, 'topRated'],
   search: (text: string) => [...tmdbKeys.default, 'search', text],
-  credits: (path?: MediaTypes, id?: number) => [
+  credits: (path?: MediaType, id?: number) => [
     ...tmdbKeys.default,
     path,
     id,
     'credit',
   ],
-  similar: (path?: MediaTypes, id?: number) => [
+  similar: (path: MediaType, id: number) => [
     ...tmdbKeys.default,
     path,
     id,
     'similar',
   ],
-  detail: (path?: MediaTypes, id?: number) => [
+  filmography: (path: MediaType, id: number) => [
+    ...tmdbKeys.default,
+    path,
+    id,
+    'filmography',
+  ],
+  detail: (path?: MediaType, id?: number) => [
     ...tmdbKeys.default,
     path,
     id,
@@ -30,15 +36,15 @@ export const cineneKeys = {
   topRated: () => [...cineneKeys.default, 'topRated'],
   favorites: () => [...cineneKeys.default, 'favorites'],
   comments: (id?: string) => [...cineneKeys.default, id, 'comments'],
-  reviews: (path?: MediaTypes, id?: number, loggedIn?: boolean) => [
+  reviews: (path?: MediaType, id?: number, loggedIn?: boolean) => [
     ...cineneKeys.default,
     path,
     id,
     'reviews',
     { loggedIn },
   ],
-  detail: (path?: MediaTypes, id?: number) => [...cineneKeys.default, path, id],
-  newDetail: (path?: MediaTypes, id?: number) => [
+  detail: (path?: MediaType, id?: number) => [...cineneKeys.default, path, id],
+  newDetail: (path?: MediaType, id?: number) => [
     ...cineneKeys.default,
     'new',
     path,
@@ -51,9 +57,4 @@ export const cineneKeys = {
     'likes',
     { loggedIn },
   ],
-};
-
-export const userKeys = {
-  default: ['user'],
-  auth: (id?: string) => [...userKeys.default, id],
 };

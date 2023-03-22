@@ -9,7 +9,7 @@ import Button from 'components/common/Button';
 import Input from 'components/common/Input';
 import Modal from 'components/common/Modal';
 import Portal from 'components/common/Portal';
-import { ERROR_MESSAGE } from '../login/Form';
+import { EMPTY_ERROR_MESSAGE } from '../login/Form';
 
 export default function ChangePassword() {
   const [severErrorMessage, setServerErrorMessage] = useState('');
@@ -38,22 +38,23 @@ export default function ChangePassword() {
   const { mutate } = useMutation(changePassword, {
     onSuccess: (data) => {
       if (!data.success) {
-        return setPasswordError(data.message);
+        setPasswordError(data.message);
+        return;
       }
       setPassword('');
       setNextPassword('');
       toggleModal();
     },
-    onError: (err: ILoginError) => {
+    onError: (err: AxiosError) => {
       setNextPassword('');
       setNextPasswordError(' ');
-      setServerErrorMessage(err.response?.data.message);
+      setServerErrorMessage(err.response.data.message || 'server error');
     },
   });
 
   const checkEmptyValue = () => {
-    if (!password) setPasswordError(ERROR_MESSAGE.empty);
-    if (!nextPassword) setNextPasswordError(ERROR_MESSAGE.empty);
+    if (!password) setPasswordError(EMPTY_ERROR_MESSAGE);
+    if (!nextPassword) setNextPasswordError(EMPTY_ERROR_MESSAGE);
 
     return !password || !nextPassword;
   };
@@ -63,8 +64,10 @@ export default function ChangePassword() {
     const isEmpty = checkEmptyValue();
     const isError = passwordError || nextPasswordError;
     if (isEmpty || isError) return;
-    if (password === nextPassword)
-      return setNextPasswordError('비밀번호가 같습니다');
+    if (password === nextPassword) {
+      setNextPasswordError('비밀번호가 같습니다');
+      return;
+    }
     mutate({ password, nextPassword });
   };
 

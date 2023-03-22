@@ -1,48 +1,31 @@
-import { Request, Router, Response } from 'express';
+import { Request, Router } from 'express';
 
-import Review, { IReview } from '../models/review';
-
-import { authenticate, IRequest } from './middleware';
-
-interface CustomRequest extends Request {
-  params: { type: string; id: string };
-  query: {
-    userId?: string;
-  };
-}
-
-interface PatchRequst<T> extends IRequest<T> {
-  params: { id: string };
-}
-
-interface IData {
-  message?: string;
-  success: boolean;
-  review?: IReview;
-  reviews?: IReview[];
-  hasReview?: null | IReview;
-}
+import Review, { ReviewInterface } from '../models/review';
+import { CustomRequest, CustomResponse } from '../types/express';
+import authenticate from '../utils/middleware';
 
 const router = Router();
 
 router.post(
   '/',
   authenticate,
-  async (req: IRequest<IReview>, res: Response<IData>) => {
+  async (
+    req: CustomRequest<{}, {}, Omit<ReviewInterface, '_id' | 'author'>>,
+    res: CustomResponse,
+  ) => {
     try {
-      const review = await Review.create({
-        contentId: req.body.contentId,
-        contentType: req.body.contentType,
-        rating: req.body.rating,
-        comment: req.body.comment,
-        userId: req.user?._id,
+      const { comment, content, rating, content_type: contentType } = req.body;
+      await Review.create({
+        content,
+        content_type: contentType,
+        rating,
+        comment,
+        author: req.user?._id,
       });
-
-      await Review.updateRatings(req.body.contentId, req.body.contentType);
-
-      res.json({ success: true, review });
+      await Review.updateRating(content, contentType);
+      res.json({ success: true, accessToken: req.accessToken });
     } catch (err) {
-      res.status(404).json(...err);
+      res.status(400).json({ success: false, message: '리뷰 등록 실패' });
     }
   },
 );
@@ -50,59 +33,70 @@ router.post(
 router.patch(
   '/:id',
   authenticate,
-  async (req: PatchRequst<IReview>, res: Response<IData>) => {
+  async (
+    req: CustomRequest<{ id: string }, {}, ReviewInterface>,
+    res: CustomResponse,
+  ) => {
+    const { id } = req.params;
+    const { comment, rating, content, content_type: ContentType } = req.body;
     try {
-      const review = await Review.findOneAndUpdate(
-        { _id: req.params.id },
-        { $set: { comment: req.body.comment, rating: req.body.rating } },
-      );
-
-      await Review.updateRatings(req.body.contentId, req.body.contentType);
-
-      if (!review) throw { success: false, message: '리뷰 찾기 실패' };
-
-      res.json({ success: true, review });
+      const review = await Review.findByIdAndUpdate(id, {
+        $set: { comment, rating },
+      });
+      if (!review) throw Error();
+      await Review.updateRating(content, ContentType);
+      res.json({ success: true, accessToken: req.accessToken });
     } catch (err) {
-      res.status(404).json(...err);
+      res.status(400).json({ success: false, message: '리뷰 수정 실패' });
     }
   },
 );
 
-router.get('/:type/:id', async (req: CustomRequest, res: Response<IData>) => {
-  try {
-    const { id, type } = req.params;
-    const reviews = await Review.find({
-      contentType: type,
-      contentId: id,
-    }).populate('userId');
+router.get(
+  '/:type/:id',
+  async (
+    req: Request<{ type: string; id: string }, {}, {}, { userId: string }>,
+    res: CustomResponse<{
+      reviews?: ReviewInterface[];
+      hasReview?: ReviewInterface | null;
+    }>,
+  ) => {
+    try {
+      const { id, type } = req.params;
+      const reviews = await Review.find({
+        content_type: type,
+        content: id,
+      }).populate('author');
 
-    if (!req.query.userId) {
-      return res.json({ success: true, reviews, hasReview: null });
+      if (!req.query.userId) {
+        res.json({ success: true, reviews });
+        return;
+      }
+      const myReview = await Review.findOne({
+        content_type: type,
+        content: id,
+        author: req.query.userId,
+      });
+      res.json({ success: true, reviews, hasReview: myReview });
+    } catch (err) {
+      res.status(400).json({ success: false, message: '리뷰 조회 실패' });
     }
+  },
+);
 
-    const myReview = await Review.findOne({
-      contentType: type,
-      contentId: id,
-      userId: req.query.userId,
-    });
-    res.json({ success: true, reviews, hasReview: myReview });
-  } catch (err) {
-    res.status(500).json({ success: false, message: '서버 에러' });
-  }
-});
-
-router.delete('/:id', authenticate, async (req, res: Response<IData>) => {
-  try {
-    const review = await Review.findByIdAndDelete(req.params.id);
-    if (!review)
-      return res
-        .status(400)
-        .json({ success: false, message: '리뷰를 찾을 수 없음' });
-    await Review.updateRatings(review?.contentId, review?.contentType);
-    res.json({ success: true });
-  } catch (err) {
-    res.status(500).json({ success: false, message: '서버 에러' });
-  }
-});
+router.delete(
+  '/:id',
+  authenticate,
+  async (req: CustomRequest<{ id: string }>, res: CustomResponse) => {
+    try {
+      const review = await Review.findByIdAndDelete(req.params.id);
+      if (!review) throw Error();
+      await Review.updateRating(review?.content, review?.content_type);
+      res.json({ success: true, accessToken: req.accessToken });
+    } catch (err) {
+      res.status(400).json({ success: false, message: '리뷰 삭제 실패' });
+    }
+  },
+);
 
 export default router;

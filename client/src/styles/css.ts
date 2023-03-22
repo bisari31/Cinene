@@ -1,5 +1,5 @@
 import { darken, lighten } from 'polished';
-import styled, { css } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 import theme, { ColorsKey } from './theme';
 
 export const outside = css<{ height: number | undefined }>`
@@ -70,3 +70,23 @@ export const Button = styled.button<{
     }
   `}
 `;
+
+export const slideDown = keyframes`
+from {
+  transform: translateY(-100px);
+  opacity: 0;
+}
+to {
+  transform: translateY(0);
+  opacity: 1;
+}
+`;
+export const slideUp = keyframes`
+0% {
+  transform: translateY(0);
+  opacity: 1;
+}
+80% {
+  transform: translateY(-100px);
+  opacity: 0;
+}`;

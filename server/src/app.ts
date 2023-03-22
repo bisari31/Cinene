@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 
-import usersRouter from './routes/users';
+import userRouter from './routes/user';
 import contentsRouter from './routes/contents';
 import commentRouter from './routes/comments';
 import reviewsRouter from './routes/reviews';
@@ -13,8 +13,8 @@ import likesRouter from './routes/likes';
 dotenv.config();
 const app = express();
 
-const PORT = process.env.PORT;
-const DB_URI = process.env.DB_URI!;
+const { PORT } = process.env;
+const DB_URI = process.env.DB_URL as string;
 
 mongoose.connect(DB_URI, { dbName: 'cinene' }, (err) => {
   if (err) console.log(err);
@@ -25,7 +25,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(morgan('dev'));
 
-app.use('/users', usersRouter);
+app.use('/user', userRouter);
 app.use('/contents', contentsRouter);
 app.use('/comments', commentRouter);
 app.use('/likes', likesRouter);

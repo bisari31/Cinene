@@ -1,26 +1,28 @@
-import { Model, model, ObjectId, Schema, Types } from 'mongoose';
+import { Model, model, Schema, Document, ObjectId } from 'mongoose';
 
-export interface IContent {
-  _id?: ObjectId;
-  type: string;
-  name: string;
-  poster: string;
+export interface ContentInterface {
+  _id: ObjectId;
+  content_type: string;
+  title: string;
+  poster_url: string;
   tmdbId: number;
   average: number;
   votes: number;
 }
 
-interface DBContentMethods {}
-interface DBContentModel extends Model<IContent, {}, DBContentMethods> {
-  increaseLikes(id: string): Promise<IContent>;
-  decreaseLikes(id: string): Promise<IContent>;
+interface ContentDocument extends Omit<ContentInterface, '_id'>, Document {}
+interface ContentModel extends Model<ContentDocument> {
+  increaseLikes(id: string): Promise<ContentInterface>;
+  decreaseLikes(id: string): Promise<ContentInterface>;
 }
 
-const contentSchema = new Schema<IContent>({
-  type: String,
-  name: String,
-  poster: String,
-  tmdbId: Number,
+const contentSchema = new Schema<Omit<ContentInterface, '_id'>>({
+  content_type: {
+    type: String,
+  },
+  title: { type: String },
+  poster_url: { type: String },
+  tmdbId: { type: Number },
   average: {
     type: Number,
     default: 0,
@@ -57,6 +59,6 @@ contentSchema.statics.decreaseLikes = async function (id: string) {
   }
 };
 
-const Content = model<IContent, DBContentModel>('Content', contentSchema);
+const Content = model<ContentDocument, ContentModel>('Content', contentSchema);
 
 export default Content;

@@ -1,21 +1,29 @@
-import { model, Schema, Types } from 'mongoose';
+import { model, ObjectId, Schema, Types } from 'mongoose';
 
-const commentSchema = new Schema(
+import { UserInterface } from './user';
+
+export interface CommentInterface {
+  _id: ObjectId;
+  comment: string;
+  author: ObjectId | UserInterface;
+  content: ObjectId;
+  responseTo: ObjectId;
+}
+
+const commentSchema = new Schema<CommentInterface>(
   {
-    userId: {
+    author: {
       type: Types.ObjectId,
       ref: 'User',
     },
     comment: {
       type: String,
     },
-    contentId: {
+    content: {
       type: Types.ObjectId,
-      ref: 'Content',
     },
     responseTo: {
       type: Types.ObjectId,
-      ref: 'User',
     },
   },
   { timestamps: true },

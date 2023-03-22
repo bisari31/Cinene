@@ -5,7 +5,7 @@ import { lighten, darken } from 'polished';
 
 type Size = 'small' | 'medium' | 'large' | 'fullWidth';
 
-interface IProps {
+interface Props {
   size: Size;
   type: 'submit' | 'button';
   isDisabled?: boolean;
@@ -52,7 +52,7 @@ function Button({
   color,
   children,
   ...rest
-}: IProps) {
+}: Props) {
   return (
     <StyledButton
       fontColor={fontColor}
