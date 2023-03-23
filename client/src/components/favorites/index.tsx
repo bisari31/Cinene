@@ -16,7 +16,7 @@ interface Props extends LoginPortalProps {
   setAuth: React.Dispatch<React.SetStateAction<User | null>>;
 }
 
-function Favorites({ auth, setAuth, toggleLoginModal }: Props) {
+function Favorites({ auth, setAuth, openModal }: Props) {
   const [selectedType, setSelectedType] = useState(0);
 
   const { data: favoritesData } = useQuery(
@@ -46,11 +46,7 @@ function Favorites({ auth, setAuth, toggleLoginModal }: Props) {
       <Toggle selectedType={selectedType} setSelectedType={setSelectedType} />
       <ul>
         {selectedData?.map((item) => (
-          <FavoriteItem
-            key={item._id}
-            item={item}
-            toggleLoginModal={toggleLoginModal}
-          />
+          <FavoriteItem key={item._id} item={item} openModal={openModal} />
         ))}
       </ul>
     </FavoritesWrapper>

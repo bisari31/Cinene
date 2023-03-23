@@ -20,7 +20,7 @@ interface Props extends LoginPortalProps {
 }
 
 function Reviews(
-  { data, toggleLoginModal }: Props,
+  { data, openModal }: Props,
   ref: React.ForwardedRef<HTMLHeadingElement>,
 ) {
   const { auth } = useAuthQuery();
@@ -38,8 +38,8 @@ function Reviews(
 
   const handleClick = useCallback(() => {
     if (auth) toggleModal();
-    else toggleLoginModal();
-  }, [auth, toggleLoginModal, toggleModal]);
+    else openModal();
+  }, [auth, openModal, toggleModal]);
 
   return (
     <ReviewsWrapper length={reivewData?.reviews?.length}>
@@ -59,11 +59,11 @@ function Reviews(
       <ReviewList
         reviews={reivewData?.reviews}
         onClick={handleClick}
-        toggleLoginModal={toggleLoginModal}
+        openModal={openModal}
       />
       {isVisible && (
         <ReviewModal
-          toggleLoginModal={toggleLoginModal}
+          openModal={openModal}
           hasReview={reivewData?.hasReview}
           data={data}
           isMotionVisible={isMotionVisible}

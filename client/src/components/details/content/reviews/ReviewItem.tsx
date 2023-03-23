@@ -17,11 +17,7 @@ interface Props extends LoginPortalProps {
   review: Review;
 }
 
-export default function ReviewItem({
-  review,
-  onClick,
-  toggleLoginModal,
-}: Props) {
+export default function ReviewItem({ review, onClick, openModal }: Props) {
   const { auth, setAuth } = useAuthQuery();
   const { author, comment, rating, createdAt, updatedAt, _id } = review;
   const { id, path } = useCurrentPathName();
@@ -32,7 +28,7 @@ export default function ReviewItem({
     onError: (err: AxiosError) => {
       if (err.response.status === 401) {
         setAuth(null);
-        toggleLoginModal();
+        openModal();
       }
     },
   });

@@ -5,7 +5,7 @@ import { like } from 'services/like';
 import { cineneKeys } from 'utils/keys';
 import useAuthQuery from '../../header/hooks/useAuthQuery';
 
-export default function useLikeMutation(toggleLoginModal: () => void) {
+export default function useLikeMutation(openModal: () => void) {
   const { setAuth } = useAuthQuery();
   const queryClient = useQueryClient();
 
@@ -28,7 +28,7 @@ export default function useLikeMutation(toggleLoginModal: () => void) {
     onError: (err: AxiosError, variables, context) => {
       if (err.response?.status === 401) {
         setAuth(null);
-        toggleLoginModal();
+        openModal();
       }
       if (context?.previousData) {
         queryClient.setQueryData(cineneKeys.favorites(), context.previousData);

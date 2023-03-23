@@ -12,9 +12,9 @@ interface Props extends LoginPortalProps {
   item: FavoritesContent;
 }
 
-export default function FavoriteItem({ item, toggleLoginModal }: Props) {
+export default function FavoriteItem({ item, openModal }: Props) {
   const { content, _id } = item;
-  const mutate = useLikeMutation(toggleLoginModal);
+  const mutate = useLikeMutation(openModal);
   const { getPoster } = useImageUrl();
 
   const handleClickButton = (id: string) => mutate({ type: 'content', id });

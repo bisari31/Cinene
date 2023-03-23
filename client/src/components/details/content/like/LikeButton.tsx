@@ -14,17 +14,13 @@ interface Props extends LoginPortalProps {
 }
 
 function LikeButton(
-  { cinene, toggleLoginModal }: Props,
+  { cinene, openModal }: Props,
   ref: React.ForwardedRef<HTMLHeadingElement>,
 ) {
-  const { auth, data, mutate } = useLike(
-    'content',
-    cinene?._id,
-    toggleLoginModal,
-  );
+  const { auth, data, mutate } = useLike('content', cinene?._id, openModal);
   const handleMutate = () => {
     if (!auth) {
-      toggleLoginModal();
+      openModal();
     } else {
       mutate({ type: 'content', id: cinene?._id });
     }

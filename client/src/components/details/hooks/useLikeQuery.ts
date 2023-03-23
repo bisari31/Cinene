@@ -7,7 +7,7 @@ import useAuthQuery from '../../header/hooks/useAuthQuery';
 export default function useLike(
   type: 'comments' | 'content',
   id: string | undefined,
-  toggleLoginModal: () => void,
+  openModal: () => void,
 ) {
   const { auth, setAuth } = useAuthQuery();
   const IdType = type === 'comments' ? 'comment' : 'content';
@@ -37,7 +37,7 @@ export default function useLike(
     onError: (err: AxiosError, variables, context) => {
       if (err.response.status === 401) {
         setAuth(null);
-        toggleLoginModal();
+        openModal();
       }
       if (context?.previousData) {
         queryClient.setQueryData(
@@ -48,5 +48,5 @@ export default function useLike(
     },
     onSettled: () => queryClient.invalidateQueries(cineneKeys.likes(type, id)),
   });
-  return { auth, data, mutate };
+  return { auth, data, mutate, setAuth };
 }

@@ -36,7 +36,7 @@ function ReviewModal(
     toggleModal,
     data,
     hasReview,
-    toggleLoginModal,
+    openModal,
   }: Props,
   ref: ForwardedRef<HTMLDivElement>,
 ) {
@@ -61,7 +61,7 @@ function ReviewModal(
     onError: ({ response }: AxiosError) => {
       if (response.status === 401) {
         setAuth(null);
-        toggleLoginModal();
+        openModal();
       }
     },
   });
