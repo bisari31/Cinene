@@ -24,10 +24,12 @@ export default function CommentForm({ responseId, openModal }: Props) {
       queryClient.invalidateQueries(cineneKeys.comments(contentId));
       setText('');
     },
-    onError: (err: AxiosError) => {
-      if (err.response.status === 401) {
+    onError: ({ response }: AxiosError) => {
+      if (response.status === 401) {
         setAuth(null);
         openModal();
+      } else {
+        openModal(`${response.data.message} 😭`);
       }
     },
   });

@@ -6,8 +6,9 @@ import { useOutsideClick } from 'hooks';
 import Modal from 'components/common/Modal';
 import Portal from 'components/common/Portal';
 
+export type Modal = (message?: string) => void;
 export interface LoginPortalProps {
-  openModal: (message?: string) => void;
+  openModal: Modal;
 }
 
 export default function withLoginPortal<T, U = unknown>(
@@ -16,7 +17,6 @@ export default function withLoginPortal<T, U = unknown>(
   function WithLoginPortal(props: T, ref: React.ForwardedRef<U>) {
     const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
-
     const {
       isMotionVisible,
       toggleModal,
@@ -42,7 +42,7 @@ export default function withLoginPortal<T, U = unknown>(
               isVisible={isMotionVisible}
               color="pink"
             >
-              {errorMessage ? `${errorMessage} 😭` : '로그인이 필요합니다 😎'}
+              {errorMessage || '로그인이 필요합니다 😎'}
             </Modal>
           </Portal>
         )}

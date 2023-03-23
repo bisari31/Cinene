@@ -9,7 +9,7 @@ export const getContent = async (type?: string, id?: number) => {
   return data;
 };
 
-export const addContent = async (body?: {
+export const createContent = async (body?: {
   content_type?: string;
   tmdbId?: number;
   title?: string;

@@ -24,7 +24,7 @@ router.get(
         });
       else res.json({ success: true, content });
     } catch (err) {
-      res.status(400).json({
+      res.status(500).json({
         success: false,
         message: '콘텐츠 찾을 수 없음',
       });
@@ -54,7 +54,7 @@ router.post('/', async (req: Request<{}, {}, ContentInterface>, res) => {
       res.json({ success: true, content });
     }
   } catch (err) {
-    res.status(400).json({ success: false, message: '콘텐츠 생성 오류' });
+    res.status(500).json({ success: false, message: '콘텐츠 생성 오류' });
   }
 });
 
@@ -65,7 +65,7 @@ router.get(
       const contents = await Content.find().sort({ average: -1 }).limit(20);
       res.json({ success: true, contents });
     } catch (err) {
-      res.status(400).json({ success: false, message: '콘텐츠 찾을 수 없음' });
+      res.status(500).json({ success: false, message: '콘텐츠 찾을 수 없음' });
     }
   },
 );

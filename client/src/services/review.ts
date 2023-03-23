@@ -16,8 +16,8 @@ interface ReviewData {
   accessToken?: string;
 }
 
-export const addReview = async (obj: Body) =>
-  obj.hasReview ? modifyReview(obj) : createReview(obj);
+export const handleReview = async (obj: Body) =>
+  obj.hasReview ? updateReveiw(obj) : createReview(obj);
 
 export const getReviews = async (
   contentId: string | undefined,
@@ -47,7 +47,7 @@ const createReview = async (obj: Body) => {
   getAccessToken(data);
   return data;
 };
-const modifyReview = async (obj: Body) => {
+const updateReveiw = async (obj: Body) => {
   const { data } = await axios.patch<ReviewData>(
     `/reviews/${obj.hasReview}`,
     obj,

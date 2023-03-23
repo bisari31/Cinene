@@ -7,7 +7,7 @@ import { Button, buttonEffect } from 'styles/css';
 import withLoginPortal, {
   LoginPortalProps,
 } from 'components/hoc/withLoginPortal';
-import useLike from '../../hooks/useLikeQuery';
+import useLikeQuery from '../../hooks/useLikeQuery';
 
 interface Props extends LoginPortalProps {
   cinene?: CineneData;
@@ -17,13 +17,10 @@ function LikeButton(
   { cinene, openModal }: Props,
   ref: React.ForwardedRef<HTMLHeadingElement>,
 ) {
-  const { auth, data, mutate } = useLike('content', cinene?._id, openModal);
-  const handleMutate = () => {
-    if (!auth) {
-      openModal();
-    } else {
-      mutate({ type: 'content', id: cinene?._id });
-    }
+  const { data, mutate } = useLikeQuery('content', cinene?._id, openModal);
+
+  const handleLikeToggle = () => {
+    mutate({ type: 'content', id: cinene?._id });
   };
 
   const handleMoveToReview = () => {
@@ -42,7 +39,7 @@ function LikeButton(
         type="button"
         isActive={data?.isLike}
         isZero={!data?.likes}
-        onClick={handleMutate}
+        onClick={handleLikeToggle}
       >
         <Heart /> {data?.likes ?? '0'}
       </Button>

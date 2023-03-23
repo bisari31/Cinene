@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import { forwardRef, useCallback } from 'react';
+import { forwardRef } from 'react';
 import { useQuery } from 'react-query';
 
 import { getReviews } from 'services/review';
@@ -36,10 +36,10 @@ function Reviews(
     () => getReviews(data?._id, data?.content_type, auth?._id),
   );
 
-  const handleClick = useCallback(() => {
+  const handleCreateReview = () => {
     if (auth) toggleModal();
     else openModal();
-  }, [auth, openModal, toggleModal]);
+  };
 
   return (
     <ReviewsWrapper length={reivewData?.reviews?.length}>
@@ -47,7 +47,7 @@ function Reviews(
         <h3 ref={ref}>리뷰</h3>
         {!reivewData?.hasReview && (
           <StyledButton
-            onClick={handleClick}
+            onClick={handleCreateReview}
             color="navy50"
             size="small"
             type="button"
@@ -58,7 +58,7 @@ function Reviews(
       </div>
       <ReviewList
         reviews={reivewData?.reviews}
-        onClick={handleClick}
+        onClick={handleCreateReview}
         openModal={openModal}
       />
       {isVisible && (

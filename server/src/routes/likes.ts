@@ -1,7 +1,7 @@
 import { Request, Router } from 'express';
 import { ContentInterface } from '../models/content';
 
-import Like, { LikeInterface } from '../models/Like';
+import Like from '../models/Like';
 import { CustomRequest, CustomResponse } from '../types/express';
 import authenticate from '../utils/middleware';
 
@@ -31,7 +31,7 @@ router.get(
         isLike: !!document,
       });
     } catch (err) {
-      res.status(400).json({ success: false, message: '좋아요 조회 실패' });
+      res.status(500).json({ success: false, message: '좋아요 조회 실패' });
     }
   },
 );
@@ -46,22 +46,19 @@ router.post(
     try {
       const { id, type } = req.params;
       const typed = type === 'content' ? 'content' : 'comment';
-      const document = await Like.findOne({
+      const hasLike = await Like.findOneAndDelete({
         liked_by: req.user?._id,
         [typed]: id,
       });
-      if (document) {
-        await Like.findByIdAndDelete(document._id);
-        res.json({ success: true, accessToken: req.accessToken });
-        return;
+      if (!hasLike) {
+        await Like.create({
+          [typed]: id,
+          liked_by: req.user?._id,
+        });
       }
-      await Like.create({
-        [typed]: id,
-        liked_by: req.user?._id,
-      });
       res.json({ success: true, accessToken: req.accessToken });
     } catch (err) {
-      res.status(400).json({ success: false, message: '좋아요 증감 실패' });
+      res.status(500).json({ success: false, message: '좋아요 증감 실패' });
     }
   },
 );
@@ -82,7 +79,7 @@ router.get(
       res.json({ success: true, contents, accessToken: req.accessToken });
     } catch (err) {
       res
-        .status(400)
+        .status(500)
         .json({ success: false, message: '즐겨찾기 목록 조회 실패' });
     }
   },

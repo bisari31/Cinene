@@ -27,7 +27,7 @@ router.post(
       });
       res.status(201).json({ success: true, accessToken: req.accessToken });
     } catch (err) {
-      res.status(400).json({ success: false, message: '댓글 등록 실패' });
+      res.status(500).json({ success: false, message: '댓글 등록 실패' });
     }
   },
 );
@@ -44,7 +44,7 @@ router.get(
       }).populate('author');
       res.json({ success: true, comments });
     } catch (err) {
-      res.status(400).json({ success: false, message: '댓글 조회 실패 ' });
+      res.status(500).json({ success: false, message: '댓글 조회 실패' });
     }
   },
 );

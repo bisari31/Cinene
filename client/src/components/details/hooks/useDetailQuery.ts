@@ -1,5 +1,5 @@
 import { useQuery } from 'react-query';
-import { addContent, getContent } from 'services/contents';
+import { createContent, getContent } from 'services/contents';
 
 import { getMediaDetail, getPersonDetail } from 'services/tmdb';
 import { cineneKeys, tmdbKeys } from 'utils/keys';
@@ -39,7 +39,7 @@ export default function useDetailQuery(id?: number, path?: MediaType) {
   const { data: newCineneData } = useQuery(
     cineneKeys.newDetail(path, id),
     () =>
-      addContent({
+      createContent({
         content_type: path,
         poster_url: mediaData?.poster_path ?? personData?.profile_path,
         title: title ?? personData?.name,

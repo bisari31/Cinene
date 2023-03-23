@@ -1,13 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 
+import { Modal } from 'components/hoc/withLoginPortal';
 import { getLikes, like } from 'services/like';
 import { cineneKeys } from 'utils/keys';
 import useAuthQuery from '../../header/hooks/useAuthQuery';
 
-export default function useLike(
+export default function useLikeQueryQuery(
   type: 'comments' | 'content',
   id: string | undefined,
-  openModal: () => void,
+  openModal: Modal,
 ) {
   const { auth, setAuth } = useAuthQuery();
   const IdType = type === 'comments' ? 'comment' : 'content';
@@ -34,10 +35,12 @@ export default function useLike(
       }
       return { previousData };
     },
-    onError: (err: AxiosError, variables, context) => {
-      if (err.response.status === 401) {
+    onError: ({ response }: AxiosError, variables, context) => {
+      if (response.status === 401) {
         setAuth(null);
         openModal();
+      } else {
+        openModal(`${response.data.message} 😭`);
       }
       if (context?.previousData) {
         queryClient.setQueryData(

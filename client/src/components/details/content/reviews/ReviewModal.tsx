@@ -3,7 +3,7 @@ import { useState, useEffect, useRef, forwardRef, ForwardedRef } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 
 import { Star } from 'assets';
-import { addReview } from 'services/review';
+import { handleReview } from 'services/review';
 import { usePrevious } from 'hooks';
 
 import Modal from 'components/common/Modal';
@@ -51,7 +51,7 @@ function ReviewModal(
 
   const queryClient = useQueryClient();
 
-  const { mutate } = useMutation(addReview, {
+  const { mutate } = useMutation(handleReview, {
     onSuccess: () => {
       queryClient.invalidateQueries(
         cineneKeys.detail(data?.content_type, data?.tmdbId),
@@ -62,6 +62,8 @@ function ReviewModal(
       if (response.status === 401) {
         setAuth(null);
         openModal();
+      } else {
+        openModal(`${response.data.message} 😭`);
       }
     },
   });
@@ -79,7 +81,7 @@ function ReviewModal(
     setRating(value);
   };
 
-  const handleAddReview = () => {
+  const handlehandleReview = () => {
     if (!comment || comment.length > 50) {
       setIsCommentError(true);
       return;
@@ -115,7 +117,7 @@ function ReviewModal(
       <Modal
         height="40vh"
         ref={ref}
-        executeFn={handleAddReview}
+        executeFn={handlehandleReview}
         isVisible={isMotionVisible}
         closeFn={toggleModal}
         buttonText={['닫기', hasReview ? '수정' : '등록']}

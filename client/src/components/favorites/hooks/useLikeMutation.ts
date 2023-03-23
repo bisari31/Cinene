@@ -1,11 +1,11 @@
-import { AxiosError } from 'axios';
 import { useMutation, useQueryClient } from 'react-query';
 
+import { Modal } from 'components/hoc/withLoginPortal';
 import { like } from 'services/like';
 import { cineneKeys } from 'utils/keys';
 import useAuthQuery from '../../header/hooks/useAuthQuery';
 
-export default function useLikeMutation(openModal: () => void) {
+export default function useLikeQueryMutation(openModal: Modal) {
   const { setAuth } = useAuthQuery();
   const queryClient = useQueryClient();
 
@@ -25,10 +25,12 @@ export default function useLikeMutation(openModal: () => void) {
       }
       return { previousData };
     },
-    onError: (err: AxiosError, variables, context) => {
-      if (err.response?.status === 401) {
+    onError: ({ response }: AxiosError, variables, context) => {
+      if (response.status === 401) {
         setAuth(null);
         openModal();
+      } else {
+        openModal(`${response.data.message} 😭`);
       }
       if (context?.previousData) {
         queryClient.setQueryData(cineneKeys.favorites(), context.previousData);

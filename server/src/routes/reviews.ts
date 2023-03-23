@@ -2,6 +2,7 @@ import { Request, Router } from 'express';
 
 import Review, { ReviewInterface } from '../models/review';
 import { CustomRequest, CustomResponse } from '../types/express';
+import { NotFoundError } from '../utils/error';
 import authenticate from '../utils/middleware';
 
 const router = Router();
@@ -25,7 +26,7 @@ router.post(
       await Review.updateRating(content, contentType);
       res.json({ success: true, accessToken: req.accessToken });
     } catch (err) {
-      res.status(400).json({ success: false, message: '리뷰 등록 실패' });
+      res.status(500).json({ success: false, message: '리뷰 등록 실패' });
     }
   },
 );
@@ -47,7 +48,7 @@ router.patch(
       await Review.updateRating(content, ContentType);
       res.json({ success: true, accessToken: req.accessToken });
     } catch (err) {
-      res.status(400).json({ success: false, message: '리뷰 수정 실패' });
+      res.status(500).json({ success: false, message: '리뷰 수정 실패' });
     }
   },
 );
@@ -79,7 +80,7 @@ router.get(
       });
       res.json({ success: true, reviews, hasReview: myReview });
     } catch (err) {
-      res.status(400).json({ success: false, message: '리뷰 조회 실패' });
+      res.status(500).json({ success: false, message: '리뷰 조회 실패' });
     }
   },
 );
@@ -90,11 +91,17 @@ router.delete(
   async (req: CustomRequest<{ id: string }>, res: CustomResponse) => {
     try {
       const review = await Review.findByIdAndDelete(req.params.id);
-      if (!review) throw Error();
+      if (!review) throw new NotFoundError('리뷰 삭제 실패');
       await Review.updateRating(review?.content, review?.content_type);
       res.json({ success: true, accessToken: req.accessToken });
     } catch (err) {
-      res.status(400).json({ success: false, message: '리뷰 삭제 실패' });
+      if (err instanceof NotFoundError) {
+        res
+          .status(err.statusCode)
+          .json({ success: false, message: err.message });
+      } else {
+        res.status(500).json({ success: false, message: '서버 에러' });
+      }
     }
   },
 );

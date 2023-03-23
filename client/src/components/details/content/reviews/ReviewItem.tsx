@@ -23,12 +23,14 @@ export default function ReviewItem({ review, onClick, openModal }: Props) {
   const { id, path } = useCurrentPathName();
   const queryClient = useQueryClient();
 
-  const { mutate } = useMutation(deleteReview, {
+  const { mutate: handleDeleteReview } = useMutation(deleteReview, {
     onSuccess: () => queryClient.invalidateQueries(cineneKeys.detail(path, id)),
-    onError: (err: AxiosError) => {
-      if (err.response.status === 401) {
+    onError: ({ response }: AxiosError) => {
+      if (response.status === 401) {
         setAuth(null);
         openModal();
+      } else {
+        openModal(`${response.data.message} 😭`);
       }
     },
   });
@@ -44,7 +46,7 @@ export default function ReviewItem({ review, onClick, openModal }: Props) {
               <button type="button" onClick={onClick}>
                 수정
               </button>
-              <button type="button" onClick={() => mutate(_id)}>
+              <button type="button" onClick={() => handleDeleteReview(_id)}>
                 삭제
               </button>
             </>

@@ -13,7 +13,7 @@ import { deleteComment } from 'services/comments';
 import { useRecoilValue } from 'recoil';
 import { contentIdState } from 'atom/atom';
 import ReplyComments from './ReplyComments';
-import useLike from '../../hooks/useLikeQuery';
+import useLikeQuery from '../../hooks/useLikeQuery';
 
 interface Props extends LoginPortalProps {
   comments?: Comment[];
@@ -29,7 +29,7 @@ export default function CommentItem({
 }: Props) {
   const [openReplyComment, setOpenReplyComment] = useState(false);
   const contentId = useRecoilValue(contentIdState);
-  const { auth, setAuth, data, mutate } = useLike(
+  const { auth, setAuth, data, mutate } = useLikeQuery(
     'comments',
     commentItem?._id,
     openModal,
@@ -44,7 +44,7 @@ export default function CommentItem({
         setAuth(null);
         openModal();
       } else {
-        openModal(response.data.message);
+        openModal(`${response.data.message} 😭`);
       }
     },
   });

@@ -33,7 +33,7 @@ export const deleteComment = async (id?: string) => {
   return data;
 };
 
-export const editComment = async (id: string) => {
+export const updateComment = async (id: string) => {
   const { data } = await axios.patch(`/comments/${id}`);
   return data;
 };
