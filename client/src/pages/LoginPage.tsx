@@ -4,10 +4,12 @@ import styled, { css } from 'styled-components';
 import Form from 'components/user/login/Form';
 import ButtonWrapper from 'components/user/login/ButtonWrapper';
 import KakaoForm from 'components/user/login/KakaoForm';
+import useRedirection from 'hooks/useRedirection';
 
 export type PathName = 'login' | 'register';
 
 export default function LoginPage() {
+  useRedirection();
   const { pathname } = useLocation();
 
   const getPathName = () => pathname.slice(1) as 'login' | 'register';

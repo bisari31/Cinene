@@ -1,6 +1,5 @@
 import { Routes, Route } from 'react-router-dom';
 
-import withAuth from 'components/hoc/withAuth';
 import NotFound from 'components/NotFound';
 import Layout from 'components/Layout';
 
@@ -12,18 +11,14 @@ import FavoritesPage from 'pages/FavoritesPage';
 import SearchPage from 'pages/SearchPage';
 
 export default function App() {
-  const AuthLoginPage = withAuth(LoginPage);
-  const AuthRegisterPage = withAuth(LoginPage);
-  const AuthMypage = withAuth(MyPage, true);
-
   return (
     <Routes>
       <Route element={<Layout />}>
         <Route index element={<LandingPage />} />
-        <Route path="/login" element={<AuthLoginPage />} />
-        <Route path="/register" element={<AuthRegisterPage />} />
-        <Route path="/kakao-register" element={<AuthRegisterPage />} />
-        <Route path="/mypage" element={<AuthMypage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<LoginPage />} />
+        <Route path="/kakao-register" element={<LoginPage />} />
+        <Route path="/mypage" element={<MyPage />} />
         <Route path="/movie/:id" element={<DetailPage />} />
         <Route path="/tv/:id" element={<DetailPage />} />
         <Route path="/person/:id" element={<DetailPage />} />
