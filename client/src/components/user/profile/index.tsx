@@ -5,13 +5,14 @@ import { Upload } from 'assets';
 import { USER_IMAGE } from 'utils/imageUrl';
 import useAuthQuery from 'components/header/hooks/useAuthQuery';
 
+import { LoginPortalProps } from 'components/hoc/withLoginPortal';
 import Nickname from './Nickname';
 
-interface Props {
+interface Props extends LoginPortalProps {
   children: React.ReactNode;
 }
 
-export default function Profile({ children }: Props) {
+export default function Profile({ children, openModal }: Props) {
   const { auth, setAuth } = useAuthQuery();
   const createdAt = dayjs(auth?.createdAt).format(' YYYY년 MM월 DD일');
 
@@ -26,7 +27,7 @@ export default function Profile({ children }: Props) {
         </ImgWrapper>
         <NicknameWrapper>
           <div>
-            <Nickname auth={auth} setAuth={setAuth} />
+            <Nickname auth={auth} setAuth={setAuth} openModal={openModal} />
           </div>
           <h3>{auth?.email}</h3>
           <div>

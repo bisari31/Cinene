@@ -48,22 +48,17 @@ export const register = async (body: Body) => {
 };
 
 export const unregister = async () => {
-  const { data } = await axios.delete('/user');
+  const { data } = await axios.delete<CustomResponse>('/user', bearer());
   return data;
 };
 
-export const checkPassword = async (password: Pick<Body, 'password'>) => {
-  const { data } = await axios.post<Response>('/user/check-password', password);
-  return data;
-};
-export const changePassword = async (body: {
-  password: string;
-  nextPassword: string;
-}) => {
-  const { data } = await axios.patch<{ success: boolean; message: string }>(
+export const changePassword = async (password: string) => {
+  const { data } = await axios.patch<CustomResponse>(
     '/user/password',
-    body,
+    { password },
+    bearer(),
   );
+  getAccessToken(data);
   return data;
 };
 

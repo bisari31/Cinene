@@ -23,7 +23,7 @@ export interface UserDocument extends Omit<UserInterface, '_id'>, Document {
 
 interface UserModel extends Model<UserDocument> {
   findToken(token: string | undefined): Promise<false | UserDocument>;
-  findPassword(
+  findUser(
     email: string | undefined,
     password: string,
   ): Promise<{ success: boolean; user?: UserDocument }>;
@@ -93,7 +93,7 @@ userSchema.statics.findToken = async function (
   }
 };
 
-userSchema.statics.findPassword = async function (
+userSchema.statics.findUser = async function (
   email: string | undefined,
   password: string,
 ): Promise<{ success: boolean; user?: UserDocument }> {
@@ -107,21 +107,6 @@ userSchema.statics.findPassword = async function (
     return { success: false };
   }
 };
-// userSchema.statics.findPassword = async function (
-//   id: string | ObjectId | undefined,
-//   password: string,
-//   isLogin?: boolean,
-// ): Promise<false | User> {
-//   try {
-//     const _id = isLogin ? 'email' : '_id';
-//     const user: User = await this.findOne({ [_id]: id });
-//     const comparePassword = await bcrypt.compare(password, user.password);
-//     if (!user || !comparePassword) return false;
-//     return user;
-//   } catch (err) {
-//     return false;
-//   }
-// };
 
 userSchema.statics.checkDuplicateUserInfo = async function (
   nickname: string,

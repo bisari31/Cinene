@@ -70,10 +70,7 @@ router.post(
     }>,
   ) => {
     try {
-      const { user } = await User.findPassword(
-        req.body.email,
-        req.body.password,
-      );
+      const { user } = await User.findUser(req.body.email, req.body.password);
       if (!user) throw new UnauthorizedError();
       if (!user.active) throw new NotFoundError('탈퇴한 유저입니다.');
       const { accessToken, refreshToken } = await user.generateToken();
@@ -120,54 +117,27 @@ router.get(
   },
 );
 
-router.post(
-  '/check-password',
+router.patch(
+  '/password',
   authenticate,
   async (
     req: CustomRequest<{}, {}, { password: string }>,
     res: CustomResponse,
   ) => {
     try {
-      const user = await User.findPassword(req.user?.email, req.body.password);
-      if (!user) {
-        res.json({
-          success: false,
-          message: '비밀번호가 일치하지 않습니다.',
-        });
-      } else res.json({ success: true });
+      const hashedPassword = await bcrypt.hash(req.body.password, SALT_ROUNDS);
+      await User.updateOne(
+        {
+          _id: req.user?._id,
+        },
+        { $set: { password: hashedPassword } },
+      );
+      res.json({ success: true, accessToken: req.accessToken });
     } catch (err) {
-      res.status(400).send({ success: false });
+      res.status(500).json({ success: false, message: '비밀번호 변경 실패' });
     }
   },
 );
-
-// router.patch(
-//   '/password',
-//   authenticate,
-//   async (
-//     req: CustomRequest<{ password: string; nextPassword: string }>,
-//     res: Response<CustomResponse>,
-//   ) => {
-//     try {
-//       const user = await User.findPassword(req.user?._id, req.body.password);
-//       if (!user) {
-//         res.json({
-//           success: false,
-//           message: '비밀번호가 일치하지 않습니다.',
-//         });
-//         return;
-//       }
-//       const hash = await bcrypt.hash(req.body.nextPassword, SALT_ROUNDS);
-//       const isChanged = await User.findByIdAndUpdate(req.user?._id, {
-//         $set: { password: hash },
-//       });
-//       if (!isChanged) throw Error();
-//       res.json({ success: true });
-//     } catch (err) {
-//       res.status(400).json({ success: false, message: '비밀번호 변경 실패' });
-//     }
-//   },
-// );
 
 router.patch(
   '/nickname',
@@ -208,7 +178,7 @@ router.delete(
       });
       res.json({ success: true });
     } catch (err) {
-      res.status(400).json({ success: false });
+      res.status(500).json({ success: false, message: '회원 탈퇴 실패' });
     }
   },
 );
