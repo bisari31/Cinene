@@ -4,6 +4,7 @@ import { ObjectId } from 'mongoose';
 import { CustomRequest, CustomResponse } from '../types/express';
 import authenticate from '../utils/middleware';
 import Comment, { CommentInterface } from '../models/comment';
+import Like from '../models/Like';
 
 interface Body {
   comment: string;
@@ -47,5 +48,31 @@ router.get(
     }
   },
 );
+
+router.delete(
+  '/:id',
+  authenticate,
+  async (req: CustomRequest<{ id: string }>, res: CustomResponse) => {
+    try {
+      const hasComment = await Comment.findOne({ responseTo: req.params.id });
+      if (hasComment) {
+        return res.status(409).json({
+          success: false,
+          message: '답글이 존재하여 삭제할 수 없습니다.',
+          accessToken: req.accessToken,
+        });
+      }
+      await Like.deleteMany({ comment: req.params.id });
+      await Comment.deleteOne({ _id: req.params.id });
+      return res.json({ success: true, accessToken: req.accessToken });
+    } catch (err) {
+      return res.status(500).json({ success: false, message: '서버 에러 ' });
+    }
+  },
+);
+
+router.patch('/:id', async (req: Request<{ id: string }>, res) => {
+  console.log(req.params.id);
+});
 
 export default router;

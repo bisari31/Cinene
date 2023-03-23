@@ -13,22 +13,19 @@ interface Props extends LoginPortalProps {
 export default function ReplyComments({
   comments,
   responseId,
-  toggleLoginModal,
+  openModal,
 }: Props) {
   return (
     <ReplyCommentsWrapper>
       {comments?.map((item) => (
         <CommentItem
-          toggleLoginModal={toggleLoginModal}
+          openModal={openModal}
           key={item._id}
           commentItem={item}
           isResponse={!!responseId}
         />
       ))}
-      <CommentForm
-        responseId={responseId}
-        toggleLoginModal={toggleLoginModal}
-      />
+      <CommentForm responseId={responseId} openModal={openModal} />
     </ReplyCommentsWrapper>
   );
 }

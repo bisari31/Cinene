@@ -25,3 +25,15 @@ export const getComments = async (id?: string) => {
   );
   return data;
 };
+
+export const deleteComment = async (id?: string) => {
+  if (!id) return null;
+  const { data } = await axios.delete(`/comments/${id}`, bearer());
+  getAccessToken(data);
+  return data;
+};
+
+export const editComment = async (id: string) => {
+  const { data } = await axios.patch(`/comments/${id}`);
+  return data;
+};

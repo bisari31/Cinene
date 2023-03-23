@@ -4,9 +4,14 @@ import styled, { css } from 'styled-components';
 import { USER_IMAGE } from 'utils/imageUrl';
 import { Button, buttonEffect } from 'styles/css';
 import { Heart } from 'assets';
+import { cineneKeys } from 'utils/keys';
 
 import { LoginPortalProps } from 'components/hoc/withLoginPortal';
 import { useGetRelativeTime } from 'hooks';
+import { useMutation, useQueryClient } from 'react-query';
+import { deleteComment } from 'services/comments';
+import { useRecoilValue } from 'recoil';
+import { contentIdState } from 'atom/atom';
 import ReplyComments from './ReplyComments';
 import useLike from '../../hooks/useLikeQuery';
 
@@ -20,22 +25,44 @@ export default function CommentItem({
   commentItem,
   comments,
   isResponse = false,
-  toggleLoginModal,
+  openModal,
 }: Props) {
   const [openReplyComment, setOpenReplyComment] = useState(false);
-
-  const { auth, data, mutate } = useLike(
+  const contentId = useRecoilValue(contentIdState);
+  const { auth, setAuth, data, mutate } = useLike(
     'comments',
     commentItem?._id,
-    toggleLoginModal,
+    openModal,
   );
+  const queryClient = useQueryClient();
+  const { mutate: deleteCommentMutate } = useMutation(deleteComment, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(cineneKeys.comments(contentId));
+    },
+    onError: ({ response }: AxiosError) => {
+      if (response.status === 401) {
+        setAuth(null);
+        openModal();
+      } else {
+        openModal(response.data.message);
+      }
+    },
+  });
 
-  const handleClick = () => {
+  const handleLikeButton = () => {
     if (!auth) {
-      toggleLoginModal();
+      openModal();
     } else {
       mutate({ type: 'comment', id: commentItem?._id });
     }
+  };
+
+  const handleCommentEdit = () => {
+    console.log(commentItem?._id);
+  };
+
+  const handleCommentDelete = () => {
+    deleteCommentMutate(commentItem?._id);
   };
 
   const getReplyComments = () =>
@@ -49,12 +76,16 @@ export default function CommentItem({
         <Content date={useGetRelativeTime(commentItem?.createdAt)}>
           <div>
             <p>{commentItem?.author.nickname}</p>
-            {/* {auth?._id === commentItem?.author._id && (
+            {auth?._id === commentItem?.author._id && (
               <>
-                <button type="button">수정</button>
-                <button type="button">삭제</button>
+                <button type="button" onClick={handleCommentEdit}>
+                  수정
+                </button>
+                <button type="button" onClick={handleCommentDelete}>
+                  삭제
+                </button>
               </>
-            )} */}
+            )}
           </div>
           <p>{commentItem?.comment}</p>
         </Content>
@@ -62,7 +93,7 @@ export default function CommentItem({
           <Button
             isZero={!data?.likes}
             type="button"
-            onClick={handleClick}
+            onClick={handleLikeButton}
             isActive={data?.isLike}
           >
             <Heart /> {data?.likes ?? '0'}
@@ -82,7 +113,7 @@ export default function CommentItem({
         <ReplyComments
           comments={replyComments}
           responseId={commentItem?._id}
-          toggleLoginModal={toggleLoginModal}
+          openModal={openModal}
         />
       )}
     </>

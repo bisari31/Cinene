@@ -12,7 +12,7 @@ import withLoginPortal, {
 import CommentForm from './CommentForm';
 import CommentItem from './CommentItem';
 
-function Comments({ toggleLoginModal }: LoginPortalProps) {
+function Comments({ openModal }: LoginPortalProps) {
   const contentId = useRecoilValue(contentIdState);
   const { data } = useQuery(cineneKeys.comments(contentId), () =>
     getComments(contentId),
@@ -25,13 +25,13 @@ function Comments({ toggleLoginModal }: LoginPortalProps) {
         .filter((item) => !item.responseTo)
         .map((item) => (
           <CommentItem
-            toggleLoginModal={toggleLoginModal}
+            openModal={openModal}
             key={item._id}
             commentItem={item}
             comments={data.comments}
           />
         ))}
-      <CommentForm toggleLoginModal={toggleLoginModal} />
+      <CommentForm openModal={openModal} />
     </Wrapper>
   );
 }

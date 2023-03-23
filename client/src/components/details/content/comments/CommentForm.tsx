@@ -13,7 +13,7 @@ interface Props extends LoginPortalProps {
   responseId?: string;
 }
 
-export default function CommentForm({ responseId, toggleLoginModal }: Props) {
+export default function CommentForm({ responseId, openModal }: Props) {
   const contentId = useRecoilValue(contentIdState);
   const [text, setText] = useState('');
   const [auth, setAuth] = useRecoilState(authUserState);
@@ -27,7 +27,7 @@ export default function CommentForm({ responseId, toggleLoginModal }: Props) {
     onError: (err: AxiosError) => {
       if (err.response.status === 401) {
         setAuth(null);
-        toggleLoginModal();
+        openModal();
       }
     },
   });
@@ -36,7 +36,7 @@ export default function CommentForm({ responseId, toggleLoginModal }: Props) {
     e.preventDefault();
     if (!text) return;
     if (!auth) {
-      toggleLoginModal();
+      openModal();
     } else {
       mutate({
         comment: text,
