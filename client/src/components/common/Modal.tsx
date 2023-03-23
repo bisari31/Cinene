@@ -96,7 +96,6 @@ const ModalWrapper = styled.div<{ isVisible: boolean; height?: string }>`
   background-color: ${({ theme }) => theme.colors.navy};
   border-radius: 30px;
   display: flex;
-  /* box-shadow: 0px 4px 14px 3px rgba(0, 0, 0, 0.6); */
   flex-direction: column;
   height: ${({ height }) => height || '30vh'};
   margin: 3em;

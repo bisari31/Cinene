@@ -1,17 +1,13 @@
 import styled from 'styled-components';
 import { useState, useEffect, useRef, forwardRef, ForwardedRef } from 'react';
-import { useMutation, useQueryClient } from 'react-query';
 
 import { Star } from 'assets';
-import { handleReview } from 'services/review';
 import { usePrevious } from 'hooks';
 
 import Modal from 'components/common/Modal';
 import Portal from 'components/common/Portal';
-import { cineneKeys } from 'utils/keys';
 import { LoginPortalProps } from 'components/hoc/withLoginPortal';
-import { useSetRecoilState } from 'recoil';
-import { authUserState } from 'atom/atom';
+import useReviewMutation from 'components/details/hooks/useReviewMutation';
 
 const RATING_MESSAGE = [
   '(별로에요)',
@@ -22,51 +18,26 @@ const RATING_MESSAGE = [
 ];
 
 interface Props extends LoginPortalProps {
-  isVisible: boolean;
   isMotionVisible: boolean;
-  toggleModal: () => void;
+  toggleReviewModal: () => void;
   hasReview?: Review | null;
   data?: CineneData;
 }
 
 function ReviewModal(
-  {
-    isVisible,
-    isMotionVisible,
-    toggleModal,
-    data,
-    hasReview,
-    openModal,
-  }: Props,
+  { isMotionVisible, toggleReviewModal, data, hasReview, openModal }: Props,
   ref: ForwardedRef<HTMLDivElement>,
 ) {
   const [rating, setRating] = useState(hasReview?.rating || 0);
   const [comment, setComment] = useState(hasReview?.comment || '');
   const [isCommentError, setIsCommentError] = useState(false);
   const [isRatingError, setIsRatingError] = useState(false);
-  const setAuth = useSetRecoilState(authUserState);
+  const [errorMessage, setErrorMessage] = useState('');
   const previousRating = usePrevious(rating);
   const previousComment = usePrevious(comment);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const queryClient = useQueryClient();
-
-  const { mutate } = useMutation(handleReview, {
-    onSuccess: () => {
-      queryClient.invalidateQueries(
-        cineneKeys.detail(data?.content_type, data?.tmdbId),
-      );
-      toggleModal();
-    },
-    onError: ({ response }: AxiosError) => {
-      if (response.status === 401) {
-        setAuth(null);
-        openModal();
-      } else {
-        openModal(`${response.data.message} 😭`);
-      }
-    },
-  });
+  const mutate = useReviewMutation(toggleReviewModal, openModal, data);
 
   const handleCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setComment(e.target.value);
@@ -78,20 +49,27 @@ function ReviewModal(
     if (isRatingError && value > 0) {
       setIsRatingError(false);
     }
+    setErrorMessage(RATING_MESSAGE[value - 1]);
     setRating(value);
   };
 
-  const handlehandleReview = () => {
-    if (!comment || comment.length > 50) {
+  const handleReviewSubmit = () => {
+    if (!comment) {
       setIsCommentError(true);
       return;
     }
     if (!rating) {
       setIsRatingError(true);
+      setErrorMessage('점수를 입력하세요');
+      return;
+    }
+    if (comment.length > 50) {
+      setIsCommentError(true);
+      setErrorMessage('50글자를 넘겼습니다.');
       return;
     }
     if (comment === previousComment && rating === previousRating) {
-      toggleModal();
+      toggleReviewModal();
       return;
     }
     mutate({
@@ -103,23 +81,18 @@ function ReviewModal(
     });
   };
 
-  const showRatingMessage = (value: number) => {
-    if (isRatingError) return '평점을 남겨주세요';
-    return value ? `${value}점 ${RATING_MESSAGE[value - 1]}` : '';
-  };
-
   useEffect(() => {
-    if (isVisible) inputRef.current?.focus();
-  }, [inputRef, isVisible]);
+    inputRef.current?.focus();
+  }, [inputRef]);
 
   return (
     <Portal>
       <Modal
         height="40vh"
         ref={ref}
-        executeFn={handlehandleReview}
+        executeFn={handleReviewSubmit}
         isVisible={isMotionVisible}
-        closeFn={toggleModal}
+        closeFn={toggleReviewModal}
         buttonText={['닫기', hasReview ? '수정' : '등록']}
         color="pink"
       >
@@ -141,9 +114,9 @@ function ReviewModal(
                 </Button>
               ))}
             </div>
-            <div>
-              <p>{showRatingMessage(rating)}</p>
-            </div>
+            <MessageWrapper isError={isRatingError || isCommentError}>
+              <p>{errorMessage}</p>
+            </MessageWrapper>
           </div>
           <input
             ref={inputRef}
@@ -171,13 +144,6 @@ const ModalContent = styled.div<{
   width: 100%;
   & > div:first-child {
     margin-bottom: 0.5em;
-    div:nth-child(2) {
-      color: ${({ theme, isRatingError }) =>
-        isRatingError ? theme.colors.red : ''};
-      font-size: 0.95rem;
-      height: 22.8px;
-      margin-bottom: 0.5em;
-    }
   }
   input {
     background-color: ${({ theme }) => theme.colors.navy50};
@@ -229,4 +195,11 @@ const Button = styled.button<{ yellow: boolean; isIncreased: boolean }>`
       scale: 1;
     }
   }
+`;
+
+const MessageWrapper = styled.div<{ isError: boolean }>`
+  color: ${({ theme, isError }) => (isError ? theme.colors.red : '')};
+  font-size: 0.95rem;
+  height: 22.8px;
+  margin-bottom: 0.5em;
 `;

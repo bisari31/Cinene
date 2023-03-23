@@ -5,7 +5,7 @@ import Profile from 'components/user/profile';
 import withLoginPortal, {
   LoginPortalProps,
 } from 'components/hoc/withLoginPortal';
-import useRedirection from 'hooks/useRedirection';
+import { useRedirection } from 'hooks';
 
 function MyPage({ openModal }: LoginPortalProps) {
   useRedirection(true);

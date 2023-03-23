@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components';
 import Form from 'components/user/login/Form';
 import ButtonWrapper from 'components/user/login/ButtonWrapper';
 import KakaoForm from 'components/user/login/KakaoForm';
-import useRedirection from 'hooks/useRedirection';
+import { useRedirection } from 'hooks';
 
 export type PathName = 'login' | 'register';
 

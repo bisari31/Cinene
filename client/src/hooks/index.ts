@@ -7,8 +7,10 @@ import usePrevious from './usePrevious';
 import useDebounce from './useDebounce';
 import useThrottle from './useThrottle';
 import useGetRelativeTime from './useRelativeTime';
+import useRedirection from './useRedirection';
 
 export {
+  useRedirection,
   useThrottle,
   useDebounce,
   useCurrentPathName,

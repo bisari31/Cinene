@@ -19,7 +19,7 @@ function LikeButton(
 ) {
   const { data, mutate } = useLikeQuery('content', cinene?._id, openModal);
 
-  const handleLikeToggle = () => {
+  const handleLikeButton = () => {
     mutate({ type: 'content', id: cinene?._id });
   };
 
@@ -39,7 +39,7 @@ function LikeButton(
         type="button"
         isActive={data?.isLike}
         isZero={!data?.likes}
-        onClick={handleLikeToggle}
+        onClick={handleLikeButton}
       >
         <Heart /> {data?.likes ?? '0'}
       </Button>

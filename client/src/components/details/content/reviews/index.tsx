@@ -67,8 +67,7 @@ function Reviews(
           hasReview={reivewData?.hasReview}
           data={data}
           isMotionVisible={isMotionVisible}
-          toggleModal={toggleModal}
-          isVisible={isVisible}
+          toggleReviewModal={toggleModal}
           ref={modalRef}
         />
       )}
