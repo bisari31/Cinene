@@ -30,6 +30,7 @@ export default function useDetailQuery(id?: number, path?: MediaType) {
     {
       ...staleTime,
       retry: false,
+      enabled: !!mediaData || !!personData,
     },
   );
 
