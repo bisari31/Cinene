@@ -1,15 +1,22 @@
-import { Schema, Types, model } from 'mongoose';
+import { Schema, Types, model, ObjectId } from 'mongoose';
+import { ContentInterface } from './content';
 
-const likeSchema = new Schema({
-  contentId: {
+export interface LikeInterface {
+  _id: ObjectId;
+  content: ObjectId | ContentInterface;
+  comment: ObjectId;
+  liked_by: ObjectId;
+}
+
+const likeSchema = new Schema<Omit<LikeInterface, '_id'>>({
+  content: {
     type: Types.ObjectId,
     ref: 'Content',
   },
-  commentId: {
+  comment: {
     type: Types.ObjectId,
-    ref: 'Comment',
   },
-  userId: {
+  liked_by: {
     type: Types.ObjectId,
   },
 });

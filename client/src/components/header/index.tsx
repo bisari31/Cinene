@@ -2,31 +2,36 @@ import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { useEffect } from 'react';
 
-import { useSetRecoilState } from 'recoil';
-import { userIdState } from 'atom/atom';
-import { useAuthQuery, useOutsideClick } from 'hooks';
+import { autheticate, getAccessToken } from 'services/user';
+import { useOutsideClick } from 'hooks';
+import useAuthQuery from './hooks/useAuthQuery';
 
 import AuthMenu from './AuthMenu';
-import SearchBar from './SearchBar';
+import SearchBar from './searchbar/SearchBar';
 import SideMenu from './SideMenu';
 
 export default function Header() {
-  const setUserId = useSetRecoilState(userIdState);
-  const { data } = useAuthQuery();
-
+  const { auth, setAuth } = useAuthQuery();
   const { ref, isVisible, toggleModal, isMotionVisible } = useOutsideClick(300);
 
   useEffect(() => {
-    const item = localStorage.getItem('userId');
-    if (item) {
-      setUserId(item);
-    }
-  }, [setUserId]);
+    const getAuth = async () => {
+      try {
+        const data = await autheticate();
+        setAuth(data.user);
+        getAccessToken(data);
+      } catch (err) {
+        setAuth(null);
+        localStorage.removeItem('accessToken');
+      }
+    };
+    getAuth();
+  }, [setAuth]);
 
   return (
     <HeaderWrapper>
       <Logo>
-        <SideMenu data={data} />
+        <SideMenu auth={auth} />
         <h1>
           <Link to="/">Cinene</Link>
         </h1>
@@ -40,7 +45,7 @@ export default function Header() {
           />
         </SearchWrapper>
       )}
-      <AuthMenu data={data} setIsVisible={toggleModal} />
+      <AuthMenu auth={auth} setIsVisible={toggleModal} />
     </HeaderWrapper>
   );
 }

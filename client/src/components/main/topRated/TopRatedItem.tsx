@@ -1,40 +1,22 @@
 import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
-import { IMAGE_URL } from 'services/tmdb';
-import { EMPTY_IMAGE } from 'utils/imageUrl';
+import useImageUrl from 'components/details/hooks/useImageUrl';
 
-type Item = ICineneData & IMediaResults;
-
-interface IProps {
-  item: Partial<Item>;
-  type: 'cinene' | 'tmdb';
+interface Props {
+  item: CineneData | MovieResult;
 }
 
-export default function TopRatedItem({ item, type }: IProps) {
-  const typeObj = {
-    cinene: {
-      link: `/${item.type}/${item.tmdbId}`,
-      src: item.poster ? `${IMAGE_URL}/w500/${item.poster}` : EMPTY_IMAGE,
-      alt: item.name,
-    },
-    tmdb: {
-      link: `/movie/${item.id}`,
-      src: item.poster_path
-        ? `${IMAGE_URL}/w500/${item.poster_path}`
-        : EMPTY_IMAGE,
-      alt: item.title,
-    },
-  };
+export default function TopRatedItem({ item }: Props) {
+  const { getPoster } = useImageUrl();
+  const img = 'poster_url' in item ? item.poster_url : item.poster_path;
+  const link =
+    'id' in item ? `movie/${item.id}` : `${item.content_type}/${item.tmdbId}`;
 
   return (
     <List>
-      <Link to={typeObj[type].link} draggable="false">
-        <img
-          draggable="false"
-          src={typeObj[type].src}
-          alt={typeObj[type].alt}
-        />
+      <Link to={link} draggable="false">
+        <img draggable="false" src={getPoster(img, '300')} alt={item.title} />
       </Link>
     </List>
   );

@@ -9,10 +9,10 @@ import { USER_IMAGE } from 'utils/imageUrl';
 
 interface Props {
   setIsVisible: () => void;
-  data?: IAuthData;
+  auth: User | null;
 }
 
-export default function AuthMenu({ setIsVisible, data }: Props) {
+export default function AuthMenu({ setIsVisible, auth }: Props) {
   return (
     <AuthMenuWrapper>
       <ul>
@@ -26,11 +26,11 @@ export default function AuthMenu({ setIsVisible, data }: Props) {
             <Heart className="favorites_icon" />
           </Link>
         </Icons>
-        {data?.success ? (
+        {auth ? (
           <>
             <UserInfo>
               <Link to="/mypage">
-                <img src={USER_IMAGE} alt="user_image" />
+                <img src={auth.img || USER_IMAGE} alt="user_image" />
               </Link>
             </UserInfo>
             <BtnMenu className="logout_button">

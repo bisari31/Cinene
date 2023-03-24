@@ -1,29 +1,33 @@
 import axios from 'axios';
+import { bearer, getAccessToken } from './user';
 
-interface IResponse {
-  success: boolean;
-  likes?: number;
-  message?: string;
-  isLike?: boolean;
-}
+type Type = 'content' | 'comment';
 
-type IdType = 'contentId' | 'commentId';
-
-export const getLikes = async (type: IdType, id?: string, userId?: string) => {
-  if (!id) return;
-  const { data } = await axios.get<IResponse>(
-    `/likes/${type}/${id}${userId ? `?userId=${userId}` : ''}`,
+export const getLikes = async (type: Type, id?: string, userId?: string) => {
+  if (!id) return null;
+  const { data } = await axios.get<CustomResponse<LikeData>>(
+    `/likes/${type}/${id}`,
+    {
+      params: { userId },
+    },
   );
   return data;
 };
 
-export const like = async (obj: { type: IdType; id?: string }) => {
-  if (!obj.id) return;
-  const { data } = await axios.post<IResponse>(`/likes/${obj.type}/${obj.id}`);
+export const like = async (body: { id?: string; type: Type }) => {
+  const { id, type } = body;
+  if (!id) return null;
+  const { data } = await axios.post<CustomResponse>(
+    `/likes/${type}/${id}`,
+    null,
+    bearer(),
+  );
+  getAccessToken(data);
   return data;
 };
 
 export const getFavorites = async () => {
-  const { data } = await axios.get<IFavoritesData>(`/likes/favorites`);
+  const { data } = await axios.get<FavoritesData>(`/likes/favorites`, bearer());
+  getAccessToken(data);
   return data;
 };

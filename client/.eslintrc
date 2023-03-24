@@ -57,7 +57,6 @@
         "tsx": "never"
       }
     ],
-    "better-styled-components/sort-declarations-alphabetically": "error",
-    "consistent-return": "off"
+    "better-styled-components/sort-declarations-alphabetically": "error"
   }
 }

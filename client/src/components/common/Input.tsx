@@ -1,11 +1,12 @@
 import { forwardRef, memo } from 'react';
 import styled, { css } from 'styled-components';
 
-interface IProps {
+interface Props {
   placeholder?: string;
   value: string | undefined;
   type: 'text' | 'password' | 'email';
   label?: string;
+  isDisabled?: boolean;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
   errorMessage?: string;
@@ -14,13 +15,18 @@ interface IProps {
 }
 
 function Input(
-  { label = '', errorMessage = '', ...rest }: IProps,
+  { label = '', errorMessage = '', isDisabled = false, ...rest }: Props,
   ref: React.ForwardedRef<HTMLInputElement>,
 ) {
   return (
     <InputWrapper>
       <label htmlFor="">{label}</label>
-      <StyledInput isError={!!errorMessage} ref={ref} {...rest} />
+      <StyledInput
+        isError={!!errorMessage}
+        ref={ref}
+        {...rest}
+        disabled={isDisabled}
+      />
       <ErrorMessage>{errorMessage}</ErrorMessage>
     </InputWrapper>
   );

@@ -3,19 +3,31 @@ import styled, { css } from 'styled-components';
 
 import Form from 'components/user/login/Form';
 import ButtonWrapper from 'components/user/login/ButtonWrapper';
+import KakaoForm from 'components/user/login/KakaoForm';
+import { useRedirection } from 'hooks';
 
 export type PathName = 'login' | 'register';
 
 export default function LoginPage() {
+  useRedirection();
   const { pathname } = useLocation();
 
   const getPathName = () => pathname.slice(1) as 'login' | 'register';
+  const path = getPathName();
+
+  const isKakaoForm = pathname.includes('kakao');
 
   return (
     <Wrapper>
-      <Form type={getPathName()}>
-        <ButtonWrapper type={getPathName()} />
-      </Form>
+      {isKakaoForm ? (
+        <KakaoForm>
+          <ButtonWrapper type={path} />
+        </KakaoForm>
+      ) : (
+        <Form type={path}>
+          <ButtonWrapper type={path} />
+        </Form>
+      )}
     </Wrapper>
   );
 }
@@ -31,8 +43,17 @@ const Wrapper = styled.div`
       background-color: ${theme.colors.navy};
       border-radius: 35px;
       max-width: 450px;
+      padding: 3em;
       position: relative;
       width: 100%;
+
+      & > p {
+        color: ${theme.colors.red};
+        font-size: 0.8rem;
+        font-weight: 300;
+        height: 12.9px;
+        text-align: center;
+      }
     }
 
     @media ${theme.device.laptop} {

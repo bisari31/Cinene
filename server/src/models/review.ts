@@ -1,31 +1,33 @@
-import { model, ObjectId, Schema, Types, Model } from 'mongoose';
+import { model, ObjectId, Schema, Types, Model, Document } from 'mongoose';
 
 import Content from './content';
+import { UserInterface } from './user';
 
-export interface IReview {
+export interface ReviewInterface {
   _id: ObjectId;
-  userId: ObjectId;
-  contentId: ObjectId;
-  contentType: string;
+  author: ObjectId | UserInterface;
+  content: ObjectId;
+  content_type: string;
   comment: string;
   rating: number;
 }
 
-export interface ReviewModel extends Model<IReview> {
-  updateRatings: (contentId: any, contentType: any) => Promise<void>;
+interface ReviewDocument extends Omit<ReviewInterface, '_id'>, Document {}
+
+interface ReviewModel extends Model<ReviewDocument> {
+  updateRating: (contentId: ObjectId, contentType: string) => Promise<void>;
 }
 
-const reviewSchema = new Schema<IReview>(
+const reviewSchema = new Schema<Omit<ReviewInterface, '_id'>>(
   {
-    userId: {
+    author: {
       type: Types.ObjectId,
       ref: 'User',
     },
-    contentId: {
+    content: {
       type: Types.ObjectId,
-      ref: 'Content',
     },
-    contentType: {
+    content_type: {
       type: String,
     },
     comment: {
@@ -38,36 +40,34 @@ const reviewSchema = new Schema<IReview>(
   { timestamps: true },
 );
 
-reviewSchema.statics.updateRatings = async function (
-  contentId: Pick<IReview, 'contentId'>,
-  contentType: Pick<IReview, 'contentType'>,
+reviewSchema.statics.updateRating = async function (
+  contentId: ObjectId,
+  contentType: string,
 ) {
   try {
-    const reviews: IReview[] = await this.find({ contentId, contentType });
+    const reviews: ReviewInterface[] = await this.find({
+      content: contentId,
+      content_type: contentType,
+    });
 
     if (!reviews.length) {
-      await Content.findOneAndUpdate(
-        { _id: contentId },
-        {
-          $set: { average: 0, votes: 0 },
-        },
-      );
+      await Content.findByIdAndUpdate(contentId, {
+        $set: { average: 0, votes: 0 },
+      });
     } else {
-      const totalRating = reviews.reduce((acc, cur) => (acc += cur.rating), 0);
-      await Content.findOneAndUpdate(
-        { _id: contentId },
-        {
-          $set: {
-            average: totalRating / reviews.length,
-            votes: reviews.length,
-          },
+      const totalRating = reviews.reduce((acc, cur) => acc + cur.rating, 0);
+      await Content.findByIdAndUpdate(contentId, {
+        $set: {
+          average: totalRating / reviews.length,
+          votes: reviews.length,
         },
-      );
+      });
     }
   } catch (err) {
-    throw { success: false, message: '평점 업데이트 에러 발생' };
+    const error = { success: false, message: '평점 업데이트 에러 발생' };
+    throw error;
   }
 };
 
-const Rating = model<IReview, ReviewModel>('Review', reviewSchema);
+const Rating = model<ReviewDocument, ReviewModel>('ReviewSchema', reviewSchema);
 export default Rating;

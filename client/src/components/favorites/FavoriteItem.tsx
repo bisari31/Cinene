@@ -3,57 +3,57 @@ import styled from 'styled-components';
 
 import { Heart } from 'assets';
 import { buttonEffect } from 'styles/css';
-import { IMAGE_URL } from 'services/tmdb';
-import { EMPTY_IMAGE, USER_IMAGE } from 'utils/imageUrl';
-import useLikeMutation from 'hooks/queries/useLikeMutation';
 
-interface IProps {
-  item: IFavoritesContent;
+import useLikeMutation from 'components/favorites/hooks/useLikeMutation';
+import useImageUrl from 'components/details/hooks/useImageUrl';
+import { useLoginPortal } from 'hooks';
+
+interface Props {
+  data: CineneData;
 }
 
-export default function FavoriteItem({ item }: IProps) {
-  const mutate = useLikeMutation();
-
-  const getImageUrl = (content?: ICineneData) => {
-    if (!content) return;
-    const { type, poster } = content;
-    if (poster) {
-      return `${IMAGE_URL}/w400/${poster}`;
-    }
-    return type === 'person' ? USER_IMAGE : EMPTY_IMAGE;
-  };
-
-  const handleClickButton = (id: string) => {
-    mutate({ type: 'contentId', id });
-  };
+export default function Favoritecontent({ data }: Props) {
+  const { openModal, renderPortal } = useLoginPortal();
+  const mutate = useLikeMutation(openModal);
+  const { getPoster } = useImageUrl();
 
   return (
-    <FavoriteItemWrapper key={item._id}>
-      <Link to={`/${item.contentId.type}/${item.contentId.tmdbId}`}>
-        <img src={getImageUrl(item.contentId)} alt={item.contentId.name} />
-        <span>{item.contentId.name}</span>
+    <FavoritecontentWrapper>
+      <Link to={`/${data.content_type}/${data.tmdbId}`}>
+        <img
+          src={getPoster(
+            data.poster_url,
+            '400',
+            data.content_type === 'person',
+          )}
+          alt={data.title}
+        />
+        <span>{data.title}</span>
       </Link>
       <Button
         color="navy50"
         type="button"
-        onClick={() => handleClickButton(item.contentId._id)}
+        onClick={() => mutate({ type: 'content', id: data._id })}
       >
         <Heart />
       </Button>
-    </FavoriteItemWrapper>
+      {renderPortal()}
+    </FavoritecontentWrapper>
   );
 }
 
-const FavoriteItemWrapper = styled.li`
+const FavoritecontentWrapper = styled.li`
   display: flex;
+  height: 100%;
   position: relative;
+  width: 100%;
   a {
     height: 100%;
     width: 100%;
     img {
       border-radius: 10px;
-      object-fit: cover;
       height: 100%;
+      object-fit: cover;
       width: 100%;
     }
     span {
@@ -80,7 +80,7 @@ const FavoriteItemWrapper = styled.li`
 `;
 
 const Button = styled.button`
-  align-items: center;
+  align-content: center;
   background-color: ${({ theme }) => theme.colors.navy50};
   border: none;
   border-radius: 10px;

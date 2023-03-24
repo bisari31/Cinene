@@ -1,27 +1,33 @@
-interface ICineneData {
+interface CineneData {
+  content_type: MediaType;
+  title: string;
+  poster_url: string;
+  tmdbId: number;
   average: number;
   votes: number;
-  name: string;
-  poster: string;
-  tmdbId: number;
-  type: MediaTypes;
   __v: number;
   _id: string;
 }
 
-interface IFavoritesContent {
-  contentId: ICineneData;
-  userId: string;
+interface FavoritesContent {
+  content: CineneData;
+  liked_by: string;
   __v: number;
   _id: string;
 }
 
-interface IFavoritesData {
-  contents: IFavoritesContent[];
+interface FavoritesData {
+  contents: FavoritesContent[];
   success: boolean;
+  accessToken?: string;
 }
 
-interface ITopRatedData {
-  contents: ICineneData[];
+interface LikeData {
+  likes: number;
+  isLike: boolean;
+}
+
+interface TopRatedData {
+  contents: CineneData[];
   success: boolean;
 }
