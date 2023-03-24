@@ -38,7 +38,7 @@ export default function useDetailQuery(id?: number, path?: MediaType) {
     mediaData && 'title' in mediaData ? mediaData.title : mediaData?.name;
 
   const { data: newCineneData } = useQuery(
-    cineneKeys.newDetail(path, id),
+    cineneKeys.detail(path, id),
     () =>
       createContent({
         content_type: path,

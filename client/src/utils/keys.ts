@@ -44,12 +44,6 @@ export const cineneKeys = {
     { loggedIn },
   ],
   detail: (path?: MediaType, id?: number) => [...cineneKeys.default, path, id],
-  newDetail: (path?: MediaType, id?: number) => [
-    ...cineneKeys.default,
-    'new',
-    path,
-    id,
-  ],
   likes: (path?: 'comments' | 'content', id?: string, loggedIn?: boolean) => [
     ...cineneKeys.default,
     path,
