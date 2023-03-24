@@ -73,5 +73,5 @@ reviewSchema.statics.updateRating = async function (
   }
 };
 
-const Rating = model<ReviewDocument, ReviewModel>('ReviewSchema', reviewSchema);
+const Rating = model<ReviewDocument, ReviewModel>('Review', reviewSchema);
 export default Rating;
