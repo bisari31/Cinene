@@ -44,9 +44,7 @@ export default function Favoritecontent({ data }: Props) {
 
 const FavoritecontentWrapper = styled.li`
   display: flex;
-  height: 100%;
   position: relative;
-  width: 100%;
   a {
     height: 100%;
     width: 100%;
@@ -95,9 +93,9 @@ const Button = styled.button`
   width: 20%;
   svg {
     fill: ${({ theme }) => theme.colors.pink};
-    height: 90%;
+    height: 100%;
     stroke: none;
-    width: 90%;
+    width: 100%;
   }
   ${buttonEffect};
 `;
