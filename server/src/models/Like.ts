@@ -1,4 +1,5 @@
 import { Schema, Types, model, ObjectId } from 'mongoose';
+
 import { ContentInterface } from './content';
 
 export interface LikeInterface {

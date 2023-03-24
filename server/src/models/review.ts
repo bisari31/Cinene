@@ -14,7 +14,11 @@ export interface ReviewInterface {
 interface ReviewDocument extends ReviewInterface, Document {}
 
 interface ReviewModel extends Model<ReviewDocument> {
-  updateRating: (contentId: ObjectId, contentType: string) => Promise<void>;
+  updateRating: (
+    contentId: ObjectId,
+    contentType: string,
+    isDelete?: boolean,
+  ) => Promise<void>;
 }
 
 const reviewSchema = new Schema<ReviewInterface>(
@@ -42,6 +46,7 @@ const reviewSchema = new Schema<ReviewInterface>(
 reviewSchema.statics.updateRating = async function (
   contentId: ObjectId,
   contentType: string,
+  isDelete = false,
 ) {
   try {
     const reviews: ReviewInterface[] = await this.find({
@@ -49,7 +54,7 @@ reviewSchema.statics.updateRating = async function (
       content_type: contentType,
     });
 
-    if (!reviews.length) {
+    if (!reviews.length && isDelete) {
       await Content.findByIdAndUpdate(contentId, {
         $set: { average: 0, votes: 0 },
       });

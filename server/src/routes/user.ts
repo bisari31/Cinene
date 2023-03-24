@@ -1,14 +1,14 @@
 import { Response, Router, Request } from 'express';
 import bcrypt from 'bcrypt';
 import axios from 'axios';
-
 import { Error, MongooseError, ObjectId } from 'mongoose';
+
 import { KakaoTokenData, KakaoUserData } from '../types/oauth';
 import authenticate, { MiddlewareRequest } from '../utils/middleware';
+import { CustomRequest, CustomResponse } from '../types/express';
+import { NotFoundError, UnauthorizedError } from '../utils/error';
 
 import User, { UserDocument, UserInterface } from '../models/user';
-import { NotFoundError, UnauthorizedError } from '../utils/error';
-import { CustomRequest, CustomResponse } from '../types/express';
 
 const router = Router();
 const SALT_ROUNDS = 10;
