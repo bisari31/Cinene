@@ -1,13 +1,13 @@
 import styled, { css } from 'styled-components';
 
 import TopRated from './topRated/index';
-import Upcomming from './Upcomming';
+import MovieDisplay from './MovieDisplay';
 
 export default function Sub() {
   return (
     <SubWrapper>
-      <Upcomming type="now" />
-      <Upcomming type="upcoming" />
+      <MovieDisplay type="now" />
+      <MovieDisplay type="upcoming" />
       <TopRated type="cinene" />
       <TopRated type="tmdb" />
     </SubWrapper>

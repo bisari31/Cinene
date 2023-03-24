@@ -1,54 +1,18 @@
-import { useQuery } from 'react-query';
 import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
 
-import { getNowPlayingMovie, getUpcomingMovie } from 'services/tmdb';
-
 import Slider from 'components/common/Slider';
 import dayjs from 'dayjs';
-import { tmdbKeys } from 'utils/keys';
-import { staleTime } from 'utils/queryOptions';
 import useImageUrl from 'components/details/hooks/useImageUrl';
+import useMovieDisplayQuery from './hooks/useMovieDisplayQuery';
 
 interface Props {
   type: 'upcoming' | 'now';
 }
 
-export default function Upcomming({ type }: Props) {
+export default function MovieDisplay({ type }: Props) {
   const { getPoster } = useImageUrl();
-  const { data: upcomingData } = useQuery(
-    tmdbKeys.upcoming(),
-    getUpcomingMovie,
-    {
-      ...staleTime,
-      enabled: type === 'upcoming',
-      select: (prevData) => {
-        const day = dayjs();
-        return prevData
-          .sort((a, b) => dayjs(a.release_date).diff(b.release_date, 'd'))
-          .filter((item) => day.diff(item.release_date, 'd') < 1);
-      },
-    },
-  );
-  const { data: nowData } = useQuery(
-    tmdbKeys.nowPlaying(),
-    getNowPlayingMovie,
-    {
-      ...staleTime,
-      enabled: type === 'now',
-    },
-  );
-
-  const mediaType = {
-    upcoming: {
-      title: '개봉 예정작',
-      data: upcomingData,
-    },
-    now: {
-      title: '상영작',
-      data: nowData,
-    },
-  };
+  const data = useMovieDisplayQuery(type);
 
   const getDday = (day: string) => {
     const today = dayjs().format('YYYY-MM-DD');
@@ -59,16 +23,16 @@ export default function Upcomming({ type }: Props) {
 
   return (
     <UpcommingWrapper>
-      <Slider title={mediaType[type].title}>
+      <Slider title={type === 'now' ? '상영작' : '개봉 예정작'}>
         <ul>
-          {mediaType[type].data?.map((movie) => (
+          {data?.map((movie) => (
             <List key={movie.id}>
               <Link to={`/movie/${movie.id}`} draggable="false">
                 <img
                   draggable="false"
                   src={getPoster(
                     movie.backdrop_path || movie.poster_path,
-                    '400',
+                    '500',
                   )}
                   alt={movie.title}
                 />
