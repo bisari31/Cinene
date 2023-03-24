@@ -4,7 +4,6 @@ import Content from './content';
 import { UserInterface } from './user';
 
 export interface ReviewInterface {
-  _id: ObjectId;
   author: ObjectId | UserInterface;
   content: ObjectId;
   content_type: string;
@@ -12,13 +11,17 @@ export interface ReviewInterface {
   rating: number;
 }
 
-interface ReviewDocument extends Omit<ReviewInterface, '_id'>, Document {}
+interface ReviewDocument extends ReviewInterface, Document {}
 
 interface ReviewModel extends Model<ReviewDocument> {
-  updateRating: (contentId: ObjectId, contentType: string) => Promise<void>;
+  updateRating: (
+    contentId: ObjectId,
+    contentType: string,
+    isDelete?: boolean,
+  ) => Promise<void>;
 }
 
-const reviewSchema = new Schema<Omit<ReviewInterface, '_id'>>(
+const reviewSchema = new Schema<ReviewInterface>(
   {
     author: {
       type: Types.ObjectId,
@@ -43,6 +46,7 @@ const reviewSchema = new Schema<Omit<ReviewInterface, '_id'>>(
 reviewSchema.statics.updateRating = async function (
   contentId: ObjectId,
   contentType: string,
+  isDelete = false,
 ) {
   try {
     const reviews: ReviewInterface[] = await this.find({
@@ -50,7 +54,7 @@ reviewSchema.statics.updateRating = async function (
       content_type: contentType,
     });
 
-    if (!reviews.length) {
+    if (!reviews.length && isDelete) {
       await Content.findByIdAndUpdate(contentId, {
         $set: { average: 0, votes: 0 },
       });

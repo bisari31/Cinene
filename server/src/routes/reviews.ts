@@ -1,9 +1,10 @@
 import { Request, Router } from 'express';
 
-import Review, { ReviewInterface } from '../models/review';
 import { CustomRequest, CustomResponse } from '../types/express';
 import { NotFoundError } from '../utils/error';
 import authenticate from '../utils/middleware';
+
+import Review, { ReviewInterface } from '../models/review';
 
 const router = Router();
 
@@ -67,7 +68,9 @@ router.get(
       const reviews = await Review.find({
         content_type: type,
         content: id,
-      }).populate('author');
+      })
+        .populate('author')
+        .lean();
 
       if (!req.query.userId) {
         res.json({ success: true, reviews });
@@ -92,7 +95,7 @@ router.delete(
     try {
       const review = await Review.findByIdAndDelete(req.params.id);
       if (!review) throw new NotFoundError('리뷰 삭제 실패');
-      await Review.updateRating(review?.content, review?.content_type);
+      await Review.updateRating(review?.content, review?.content_type, true);
       res.json({ success: true, accessToken: req.accessToken });
     } catch (err) {
       if (err instanceof NotFoundError) {

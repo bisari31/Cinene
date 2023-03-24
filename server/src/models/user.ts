@@ -1,11 +1,10 @@
-import { model, Schema, Model, Document, ObjectId } from 'mongoose';
+import { model, Schema, Model, Document } from 'mongoose';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
 export const { PRIVATE_KEY } = process.env;
 
 export interface UserInterface {
-  _id: ObjectId;
   email: string;
   password: string;
   nickname: string;
@@ -14,7 +13,7 @@ export interface UserInterface {
   active: boolean;
 }
 
-export interface UserDocument extends Omit<UserInterface, '_id'>, Document {
+export interface UserDocument extends UserInterface, Document {
   generateToken(isExpired?: boolean): Promise<{
     refreshToken?: string;
     accessToken: string;
@@ -33,7 +32,7 @@ interface UserModel extends Model<UserDocument> {
   ): Promise<{ hasEmail: boolean; hasNickname: boolean }>;
 }
 
-const userSchema = new Schema<Omit<UserInterface, '_id'>>(
+const userSchema = new Schema<UserInterface>(
   {
     email: {
       type: String,

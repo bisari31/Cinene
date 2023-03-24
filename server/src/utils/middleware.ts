@@ -1,14 +1,13 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { ObjectId } from 'mongoose';
-import { userInfo } from 'os';
 
 import User, { UserInterface, PRIVATE_KEY } from '../models/user';
 
 export interface MiddlewareRequest extends Request {
   cookies: { refreshToken: string };
   accessToken?: string;
-  user?: Omit<UserInterface, 'password'>;
+  user?: Omit<UserInterface, 'password'> & { _id: ObjectId };
 }
 
 const authenticate = async (
@@ -24,9 +23,9 @@ const authenticate = async (
       const { _id } = <{ _id: ObjectId }>(
         jwt.verify(accessToken, `${PRIVATE_KEY}`)
       );
-      const { password, ...rest } = await User.findById(
-        _id,
-      ).lean<UserInterface>();
+      const { password, ...rest } = await User.findById(_id).lean<
+        UserInterface & { _id: ObjectId }
+      >();
       req.user = rest;
       next();
       return;
@@ -42,7 +41,9 @@ const authenticate = async (
         if (user?.refresh_token !== req.cookies.refreshToken) throw Error();
         const { accessToken } = await user.generateToken(true);
         req.accessToken = accessToken;
-        const { password, ...rest } = user.toObject<UserInterface>();
+        const { password, ...rest } = user.toObject<
+          UserInterface & { _id: ObjectId }
+        >();
         req.user = rest;
         next();
         return;

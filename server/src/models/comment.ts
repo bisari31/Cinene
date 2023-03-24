@@ -3,7 +3,6 @@ import { model, ObjectId, Schema, Types } from 'mongoose';
 import { UserInterface } from './user';
 
 export interface CommentInterface {
-  _id: ObjectId;
   comment: string;
   author: ObjectId | UserInterface;
   content: ObjectId;

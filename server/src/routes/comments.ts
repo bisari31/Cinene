@@ -3,6 +3,7 @@ import { ObjectId } from 'mongoose';
 
 import { CustomRequest, CustomResponse } from '../types/express';
 import authenticate from '../utils/middleware';
+
 import Comment, { CommentInterface } from '../models/comment';
 import Like from '../models/Like';
 
@@ -41,7 +42,9 @@ router.get(
     try {
       const comments = await Comment.find({
         content: req.params.id,
-      }).populate('author');
+      })
+        .lean()
+        .populate('author');
       res.json({ success: true, comments });
     } catch (err) {
       res.status(500).json({ success: false, message: '댓글 조회 실패' });

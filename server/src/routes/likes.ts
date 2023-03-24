@@ -1,9 +1,10 @@
 import { Request, Router } from 'express';
-import { ContentInterface } from '../models/content';
 
-import Like from '../models/Like';
 import { CustomRequest, CustomResponse } from '../types/express';
 import authenticate from '../utils/middleware';
+
+import { ContentInterface } from '../models/content';
+import Like from '../models/Like';
 
 const router = Router();
 
