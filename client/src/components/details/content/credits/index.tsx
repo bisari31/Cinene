@@ -29,12 +29,12 @@ export default function Credits({ id, path }: Props) {
       <Slider title="감독 / 출연진">
         <ul>
           {directors?.map((crew) => (
-            <CreditItem key={crew.id} item={crew} isDirector />
+            <CreditItem key={crew.credit_id} item={crew} isDirector />
           ))}
         </ul>
         <ul>
           {data?.cast.map((cast) => (
-            <CreditItem key={cast.id} item={cast} />
+            <CreditItem key={cast.credit_id} item={cast} />
           ))}
         </ul>
       </Slider>
