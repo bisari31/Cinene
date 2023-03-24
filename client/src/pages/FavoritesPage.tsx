@@ -6,15 +6,11 @@ import Favorites from 'components/favorites';
 import LoginTriggerForm from 'components/LoginTriggerForm';
 
 export default function FavoritesPage() {
-  const { auth, setAuth } = useAuthQuery();
+  const { auth } = useAuthQuery();
 
   return (
     <FavoritesPageWrapper>
-      {auth ? (
-        <Favorites auth={auth} setAuth={setAuth} />
-      ) : (
-        <LoginTriggerForm />
-      )}
+      {auth ? <Favorites /> : <LoginTriggerForm />}
     </FavoritesPageWrapper>
   );
 }
