@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
 
@@ -7,29 +7,13 @@ import { buttonEffect } from 'styles/css';
 
 import useDetailQuery from 'components/details/hooks/useDetailQuery';
 import useImageUrl from 'components/details/hooks/useImageUrl';
-import useTrendingMediaQuery from './hooks/useTrendingMediaQuery';
+import usePopular from './hooks/usePopular';
 import Average from './Average';
 
 export default function Popular() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  const { data } = useTrendingMediaQuery();
-  const currentData = data?.[currentIndex];
-
-  const { mediaData, cineneData } = useDetailQuery(
-    currentData?.id,
-    currentData?.media_type,
-  );
+  const { data, handleSlide } = usePopular();
+  const { mediaData, cineneData } = useDetailQuery(data?.id, data?.media_type);
   const { getPoster } = useImageUrl();
-
-  const handleSlide = (index: number) => {
-    const maxIndex = data?.length;
-    if (!maxIndex) return;
-    let nextIndex = currentIndex + index;
-    if (nextIndex > maxIndex - 1) nextIndex = 0;
-    else if (nextIndex < 0) nextIndex = maxIndex - 1;
-    setCurrentIndex(nextIndex);
-  };
 
   useEffect(() => {
     const slider = setInterval(() => handleSlide(1), 10000);
@@ -38,14 +22,11 @@ export default function Popular() {
 
   return (
     <section>
-      <Background src={getPoster(currentData?.backdrop_path, 'full')} />
+      <Background src={getPoster(data?.backdrop_path, 'full')} />
       <Item>
         <div>
           <Category>
-            <Average
-              tmdbAverage={currentData?.vote_average}
-              cineneData={cineneData}
-            />
+            <Average tmdbAverage={data?.vote_average} cineneData={cineneData} />
           </Category>
           <Overview>
             <p>
@@ -56,9 +37,7 @@ export default function Popular() {
             <p>{mediaData?.overview}</p>
           </Overview>
           <ButtonWrapper color="pink">
-            <Link to={`/${currentData?.media_type}/${currentData?.id}`}>
-              자세히 보기
-            </Link>
+            <Link to={`/${data?.media_type}/${data?.id}`}>자세히 보기</Link>
             <Button
               color="navy50"
               type="button"
