@@ -2,13 +2,12 @@ import { Schema, Types, model, ObjectId } from 'mongoose';
 import { ContentInterface } from './content';
 
 export interface LikeInterface {
-  _id: ObjectId;
   content: ObjectId | ContentInterface;
   comment: ObjectId;
   liked_by: ObjectId;
 }
 
-const likeSchema = new Schema<Omit<LikeInterface, '_id'>>({
+const likeSchema = new Schema<LikeInterface>({
   content: {
     type: Types.ObjectId,
     ref: 'Content',

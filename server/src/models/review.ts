@@ -4,7 +4,6 @@ import Content from './content';
 import { UserInterface } from './user';
 
 export interface ReviewInterface {
-  _id: ObjectId;
   author: ObjectId | UserInterface;
   content: ObjectId;
   content_type: string;
@@ -12,13 +11,13 @@ export interface ReviewInterface {
   rating: number;
 }
 
-interface ReviewDocument extends Omit<ReviewInterface, '_id'>, Document {}
+interface ReviewDocument extends ReviewInterface, Document {}
 
 interface ReviewModel extends Model<ReviewDocument> {
   updateRating: (contentId: ObjectId, contentType: string) => Promise<void>;
 }
 
-const reviewSchema = new Schema<Omit<ReviewInterface, '_id'>>(
+const reviewSchema = new Schema<ReviewInterface>(
   {
     author: {
       type: Types.ObjectId,
