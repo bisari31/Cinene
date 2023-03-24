@@ -14,10 +14,11 @@ export const getLikes = async (type: Type, id?: string, userId?: string) => {
   return data;
 };
 
-export const like = async (obj: { type: Type; id?: string }) => {
-  if (!obj.id) return null;
+export const like = async (body: { id?: string; type: Type }) => {
+  const { id, type } = body;
+  if (!id) return null;
   const { data } = await axios.post<CustomResponse>(
-    `/likes/${obj.type}/${obj.id}`,
+    `/likes/${type}/${id}`,
     null,
     bearer(),
   );

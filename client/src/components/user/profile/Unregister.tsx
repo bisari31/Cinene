@@ -2,16 +2,16 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
 import { unregister } from 'services/user';
-import { useOutsideClick } from 'hooks';
+import { useLoginPortal, useOutsideClick } from 'hooks';
 
 import Button from 'components/common/Button';
 import Portal from 'components/common/Portal';
 import Modal from 'components/common/Modal';
 import useAuthQuery from 'components/header/hooks/useAuthQuery';
-import { LoginPortalProps } from 'components/hoc/withLoginPortal';
 
-export default function Unregister({ openModal }: LoginPortalProps) {
+export default function Unregister() {
   const { setAuth } = useAuthQuery();
+  const { openModal, renderPortal } = useLoginPortal();
   const { ref, toggleModal, isVisible, isMotionVisible } = useOutsideClick(300);
   const navigate = useNavigate();
 
@@ -51,6 +51,7 @@ export default function Unregister({ openModal }: LoginPortalProps) {
           </Modal>
         </Portal>
       )}
+      {renderPortal()}
     </UnregisterWrapper>
   );
 }

@@ -1,11 +1,10 @@
 import { useMutation, useQueryClient } from 'react-query';
 
-import { Modal } from 'components/hoc/withLoginPortal';
 import { like } from 'services/like';
 import { cineneKeys } from 'utils/keys';
 import useAuthQuery from '../../header/hooks/useAuthQuery';
 
-export default function useLikeQueryMutation(openModal: Modal) {
+export default function useLikeMutation(openModal: (msg?: string) => void) {
   const { setAuth } = useAuthQuery();
   const queryClient = useQueryClient();
 

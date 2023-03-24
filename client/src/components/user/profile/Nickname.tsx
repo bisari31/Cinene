@@ -1,22 +1,22 @@
 import styled from 'styled-components';
 import React, { useEffect, useCallback, useState } from 'react';
 import { useMutation } from 'react-query';
-import { useInput } from 'hooks';
+import { useInput, useLoginPortal } from 'hooks';
 
 import { changeNickname } from 'services/user';
 import { CheckMark, Edit } from 'assets/index';
 
 import Input from 'components/common/Input';
-import { LoginPortalProps } from 'components/hoc/withLoginPortal';
 
-interface Props extends LoginPortalProps {
+interface Props {
   auth: User | null;
   setAuth: React.Dispatch<React.SetStateAction<User | null>>;
 }
 
-export default function Nickname({ auth, setAuth, openModal }: Props) {
+export default function Nickname({ auth, setAuth }: Props) {
   const [isChanged, setIsChanged] = useState(false);
   const [isChanging, setIsChanging] = useState(false);
+  const { openModal, renderPortal } = useLoginPortal();
   const {
     value: nickname,
     handleChange: handleNicknameChange,
@@ -91,6 +91,7 @@ export default function Nickname({ auth, setAuth, openModal }: Props) {
         onChange={handleNicknameChange}
       />
       {isChanging ? <CheckMark className="svg-check-mark" /> : <Edit />}
+      {renderPortal()}
     </Form>
   );
 }

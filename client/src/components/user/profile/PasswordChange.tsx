@@ -6,12 +6,12 @@ import { useSetRecoilState } from 'recoil';
 import { changePassword } from 'services/user';
 import { authUserState } from 'atom/atom';
 
-import { useInput } from 'hooks';
+import { useInput, useLoginPortal } from 'hooks';
 import Button from 'components/common/Button';
 import Input from 'components/common/Input';
-import { LoginPortalProps } from 'components/hoc/withLoginPortal';
 
-export default function ChangePassword({ openModal }: LoginPortalProps) {
+export default function ChangePassword() {
+  const setAuth = useSetRecoilState(authUserState);
   const {
     error: passwordError,
     handleBlur: handlePasswordBlur,
@@ -21,7 +21,7 @@ export default function ChangePassword({ openModal }: LoginPortalProps) {
     handleChange: handlePasswordChange,
     setValue: setPassword,
   } = useInput('password');
-  const setAuth = useSetRecoilState(authUserState);
+  const { openModal, renderPortal } = useLoginPortal();
   const { mutate } = useMutation(changePassword, {
     onSuccess: () => {
       openModal('비밀번호 변경 성공');
@@ -65,6 +65,7 @@ export default function ChangePassword({ openModal }: LoginPortalProps) {
           비밀번호 변경
         </Button>
       </form>
+      {renderPortal()}
     </StyledDiv>
   );
 }

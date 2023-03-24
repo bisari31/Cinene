@@ -2,11 +2,10 @@ import styled from 'styled-components';
 import { useState, useEffect, useRef, forwardRef, ForwardedRef } from 'react';
 
 import { Star } from 'assets';
-import { usePrevious } from 'hooks';
+import { useLoginPortal, usePrevious } from 'hooks';
 
 import Modal from 'components/common/Modal';
 import Portal from 'components/common/Portal';
-import { LoginPortalProps } from 'components/hoc/withLoginPortal';
 import useReviewMutation from 'components/details/hooks/useReviewMutation';
 
 const RATING_MESSAGE = [
@@ -17,7 +16,7 @@ const RATING_MESSAGE = [
   '(최고에요)',
 ];
 
-interface Props extends LoginPortalProps {
+interface Props {
   isMotionVisible: boolean;
   toggleReviewModal: () => void;
   hasReview?: Review | null;
@@ -25,7 +24,7 @@ interface Props extends LoginPortalProps {
 }
 
 function ReviewModal(
-  { isMotionVisible, toggleReviewModal, data, hasReview, openModal }: Props,
+  { isMotionVisible, toggleReviewModal, data, hasReview }: Props,
   ref: ForwardedRef<HTMLDivElement>,
 ) {
   const [rating, setRating] = useState(hasReview?.rating || 0);
@@ -36,6 +35,7 @@ function ReviewModal(
   const previousRating = usePrevious(rating);
   const previousComment = usePrevious(comment);
   const inputRef = useRef<HTMLInputElement>(null);
+  const { openModal, renderPortal } = useLoginPortal();
 
   const mutate = useReviewMutation(toggleReviewModal, openModal, data);
 
@@ -127,6 +127,7 @@ function ReviewModal(
           />
         </ModalContent>
       </Modal>
+      {renderPortal()}
     </Portal>
   );
 }

@@ -3,13 +3,12 @@ import { useMutation, useQueryClient } from 'react-query';
 
 import { handleReview } from 'services/review';
 import { cineneKeys } from 'utils/keys';
-import { Modal } from 'components/hoc/withLoginPortal';
 
 import { authUserState } from 'atom/atom';
 
 export default function useReviewMutation(
   reviewModal: () => void,
-  errorModal: Modal,
+  errorModal: (msg?: string) => void,
   data?: CineneData,
 ) {
   const setAuth = useSetRecoilState(authUserState);

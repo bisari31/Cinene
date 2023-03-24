@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 
 import { useDebounce } from 'hooks';
-import { LoginPortalProps } from 'components/hoc/withLoginPortal';
 import Unregister from './Unregister';
 import ChangePassword from './PasswordChange';
 
@@ -25,7 +24,7 @@ interface Item {
   type: 'changePassword' | 'unregister';
 }
 
-export default function Tab({ openModal }: LoginPortalProps) {
+export default function Tab() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [width, setWidth] = useState<number>(0);
 
@@ -59,9 +58,9 @@ export default function Tab({ openModal }: LoginPortalProps) {
         <SlideBar index={activeIndex} width={width} />
       </ul>
       {TAB[activeIndex].type === 'changePassword' ? (
-        <ChangePassword openModal={openModal} />
+        <ChangePassword />
       ) : (
-        <Unregister openModal={openModal} />
+        <Unregister />
       )}
     </Wrapper>
   );

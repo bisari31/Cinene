@@ -6,13 +6,10 @@ import { getComments } from 'services/comments';
 import { cineneKeys } from 'utils/keys';
 import { contentIdState } from 'atom/atom';
 
-import withLoginPortal, {
-  LoginPortalProps,
-} from 'components/hoc/withLoginPortal';
 import CommentForm from './CommentForm';
 import CommentItem from './CommentItem';
 
-function Comments({ openModal }: LoginPortalProps) {
+export default function Comments() {
   const contentId = useRecoilValue(contentIdState);
   const { data } = useQuery(cineneKeys.comments(contentId), () =>
     getComments(contentId),
@@ -25,18 +22,15 @@ function Comments({ openModal }: LoginPortalProps) {
         .filter((item) => !item.responseTo)
         .map((item) => (
           <CommentItem
-            openModal={openModal}
             key={item._id}
             commentItem={item}
             comments={data.comments}
           />
         ))}
-      <CommentForm openModal={openModal} />
+      <CommentForm />
     </Wrapper>
   );
 }
-
-export default withLoginPortal(Comments);
 
 const Wrapper = styled.div<{ length?: number }>`
   ${({ theme, length }) => css`

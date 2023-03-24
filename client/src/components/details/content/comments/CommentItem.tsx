@@ -6,8 +6,7 @@ import { Button, buttonEffect } from 'styles/css';
 import { Heart } from 'assets';
 import { cineneKeys } from 'utils/keys';
 
-import { LoginPortalProps } from 'components/hoc/withLoginPortal';
-import { useGetRelativeTime } from 'hooks';
+import { useGetRelativeTime, useLoginPortal } from 'hooks';
 import { useMutation, useQueryClient } from 'react-query';
 import { deleteComment } from 'services/comments';
 import { useRecoilValue } from 'recoil';
@@ -15,7 +14,7 @@ import { contentIdState } from 'atom/atom';
 import ReplyComments from './ReplyComments';
 import useLikeQuery from '../../hooks/useLikeQuery';
 
-interface Props extends LoginPortalProps {
+interface Props {
   comments?: Comment[];
   commentItem?: Comment;
   isResponse?: boolean;
@@ -25,10 +24,10 @@ export default function CommentItem({
   commentItem,
   comments,
   isResponse = false,
-  openModal,
 }: Props) {
   const [openReplyComment, setOpenReplyComment] = useState(false);
   const contentId = useRecoilValue(contentIdState);
+  const { openModal, renderPortal } = useLoginPortal();
   const { auth, setAuth, data, mutate } = useLikeQuery(
     'comments',
     commentItem?._id,
@@ -52,9 +51,9 @@ export default function CommentItem({
   const handleLikeButton = () => {
     if (!auth) {
       openModal();
-    } else {
-      mutate({ type: 'comment', id: commentItem?._id });
+      return;
     }
+    mutate({ type: 'comment', id: commentItem?._id });
   };
 
   const handleCommentEdit = () => {
@@ -110,12 +109,9 @@ export default function CommentItem({
         </ButtonWrapper>
       </Item>
       {openReplyComment && (
-        <ReplyComments
-          comments={replyComments}
-          responseId={commentItem?._id}
-          openModal={openModal}
-        />
+        <ReplyComments comments={replyComments} responseId={commentItem?._id} />
       )}
+      {renderPortal()}
     </>
   );
 }

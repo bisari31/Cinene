@@ -1,14 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 
-import { Modal } from 'components/hoc/withLoginPortal';
 import { getLikes, like } from 'services/like';
 import { cineneKeys } from 'utils/keys';
 import useAuthQuery from '../../header/hooks/useAuthQuery';
 
-export default function useLikeQueryQuery(
+export default function useLikeQuery(
   type: 'comments' | 'content',
   id: string | undefined,
-  openModal: Modal,
+  openModal: (msg?: string) => void,
 ) {
   const { auth, setAuth } = useAuthQuery();
   const IdType = type === 'comments' ? 'comment' : 'content';

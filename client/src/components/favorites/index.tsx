@@ -5,18 +5,15 @@ import styled from 'styled-components';
 import { getFavorites } from 'services/like';
 import { cineneKeys } from 'utils/keys';
 
-import withLoginPortal, {
-  LoginPortalProps,
-} from 'components/hoc/withLoginPortal';
 import Toggle from './Toggle';
 import FavoriteItem from './FavoriteItem';
 
-interface Props extends LoginPortalProps {
+interface Props {
   auth: User | null;
   setAuth: React.Dispatch<React.SetStateAction<User | null>>;
 }
 
-function Favorites({ auth, setAuth, openModal }: Props) {
+export default function Favorites({ auth, setAuth }: Props) {
   const [selectedType, setSelectedType] = useState(0);
 
   const { data: favoritesData } = useQuery(
@@ -46,16 +43,12 @@ function Favorites({ auth, setAuth, openModal }: Props) {
       <Toggle selectedType={selectedType} setSelectedType={setSelectedType} />
       <ul>
         {selectedData?.map((item) => (
-          <FavoriteItem key={item._id} item={item} openModal={openModal} />
+          <FavoriteItem key={item._id} data={item.content} />
         ))}
       </ul>
     </FavoritesWrapper>
   );
 }
-export default withLoginPortal<{
-  auth: User | null;
-  setAuth: React.Dispatch<React.SetStateAction<User | null>>;
-}>(Favorites);
 
 const FavoritesWrapper = styled.div`
   ul {

@@ -3,21 +3,23 @@ import { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
-import { LoginPortalProps } from 'components/hoc/withLoginPortal';
 import { createComment } from 'services/comments';
 import { authUserState, contentIdState } from 'atom/atom';
 import { buttonEffect } from 'styles/css';
 import { cineneKeys } from 'utils/keys';
+import { useLoginPortal } from 'hooks';
 
-interface Props extends LoginPortalProps {
+interface Props {
   responseId?: string;
 }
 
-export default function CommentForm({ responseId, openModal }: Props) {
+export default function CommentForm({ responseId }: Props) {
   const contentId = useRecoilValue(contentIdState);
   const [text, setText] = useState('');
   const [auth, setAuth] = useRecoilState(authUserState);
   const queryClient = useQueryClient();
+
+  const { openModal, renderPortal } = useLoginPortal();
 
   const { mutate } = useMutation(createComment, {
     onSuccess: () => {
@@ -61,6 +63,7 @@ export default function CommentForm({ responseId, openModal }: Props) {
         onChange={handleChange}
       />
       <button type="submit">등록</button>
+      {renderPortal()}
     </CommentFormWrapper>
   );
 }

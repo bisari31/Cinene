@@ -9,15 +9,16 @@ import { cineneKeys } from 'utils/keys';
 
 import { useCurrentPathName } from 'hooks';
 import useAuthQuery from 'components/header/hooks/useAuthQuery';
-import { LoginPortalProps } from 'components/hoc/withLoginPortal';
+import useLoginPortal from 'hooks/useLoginPortal';
 import { Content, Item } from '../comments/CommentItem';
 
-interface Props extends LoginPortalProps {
+interface Props {
   onClick: () => void;
   review: Review;
 }
 
-export default function ReviewItem({ review, onClick, openModal }: Props) {
+export default function ReviewItem({ review, onClick }: Props) {
+  const { openModal, renderPortal } = useLoginPortal();
   const { auth, setAuth } = useAuthQuery();
   const { author, comment, rating, createdAt, updatedAt, _id } = review;
   const { id, path } = useCurrentPathName();
@@ -66,6 +67,7 @@ export default function ReviewItem({ review, onClick, openModal }: Props) {
           </StyledButton>
         ))}
       </SvgWrapper>
+      {renderPortal()}
     </Item>
   );
 }

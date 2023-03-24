@@ -1,29 +1,25 @@
+import { ForwardedRef, forwardRef } from 'react';
 import styled, { css } from 'styled-components';
-import { forwardRef } from 'react';
 import { useQuery } from 'react-query';
 
 import { getReviews } from 'services/review';
 import { buttonEffect } from 'styles/css';
 
-import { useOutsideClick } from 'hooks';
 import useAuthQuery from 'components/header/hooks/useAuthQuery';
 import Button from 'components/common/Button';
 import { cineneKeys } from 'utils/keys';
-import withLoginPortal, {
-  LoginPortalProps,
-} from 'components/hoc/withLoginPortal';
+
+import { useLoginPortal, useOutsideClick } from 'hooks';
 import ReviewList from './ReviewList';
 import ReviewModal from './ReviewModal';
 
-interface Props extends LoginPortalProps {
+interface Props {
   data?: CineneData;
 }
 
-function Reviews(
-  { data, openModal }: Props,
-  ref: React.ForwardedRef<HTMLHeadingElement>,
-) {
+function Reviews({ data }: Props, ref: ForwardedRef<HTMLHeadingElement>) {
   const { auth } = useAuthQuery();
+  const { openModal, renderPortal } = useLoginPortal();
   const {
     isMotionVisible,
     toggleModal,
@@ -56,14 +52,9 @@ function Reviews(
           </StyledButton>
         )}
       </div>
-      <ReviewList
-        reviews={reivewData?.reviews}
-        onClick={handleCreateReview}
-        openModal={openModal}
-      />
+      <ReviewList reviews={reivewData?.reviews} onClick={handleCreateReview} />
       {isVisible && (
         <ReviewModal
-          openModal={openModal}
           hasReview={reivewData?.hasReview}
           data={data}
           isMotionVisible={isMotionVisible}
@@ -71,13 +62,12 @@ function Reviews(
           ref={modalRef}
         />
       )}
+      {renderPortal()}
     </ReviewsWrapper>
   );
 }
 
-export default withLoginPortal<{ data?: CineneData }, HTMLHeadingElement>(
-  forwardRef(Reviews),
-);
+export default forwardRef(Reviews);
 
 const ReviewsWrapper = styled.div<{ length: number | undefined }>`
   ${({ theme, length }) => css`

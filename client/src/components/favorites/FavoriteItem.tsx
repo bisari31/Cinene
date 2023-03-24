@@ -1,49 +1,48 @@
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { LoginPortalProps } from 'components/hoc/withLoginPortal';
 import { Heart } from 'assets';
 import { buttonEffect } from 'styles/css';
 
 import useLikeMutation from 'components/favorites/hooks/useLikeMutation';
 import useImageUrl from 'components/details/hooks/useImageUrl';
+import { useLoginPortal } from 'hooks';
 
-interface Props extends LoginPortalProps {
-  item: FavoritesContent;
+interface Props {
+  data: CineneData;
 }
 
-export default function FavoriteItem({ item, openModal }: Props) {
-  const { content, _id } = item;
+export default function Favoritecontent({ data }: Props) {
+  const { openModal, renderPortal } = useLoginPortal();
   const mutate = useLikeMutation(openModal);
   const { getPoster } = useImageUrl();
 
-  const handleClickButton = (id: string) => mutate({ type: 'content', id });
-
   return (
-    <FavoriteItemWrapper key={_id}>
-      <Link to={`/${content.content_type}/${content.tmdbId}`}>
+    <FavoritecontentWrapper>
+      <Link to={`/${data.content_type}/${data.tmdbId}`}>
         <img
           src={getPoster(
-            content.poster_url,
+            data.poster_url,
             '400',
-            content.content_type === 'person',
+            data.content_type === 'person',
           )}
-          alt={content.title}
+          alt={data.title}
         />
-        <span>{content.title}</span>
+        <span>{data.title}</span>
       </Link>
       <Button
         color="navy50"
         type="button"
-        onClick={() => handleClickButton(content._id)}
+        onClick={() => mutate({ type: 'content', id: data._id })}
       >
         <Heart />
       </Button>
-    </FavoriteItemWrapper>
+      {renderPortal()}
+    </FavoritecontentWrapper>
   );
 }
 
-const FavoriteItemWrapper = styled.li`
+const FavoritecontentWrapper = styled.li`
   display: flex;
   height: 100%;
   position: relative;
@@ -81,7 +80,7 @@ const FavoriteItemWrapper = styled.li`
 `;
 
 const Button = styled.button`
-  align-items: center;
+  align-content: center;
   background-color: ${({ theme }) => theme.colors.navy50};
   border: none;
   border-radius: 10px;
