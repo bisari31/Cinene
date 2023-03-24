@@ -24,7 +24,7 @@ export default function LoginPage() {
           <ButtonWrapper type={path} />
         </KakaoForm>
       ) : (
-        <Form type={path}>
+        <Form isLogin={path === 'login'}>
           <ButtonWrapper type={path} />
         </Form>
       )}

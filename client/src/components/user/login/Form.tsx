@@ -1,23 +1,19 @@
-import { useState, ReactNode, useEffect } from 'react';
+import { ReactNode, useEffect } from 'react';
 import styled from 'styled-components';
 
 import { useInput } from 'hooks';
 import useLoginMutation from 'components/user/hooks/useLoginMutation';
 
-import { PathName } from 'pages/LoginPage';
 import Input from 'components/common/Input';
 
 export const EMPTY_ERROR_MESSAGE = '필수 입력 항목입니다.';
 
-export default function Form({
-  type,
-  children,
-}: {
-  type?: PathName;
+interface Props {
+  isLogin: boolean;
   children: ReactNode;
-}) {
-  const isLogin = type === 'login';
+}
 
+export default function Form({ children, isLogin }: Props) {
   const {
     error: passwordError,
     handleBlur: handlePasswordBlur,
