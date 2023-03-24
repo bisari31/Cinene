@@ -4,11 +4,10 @@ import { useQuery } from 'react-query';
 
 import { getReviews } from 'services/review';
 import { buttonEffect } from 'styles/css';
+import { cineneKeys } from 'utils/queryOptions';
 
 import useAuthQuery from 'components/header/hooks/useAuthQuery';
 import Button from 'components/common/Button';
-import { cineneKeys } from 'utils/keys';
-
 import { useLoginPortal, useOutsideClick } from 'hooks';
 import ReviewList from './ReviewList';
 import ReviewModal from './ReviewModal';

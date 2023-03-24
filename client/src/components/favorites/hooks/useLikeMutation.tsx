@@ -1,7 +1,8 @@
 import { useMutation, useQueryClient } from 'react-query';
 
 import { like } from 'services/like';
-import { cineneKeys } from 'utils/keys';
+import { cineneKeys } from 'utils/queryOptions';
+
 import useAuthQuery from '../../header/hooks/useAuthQuery';
 
 export default function useLikeMutation(openModal: (msg?: string) => void) {

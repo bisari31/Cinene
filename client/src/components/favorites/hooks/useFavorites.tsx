@@ -2,7 +2,7 @@ import { useQuery } from 'react-query';
 import { useState } from 'react';
 
 import { getFavorites } from 'services/like';
-import { cineneKeys } from 'utils/keys';
+import { cineneKeys } from 'utils/queryOptions';
 
 import useAuthQuery from 'components/header/hooks/useAuthQuery';
 

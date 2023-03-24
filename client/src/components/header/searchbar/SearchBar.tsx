@@ -4,11 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
 import { getSearchResults } from 'services/tmdb';
-import { tmdbKeys } from 'utils/keys';
 import { slideDown, slideUp } from 'styles/css';
-import { staleTime } from 'utils/queryOptions';
-import SearchItem, { List } from './SearchItem';
+import { queryOptions, tmdbKeys } from 'utils/queryOptions';
 
+import SearchItem, { List } from './SearchItem';
 import useSearchState from '../hooks/useSearchState';
 
 interface Props {
@@ -31,7 +30,7 @@ function SearchBar(
     tmdbKeys.search(debouncedText),
     () => getSearchResults(debouncedText),
     {
-      ...staleTime,
+      ...queryOptions,
     },
   );
 

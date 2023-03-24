@@ -1,9 +1,8 @@
 import { useQuery } from 'react-query';
-import { createContent, getContent } from 'services/contents';
 
+import { createContent, getContent } from 'services/contents';
 import { getMediaDetail, getPersonDetail } from 'services/tmdb';
-import { cineneKeys, tmdbKeys } from 'utils/keys';
-import { staleTime } from 'utils/queryOptions';
+import { cineneKeys, queryOptions, tmdbKeys } from 'utils/queryOptions';
 
 export default function useDetailQuery(id?: number, path?: MediaType) {
   const { data: mediaData } = useQuery(
@@ -11,7 +10,7 @@ export default function useDetailQuery(id?: number, path?: MediaType) {
     () => getMediaDetail(id, path),
     {
       enabled: path !== 'person',
-      ...staleTime,
+      ...queryOptions,
     },
   );
 
@@ -20,7 +19,7 @@ export default function useDetailQuery(id?: number, path?: MediaType) {
     () => getPersonDetail(id, path),
     {
       enabled: path === 'person',
-      ...staleTime,
+      ...queryOptions,
     },
   );
 
@@ -28,7 +27,7 @@ export default function useDetailQuery(id?: number, path?: MediaType) {
     cineneKeys.detail(path, id),
     () => getContent(path, id),
     {
-      ...staleTime,
+      ...queryOptions,
       retry: false,
       enabled: !!mediaData || !!personData,
     },

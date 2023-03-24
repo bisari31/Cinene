@@ -2,13 +2,12 @@ import { useState } from 'react';
 import { useQuery } from 'react-query';
 
 import { getTrendingMedia } from 'services/tmdb';
-import { tmdbKeys } from 'utils/keys';
-import { staleTime } from 'utils/queryOptions';
+import { queryOptions, tmdbKeys } from 'utils/queryOptions';
 
 export default function usePopular() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const { data } = useQuery(tmdbKeys.popular(), getTrendingMedia, {
-    ...staleTime,
+    ...queryOptions,
   });
 
   const handleSlide = (index: number) => {

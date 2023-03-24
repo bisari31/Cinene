@@ -2,8 +2,7 @@ import { useSetRecoilState } from 'recoil';
 import { useMutation, useQueryClient } from 'react-query';
 
 import { handleReview } from 'services/review';
-import { cineneKeys } from 'utils/keys';
-
+import { cineneKeys } from 'utils/queryOptions';
 import { authUserState } from 'atom/atom';
 
 export default function useReviewMutation(

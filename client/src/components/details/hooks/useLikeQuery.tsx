@@ -1,7 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 
 import { getLikes, like } from 'services/like';
-import { cineneKeys } from 'utils/keys';
+import { cineneKeys } from 'utils/queryOptions';
+
 import useAuthQuery from '../../header/hooks/useAuthQuery';
 
 export default function useLikeQuery(

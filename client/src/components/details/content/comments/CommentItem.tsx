@@ -1,16 +1,16 @@
 import { useState } from 'react';
 import styled, { css } from 'styled-components';
+import { useMutation, useQueryClient } from 'react-query';
+import { useRecoilValue } from 'recoil';
 
 import { USER_IMAGE } from 'utils/imageUrl';
 import { Button, buttonEffect } from 'styles/css';
 import { Heart } from 'assets';
-import { cineneKeys } from 'utils/keys';
+import { deleteComment } from 'services/comments';
+import { contentIdState } from 'atom/atom';
+import { cineneKeys } from 'utils/queryOptions';
 
 import { useGetRelativeTime, useLoginPortal } from 'hooks';
-import { useMutation, useQueryClient } from 'react-query';
-import { deleteComment } from 'services/comments';
-import { useRecoilValue } from 'recoil';
-import { contentIdState } from 'atom/atom';
 import ReplyComments from './ReplyComments';
 import useLikeQuery from '../../hooks/useLikeQuery';
 

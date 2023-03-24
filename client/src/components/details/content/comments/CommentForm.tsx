@@ -6,7 +6,8 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { createComment } from 'services/comments';
 import { authUserState, contentIdState } from 'atom/atom';
 import { buttonEffect } from 'styles/css';
-import { cineneKeys } from 'utils/keys';
+import { cineneKeys } from 'utils/queryOptions';
+
 import { useLoginPortal } from 'hooks';
 
 interface Props {

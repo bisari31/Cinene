@@ -1,15 +1,15 @@
 import dayjs from 'dayjs';
 import { useQuery } from 'react-query';
+
 import { getNowPlayingMovie, getUpcomingMovie } from 'services/tmdb';
-import { tmdbKeys } from 'utils/keys';
-import { staleTime } from 'utils/queryOptions';
+import { queryOptions, tmdbKeys } from 'utils/queryOptions';
 
 export default function useMovieDisplayQuery(type: 'upcoming' | 'now') {
   const { data: upcomingMovieData } = useQuery(
     tmdbKeys.upcoming(),
     getUpcomingMovie,
     {
-      ...staleTime,
+      ...queryOptions,
       enabled: type === 'upcoming',
       select: (prevData) => {
         const day = dayjs();
@@ -23,7 +23,7 @@ export default function useMovieDisplayQuery(type: 'upcoming' | 'now') {
     tmdbKeys.nowPlaying(),
     getNowPlayingMovie,
     {
-      ...staleTime,
+      ...queryOptions,
       enabled: type === 'now',
     },
   );

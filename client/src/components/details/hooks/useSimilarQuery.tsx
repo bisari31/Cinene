@@ -1,7 +1,7 @@
 import { useQuery } from 'react-query';
+
 import { getFilmography, getSimilarMedia } from 'services/tmdb';
-import { tmdbKeys } from 'utils/keys';
-import { staleTime } from 'utils/queryOptions';
+import { queryOptions, tmdbKeys } from 'utils/queryOptions';
 
 export default function useSimilarQuery(
   id: number,
@@ -11,14 +11,14 @@ export default function useSimilarQuery(
   const { data: similarData } = useQuery(
     tmdbKeys.similar(path, id),
     () => getSimilarMedia(id, path),
-    { ...staleTime, enabled: !type },
+    { ...queryOptions, enabled: !type },
   );
 
   const { data: filmographyData } = useQuery(
     tmdbKeys.filmography(path, id),
     () => getFilmography(id),
     {
-      ...staleTime,
+      ...queryOptions,
       enabled: !!type,
     },
   );

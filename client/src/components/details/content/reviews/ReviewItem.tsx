@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import { deleteReview } from 'services/review';
 import { USER_IMAGE } from 'utils/imageUrl';
-import { cineneKeys } from 'utils/keys';
+import { cineneKeys } from 'utils/queryOptions';
 
 import { useCurrentPathName } from 'hooks';
 import useAuthQuery from 'components/header/hooks/useAuthQuery';
@@ -18,9 +18,9 @@ interface Props {
 }
 
 export default function ReviewItem({ review, onClick }: Props) {
+  const { author, comment, rating, createdAt, updatedAt, _id } = review;
   const { openModal, renderPortal } = useLoginPortal();
   const { auth, setAuth } = useAuthQuery();
-  const { author, comment, rating, createdAt, updatedAt, _id } = review;
   const { id, path } = useCurrentPathName();
   const queryClient = useQueryClient();
 

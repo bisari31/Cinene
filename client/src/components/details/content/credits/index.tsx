@@ -2,9 +2,9 @@ import { useQuery } from 'react-query';
 import styled from 'styled-components';
 
 import { getCasts } from 'services/tmdb';
+import { tmdbKeys } from 'utils/queryOptions';
 
 import Slider from 'components/common/Slider';
-import { tmdbKeys } from 'utils/keys';
 import CreditItem from './CreditItem';
 
 interface Props {

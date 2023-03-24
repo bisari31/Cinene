@@ -3,8 +3,8 @@ import styled, { css } from 'styled-components';
 import { useRecoilValue } from 'recoil';
 
 import { getComments } from 'services/comments';
-import { cineneKeys } from 'utils/keys';
 import { contentIdState } from 'atom/atom';
+import { cineneKeys } from 'utils/queryOptions';
 
 import CommentForm from './CommentForm';
 import CommentItem from './CommentItem';
