@@ -4,7 +4,7 @@ import { CustomRequest, CustomResponse } from '../types/express';
 import authenticate from '../utils/middleware';
 
 import { ContentInterface } from '../models/content';
-import Like from '../models/Like';
+import Like, { LikeInterface } from '../models/Like';
 
 const router = Router();
 
@@ -69,14 +69,16 @@ router.get(
   authenticate,
   async (
     req: CustomRequest,
-    res: CustomResponse<{ contents?: ContentInterface[] }>,
+    res: CustomResponse<{ contents?: LikeInterface[] }>,
   ) => {
     try {
       const contents = await Like.find<ContentInterface>({
         liked_by: req.user?._id,
       })
         .exists('content', true)
-        .populate('content');
+        .populate('content')
+        .lean();
+
       res.json({ success: true, contents, accessToken: req.accessToken });
     } catch (err) {
       res
