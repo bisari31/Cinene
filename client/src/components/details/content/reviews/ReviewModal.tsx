@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { useState, useEffect, useRef, forwardRef, ForwardedRef } from 'react';
+import { useState, useRef, forwardRef, ForwardedRef } from 'react';
 
 import { Star } from 'assets';
 import { useLoginPortal, usePrevious } from 'hooks';
@@ -7,6 +7,7 @@ import { useLoginPortal, usePrevious } from 'hooks';
 import Modal from 'components/common/Modal';
 import Portal from 'components/common/Portal';
 import useReviewMutation from 'components/details/hooks/useReviewMutation';
+import useFocus from 'hooks/useFocus';
 
 const RATING_MESSAGE = [
   '(별로에요)',
@@ -36,8 +37,8 @@ function ReviewModal(
   const previousComment = usePrevious(comment);
   const inputRef = useRef<HTMLInputElement>(null);
   const { openModal, renderPortal } = useLoginPortal();
-
   const mutate = useReviewMutation(toggleReviewModal, openModal, data);
+  useFocus(inputRef);
 
   const handleCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setComment(e.target.value);
@@ -80,10 +81,6 @@ function ReviewModal(
       hasReview: hasReview?._id,
     });
   };
-
-  useEffect(() => {
-    inputRef.current?.focus();
-  }, [inputRef]);
 
   return (
     <Portal>
