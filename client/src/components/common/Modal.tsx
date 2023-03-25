@@ -99,7 +99,8 @@ const ModalWrapper = styled.div<{ isVisible: boolean; height?: string }>`
   flex-direction: column;
   height: ${({ height }) => height || '30vh'};
   margin: 3em;
-  padding: 2em;
+  padding: 0.5rem;
+  padding: 2rem;
   width: 450px;
 `;
 const MessageWrapper = styled.div`
@@ -108,7 +109,6 @@ const MessageWrapper = styled.div`
   flex: 1;
   font-size: 1.2rem;
   font-weight: 500;
-
   justify-content: center;
   line-height: 1.5;
   text-align: center;
@@ -118,7 +118,6 @@ const BtnWrapper = styled.div`
   align-items: center;
   display: flex;
   justify-content: center;
-  margin-bottom: 0.3em;
   button + button {
     margin-left: 3em;
   }

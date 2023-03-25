@@ -10,7 +10,7 @@ import useAuthQuery from 'components/header/hooks/useAuthQuery';
 import Button from 'components/common/Button';
 import { useLoginPortal, useOutsideClick } from 'hooks';
 import ReviewList from './ReviewList';
-import ReviewModal from './ReviewModal';
+import ReviewModal from './reviewModal';
 
 interface Props {
   data?: CineneData;
