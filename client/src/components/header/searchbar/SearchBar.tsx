@@ -7,6 +7,7 @@ import { getSearchResults } from 'services/tmdb';
 import { slideDown, slideUp } from 'styles/css';
 import { queryOptions, tmdbKeys } from 'utils/queryOptions';
 
+import useFocus from 'hooks/useFocus';
 import SearchItem, { List } from './SearchItem';
 import useSearchState from '../hooks/useSearchState';
 
@@ -25,6 +26,7 @@ function SearchBar(
   const inputRef = useRef<HTMLInputElement>(null);
   const totalIndexRef = useRef(0);
   const navigate = useNavigate();
+  useFocus(inputRef);
 
   const { data } = useQuery(
     tmdbKeys.search(debouncedText),
@@ -66,10 +68,6 @@ function SearchBar(
     },
     [isMobile, navigate, toggleModal],
   );
-
-  useEffect(() => {
-    if (isVisible) inputRef.current?.focus();
-  }, [isVisible]);
 
   useEffect(() => {
     if (data && totalIndexRef) totalIndexRef.current = data.length;

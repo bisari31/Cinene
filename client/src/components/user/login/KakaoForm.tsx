@@ -1,9 +1,9 @@
-import { useEffect } from 'react';
 import Input from 'components/common/Input';
 import { useInput } from 'hooks';
 import styled from 'styled-components';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
+import useFocus from 'hooks/useFocus';
 
 export default function KakaoForm({ children }: { children: React.ReactNode }) {
   const location = useLocation();
@@ -15,15 +15,11 @@ export default function KakaoForm({ children }: { children: React.ReactNode }) {
     value: nickname,
     setError: setNicknameError,
   } = useInput('nickname', undefined, location.state.nickname);
-
+  useFocus(nicknameRef);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const join = await axios.post('/users/kakao-register', { nickname });
   };
-
-  useEffect(() => {
-    nicknameRef.current?.focus();
-  }, [nicknameRef]);
 
   return (
     <KakaoFormWrapper onSubmit={handleSubmit}>

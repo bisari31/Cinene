@@ -9,6 +9,7 @@ import useThrottle from './useThrottle';
 import useGetRelativeTime from './useRelativeTime';
 import useRedirection from './useRedirection';
 import useLoginPortal from './useLoginPortal';
+import useFocus from './useFocus';
 
 export {
   useRedirection,
@@ -22,4 +23,5 @@ export {
   usePrevious,
   useGetRelativeTime,
   useLoginPortal,
+  useFocus,
 };
