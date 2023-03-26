@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import Slider from 'components/common/Slider';
 import useSimilarQuery from 'components/details/hooks/useSimilarQuery';
 import useUniqueSortedData from 'components/details/hooks/useUniqueSortedData';
-import useImageUrl from 'components/details/hooks/useImageUrl';
+import useImageUrl from 'hooks/cinene/useImageUrl';
 
 interface Props {
   path: MediaType;
@@ -17,7 +17,7 @@ export default function SimilarMedia({ id, path, type }: Props) {
   const data = useUniqueSortedData(
     type && filmographyData ? filmographyData[type] : similarData,
   );
-  const { getPoster } = useImageUrl();
+  const { getImageUrl } = useImageUrl();
 
   const getTitle = () => {
     if (path === 'movie') {
@@ -43,7 +43,7 @@ export default function SimilarMedia({ id, path, type }: Props) {
             >
               <img
                 draggable="false"
-                src={getPoster(item.poster_path, '200')}
+                src={getImageUrl(item.poster_path, '200')}
                 alt={'title' in item ? item.title : item.name}
               />
               <p>{'title' in item ? item.title : item.name}</p>

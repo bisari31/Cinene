@@ -1,9 +1,11 @@
-import Input from 'components/common/Input';
-import { useInput } from 'hooks';
 import styled from 'styled-components';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
+
 import useFocus from 'hooks/useFocus';
+import { useInput } from 'hooks/cinene';
+
+import Input from 'components/common/Input';
 
 export default function KakaoForm({ children }: { children: React.ReactNode }) {
   const location = useLocation();

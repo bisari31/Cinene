@@ -1,8 +1,8 @@
 import { ReactNode, useEffect } from 'react';
 import styled from 'styled-components';
 
-import { useInput } from 'hooks';
 import useLoginMutation from 'components/user/hooks/useLoginMutation';
+import { useInput } from 'hooks/cinene';
 
 import Input from 'components/common/Input';
 

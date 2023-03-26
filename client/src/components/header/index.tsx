@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 
 import { autheticate, getAccessToken } from 'services/user';
 import { useOutsideClick } from 'hooks';
-import useAuthQuery from './hooks/useAuthQuery';
+import useAuthQuery from '../../hooks/cinene/useAuth';
 
 import AuthMenu from './AuthMenu';
 import SearchBar from './searchbar/SearchBar';
@@ -41,7 +41,7 @@ export default function Header() {
           <SearchBar
             ref={ref}
             isVisible={isMotionVisible}
-            toggleModal={toggleModal}
+            closeSearchBar={toggleModal}
           />
         </SearchWrapper>
       )}

@@ -14,7 +14,7 @@ export default function SearchPage() {
       <button type="button" onClick={() => navigate(-1)}>
         <ChevronLeft />
       </button>
-      <SearchBar isMobile />
+      <SearchBar />
     </SearchPageWrapper>
   );
 }

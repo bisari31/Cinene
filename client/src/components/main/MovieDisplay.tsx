@@ -1,9 +1,9 @@
 import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
-
-import Slider from 'components/common/Slider';
 import dayjs from 'dayjs';
-import useImageUrl from 'components/details/hooks/useImageUrl';
+
+import { useImageUrl } from 'hooks/cinene';
+import Slider from 'components/common/Slider';
 import useMovieDisplayQuery from './hooks/useMovieDisplayQuery';
 
 interface Props {
@@ -11,7 +11,7 @@ interface Props {
 }
 
 export default function MovieDisplay({ type }: Props) {
-  const { getPoster } = useImageUrl();
+  const { getImageUrl } = useImageUrl();
   const data = useMovieDisplayQuery(type);
 
   const getDday = (day: string) => {
@@ -30,7 +30,7 @@ export default function MovieDisplay({ type }: Props) {
               <Link to={`/movie/${movie.id}`} draggable="false">
                 <img
                   draggable="false"
-                  src={getPoster(
+                  src={getImageUrl(
                     movie.backdrop_path || movie.poster_path,
                     '500',
                   )}

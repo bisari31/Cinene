@@ -3,14 +3,15 @@ import styled, { css } from 'styled-components';
 import { useMutation, useQueryClient } from 'react-query';
 import { useRecoilValue } from 'recoil';
 
-import { USER_IMAGE } from 'utils/imageUrl';
+import { USER_IMAGE } from 'utils/imageUrls';
 import { Button, buttonEffect } from 'styles/css';
 import { Heart } from 'assets';
 import { deleteComment } from 'services/comments';
 import { contentIdState } from 'atom/atom';
 import { cineneKeys } from 'utils/queryOptions';
+import { useLoginPortal } from 'hooks/cinene';
+import { useGetRelativeTime } from 'hooks';
 
-import { useGetRelativeTime, useLoginPortal } from 'hooks';
 import ReplyComments from './ReplyComments';
 import useLikeQuery from '../../hooks/useLikeQuery';
 

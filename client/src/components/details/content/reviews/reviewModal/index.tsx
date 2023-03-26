@@ -1,12 +1,12 @@
 import styled from 'styled-components';
 import { useRef, forwardRef, ForwardedRef, useState, useCallback } from 'react';
 
-import { useLoginPortal, usePrevious } from 'hooks';
+import { usePrevious, useFocus } from 'hooks';
+import { useLoginPortal } from 'hooks/cinene';
 
 import Modal from 'components/common/Modal';
 import Portal from 'components/common/Portal';
 import useReviewMutation from 'components/details/hooks/useReviewMutation';
-import useFocus from 'hooks/useFocus';
 import RatingButtons from './RatingButtons';
 
 interface Props {
