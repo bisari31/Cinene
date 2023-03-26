@@ -9,8 +9,9 @@ import { Heart } from 'assets';
 import { deleteComment } from 'services/comments';
 import { contentIdState } from 'atom/atom';
 import { cineneKeys } from 'utils/queryOptions';
+import { useLoginPortal } from 'hooks/cinene';
+import { useGetRelativeTime } from 'hooks';
 
-import { useGetRelativeTime, useLoginPortal } from 'hooks';
 import ReplyComments from './ReplyComments';
 import useLikeQuery from '../../hooks/useLikeQuery';
 

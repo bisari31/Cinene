@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 
 import { Upload } from 'assets';
 import { USER_IMAGE } from 'utils/imageUrl';
-import useAuthQuery from 'components/header/hooks/useAuthQuery';
+import useAuthQuery from 'hooks/cinene/useAuth';
 
 import Nickname from './Nickname';
 

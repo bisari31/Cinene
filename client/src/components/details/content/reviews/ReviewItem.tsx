@@ -8,8 +8,8 @@ import { USER_IMAGE } from 'utils/imageUrl';
 import { cineneKeys } from 'utils/queryOptions';
 
 import { useCurrentPathName } from 'hooks';
-import useAuthQuery from 'components/header/hooks/useAuthQuery';
-import useLoginPortal from 'hooks/useLoginPortal';
+import useAuthQuery from 'hooks/cinene/useAuth';
+import useLoginPortal from 'hooks/cinene/useLoginPortal';
 import { Content, Item } from '../comments/CommentItem';
 
 interface Props {

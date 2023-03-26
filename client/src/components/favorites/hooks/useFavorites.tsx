@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { getFavorites } from 'services/like';
 import { cineneKeys } from 'utils/queryOptions';
 
-import useAuthQuery from 'components/header/hooks/useAuthQuery';
+import useAuthQuery from 'hooks/cinene/useAuth';
 
 export default function useFavorites() {
   const { auth, setAuth } = useAuthQuery();

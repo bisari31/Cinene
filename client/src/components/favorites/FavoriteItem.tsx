@@ -3,10 +3,10 @@ import styled from 'styled-components';
 
 import { Heart } from 'assets';
 import { buttonEffect } from 'styles/css';
+import { useLoginPortal } from 'hooks/cinene';
 
 import useLikeMutation from 'components/favorites/hooks/useLikeMutation';
 import useImageUrl from 'components/details/hooks/useImageUrl';
-import { useLoginPortal } from 'hooks';
 
 interface Props {
   data: CineneData;

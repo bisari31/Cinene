@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import useAuthQuery from 'components/header/hooks/useAuthQuery';
+import useAuthQuery from 'hooks/cinene/useAuth';
 
 export default function useRedirection(isMemberOnly = false) {
   const { auth } = useAuthQuery();
