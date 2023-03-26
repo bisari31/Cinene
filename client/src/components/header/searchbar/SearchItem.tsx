@@ -1,7 +1,7 @@
-import { memo } from 'react';
+import { memo, useMemo } from 'react';
 import styled, { css } from 'styled-components';
 
-import useSearchResultsDisplay from '../hooks/useSearchResultsDisplay';
+import useImageUrl from 'hooks/cinene/useImageUrl';
 
 interface Props {
   data: SearchResults;
@@ -18,7 +18,24 @@ function SearchItem({
   isActive,
   onClick,
 }: Props) {
-  const { image, title } = useSearchResultsDisplay(data);
+  const title = useMemo(() => {
+    const { media_type: type } = data;
+    if (type === 'tv' && 'name' in data) return `${data.name} (TV)`;
+    if (type === 'movie' && 'title' in data) return `${data.title} (영화)`;
+    if (type === 'person' && 'name' in data) return `${data.name} (인물)`;
+    return '정보 없음';
+  }, [data]);
+
+  const { getImageUrl } = useImageUrl();
+  const poster = useMemo(
+    () =>
+      getImageUrl(
+        'profile_path' in data ? data.profile_path : data.poster_path,
+        '200',
+        data.media_type === 'person',
+      ),
+    [data, getImageUrl],
+  );
 
   return (
     <List isActive={isActive}>
@@ -28,7 +45,7 @@ function SearchItem({
         type="button"
         onClick={() => onClick(data)}
       >
-        <img src={image} alt={'name' in data ? data.name : data.title} />
+        <img src={poster} alt={'name' in data ? data.name : data.title} />
 
         <span>{title}</span>
       </button>
@@ -64,6 +81,9 @@ export const List = styled.div<{
         margin-right: 1em;
         object-fit: cover;
         width: 45px;
+      }
+      span {
+        text-align: left;
       }
     }
     & + & {
