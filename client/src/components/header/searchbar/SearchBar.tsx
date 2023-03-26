@@ -20,16 +20,16 @@ function SearchBar(
   ref: React.ForwardedRef<HTMLDivElement>,
 ) {
   const [keyword, setKeyword] = useState('');
-  const [debouncedText, setDebouncedText] = useState('');
-  const [currentIndex, setCurrentIndex] = useState(-1);
-  const [searchedKeyword, setSearchedKeyword] = useState('');
+  const [debouncedKeyWord, setDebouncedKeyword] = useState('');
   const [isResultsVisible, setIsResultsVisible] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [currentIndex, setCurrentIndex] = useState(-1);
+  const searchedKeywordRef = useRef('');
   const totalIndexRef = useRef(0);
+  const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   useFocus(inputRef);
   const handleDebounceChange = useDebounce<React.ChangeEvent<HTMLInputElement>>(
-    (e) => setDebouncedText(e.target.value),
+    (e) => setDebouncedKeyword(e.target.value),
     300,
   );
 
@@ -47,15 +47,15 @@ function SearchBar(
   );
 
   const { data } = useQuery(
-    tmdbKeys.search(debouncedText),
-    () => getSearchResults(debouncedText),
+    tmdbKeys.search(debouncedKeyWord),
+    () => getSearchResults(debouncedKeyWord),
     {
       ...queryOptions,
       select: (results) => results.filter((item, index) => index < 6),
       onSuccess: () => {
         setIsResultsVisible(true);
         setCurrentIndex(-1);
-        setSearchedKeyword(keyword);
+        searchedKeywordRef.current = keyword;
       },
     },
   );
@@ -73,7 +73,7 @@ function SearchBar(
         if (currentIndex < 0) break;
         if (currentIndex === 0) {
           setIsResultsVisible(false);
-          setKeyword(searchedKeyword);
+          setKeyword(searchedKeywordRef.current);
         }
         setCurrentIndex(currentIndex - 1);
         break;
@@ -112,11 +112,11 @@ function SearchBar(
           placeholder="영화,방송,인물을 검색할 수 있습니다."
         />
 
-        {keyword.length && keyword === debouncedText && !data?.length ? (
+        {keyword.length && keyword === debouncedKeyWord && !data?.length ? (
           <div>
             <List noResults>
               <button type="button">
-                <span>{debouncedText}의 검색 결과가 없습니다.</span>
+                <span>{debouncedKeyWord}의 검색 결과가 없습니다.</span>
               </button>
             </List>
           </div>
