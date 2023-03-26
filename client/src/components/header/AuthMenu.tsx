@@ -5,7 +5,7 @@ import { lighten, darken } from 'polished';
 import { Heart, Search } from 'assets';
 
 import LogoutButton from 'components/common/LogoutButton';
-import { USER_IMAGE } from 'utils/imageUrl';
+import { USER_IMAGE } from 'utils/imageUrls';
 
 interface Props {
   setIsVisible: () => void;

@@ -2,35 +2,35 @@ import { useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import { useSetRecoilState } from 'recoil';
 
-import { contentIdState } from 'atom/atom';
-
 import { useCurrentPathName, useOutsideClick } from 'hooks';
+import { useImageUrl } from 'hooks/cinene';
+import { contentIdState } from 'atom/atom';
 import Portal from 'components/common/Portal';
+import useDetailQuery from './hooks/useDetailQuery';
+
 import MediaContent from './MediaContent';
 import ImageModal from './ImageModal';
-import useDetailQuery from './hooks/useDetailQuery';
 import PersonContent from './PersonContent';
-import useImageUrl from './hooks/useImageUrl';
 
 export default function Details() {
   const setContentId = useSetRecoilState(contentIdState);
   const { ref, isVisible, toggleModal } = useOutsideClick();
   const { id, path } = useCurrentPathName();
   const { mediaData, personData, cineneData } = useDetailQuery(id, path);
-  const { getPoster } = useImageUrl();
+  const { getImageUrl } = useImageUrl();
 
   useEffect(() => {
     setContentId(cineneData?._id);
   }, [cineneData, setContentId]);
 
   return (
-    <DetailsWrapper src={getPoster(mediaData?.backdrop_path, 'full')}>
+    <DetailsWrapper src={getImageUrl(mediaData?.backdrop_path, 'full')}>
       <div />
       <Content>
         <div>
           <button type="button" onClick={toggleModal}>
             <img
-              src={getPoster(
+              src={getImageUrl(
                 mediaData?.poster_path || personData?.profile_path,
                 '300',
                 path === 'person',
@@ -61,7 +61,7 @@ export default function Details() {
             modalRef={ref}
             toggleModal={toggleModal}
             isVisible={isVisible}
-            src={getPoster(
+            src={getImageUrl(
               mediaData?.poster_path || personData?.profile_path,
               'full',
               path === 'person',

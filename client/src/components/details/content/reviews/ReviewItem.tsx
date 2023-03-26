@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from 'react-query';
 import styled from 'styled-components';
 
 import { deleteReview } from 'services/review';
-import { USER_IMAGE } from 'utils/imageUrl';
+import { USER_IMAGE } from 'utils/imageUrls';
 import { cineneKeys } from 'utils/queryOptions';
 
 import { useCurrentPathName } from 'hooks';

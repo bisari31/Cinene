@@ -4,16 +4,16 @@ import { Link } from 'react-router-dom';
 
 import { ChevronLeft, ChevronRight } from 'assets';
 import { buttonEffect } from 'styles/css';
+import { useImageUrl } from 'hooks/cinene';
 
 import useDetailQuery from 'components/details/hooks/useDetailQuery';
-import useImageUrl from 'components/details/hooks/useImageUrl';
 import usePopular from './hooks/usePopular';
 import Average from './Average';
 
 export default function Popular() {
   const { data, handleSlide } = usePopular();
   const { mediaData, cineneData } = useDetailQuery(data?.id, data?.media_type);
-  const { getPoster } = useImageUrl();
+  const { getImageUrl } = useImageUrl();
 
   useEffect(() => {
     const slider = setInterval(() => handleSlide(1), 10000);
@@ -22,7 +22,7 @@ export default function Popular() {
 
   return (
     <section>
-      <Background src={getPoster(data?.backdrop_path, 'full')} />
+      <Background src={getImageUrl(data?.backdrop_path, 'full')} />
       <Item>
         <div>
           <Category>

@@ -3,10 +3,9 @@ import styled from 'styled-components';
 
 import { Heart } from 'assets';
 import { buttonEffect } from 'styles/css';
-import { useLoginPortal } from 'hooks/cinene';
+import { useImageUrl, useLoginPortal } from 'hooks/cinene';
 
 import useLikeMutation from 'components/favorites/hooks/useLikeMutation';
-import useImageUrl from 'components/details/hooks/useImageUrl';
 
 interface Props {
   data: CineneData;
@@ -15,13 +14,13 @@ interface Props {
 export default function Favoritecontent({ data }: Props) {
   const { openModal, renderPortal } = useLoginPortal();
   const mutate = useLikeMutation(openModal);
-  const { getPoster } = useImageUrl();
+  const { getImageUrl } = useImageUrl();
 
   return (
     <FavoritecontentWrapper>
       <Link to={`/${data.content_type}/${data.tmdbId}`}>
         <img
-          src={getPoster(
+          src={getImageUrl(
             data.poster_url,
             '400',
             data.content_type === 'person',
