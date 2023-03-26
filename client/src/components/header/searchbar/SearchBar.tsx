@@ -7,53 +7,83 @@ import { getSearchResults } from 'services/tmdb';
 import { slideDown, slideUp } from 'styles/css';
 import { queryOptions, tmdbKeys } from 'utils/queryOptions';
 
-import useFocus from 'hooks/useFocus';
+import { useDebounce, useFocus } from 'hooks';
 import SearchItem, { List } from './SearchItem';
-import useSearchState from '../hooks/useSearchState';
 
 interface Props {
   isVisible?: boolean;
-  toggleModal?: () => void;
-  isMobile?: boolean;
+  closeSearchBar?: () => void;
 }
 
 function SearchBar(
-  { isVisible = true, toggleModal, isMobile = false }: Props,
+  { isVisible = true, closeSearchBar }: Props,
   ref: React.ForwardedRef<HTMLDivElement>,
 ) {
-  const { text, debouncedText, handleChange } = useSearchState();
+  const [keyword, setKeyword] = useState('');
+  const [debouncedText, setDebouncedText] = useState('');
   const [currentIndex, setCurrentIndex] = useState(-1);
+  const [searchedKeyword, setSearchedKeyword] = useState('');
+  const [isResultsVisible, setIsResultsVisible] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const totalIndexRef = useRef(0);
   const navigate = useNavigate();
   useFocus(inputRef);
+  const handleDebounceChange = useDebounce<React.ChangeEvent<HTMLInputElement>>(
+    (e) => setDebouncedText(e.target.value),
+    300,
+  );
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setKeyword(e.target.value);
+    handleDebounceChange(e);
+  };
+
+  const handleClick = useCallback(
+    (item: SearchResults) => {
+      navigate(`/${item.media_type}/${item.id}`);
+      if (closeSearchBar) closeSearchBar();
+    },
+    [closeSearchBar, navigate],
+  );
 
   const { data } = useQuery(
     tmdbKeys.search(debouncedText),
     () => getSearchResults(debouncedText),
     {
       ...queryOptions,
+      select: (results) => results.filter((item, index) => index < 6),
+      onSuccess: () => {
+        setIsResultsVisible(true);
+        setCurrentIndex(-1);
+        setSearchedKeyword(keyword);
+      },
     },
   );
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     switch (e.key) {
       case 'ArrowDown': {
-        if (totalIndexRef.current === currentIndex) setCurrentIndex(0);
-        else setCurrentIndex(currentIndex + 1);
+        if (currentIndex === -1) setIsResultsVisible(true);
+        setCurrentIndex(
+          currentIndex < totalIndexRef.current ? currentIndex + 1 : 0,
+        );
         break;
       }
       case 'ArrowUp': {
-        if (currentIndex === 0) setCurrentIndex(totalIndexRef.current ?? 0);
-        else setCurrentIndex(currentIndex - 1);
+        if (currentIndex < 0) break;
+        if (currentIndex === 0) {
+          setIsResultsVisible(false);
+          setKeyword(searchedKeyword);
+        }
+        setCurrentIndex(currentIndex - 1);
         break;
       }
       case 'Enter': {
-        if (data) handleClickNavigation(data[currentIndex]);
+        if (data) handleClick(data[currentIndex]);
         break;
       }
       case 'Escape': {
-        if (toggleModal) toggleModal();
+        if (closeSearchBar) closeSearchBar();
         break;
       }
       default:
@@ -61,31 +91,28 @@ function SearchBar(
     }
   };
 
-  const handleClickNavigation = useCallback(
-    (item: SearchResults) => {
-      navigate(`/${item.media_type}/${item.id}`);
-      if (!isMobile && toggleModal) toggleModal();
-    },
-    [isMobile, navigate, toggleModal],
-  );
-
   useEffect(() => {
-    if (data && totalIndexRef) totalIndexRef.current = data.length;
+    if (data && totalIndexRef) totalIndexRef.current = data.length - 1;
   }, [data]);
 
   return (
-    <SearchBarWrapper isVisible={isVisible} hasData={!!data?.length} ref={ref}>
+    <SearchBarWrapper
+      isResultsVisible={isResultsVisible}
+      isVisible={isVisible}
+      hasData={!!data?.length}
+      ref={ref}
+    >
       <div>
         <input
           ref={inputRef}
           onKeyDown={handleKeyDown}
           type="text"
-          value={text}
+          value={keyword}
           onChange={handleChange}
           placeholder="영화,방송,인물을 검색할 수 있습니다."
         />
 
-        {text.length && text === debouncedText && !data?.length ? (
+        {keyword.length && keyword === debouncedText && !data?.length ? (
           <div>
             <List noResults>
               <button type="button">
@@ -97,8 +124,9 @@ function SearchBar(
           <div>
             {data?.map((item, index) => (
               <SearchItem
+                setKeyword={setKeyword}
                 setCurrentIndex={setCurrentIndex}
-                onClick={handleClickNavigation}
+                onClick={handleClick}
                 key={item.id}
                 data={item}
                 index={index}
@@ -117,8 +145,9 @@ export default React.forwardRef(SearchBar);
 const SearchBarWrapper = styled.div<{
   hasData: boolean;
   isVisible: boolean;
+  isResultsVisible: boolean;
 }>`
-  ${({ theme, hasData, isVisible }) => css`
+  ${({ theme, hasData, isVisible, isResultsVisible }) => css`
     animation: ${isVisible ? slideDown : slideUp} 0.5s ease-out;
     position: absolute;
     z-index: 100;
@@ -142,6 +171,7 @@ const SearchBarWrapper = styled.div<{
       & > div {
         background-color: ${theme.colors.navy100};
         border-radius: 12px;
+        display: ${isResultsVisible ? 'block' : 'none'};
         padding: ${hasData && '1em 0.5em'};
         position: absolute;
         top: 3.3em;

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import Modal from 'components/common/Modal';
 import Portal from 'components/common/Portal';
-import useOutsideClick from './useOutsideClick';
+import useOutsideClick from '../useOutsideClick';
 
 export default function useLoginPortal() {
   const [message, setMessage] = useState('');

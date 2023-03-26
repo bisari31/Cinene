@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 import React, { useEffect, useCallback, useState } from 'react';
 import { useMutation } from 'react-query';
-import { useInput, useLoginPortal } from 'hooks';
 
 import { changeNickname } from 'services/user';
 import { CheckMark, Edit } from 'assets/index';
+import { useInput, useLoginPortal } from 'hooks/cinene';
 
 import Input from 'components/common/Input';
 

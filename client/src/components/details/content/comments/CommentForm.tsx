@@ -3,12 +3,11 @@ import { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
+import { useLoginPortal } from 'hooks/cinene';
 import { createComment } from 'services/comments';
 import { authUserState, contentIdState } from 'atom/atom';
 import { buttonEffect } from 'styles/css';
 import { cineneKeys } from 'utils/queryOptions';
-
-import { useLoginPortal } from 'hooks';
 
 interface Props {
   responseId?: string;

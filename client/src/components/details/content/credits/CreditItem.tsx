@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-import useImageUrl from 'components/details/hooks/useImageUrl';
+import { useImageUrl } from 'hooks/cinene';
 
 interface Props {
   item: Crew | Cast;
@@ -9,7 +9,7 @@ interface Props {
 }
 
 export default function CreditItem({ item, isDirector = false }: Props) {
-  const { getPoster } = useImageUrl();
+  const { getImageUrl } = useImageUrl();
   const character = 'character' in item ? `${item.character} 역` : '정보 없음';
   return (
     <CreditItemWrapper>
@@ -17,7 +17,7 @@ export default function CreditItem({ item, isDirector = false }: Props) {
         <div>
           <img
             draggable="false"
-            src={getPoster(item.profile_path, '200', true)}
+            src={getImageUrl(item.profile_path, '200', true)}
             alt={item.name}
           />
         </div>

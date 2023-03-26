@@ -1,14 +1,15 @@
 import styled from 'styled-components';
 
+import { useImageUrl } from 'hooks/cinene';
+
 import Slider from 'components/common/Slider';
-import useImageUrl from 'components/details/hooks/useImageUrl';
 
 interface Props {
   data?: TvDetails;
 }
 
 export default function Seasons({ data }: Props) {
-  const { getPoster } = useImageUrl();
+  const { getImageUrl } = useImageUrl();
   if (!data || !data.seasons?.length) return null;
   return (
     <SeasonsWrapper>
@@ -17,7 +18,7 @@ export default function Seasons({ data }: Props) {
           <List key={season.id}>
             <img
               draggable="false"
-              src={getPoster(season.poster_path, '200')}
+              src={getImageUrl(season.poster_path, '200')}
               alt={season.name}
             />
             <p>

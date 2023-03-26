@@ -2,12 +2,13 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
 import { unregister } from 'services/user';
-import { useLoginPortal, useOutsideClick } from 'hooks';
+import { useOutsideClick } from 'hooks';
+import useAuthQuery from 'hooks/cinene/useAuth';
+import { useLoginPortal } from 'hooks/cinene';
 
 import Button from 'components/common/Button';
 import Portal from 'components/common/Portal';
 import Modal from 'components/common/Modal';
-import useAuthQuery from 'components/header/hooks/useAuthQuery';
 
 export default function Unregister() {
   const { setAuth } = useAuthQuery();

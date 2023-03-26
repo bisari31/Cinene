@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import useAuthQuery from 'components/header/hooks/useAuthQuery';
+import useAuthQuery from 'hooks/cinene/useAuth';
 
 import Favorites from 'components/favorites';
 import LoginTriggerForm from 'components/LoginTriggerForm';

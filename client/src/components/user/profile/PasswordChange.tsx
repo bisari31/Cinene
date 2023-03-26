@@ -5,8 +5,8 @@ import { useSetRecoilState } from 'recoil';
 
 import { changePassword } from 'services/user';
 import { authUserState } from 'atom/atom';
+import { useInput, useLoginPortal } from 'hooks/cinene';
 
-import { useInput, useLoginPortal } from 'hooks';
 import Button from 'components/common/Button';
 import Input from 'components/common/Input';
 
