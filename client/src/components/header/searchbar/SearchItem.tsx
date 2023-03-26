@@ -1,4 +1,4 @@
-import { memo, useMemo } from 'react';
+import React, { memo, useEffect, useMemo } from 'react';
 import styled, { css } from 'styled-components';
 
 import useImageUrl from 'hooks/cinene/useImageUrl';
@@ -9,6 +9,7 @@ interface Props {
   isActive: boolean;
   setCurrentIndex: React.Dispatch<React.SetStateAction<number>>;
   onClick: (data: SearchResults) => void;
+  setKeyword: React.Dispatch<React.SetStateAction<string>>;
 }
 
 function SearchItem({
@@ -16,6 +17,7 @@ function SearchItem({
   index,
   setCurrentIndex,
   isActive,
+  setKeyword,
   onClick,
 }: Props) {
   const title = useMemo(() => {
@@ -23,7 +25,7 @@ function SearchItem({
     if (type === 'tv' && 'name' in data) return `${data.name} (TV)`;
     if (type === 'movie' && 'title' in data) return `${data.title} (영화)`;
     if (type === 'person' && 'name' in data) return `${data.name} (인물)`;
-    return '정보 없음';
+    return '';
   }, [data]);
 
   const { getImageUrl } = useImageUrl();
@@ -36,6 +38,10 @@ function SearchItem({
       ),
     [data, getImageUrl],
   );
+
+  useEffect(() => {
+    if (isActive) setKeyword('name' in data ? data.name : data.title);
+  }, [data, isActive, setKeyword]);
 
   return (
     <List isActive={isActive}>
