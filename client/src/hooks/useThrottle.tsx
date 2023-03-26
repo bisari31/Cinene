@@ -1,15 +1,12 @@
 import { useRef } from 'react';
 
-export default function useThrottle<T extends unknown[]>(
-  cb: (...args: T) => void,
-  delay: number,
-) {
-  const timerId = useRef<ReturnType<typeof setTimeout> | null>(null);
+export default function useThrottle<T>(cb: (event: T) => void, delay: number) {
+  const timerId = useRef<ReturnType<typeof setTimeout> | null>();
 
-  return (...args: T) => {
+  return (event: T) => {
     if (timerId.current) return;
     timerId.current = setTimeout(() => {
-      cb(...args);
+      cb(event);
       timerId.current = null;
     }, delay);
   };

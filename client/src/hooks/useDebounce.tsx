@@ -1,14 +1,11 @@
 import { useRef } from 'react';
 
-export default function useDebounce<T extends unknown[]>(
-  cb: (...args: T) => void,
-  delay: number,
-) {
-  const timerId = useRef<ReturnType<typeof setTimeout> | null>(null);
-  return (...args: T) => {
+export default function useDebounce<T>(cb: (event: T) => void, delay: number) {
+  const timerId = useRef<ReturnType<typeof setTimeout>>();
+  return (event: T) => {
     if (timerId.current) clearTimeout(timerId.current);
     timerId.current = setTimeout(() => {
-      cb(...args);
+      cb(event);
     }, delay);
   };
 }
