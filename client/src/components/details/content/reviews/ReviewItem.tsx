@@ -10,7 +10,8 @@ import { cineneKeys } from 'utils/queryOptions';
 import { useCurrentPathName } from 'hooks';
 import useAuthQuery from 'hooks/cinene/useAuth';
 import useLoginPortal from 'hooks/cinene/useLoginPortal';
-import { Content, Item } from '../comments/CommentItem';
+import { StyledItem } from '../comments/CommentItemData';
+import { StyledWrapper } from '../comments/CommentItem';
 
 interface Props {
   onClick: () => void;
@@ -37,9 +38,9 @@ export default function ReviewItem({ review, onClick }: Props) {
   });
 
   return (
-    <Item>
+    <StyledWrapper>
       <img src={author.img || USER_IMAGE} alt="user_avatar" />
-      <Content date={useGetRelativeTime(createdAt, updatedAt)}>
+      <StyledItem date={useGetRelativeTime(createdAt, updatedAt)}>
         <div>
           <p>{author.nickname}</p>
           {author._id === auth?._id && (
@@ -54,7 +55,7 @@ export default function ReviewItem({ review, onClick }: Props) {
           )}
         </div>
         <p>{comment}</p>
-      </Content>
+      </StyledItem>
       <SvgWrapper>
         {[1, 2, 3, 4, 5].map((star) => (
           <StyledButton
@@ -68,7 +69,7 @@ export default function ReviewItem({ review, onClick }: Props) {
         ))}
       </SvgWrapper>
       {renderPortal()}
-    </Item>
+    </StyledWrapper>
   );
 }
 

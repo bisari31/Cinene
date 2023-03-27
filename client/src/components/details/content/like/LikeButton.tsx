@@ -32,7 +32,7 @@ function LikeButton(
       <Button
         type="button"
         isActive={data?.isLike}
-        isZero={!data?.likes}
+        hasLikes={!!data?.likes}
         onClick={() => mutate({ type: 'content', id: cinene?._id })}
       >
         <Heart /> {data?.likes ?? '0'}

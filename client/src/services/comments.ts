@@ -33,7 +33,13 @@ export const deleteComment = async (id?: string) => {
   return data;
 };
 
-export const updateComment = async (id: string) => {
-  const { data } = await axios.patch(`/comments/${id}`);
+export const editComment = async (obj: { id?: string; comment: string }) => {
+  if (!obj.id) return null;
+  const { data } = await axios.patch(
+    `/comments/${obj.id}`,
+    { comment: obj.comment },
+    bearer(),
+  );
+  getAccessToken(data);
   return data;
 };
