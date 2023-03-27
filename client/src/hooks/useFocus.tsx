@@ -1,20 +1,23 @@
 import { RefObject, useCallback } from 'react';
 
-export default function useFocus<T>({ current }: RefObject<T>) {
+export default function useFocus<T>(ref: RefObject<T>) {
   const start = useCallback(() => {
-    if (current && current instanceof HTMLElement) current.focus();
-  }, [current]);
+    if (ref.current && ref.current instanceof HTMLElement) ref.current.focus();
+  }, [ref]);
 
   const end = useCallback(() => {
     if (
-      current &&
-      (current instanceof HTMLInputElement ||
-        current instanceof HTMLTextAreaElement)
+      ref.current &&
+      (ref.current instanceof HTMLInputElement ||
+        ref.current instanceof HTMLTextAreaElement)
     ) {
-      current.setSelectionRange(current.value.length, current.value.length);
-      current.focus();
+      ref.current.setSelectionRange(
+        ref.current.value.length,
+        ref.current.value.length,
+      );
+      ref.current.focus();
     }
-  }, [current]);
+  }, [ref]);
 
   return { start, end };
 }

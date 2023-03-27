@@ -1,13 +1,11 @@
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation } from 'react-query';
 
 import { like } from 'services/like';
 import { cineneKeys } from 'utils/queryOptions';
-
-import useAuthQuery from '../../../hooks/cinene/useAuth';
+import useMutationOptions from 'hooks/cinene/useMutationOptions';
 
 export default function useLikeMutation(openModal: (msg?: string) => void) {
-  const { setAuth } = useAuthQuery();
-  const queryClient = useQueryClient();
+  const { errorHandler, queryClient } = useMutationOptions(openModal);
 
   const { mutate } = useMutation(like, {
     onMutate: async (data) => {
@@ -25,13 +23,8 @@ export default function useLikeMutation(openModal: (msg?: string) => void) {
       }
       return { previousData };
     },
-    onError: ({ response }: AxiosError, variables, context) => {
-      if (response.status === 401) {
-        setAuth(null);
-        openModal();
-      } else {
-        openModal(`${response.data.message} 😭`);
-      }
+    onError: (err: AxiosError, variables, context) => {
+      errorHandler(err);
       if (context?.previousData) {
         queryClient.setQueryData(cineneKeys.favorites(), context.previousData);
       }

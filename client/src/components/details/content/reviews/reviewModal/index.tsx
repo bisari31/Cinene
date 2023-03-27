@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { useRef, forwardRef, ForwardedRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 
 import { usePrevious, useFocus } from 'hooks';
 import { useLoginPortal } from 'hooks/cinene';
@@ -26,7 +26,7 @@ const RATING_MESSAGE = [
 
 function ReviewModal(
   { isMotionVisible, toggleReviewModal, data, hasReview }: Props,
-  ref: ForwardedRef<HTMLDivElement>,
+  ref: React.ForwardedRef<HTMLDivElement>,
 ) {
   const [rating, setRating] = useState(hasReview?.rating || 0);
   const [comment, setComment] = useState(hasReview?.comment || '');
@@ -36,9 +36,9 @@ function ReviewModal(
   const previousRating = usePrevious<number>(rating);
   const previousComment = usePrevious<string>(comment);
   const inputRef = useRef<HTMLInputElement>(null);
-  const { openModal, renderPortal } = useLoginPortal();
-  const mutate = useReviewMutation(toggleReviewModal, openModal, data);
-  useFocus(inputRef);
+  const loginPortal = useLoginPortal();
+  const mutate = useReviewMutation(toggleReviewModal, loginPortal.open, data);
+  const focus = useFocus(inputRef);
 
   const handleCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setComment(e.target.value);
@@ -94,6 +94,10 @@ function ReviewModal(
     });
   };
 
+  useEffect(() => {
+    focus.start();
+  }, [focus]);
+
   return (
     <Portal>
       <Modal
@@ -125,12 +129,12 @@ function ReviewModal(
           />
         </ModalContent>
       </Modal>
-      {renderPortal()}
+      {loginPortal.render()}
     </Portal>
   );
 }
 
-export default forwardRef(ReviewModal);
+export default React.forwardRef(ReviewModal);
 
 const ModalContent = styled.div<{
   isError: boolean;

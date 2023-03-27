@@ -1,14 +1,15 @@
 import styled, { css } from 'styled-components';
 import { useState, useRef } from 'react';
-import { useMutation, useQueryClient } from 'react-query';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useMutation } from 'react-query';
+import { useRecoilValue } from 'recoil';
 
-import { useLoginPortal } from 'hooks/cinene';
+import { useAuth, useLoginPortal } from 'hooks/cinene';
 import { useResizeHeight } from 'hooks';
 import { createComment } from 'services/comments';
-import { authUserState, contentIdState } from 'atom/atom';
+import { contentIdState } from 'atom/atom';
 import { buttonEffect } from 'styles/css';
 import { cineneKeys } from 'utils/queryOptions';
+import useMutationOptions from 'hooks/cinene/useMutationOptions';
 
 interface Props {
   responseId?: string;
@@ -17,12 +18,11 @@ interface Props {
 export default function CommentForm({ responseId }: Props) {
   const contentId = useRecoilValue(contentIdState);
   const [comment, setComment] = useState('');
-  const [auth, setAuth] = useRecoilState(authUserState);
-  const queryClient = useQueryClient();
+  const { auth } = useAuth();
+  const loginPortal = useLoginPortal();
+  const { errorHandler, queryClient } = useMutationOptions(loginPortal.open);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const resizeHeight = useResizeHeight(textareaRef);
-
-  const { openModal, renderPortal } = useLoginPortal();
 
   const { mutate } = useMutation(createComment, {
     onSuccess: () => {
@@ -30,28 +30,21 @@ export default function CommentForm({ responseId }: Props) {
       setComment('');
       if (textareaRef.current) textareaRef.current.style.height = 'auto';
     },
-    onError: ({ response }: AxiosError) => {
-      if (response.status === 401) {
-        setAuth(null);
-        openModal();
-      } else {
-        openModal(`${response.data.message} 😭`);
-      }
-    },
+    onError: (err: AxiosError) => errorHandler(err),
   });
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!comment) return;
     if (!auth) {
-      openModal();
-    } else {
-      mutate({
-        comment,
-        contentId,
-        responseTo: responseId,
-      });
+      loginPortal.open();
+      return;
     }
+    mutate({
+      comment,
+      contentId,
+      responseTo: responseId,
+    });
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -71,7 +64,7 @@ export default function CommentForm({ responseId }: Props) {
         onChange={handleChange}
       />
       <button type="submit">등록</button>
-      {renderPortal()}
+      {loginPortal.render()}
     </CommentFormWrapper>
   );
 }

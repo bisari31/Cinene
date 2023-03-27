@@ -1,15 +1,16 @@
 import { Star } from 'assets';
-import useGetRelativeTime from 'hooks/useRelativeTime';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation } from 'react-query';
 import styled from 'styled-components';
 
 import { deleteReview } from 'services/review';
 import { USER_IMAGE } from 'utils/imageUrls';
 import { cineneKeys } from 'utils/queryOptions';
-
+import useGetRelativeTime from 'hooks/useRelativeTime';
 import { useCurrentPathName } from 'hooks';
-import useAuthQuery from 'hooks/cinene/useAuth';
 import useLoginPortal from 'hooks/cinene/useLoginPortal';
+import useAuthQuery from 'hooks/cinene/useAuth';
+import useMutationOptions from 'hooks/cinene/useMutationOptions';
+
 import { StyledItem } from '../comments/CommentItemData';
 import { StyledWrapper } from '../comments/CommentItem';
 
@@ -20,21 +21,14 @@ interface Props {
 
 export default function ReviewItem({ review, onClick }: Props) {
   const { author, comment, rating, createdAt, updatedAt, _id } = review;
-  const { openModal, renderPortal } = useLoginPortal();
-  const { auth, setAuth } = useAuthQuery();
+  const loginPortal = useLoginPortal();
+  const { auth } = useAuthQuery();
   const { id, path } = useCurrentPathName();
-  const queryClient = useQueryClient();
+  const { errorHandler, queryClient } = useMutationOptions(loginPortal.open);
 
   const { mutate: handleDeleteReview } = useMutation(deleteReview, {
     onSuccess: () => queryClient.invalidateQueries(cineneKeys.detail(path, id)),
-    onError: ({ response }: AxiosError) => {
-      if (response.status === 401) {
-        setAuth(null);
-        openModal();
-      } else {
-        openModal(`${response.data.message} 😭`);
-      }
-    },
+    onError: (err: AxiosError) => errorHandler(err),
   });
 
   return (
@@ -68,7 +62,7 @@ export default function ReviewItem({ review, onClick }: Props) {
           </StyledButton>
         ))}
       </SvgWrapper>
-      {renderPortal()}
+      {loginPortal.render()}
     </StyledWrapper>
   );
 }

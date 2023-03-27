@@ -6,8 +6,8 @@ import styled, { css } from 'styled-components';
 import { getSearchResults } from 'services/tmdb';
 import { slideDown, slideUp } from 'styles/css';
 import { queryOptions, tmdbKeys } from 'utils/queryOptions';
-
 import { useDebounce, useFocus } from 'hooks';
+
 import SearchItem, { List } from './SearchItem';
 
 interface Props {
@@ -27,7 +27,7 @@ function SearchBar(
   const totalIndexRef = useRef(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
-  useFocus(inputRef);
+  const focus = useFocus(inputRef);
   const handleDebounceChange = useDebounce<React.ChangeEvent<HTMLInputElement>>(
     (e) => setDebouncedKeyword(e.target.value),
     300,
@@ -94,6 +94,10 @@ function SearchBar(
   useEffect(() => {
     if (data && totalIndexRef) totalIndexRef.current = data.length - 1;
   }, [data]);
+
+  useEffect(() => {
+    focus.start();
+  }, [focus]);
 
   return (
     <SearchBarWrapper

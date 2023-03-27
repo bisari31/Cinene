@@ -12,7 +12,7 @@ import Modal from 'components/common/Modal';
 
 export default function Unregister() {
   const { setAuth } = useAuthQuery();
-  const { openModal, renderPortal } = useLoginPortal();
+  const loginPortal = useLoginPortal();
   const { ref, toggleModal, isVisible, isMotionVisible } = useOutsideClick(300);
   const navigate = useNavigate();
 
@@ -26,9 +26,9 @@ export default function Unregister() {
       .catch((err: AxiosError) => {
         if (err.response.status === 401) {
           setAuth(null);
-          openModal();
+          loginPortal.open();
         } else {
-          openModal(`${err.response.data.message} 😭`);
+          loginPortal.open(`${err.response.data.message} 😭`);
         }
       });
   };
@@ -52,7 +52,7 @@ export default function Unregister() {
           </Modal>
         </Portal>
       )}
-      {renderPortal()}
+      {loginPortal.render()}
     </UnregisterWrapper>
   );
 }

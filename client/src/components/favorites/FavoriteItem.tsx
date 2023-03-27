@@ -12,8 +12,8 @@ interface Props {
 }
 
 export default function Favoritecontent({ data }: Props) {
-  const { openModal, renderPortal } = useLoginPortal();
-  const mutate = useLikeMutation(openModal);
+  const loginPortal = useLoginPortal();
+  const mutate = useLikeMutation(loginPortal.open);
   const { getImageUrl } = useImageUrl();
 
   return (
@@ -36,7 +36,7 @@ export default function Favoritecontent({ data }: Props) {
       >
         <Heart />
       </Button>
-      {renderPortal()}
+      {loginPortal.render()}
     </FavoritecontentWrapper>
   );
 }

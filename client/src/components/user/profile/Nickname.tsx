@@ -16,7 +16,7 @@ interface Props {
 export default function Nickname({ auth, setAuth }: Props) {
   const [isChanged, setIsChanged] = useState(false);
   const [isChanging, setIsChanging] = useState(false);
-  const { openModal, renderPortal } = useLoginPortal();
+  const loginPortal = useLoginPortal();
   const {
     value: nickname,
     handleChange: handleNicknameChange,
@@ -28,14 +28,14 @@ export default function Nickname({ auth, setAuth }: Props) {
 
   const { mutate } = useMutation(changeNickname, {
     onSuccess: (data) => {
-      openModal('닉네임 변경 완료 🎉');
+      loginPortal.open('닉네임 변경 완료 🎉');
       setAuth(data.user);
       setIsChanged(true);
     },
     onError: ({ response }: AxiosError<{ message: string }>) => {
       if (response.status === 401) {
         setAuth(null);
-        openModal();
+        loginPortal.open();
       }
       setError(response.data.message);
     },
@@ -91,7 +91,7 @@ export default function Nickname({ auth, setAuth }: Props) {
         onChange={handleNicknameChange}
       />
       {isChanging ? <CheckMark className="svg-check-mark" /> : <Edit />}
-      {renderPortal()}
+      {loginPortal.render()}
     </Form>
   );
 }

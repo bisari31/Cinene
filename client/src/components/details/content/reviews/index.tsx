@@ -19,7 +19,7 @@ interface Props {
 
 function Reviews({ data }: Props, ref: ForwardedRef<HTMLHeadingElement>) {
   const { auth } = useAuthQuery();
-  const { openModal, renderPortal } = useLoginPortal();
+  const loginPortal = useLoginPortal();
   const {
     isMotionVisible,
     toggleModal,
@@ -34,7 +34,7 @@ function Reviews({ data }: Props, ref: ForwardedRef<HTMLHeadingElement>) {
 
   const handleCreateReview = () => {
     if (auth) toggleModal();
-    else openModal();
+    else loginPortal.open();
   };
 
   return (
@@ -62,7 +62,7 @@ function Reviews({ data }: Props, ref: ForwardedRef<HTMLHeadingElement>) {
           ref={modalRef}
         />
       )}
-      {renderPortal()}
+      {loginPortal.render()}
     </ReviewsWrapper>
   );
 }

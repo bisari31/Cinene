@@ -4,9 +4,7 @@ import { useSetRecoilState } from 'recoil';
 
 import { authUserState } from 'atom/atom';
 
-export default function useMutationOptions(
-  toggleModal: (message?: string) => void,
-) {
+export default function useMutationOptions(modal: (message?: string) => void) {
   const setAuth = useSetRecoilState(authUserState);
   const queryClient = useQueryClient();
 
@@ -14,12 +12,12 @@ export default function useMutationOptions(
     ({ response }: AxiosError) => {
       if (response.status === 401) {
         setAuth(null);
-        toggleModal();
+        modal();
       } else {
-        toggleModal(`${response.data.message} 😭`);
+        modal(`${response.data.message} 😭`);
       }
     },
-    [setAuth, toggleModal],
+    [setAuth, modal],
   );
 
   return { queryClient, errorHandler };

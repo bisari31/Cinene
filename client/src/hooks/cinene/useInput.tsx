@@ -1,5 +1,7 @@
-import { EMPTY_ERROR_MESSAGE } from 'components/user/login/Form';
 import { useState, useEffect, useCallback, useRef } from 'react';
+
+import { EMPTY_ERROR_MESSAGE } from 'components/user/login/Form';
+import useFocus from 'hooks/useFocus';
 
 import { regexObj, RegexType } from 'utils/regex';
 
@@ -11,6 +13,7 @@ export default function useInput(
   const [value, setValue] = useState(prevValue ?? '');
   const [error, setError] = useState('');
   const ref = useRef<HTMLInputElement>(null);
+  const focus = useFocus(ref);
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,8 +40,8 @@ export default function useInput(
   }, []);
 
   useEffect(() => {
-    if (error) ref.current?.focus();
-  }, [error]);
+    if (error) focus.start();
+  }, [error, focus]);
 
   return { value, setValue, error, setError, handleChange, handleBlur, ref };
 }

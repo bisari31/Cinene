@@ -21,16 +21,16 @@ export default function ChangePassword() {
     handleChange: handlePasswordChange,
     setValue: setPassword,
   } = useInput('password');
-  const { openModal, renderPortal } = useLoginPortal();
+  const loginPortal = useLoginPortal();
   const { mutate } = useMutation(changePassword, {
     onSuccess: () => {
-      openModal('비밀번호 변경 성공');
+      loginPortal.open('비밀번호 변경 성공');
       setPassword('');
       passwordRef.current?.blur();
     },
     onError: ({ response }: AxiosError) => {
       if (response.status === 401) {
-        openModal();
+        loginPortal.open();
         setAuth(null);
       } else {
         setPasswordError('비밀번호 변경 실패');
@@ -65,7 +65,7 @@ export default function ChangePassword() {
           비밀번호 변경
         </Button>
       </form>
-      {renderPortal()}
+      {loginPortal.render()}
     </StyledDiv>
   );
 }

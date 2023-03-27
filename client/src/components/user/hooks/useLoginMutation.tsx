@@ -5,6 +5,7 @@ import { useSetRecoilState } from 'recoil';
 
 import { authUserState } from 'atom/atom';
 import { login, register } from 'services/user';
+import { useFocus } from 'hooks';
 
 export default function useLoginMutation(
   setPassword: React.Dispatch<React.SetStateAction<string>>,
@@ -15,7 +16,7 @@ export default function useLoginMutation(
   emailRef: React.RefObject<HTMLInputElement>,
 ) {
   const [message, setMessage] = useState('');
-
+  const focus = useFocus(emailRef);
   const navigate = useNavigate();
 
   const setAuthUser = useSetRecoilState(authUserState);
@@ -31,7 +32,7 @@ export default function useLoginMutation(
       if (status === 404) {
         setPassword('');
         setEmail('');
-        emailRef.current?.focus();
+        focus.start();
       } else {
         setPasswordError(' ');
         setPassword('');

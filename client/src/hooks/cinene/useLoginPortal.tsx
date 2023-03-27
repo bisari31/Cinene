@@ -11,7 +11,7 @@ export default function useLoginPortal() {
 
   const { isMotionVisible, toggleModal, isVisible, ref } = useOutsideClick(300);
 
-  const openModal = useCallback(
+  const open = useCallback(
     (msg?: string) => {
       if (msg) setMessage(msg);
       else setMessage('');
@@ -20,7 +20,7 @@ export default function useLoginPortal() {
     [toggleModal],
   );
 
-  const renderPortal = () =>
+  const render = () =>
     isVisible && (
       <Portal>
         <Modal
@@ -36,5 +36,5 @@ export default function useLoginPortal() {
       </Portal>
     );
 
-  return { openModal, renderPortal };
+  return { open, render };
 }
