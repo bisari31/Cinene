@@ -4,9 +4,8 @@ import styled, { css } from 'styled-components';
 import { USER_IMAGE } from 'utils/imageUrls';
 import { Button, buttonEffect } from 'styles/css';
 import { Heart } from 'assets';
-import { useLoginPortal } from 'hooks/cinene';
+import { useLikeQuery, useLoginPortal } from 'hooks/cinene';
 
-import useLikeQuery from 'components/details/hooks/useLikeQuery';
 import CommentItemData from './CommentItemData';
 import ReplyComments from './ReplyComments';
 

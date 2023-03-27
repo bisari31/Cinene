@@ -5,10 +5,9 @@ import styled, { css } from 'styled-components';
 
 import { contentIdState } from 'atom/atom';
 import { useFocus, useGetRelativeTime, useResizeHeight } from 'hooks';
-import { useAuth } from 'hooks/cinene';
+import { useAuth, useMutationOptions } from 'hooks/cinene';
 import { deleteComment, editComment } from 'services/comments';
 import { cineneKeys } from 'utils/queryOptions';
-import useMutationOptions from 'hooks/cinene/useMutationOptions';
 
 interface Props {
   commentItem?: Comment;

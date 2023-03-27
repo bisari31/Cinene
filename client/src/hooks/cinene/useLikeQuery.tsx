@@ -1,9 +1,9 @@
 import { useMutation, useQuery } from 'react-query';
 
+import { useMutationOptions } from 'hooks/cinene';
 import { getLikes, like } from 'services/like';
 import { cineneKeys } from 'utils/queryOptions';
-import useMutationOptions from 'hooks/cinene/useMutationOptions';
-import useAuthQuery from '../../../hooks/cinene/useAuth';
+import useAuthQuery from './useAuth';
 
 export default function useLikeQuery(
   type: 'comments' | 'content',

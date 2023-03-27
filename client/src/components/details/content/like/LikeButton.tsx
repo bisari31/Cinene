@@ -3,8 +3,7 @@ import styled from 'styled-components';
 
 import { Heart } from 'assets';
 import { Button, buttonEffect } from 'styles/css';
-import { useLoginPortal } from 'hooks/cinene';
-import useLikeQuery from '../../hooks/useLikeQuery';
+import { useLikeQuery, useLoginPortal } from 'hooks/cinene';
 
 interface Props {
   cinene?: CineneData;

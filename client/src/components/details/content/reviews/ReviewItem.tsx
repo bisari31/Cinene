@@ -9,7 +9,7 @@ import useGetRelativeTime from 'hooks/useRelativeTime';
 import { useCurrentPathName } from 'hooks';
 import useLoginPortal from 'hooks/cinene/useLoginPortal';
 import useAuthQuery from 'hooks/cinene/useAuth';
-import useMutationOptions from 'hooks/cinene/useMutationOptions';
+import { useMutationOptions } from 'hooks/cinene';
 
 import { StyledItem } from '../comments/CommentItemData';
 import { StyledWrapper } from '../comments/CommentItem';

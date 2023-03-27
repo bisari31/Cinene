@@ -4,7 +4,9 @@ import dayjs from 'dayjs';
 
 import { useImageUrl } from 'hooks/cinene';
 import Slider from 'components/common/Slider';
-import useMovieDisplayQuery from './hooks/useMovieDisplayQuery';
+import { useQuery } from 'react-query';
+import { queryOptions, tmdbKeys } from 'utils/queryOptions';
+import { getNowPlayingMovie, getUpcomingMovie } from 'services/tmdb';
 
 interface Props {
   type: 'upcoming' | 'now';
@@ -12,7 +14,28 @@ interface Props {
 
 export default function MovieDisplay({ type }: Props) {
   const { getImageUrl } = useImageUrl();
-  const data = useMovieDisplayQuery(type);
+  const { data: upcomingMovieData } = useQuery(
+    tmdbKeys.upcoming(),
+    getUpcomingMovie,
+    {
+      ...queryOptions,
+      enabled: type === 'upcoming',
+      select: (prevData) => {
+        const day = dayjs();
+        return prevData
+          .sort((a, b) => dayjs(a.release_date).diff(b.release_date, 'd'))
+          .filter((item) => day.diff(item.release_date, 'd') < 1);
+      },
+    },
+  );
+  const { data: nowPlayingMovieData } = useQuery(
+    tmdbKeys.nowPlaying(),
+    getNowPlayingMovie,
+    {
+      ...queryOptions,
+      enabled: type === 'now',
+    },
+  );
 
   const getDday = (day: string) => {
     const today = dayjs().format('YYYY-MM-DD');
@@ -20,6 +43,8 @@ export default function MovieDisplay({ type }: Props) {
     const dday = releaseDate.diff(today, 'd');
     return dday === 0 ? 'D-Day' : `D-${dday}`;
   };
+
+  const data = type === 'now' ? nowPlayingMovieData : upcomingMovieData;
 
   return (
     <UpcommingWrapper>

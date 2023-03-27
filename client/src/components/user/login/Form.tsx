@@ -1,8 +1,12 @@
-import { ReactNode, useEffect } from 'react';
-import styled from 'styled-components';
+import { ReactNode, useEffect, useState } from 'react';
 
-import useLoginMutation from 'components/user/hooks/useLoginMutation';
 import { useInput } from 'hooks/cinene';
+import { useMutation } from 'react-query';
+import { login, register } from 'services/user';
+import { useFocus } from 'hooks';
+import { useNavigate } from 'react-router-dom';
+import { useSetRecoilState } from 'recoil';
+import { authUserState } from 'atom/atom';
 
 import Input from 'components/common/Input';
 
@@ -14,57 +18,66 @@ interface Props {
 }
 
 export default function Form({ children, isLogin }: Props) {
-  const {
-    error: passwordError,
-    handleBlur: handlePasswordBlur,
-    value: password,
-    ref: passwordRef,
-    handleChange: handlePasswordChange,
-    setError: setPasswordError,
-    setValue: setPassword,
-  } = useInput('password');
-  const {
-    error: confirmPasswordError,
-    handleBlur: handleConfirmPasswordBlur,
-    handleChange: handleConfirmPasswordChange,
-    ref: confirmPasswordRef,
-    value: confirmPassword,
-    setError: setConfirmPasswordError,
-  } = useInput('password', password);
-  const {
-    error: nicknameError,
-    handleBlur: handleNicknameBlur,
-    handleChange: handleNicknameChange,
-    ref: nicknameRef,
-    value: nickname,
-    setError: setNicknameError,
-  } = useInput('nickname');
-  const {
-    error: emailError,
-    value: email,
-    handleBlur: handleEmailBlur,
-    handleChange: handleEmailChange,
-    ref: emailRef,
-    setError: setEmailError,
-    setValue: setEmail,
-  } = useInput('email');
+  const password = useInput('password');
+  const confirmPassword = useInput('password', password.value);
+  const nickname = useInput('nickname');
+  const email = useInput('email');
+  const [message, setMessage] = useState('');
+  const focus = useFocus(email.ref);
+  const navigate = useNavigate();
+  const setAuthUser = useSetRecoilState(authUserState);
 
-  const { loginMutate, registerMutate, message, setMessage } = useLoginMutation(
-    setPassword,
-    setEmail,
-    setPasswordError,
-    setEmailError,
-    setNicknameError,
-    emailRef,
-  );
+  const { mutate: loginMutate } = useMutation(login, {
+    onSuccess: ({ accessToken, user }) => {
+      setAuthUser(user);
+      localStorage.setItem('accessToken', accessToken);
+      navigate('/');
+    },
+    onError: (err: AxiosError) => {
+      const { data, status } = err.response;
+      if (status === 404) {
+        password.setValue('');
+        email.setValue('');
+        focus.start();
+      } else {
+        password.setError(' ');
+        password.setValue('');
+      }
+      setMessage(data.message ?? '');
+    },
+  });
+
+  const { mutate: registerMutate } = useMutation(register, {
+    onSuccess: () => navigate('/login'),
+    onError: (
+      err: AxiosError<{
+        hasNickname?: boolean;
+        hasEmail?: boolean;
+      }>,
+    ) => {
+      const { status, data } = err.response;
+      if (status === 409) {
+        if (data.hasEmail) email.setError('가입된 이메일이 이미 있습니다.');
+        if (data.hasNickname)
+          nickname.setError('가입된 닉네임이 이미 있습니다.');
+      } else {
+        setMessage(data.message ?? '');
+      }
+    },
+  });
 
   const checkEmptyValue = () => {
-    const values = [email, password, nickname, confirmPassword];
+    const values = [
+      email.value,
+      password.value,
+      nickname.value,
+      confirmPassword.value,
+    ];
     const setErrors = [
-      setEmailError,
-      setPasswordError,
-      setNicknameError,
-      setConfirmPasswordError,
+      email.setError,
+      password.setError,
+      nickname.setError,
+      confirmPassword.setError,
     ];
     const result = values.filter((value, index) => {
       if (index >= (isLogin ? 2 : 4)) return false;
@@ -81,12 +94,16 @@ export default function Form({ children, isLogin }: Props) {
     e.preventDefault();
     const isEmpty = checkEmptyValue();
     const isError =
-      emailError || passwordError || nicknameError || confirmPasswordError;
+      email.error || password.error || nickname.error || confirmPassword.error;
     if (isEmpty || isError) return;
-    if (!isLogin && password !== confirmPassword) {
-      setConfirmPasswordError('비밀번호가 일치하지 않습니다.');
+    if (!isLogin && password.value !== confirmPassword.value) {
+      confirmPassword.setError('비밀번호가 일치하지 않습니다.');
     }
-    const body = { email, nickname, password };
+    const body = {
+      email: email.value,
+      nickname: nickname.value,
+      password: password.value,
+    };
     if (isLogin) {
       loginMutate(body);
       return;
@@ -95,61 +112,59 @@ export default function Form({ children, isLogin }: Props) {
   };
 
   useEffect(() => {
-    if (password && message) {
+    if (password.value && message) {
       setMessage('');
     }
-  }, [password, message, setMessage]);
+  }, [message, setMessage, password.value]);
 
   return (
-    <StyledForm onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit}>
       <Input
-        onBlur={handleEmailBlur}
+        onBlur={email.handleBlur}
         placeholder="이메일 주소"
         label="이메일"
-        value={email}
-        onChange={handleEmailChange}
+        value={email.value}
+        onChange={email.handleChange}
         type="email"
-        errorMessage={emailError}
-        ref={emailRef}
+        errorMessage={email.error}
+        ref={email.ref}
       />
       {!isLogin && (
         <Input
           label="닉네임"
           placeholder="특수문자 제외 2~10자"
-          errorMessage={nicknameError}
-          value={nickname}
-          onChange={handleNicknameChange}
-          onBlur={handleNicknameBlur}
+          errorMessage={nickname.error}
+          value={nickname.value}
+          onChange={nickname.handleChange}
+          onBlur={nickname.handleBlur}
           type="text"
-          ref={nicknameRef}
+          ref={nickname.ref}
         />
       )}
       <Input
-        errorMessage={passwordError}
+        errorMessage={password.error}
         label="비밀번호"
         placeholder="영문,숫자 포함 8~16자"
-        value={password}
-        onChange={handlePasswordChange}
+        value={password.value}
+        onChange={password.handleChange}
         type="password"
-        onBlur={handlePasswordBlur}
-        ref={passwordRef}
+        onBlur={password.handleBlur}
+        ref={password.ref}
       />
       {!isLogin && (
         <Input
-          errorMessage={confirmPasswordError}
+          errorMessage={confirmPassword.error}
           label="비밀번호 확인"
           placeholder="영문,숫자 포함 8~16자"
-          value={confirmPassword}
-          onChange={handleConfirmPasswordChange}
+          value={confirmPassword.value}
+          onChange={confirmPassword.handleChange}
           type="password"
-          onBlur={handleConfirmPasswordBlur}
-          ref={confirmPasswordRef}
+          onBlur={confirmPassword.handleBlur}
+          ref={confirmPassword.ref}
         />
       )}
       <p>{message}</p>
       {children}
-    </StyledForm>
+    </form>
   );
 }
-
-const StyledForm = styled.form``;

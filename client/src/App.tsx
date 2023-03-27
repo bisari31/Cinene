@@ -15,8 +15,8 @@ export default function App() {
     <Routes>
       <Route element={<Layout />}>
         <Route index element={<LandingPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<LoginPage />} />
+        <Route path="/login" element={<LoginPage key="login" />} />
+        <Route path="/register" element={<LoginPage key="register" />} />
         <Route path="/kakao-register" element={<LoginPage />} />
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/movie/:id" element={<DetailPage />} />

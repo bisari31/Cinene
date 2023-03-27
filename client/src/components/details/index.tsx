@@ -3,10 +3,9 @@ import styled, { css } from 'styled-components';
 import { useSetRecoilState } from 'recoil';
 
 import { useCurrentPathName, useOutsideClick } from 'hooks';
-import { useImageUrl } from 'hooks/cinene';
+import { useDetailQuery, useImageUrl } from 'hooks/cinene';
 import { contentIdState } from 'atom/atom';
 import Portal from 'components/common/Portal';
-import useDetailQuery from './hooks/useDetailQuery';
 
 import MediaContent from './MediaContent';
 import ImageModal from './ImageModal';

@@ -1,19 +1,36 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
+import { useQuery } from 'react-query';
 
 import { ChevronLeft, ChevronRight } from 'assets';
 import { buttonEffect } from 'styles/css';
-import { useImageUrl } from 'hooks/cinene';
+import { useDetailQuery, useImageUrl } from 'hooks/cinene';
+import { getTrendingMedia } from 'services/tmdb';
+import { queryOptions, tmdbKeys } from 'utils/queryOptions';
 
-import useDetailQuery from 'components/details/hooks/useDetailQuery';
-import usePopular from './hooks/usePopular';
 import Average from './Average';
 
 export default function Popular() {
-  const { data, handleSlide } = usePopular();
-  const { mediaData, cineneData } = useDetailQuery(data?.id, data?.media_type);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const { getImageUrl } = useImageUrl();
+  const { data } = useQuery(tmdbKeys.popular(), getTrendingMedia, {
+    ...queryOptions,
+  });
+  const currentData = data?.[currentIndex];
+  const { mediaData, cineneData } = useDetailQuery(
+    currentData?.id,
+    currentData?.media_type,
+  );
+
+  const handleSlide = (index: number) => {
+    const maxIndex = data?.length;
+    if (!maxIndex) return;
+    let nextIndex = currentIndex + index;
+    if (nextIndex > maxIndex - 1) nextIndex = 0;
+    else if (nextIndex < 0) nextIndex = maxIndex - 1;
+    setCurrentIndex(nextIndex);
+  };
 
   useEffect(() => {
     const slider = setInterval(() => handleSlide(1), 10000);
@@ -22,11 +39,14 @@ export default function Popular() {
 
   return (
     <section>
-      <Background src={getImageUrl(data?.backdrop_path, 'full')} />
+      <Background src={getImageUrl(currentData?.backdrop_path, 'full')} />
       <Item>
         <div>
           <Category>
-            <Average tmdbAverage={data?.vote_average} cineneData={cineneData} />
+            <Average
+              tmdbAverage={currentData?.vote_average}
+              cineneData={cineneData}
+            />
           </Category>
           <Overview>
             <p>
@@ -37,7 +57,9 @@ export default function Popular() {
             <p>{mediaData?.overview}</p>
           </Overview>
           <ButtonWrapper color="pink">
-            <Link to={`/${data?.media_type}/${data?.id}`}>자세히 보기</Link>
+            <Link to={`/${currentData?.media_type}/${currentData?.id}`}>
+              자세히 보기
+            </Link>
             <Button
               color="navy50"
               type="button"

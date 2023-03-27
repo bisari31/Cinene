@@ -2,11 +2,13 @@ import styled from 'styled-components';
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 
 import { usePrevious, useFocus } from 'hooks';
-import { useLoginPortal } from 'hooks/cinene';
+import { useLoginPortal, useMutationOptions } from 'hooks/cinene';
 
 import Modal from 'components/common/Modal';
 import Portal from 'components/common/Portal';
-import useReviewMutation from 'components/details/hooks/useReviewMutation';
+import { useMutation } from 'react-query';
+import { handleReview } from 'services/review';
+import { cineneKeys } from 'utils/queryOptions';
 import RatingButtons from './RatingButtons';
 
 interface Props {
@@ -37,7 +39,18 @@ function ReviewModal(
   const previousComment = usePrevious<string>(comment);
   const inputRef = useRef<HTMLInputElement>(null);
   const loginPortal = useLoginPortal();
-  const mutate = useReviewMutation(toggleReviewModal, loginPortal.open, data);
+  const { errorHandler, queryClient } = useMutationOptions(loginPortal.open);
+
+  const { mutate } = useMutation(handleReview, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(
+        cineneKeys.detail(data?.content_type, data?.tmdbId),
+      );
+      toggleReviewModal();
+    },
+    onError: (err: AxiosError) => errorHandler(err),
+  });
+
   const focus = useFocus(inputRef);
 
   const handleCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {

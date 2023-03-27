@@ -3,13 +3,12 @@ import { useState, useRef } from 'react';
 import { useMutation } from 'react-query';
 import { useRecoilValue } from 'recoil';
 
-import { useAuth, useLoginPortal } from 'hooks/cinene';
+import { useAuth, useLoginPortal, useMutationOptions } from 'hooks/cinene';
 import { useResizeHeight } from 'hooks';
 import { createComment } from 'services/comments';
 import { contentIdState } from 'atom/atom';
 import { buttonEffect } from 'styles/css';
 import { cineneKeys } from 'utils/queryOptions';
-import useMutationOptions from 'hooks/cinene/useMutationOptions';
 
 interface Props {
   responseId?: string;
