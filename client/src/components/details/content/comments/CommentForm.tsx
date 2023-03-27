@@ -15,7 +15,7 @@ interface Props {
 
 export default function CommentForm({ responseId }: Props) {
   const contentId = useRecoilValue(contentIdState);
-  const [text, setText] = useState('');
+  const [comment, setComment] = useState('');
   const [auth, setAuth] = useRecoilState(authUserState);
   const queryClient = useQueryClient();
 
@@ -24,7 +24,7 @@ export default function CommentForm({ responseId }: Props) {
   const { mutate } = useMutation(createComment, {
     onSuccess: () => {
       queryClient.invalidateQueries(cineneKeys.comments(contentId));
-      setText('');
+      setComment('');
     },
     onError: ({ response }: AxiosError) => {
       if (response.status === 401) {
@@ -38,12 +38,12 @@ export default function CommentForm({ responseId }: Props) {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!text) return;
+    if (!comment) return;
     if (!auth) {
       openModal();
     } else {
       mutate({
-        comment: text,
+        comment,
         contentId,
         responseTo: responseId,
       });
@@ -51,7 +51,7 @@ export default function CommentForm({ responseId }: Props) {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setText(e.target.value);
+    setComment(e.target.value);
   };
 
   return (
@@ -59,7 +59,7 @@ export default function CommentForm({ responseId }: Props) {
       <textarea
         readOnly={!auth}
         placeholder={auth ? '댓글을 입력해 주세요' : '로그인이 필요합니다'}
-        value={text}
+        value={comment}
         onChange={handleChange}
       />
       <button type="submit">등록</button>
