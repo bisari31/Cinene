@@ -1,10 +1,14 @@
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import { useQuery } from 'react-query';
+
+import useImageUrl from 'hooks/cinene/useImageUrl';
+import { queryOptions, tmdbKeys } from 'utils/queryOptions';
+import { getFilmography, getSimilarMedia } from 'services/tmdb';
 
 import Slider from 'components/common/Slider';
-import useSimilarQuery from 'components/details/hooks/useSimilarQuery';
-import useUniqueSortedData from 'components/details/hooks/useUniqueSortedData';
-import useImageUrl from 'hooks/cinene/useImageUrl';
+
+type Data = Results | CombinedCreditsCastAndCrew;
 
 interface Props {
   path: MediaType;
@@ -13,28 +17,61 @@ interface Props {
 }
 
 export default function SimilarMedia({ id, path, type }: Props) {
-  const { filmographyData, similarData } = useSimilarQuery(id, path, type);
-  const data = useUniqueSortedData(
+  const { getImageUrl } = useImageUrl();
+  const { data: similarData } = useQuery(
+    tmdbKeys.similar(path, id),
+    () => getSimilarMedia(id, path),
+    { ...queryOptions, enabled: !type },
+  );
+
+  const { data: filmographyData } = useQuery(
+    tmdbKeys.filmography(path, id),
+    () => getFilmography(id),
+    {
+      ...queryOptions,
+      enabled: !!type,
+    },
+  );
+
+  const deduplicateData = (data?: Data[]) =>
+    data?.reduce((acc: Data[], cur: Data) => {
+      if (!acc.some((item) => item.id === cur.id)) {
+        acc.push(cur);
+      }
+      return acc;
+    }, []);
+
+  const sortData = (data?: Data[]) =>
+    data?.sort((a, b) => {
+      const sortA = new Date(
+        'first_air_date' in a ? a.first_air_date : a.release_date,
+      ).getTime();
+      const sortB = new Date(
+        'first_air_date' in b ? b.first_air_date : b.release_date,
+      ).getTime();
+      return sortB - sortA;
+    });
+
+  const getSortedData = (data?: Data[]) => {
+    const dededuplicated = deduplicateData(data);
+    return sortData(dededuplicated);
+  };
+
+  const data = getSortedData(
     type && filmographyData ? filmographyData[type] : similarData,
   );
-  const { getImageUrl } = useImageUrl();
 
   const getTitle = () => {
-    if (path === 'movie') {
-      return '추천 영화';
-    }
-    if (path === 'tv') {
-      return '추천 시리즈';
-    }
+    if (path === 'movie') return '추천 영화';
+    if (path === 'tv') return '추천 시리즈';
     return type === 'cast' ? '출연 작품' : '제작 작품';
   };
-  const title = getTitle();
 
   if (!data?.length) return null;
 
   return (
     <div>
-      <Slider title={title}>
+      <Slider title={getTitle()}>
         {data?.map((item) => (
           <List key={item.id}>
             <Link
