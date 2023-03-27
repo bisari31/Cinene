@@ -21,9 +21,9 @@ function SearchBar(
 ) {
   const [keyword, setKeyword] = useState('');
   const [debouncedKeyWord, setDebouncedKeyword] = useState('');
+  const [searchedKeyword, setSearchedKeyword] = useState('');
   const [isResultsVisible, setIsResultsVisible] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(-1);
-  const searchedKeywordRef = useRef('');
   const totalIndexRef = useRef(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
@@ -55,7 +55,7 @@ function SearchBar(
       onSuccess: () => {
         setIsResultsVisible(true);
         setCurrentIndex(-1);
-        searchedKeywordRef.current = keyword;
+        setSearchedKeyword(keyword);
       },
     },
   );
@@ -73,7 +73,7 @@ function SearchBar(
         if (currentIndex < 0) break;
         if (currentIndex === 0) {
           setIsResultsVisible(false);
-          setKeyword(searchedKeywordRef.current);
+          setKeyword(searchedKeyword);
         }
         setCurrentIndex(currentIndex - 1);
         break;
