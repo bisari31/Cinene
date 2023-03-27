@@ -1,12 +1,12 @@
 import styled from 'styled-components';
 
-import useAuthQuery from 'hooks/cinene/useAuth';
+import { useAuth } from 'hooks/cinene';
 
 import Favorites from 'components/favorites';
 import LoginTriggerForm from 'components/LoginTriggerForm';
 
 export default function FavoritesPage() {
-  const { auth } = useAuthQuery();
+  const { auth } = useAuth();
 
   return (
     <FavoritesPageWrapper>

@@ -2,9 +2,9 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { useQuery } from 'react-query';
 
-import useImageUrl from 'hooks/cinene/useImageUrl';
 import { queryOptions, tmdbKeys } from 'utils/queryOptions';
 import { getFilmography, getSimilarMedia } from 'services/tmdb';
+import { useImageUrl } from 'hooks/cinene';
 
 import Slider from 'components/common/Slider';
 

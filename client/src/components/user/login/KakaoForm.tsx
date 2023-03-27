@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 
-import useFocus from 'hooks/useFocus';
 import { useInput } from 'hooks/cinene';
+import { useFocus } from 'hooks';
 
 import Input from 'components/common/Input';
 

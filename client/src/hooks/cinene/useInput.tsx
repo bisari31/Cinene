@@ -1,9 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 
 import { EMPTY_ERROR_MESSAGE } from 'components/user/login/Form';
-import useFocus from 'hooks/useFocus';
-
 import { regexObj, RegexType } from 'utils/regex';
+import { useFocus } from 'hooks';
 
 export default function useInput(
   type: RegexType,

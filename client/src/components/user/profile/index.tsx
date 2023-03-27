@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 
 import { Upload } from 'assets';
 import { USER_IMAGE } from 'utils/imageUrls';
-import useAuthQuery from 'hooks/cinene/useAuth';
+import { useAuth } from 'hooks/cinene';
 
 import Nickname from './Nickname';
 
@@ -12,7 +12,7 @@ interface Props {
 }
 
 export default function Profile({ children }: Props) {
-  const { auth, setAuth } = useAuthQuery();
+  const { auth, setAuth } = useAuth();
   const createdAt = dayjs(auth?.createdAt).format(' YYYY년 MM월 DD일');
 
   return (

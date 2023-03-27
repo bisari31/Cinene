@@ -5,11 +5,10 @@ import { useQuery } from 'react-query';
 import { getReviews } from 'services/review';
 import { buttonEffect } from 'styles/css';
 import { cineneKeys } from 'utils/queryOptions';
-import { useLoginPortal } from 'hooks/cinene';
-import useAuthQuery from 'hooks/cinene/useAuth';
+import { useAuth, useLoginPortal } from 'hooks/cinene';
+import { useOutsideClick } from 'hooks';
 
 import Button from 'components/common/Button';
-import { useOutsideClick } from 'hooks';
 import ReviewList from './ReviewList';
 import ReviewModal from './reviewModal/index';
 
@@ -18,7 +17,7 @@ interface Props {
 }
 
 function Reviews({ data }: Props, ref: ForwardedRef<HTMLHeadingElement>) {
-  const { auth } = useAuthQuery();
+  const { auth } = useAuth();
   const loginPortal = useLoginPortal();
   const {
     isMotionVisible,

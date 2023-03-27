@@ -1,7 +1,7 @@
 import React, { memo, useEffect, useMemo } from 'react';
 import styled, { css } from 'styled-components';
 
-import useImageUrl from 'hooks/cinene/useImageUrl';
+import { useImageUrl } from 'hooks/cinene';
 
 interface Props {
   data: SearchResults;

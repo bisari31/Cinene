@@ -5,11 +5,8 @@ import styled from 'styled-components';
 import { deleteReview } from 'services/review';
 import { USER_IMAGE } from 'utils/imageUrls';
 import { cineneKeys } from 'utils/queryOptions';
-import useGetRelativeTime from 'hooks/useRelativeTime';
-import { useCurrentPathName } from 'hooks';
-import useLoginPortal from 'hooks/cinene/useLoginPortal';
-import useAuthQuery from 'hooks/cinene/useAuth';
-import { useMutationOptions } from 'hooks/cinene';
+import { useCurrentPathName, useGetRelativeTime } from 'hooks';
+import { useAuth, useLoginPortal, useMutationOptions } from 'hooks/cinene';
 
 import { StyledItem } from '../comments/CommentItemData';
 import { StyledWrapper } from '../comments/CommentItem';
@@ -22,7 +19,7 @@ interface Props {
 export default function ReviewItem({ review, onClick }: Props) {
   const { author, comment, rating, createdAt, updatedAt, _id } = review;
   const loginPortal = useLoginPortal();
-  const { auth } = useAuthQuery();
+  const { auth } = useAuth();
   const { id, path } = useCurrentPathName();
   const { errorHandler, queryClient } = useMutationOptions(loginPortal.open);
 

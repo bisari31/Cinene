@@ -3,15 +3,14 @@ import { useNavigate } from 'react-router-dom';
 
 import { unregister } from 'services/user';
 import { useOutsideClick } from 'hooks';
-import useAuthQuery from 'hooks/cinene/useAuth';
-import { useLoginPortal } from 'hooks/cinene';
+import { useAuth, useLoginPortal } from 'hooks/cinene';
 
 import Button from 'components/common/Button';
 import Portal from 'components/common/Portal';
 import Modal from 'components/common/Modal';
 
 export default function Unregister() {
-  const { setAuth } = useAuthQuery();
+  const { setAuth } = useAuth();
   const loginPortal = useLoginPortal();
   const { ref, toggleModal, isVisible, isMotionVisible } = useOutsideClick(300);
   const navigate = useNavigate();

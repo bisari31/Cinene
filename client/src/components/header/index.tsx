@@ -4,14 +4,14 @@ import { useEffect } from 'react';
 
 import { autheticate, getAccessToken } from 'services/user';
 import { useOutsideClick } from 'hooks';
-import useAuthQuery from '../../hooks/cinene/useAuth';
+import { useAuth } from 'hooks/cinene';
 
 import AuthMenu from './AuthMenu';
 import SearchBar from './searchbar/SearchBar';
 import SideMenu from './SideMenu';
 
 export default function Header() {
-  const { auth, setAuth } = useAuthQuery();
+  const { auth, setAuth } = useAuth();
   const { ref, isVisible, toggleModal, isMotionVisible } = useOutsideClick(300);
 
   useEffect(() => {
