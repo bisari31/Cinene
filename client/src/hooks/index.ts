@@ -8,6 +8,7 @@ import useGetRelativeTime from './useRelativeTime';
 import useRedirection from './useRedirection';
 import useFocus from './useFocus';
 import useThrottle from './useThrottle';
+import useResizeHeight from './useResizeHeight';
 
 export {
   useRedirection,
@@ -20,4 +21,5 @@ export {
   usePrevious,
   useGetRelativeTime,
   useFocus,
+  useResizeHeight,
 };

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import Modal from 'components/common/Modal';
@@ -11,11 +11,14 @@ export default function useLoginPortal() {
 
   const { isMotionVisible, toggleModal, isVisible, ref } = useOutsideClick(300);
 
-  const openModal = (msg?: string) => {
-    if (msg) setMessage(msg);
-    else setMessage('');
-    toggleModal();
-  };
+  const openModal = useCallback(
+    (msg?: string) => {
+      if (msg) setMessage(msg);
+      else setMessage('');
+      toggleModal();
+    },
+    [toggleModal],
+  );
 
   const renderPortal = () =>
     isVisible && (
