@@ -19,7 +19,7 @@ interface Props {
 
 export default function Form({ children, isLogin }: Props) {
   const password = useInput('password');
-  const confirmPassword = useInput('password', password.value);
+  const confirmPassword = useInput('password', '', password.value);
   const nickname = useInput('nickname');
   const email = useInput('email');
   const [message, setMessage] = useState('');
