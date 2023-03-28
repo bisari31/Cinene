@@ -1,21 +1,27 @@
 import { useLocation } from 'react-router-dom';
 import styled, { css } from 'styled-components';
+import { useEffect } from 'react';
+
+import { useRedirection } from 'hooks';
 
 import Form from 'components/user/login/Form';
 import ButtonWrapper from 'components/user/login/ButtonWrapper';
 import KakaoForm from 'components/user/login/KakaoForm';
-import { useRedirection } from 'hooks';
 
 export type PathName = 'login' | 'register';
 
 export default function LoginPage() {
-  useRedirection();
+  const redirection = useRedirection();
   const { pathname } = useLocation();
 
   const getPathName = () => pathname.slice(1) as 'login' | 'register';
   const path = getPathName();
 
   const isKakaoForm = pathname.includes('kakao');
+
+  useEffect(() => {
+    redirection();
+  }, [redirection]);
 
   return (
     <StyledWrapper>
