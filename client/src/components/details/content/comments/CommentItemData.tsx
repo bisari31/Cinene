@@ -15,14 +15,14 @@ interface Props {
 }
 
 function CommentItemData({ commentItem, openModal }: Props) {
-  const contentId = useRecoilValue(contentIdState);
-  const { auth } = useAuth();
   const [comment, setComment] = useState(commentItem?.comment ?? '');
   const [isEditing, setIsEditing] = useState(false);
-  const { queryClient, errorHandler } = useMutationOptions(openModal);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const resizeHeight = useResizeHeight(textareaRef);
-  const focus = useFocus(textareaRef);
+  const contentId = useRecoilValue(contentIdState);
+  const { auth } = useAuth();
+  const { queryClient, errorHandler } = useMutationOptions(openModal);
+  const { focusToEnd } = useFocus(textareaRef);
+  const { resetHeight, setScrollHeight } = useResizeHeight(textareaRef);
   const { mutate: deleteCommentMutate } = useMutation(deleteComment, {
     onSuccess: () =>
       queryClient.invalidateQueries(cineneKeys.comments(contentId)),
@@ -40,8 +40,8 @@ function CommentItemData({ commentItem, openModal }: Props) {
   const handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setComment(e.target.value);
     if (textareaRef.current) {
-      resizeHeight.reset();
-      resizeHeight.setScroll();
+      resetHeight();
+      setScrollHeight();
     }
   };
 
@@ -67,10 +67,10 @@ function CommentItemData({ commentItem, openModal }: Props) {
 
   useEffect(() => {
     if (isEditing) {
-      resizeHeight.setScroll();
-      focus.end();
+      setScrollHeight();
+      focusToEnd();
     }
-  }, [isEditing, resizeHeight, focus]);
+  }, [isEditing, setScrollHeight, focusToEnd]);
 
   return (
     <StyledItem

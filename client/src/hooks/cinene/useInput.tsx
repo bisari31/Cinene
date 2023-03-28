@@ -12,7 +12,7 @@ export default function useInput(
   const [value, setValue] = useState(initialValue);
   const [error, setError] = useState('');
   const ref = useRef<HTMLInputElement>(null);
-  const focus = useFocus(ref);
+  const { focus } = useFocus(ref);
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,7 +41,7 @@ export default function useInput(
   }, []);
 
   useEffect(() => {
-    if (error) focus.start();
+    if (error) focus();
   }, [error, focus]);
 
   return { value, setValue, error, setError, handleChange, handleBlur, ref };

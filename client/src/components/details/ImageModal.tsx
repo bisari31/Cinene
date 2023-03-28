@@ -22,7 +22,7 @@ export default function ImageModal({
   usePreventScrolling(isVisible);
 
   return (
-    <StyledOutSide height={height}>
+    <StyledWrapper height={height}>
       <StyledModal ref={modalRef}>
         <div />
         <img src={src} alt="poster" />
@@ -30,11 +30,11 @@ export default function ImageModal({
           <Close />
         </button>
       </StyledModal>
-    </StyledOutSide>
+    </StyledWrapper>
   );
 }
 
-const StyledOutSide = styled.div<{ height: number | undefined }>`
+const StyledWrapper = styled.div<{ height: number | undefined }>`
   ${outside}
 `;
 

@@ -13,8 +13,8 @@ interface Props {
 }
 
 export default function FavoriteItem({ data }: Props) {
-  const loginPortal = useLoginPortal();
-  const { errorHandler, queryClient } = useMutationOptions(loginPortal.open);
+  const { openPortal, renderPortal } = useLoginPortal();
+  const { errorHandler, queryClient } = useMutationOptions(openPortal);
   const { getImageUrl } = useImageUrl();
 
   const { mutate } = useMutation(like, {
@@ -62,7 +62,7 @@ export default function FavoriteItem({ data }: Props) {
       >
         <Heart />
       </StyledButton>
-      {loginPortal.render()}
+      {renderPortal()}
     </StyledLi>
   );
 }

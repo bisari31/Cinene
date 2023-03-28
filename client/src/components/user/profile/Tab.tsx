@@ -28,8 +28,8 @@ interface Item {
 export default function Tab() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [width, setWidth] = useState<number>(0);
-
   const liRef = useRef<HTMLLIElement>(null);
+
   const handleClick = (index: number) => setActiveIndex(index);
 
   const getElementWidth = () => {

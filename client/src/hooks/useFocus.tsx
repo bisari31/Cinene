@@ -3,11 +3,11 @@ import { RefObject, useCallback } from 'react';
 export default function useFocus(
   ref: RefObject<HTMLInputElement | HTMLTextAreaElement>,
 ) {
-  const start = useCallback(() => {
+  const focus = useCallback(() => {
     if (ref.current) ref.current.focus();
   }, [ref]);
 
-  const end = useCallback(() => {
+  const focusToEnd = useCallback(() => {
     if (ref.current) {
       ref.current.setSelectionRange(
         ref.current.value.length,
@@ -17,5 +17,5 @@ export default function useFocus(
     }
   }, [ref]);
 
-  return { start, end };
+  return { focus, focusToEnd };
 }

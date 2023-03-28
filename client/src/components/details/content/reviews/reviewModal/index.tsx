@@ -38,8 +38,9 @@ function ReviewModal(
   const previousRating = usePrevious<number>(rating);
   const previousComment = usePrevious<string>(comment);
   const inputRef = useRef<HTMLInputElement>(null);
-  const loginPortal = useLoginPortal();
-  const { errorHandler, queryClient } = useMutationOptions(loginPortal.open);
+  const { openPortal, renderPortal } = useLoginPortal();
+  const { errorHandler, queryClient } = useMutationOptions(openPortal);
+  const { focus } = useFocus(inputRef);
 
   const { mutate } = useMutation(handleReview, {
     onSuccess: () => {
@@ -50,8 +51,6 @@ function ReviewModal(
     },
     onError: (err: AxiosError) => errorHandler(err),
   });
-
-  const focus = useFocus(inputRef);
 
   const handleCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setComment(e.target.value);
@@ -108,7 +107,7 @@ function ReviewModal(
   };
 
   useEffect(() => {
-    focus.start();
+    focus();
   }, [focus]);
 
   return (
@@ -142,7 +141,7 @@ function ReviewModal(
           />
         </StyledContent>
       </Modal>
-      {loginPortal.render()}
+      {renderPortal()}
     </Portal>
   );
 }

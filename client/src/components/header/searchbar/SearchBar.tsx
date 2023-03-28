@@ -27,7 +27,7 @@ function SearchBar(
   const totalIndexRef = useRef(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
-  const focus = useFocus(inputRef);
+  const { focus } = useFocus(inputRef);
   const handleDebounceChange = useDebounce<React.ChangeEvent<HTMLInputElement>>(
     (e) => setDebouncedKeyword(e.target.value),
     300,
@@ -96,7 +96,7 @@ function SearchBar(
   }, [data]);
 
   useEffect(() => {
-    focus.start();
+    focus();
   }, [focus]);
 
   return (

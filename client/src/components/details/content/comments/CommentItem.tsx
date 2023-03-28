@@ -21,16 +21,16 @@ export default function CommentItem({
   isResponse = false,
 }: Props) {
   const [openReplyComment, setOpenReplyComment] = useState(false);
-  const loginPortal = useLoginPortal();
+  const { openPortal, renderPortal } = useLoginPortal();
   const { auth, data, mutate } = useLikeQuery(
     'comments',
     commentItem?._id,
-    loginPortal.open,
+    openPortal,
   );
 
   const handleLikeButton = () => {
     if (!auth) {
-      loginPortal.open();
+      openPortal();
       return;
     }
     mutate({ type: 'comment', id: commentItem?._id });
@@ -45,10 +45,7 @@ export default function CommentItem({
     <>
       <StyledWrapper key={commentItem?._id} isResponse={isResponse}>
         <img src={commentItem?.author.img || USER_IMAGE} alt="user_poster" />
-        <CommentItemData
-          openModal={loginPortal.open}
-          commentItem={commentItem}
-        />
+        <CommentItemData openModal={openPortal} commentItem={commentItem} />
         <StyledButtonWrpper color="navy50">
           <Button
             hasLikes={!!data?.likes}
@@ -72,7 +69,7 @@ export default function CommentItem({
       {openReplyComment && (
         <ReplyComments comments={replyComments} responseId={commentItem?._id} />
       )}
-      {loginPortal.render()}
+      {renderPortal()}
     </>
   );
 }

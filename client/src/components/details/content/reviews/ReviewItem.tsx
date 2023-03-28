@@ -18,10 +18,10 @@ interface Props {
 
 export default function ReviewItem({ review, onClick }: Props) {
   const { author, comment, rating, createdAt, updatedAt, _id } = review;
-  const loginPortal = useLoginPortal();
+  const { openPortal, renderPortal } = useLoginPortal();
   const { auth } = useAuth();
   const { id, path } = useCurrentPathName();
-  const { errorHandler, queryClient } = useMutationOptions(loginPortal.open);
+  const { errorHandler, queryClient } = useMutationOptions(openPortal);
 
   const { mutate: handleDeleteReview } = useMutation(deleteReview, {
     onSuccess: () => queryClient.invalidateQueries(cineneKeys.detail(path, id)),
@@ -59,7 +59,7 @@ export default function ReviewItem({ review, onClick }: Props) {
           </StyledButton>
         ))}
       </StyledButtonWrapper>
-      {loginPortal.render()}
+      {renderPortal()}
     </StyledWrapper>
   );
 }
