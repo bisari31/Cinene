@@ -47,11 +47,11 @@ export default function MovieDisplay({ type }: Props) {
   const data = type === 'now' ? nowPlayingMovieData : upcomingMovieData;
 
   return (
-    <UpcommingWrapper>
+    <div>
       <Slider title={type === 'now' ? '상영작' : '개봉 예정작'}>
         <ul>
           {data?.map((movie) => (
-            <List key={movie.id}>
+            <StyledList key={movie.id}>
               <Link to={`/movie/${movie.id}`} draggable="false">
                 <img
                   draggable="false"
@@ -66,16 +66,15 @@ export default function MovieDisplay({ type }: Props) {
                   <p className="dday">{getDday(movie.release_date)}</p>
                 )}
               </Link>
-            </List>
+            </StyledList>
           ))}
         </ul>
       </Slider>
-    </UpcommingWrapper>
+    </div>
   );
 }
 
-const UpcommingWrapper = styled.div``;
-const List = styled.li`
+const StyledList = styled.li`
   ${({ theme }) => css`
     position: relative;
     img {

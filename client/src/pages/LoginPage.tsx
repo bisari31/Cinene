@@ -18,7 +18,7 @@ export default function LoginPage() {
   const isKakaoForm = pathname.includes('kakao');
 
   return (
-    <Wrapper>
+    <StyledWrapper>
       {isKakaoForm ? (
         <KakaoForm>
           <ButtonWrapper type={path} />
@@ -28,11 +28,11 @@ export default function LoginPage() {
           <ButtonWrapper type={path} />
         </Form>
       )}
-    </Wrapper>
+    </StyledWrapper>
   );
 }
 
-const Wrapper = styled.div`
+const StyledWrapper = styled.div`
   ${({ theme }) => css`
     align-items: center;
     display: flex;

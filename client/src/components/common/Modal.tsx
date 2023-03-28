@@ -28,10 +28,10 @@ function Modal(
   useEscapeClose(isVisible, closeFn || executeFn);
 
   return (
-    <OutSide height={scrollY}>
-      <ModalWrapper isVisible={isVisible} ref={ref} height={height}>
-        <MessageWrapper>{children}</MessageWrapper>
-        <BtnWrapper>
+    <StyledWrapper height={scrollY}>
+      <StyledModal isVisible={isVisible} ref={ref} height={height}>
+        <StyledMessage>{children}</StyledMessage>
+        <StyledButtonWrapper>
           <Button
             type="button"
             size="fullWidth"
@@ -50,9 +50,9 @@ function Modal(
               {buttonText[1]}
             </Button>
           )}
-        </BtnWrapper>
-      </ModalWrapper>
-    </OutSide>
+        </StyledButtonWrapper>
+      </StyledModal>
+    </StyledWrapper>
   );
 }
 
@@ -86,11 +86,11 @@ const slideFadeOut = keyframes`
 }
 `;
 
-const OutSide = styled.div<{ height: number | undefined }>`
+const StyledWrapper = styled.div<{ height: number | undefined }>`
   ${outside};
   z-index: 3;
 `;
-const ModalWrapper = styled.div<{ isVisible: boolean; height?: string }>`
+const StyledModal = styled.div<{ isVisible: boolean; height?: string }>`
   animation: ${({ isVisible }) => (isVisible ? slideFadeIn : slideFadeOut)} 0.5s
     ease-out;
   background-color: ${({ theme }) => theme.colors.navy};
@@ -103,7 +103,7 @@ const ModalWrapper = styled.div<{ isVisible: boolean; height?: string }>`
   padding: 2rem;
   width: 450px;
 `;
-const MessageWrapper = styled.div`
+const StyledMessage = styled.div`
   align-items: center;
   display: flex;
   flex: 1;
@@ -114,7 +114,7 @@ const MessageWrapper = styled.div`
   text-align: center;
 `;
 
-const BtnWrapper = styled.div`
+const StyledButtonWrapper = styled.div`
   align-items: center;
   display: flex;
   justify-content: center;

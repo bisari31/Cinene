@@ -36,12 +36,12 @@ export default function SideMenu({ auth }: Props) {
   };
 
   return (
-    <SideMenuWrapper>
-      <Background isVisible={isVisible} />
+    <StyledWrapper>
+      <StyledBackdrop isVisible={isVisible} />
       <button type="button" onClick={toggleModal}>
         <Menu />
       </button>
-      <SideMenuBar ref={ref} isVisible={isVisible}>
+      <StyledMenuWrapper ref={ref} isVisible={isVisible}>
         <button
           type="button"
           className="chevronleft_wrapper"
@@ -50,7 +50,7 @@ export default function SideMenu({ auth }: Props) {
           <ChevronLeft />
         </button>
         {MENU_LIST.map((list) => (
-          <Item key={list.pathname}>
+          <StyledItem key={list.pathname}>
             <button
               type="button"
               onClick={() => moveFavoritesPage(list.pathname)}
@@ -58,15 +58,15 @@ export default function SideMenu({ auth }: Props) {
               {list.svg}
               {list.name}
             </button>
-          </Item>
+          </StyledItem>
         ))}
         {auth && <LogoutButton />}
-      </SideMenuBar>
-    </SideMenuWrapper>
+      </StyledMenuWrapper>
+    </StyledWrapper>
   );
 }
 
-const SideMenuWrapper = styled.div`
+const StyledWrapper = styled.div`
   align-items: center;
   display: flex;
   & > button {
@@ -90,7 +90,7 @@ const SideMenuWrapper = styled.div`
   }
 `;
 
-const Background = styled.div<{ isVisible: boolean }>`
+const StyledBackdrop = styled.div<{ isVisible: boolean }>`
   background-color: rgba(0, 0, 0, 0.6);
   display: ${({ isVisible }) => (isVisible ? 'block' : 'none')};
   height: 200vh;
@@ -99,7 +99,7 @@ const Background = styled.div<{ isVisible: boolean }>`
   right: 0;
 `;
 
-const SideMenuBar = styled.div<{ isVisible: boolean }>`
+const StyledMenuWrapper = styled.div<{ isVisible: boolean }>`
   ${({ theme, isVisible }) => css`
     background-color: ${theme.colors.navy100};
     border-radius: 0 40px 40px 0;
@@ -143,7 +143,7 @@ const SideMenuBar = styled.div<{ isVisible: boolean }>`
   `}
 `;
 
-const Item = styled.div`
+const StyledItem = styled.div`
   ${({ theme }) => css`
     border-radius: 10px;
     &:hover {

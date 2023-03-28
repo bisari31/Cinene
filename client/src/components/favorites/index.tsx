@@ -26,18 +26,18 @@ export default function Favorites() {
     );
 
   return (
-    <FavoritesWrapper>
+    <StyledWrapper>
       <Toggle selectedType={selectedType} setSelectedType={setSelectedType} />
       <ul>
         {selectData()?.map((item) => (
           <FavoriteItem key={item._id} data={item.content} />
         ))}
       </ul>
-    </FavoritesWrapper>
+    </StyledWrapper>
   );
 }
 
-const FavoritesWrapper = styled.div`
+const StyledWrapper = styled.div`
   ul {
     align-items: center;
     display: grid;

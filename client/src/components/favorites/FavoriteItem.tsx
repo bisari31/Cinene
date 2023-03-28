@@ -55,13 +55,13 @@ export default function FavoriteItem({ data }: Props) {
         />
         <span>{data.title}</span>
       </Link>
-      <Button
+      <StyledButton
         color="navy50"
         type="button"
         onClick={() => mutate({ type: 'content', id: data._id })}
       >
         <Heart />
-      </Button>
+      </StyledButton>
       {loginPortal.render()}
     </StyledLi>
   );
@@ -102,7 +102,7 @@ const StyledLi = styled.li`
   }
 `;
 
-const Button = styled.button`
+const StyledButton = styled.button`
   align-content: center;
   background-color: ${({ theme }) => theme.colors.navy50};
   border: none;

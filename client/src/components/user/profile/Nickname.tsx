@@ -78,7 +78,11 @@ export default function Nickname({ auth, setAuth }: Props) {
   }, [auth, setNickname]);
 
   return (
-    <Form onSubmit={handleSubmit} isEmpty={!nickname.length} isError={!!error}>
+    <StyledForm
+      onSubmit={handleSubmit}
+      isEmpty={!nickname.length}
+      isError={!!error}
+    >
       <Input
         placeholder="특수문자 제외 2~10자"
         onKeyDown={handleKeyDown}
@@ -92,11 +96,11 @@ export default function Nickname({ auth, setAuth }: Props) {
       />
       {isChanging ? <CheckMark className="svg-check-mark" /> : <Edit />}
       {loginPortal.render()}
-    </Form>
+    </StyledForm>
   );
 }
 
-const Form = styled.form<{ isError: boolean; isEmpty: boolean }>`
+const StyledForm = styled.form<{ isError: boolean; isEmpty: boolean }>`
   display: flex;
   height: 50px;
   justify-content: center;

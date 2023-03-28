@@ -1,5 +1,3 @@
-import styled from 'styled-components';
-
 import { useAuth } from 'hooks/cinene';
 
 import Favorites from 'components/favorites';
@@ -8,11 +6,5 @@ import LoginTriggerForm from 'components/LoginTriggerForm';
 export default function FavoritesPage() {
   const { auth } = useAuth();
 
-  return (
-    <FavoritesPageWrapper>
-      {auth ? <Favorites /> : <LoginTriggerForm />}
-    </FavoritesPageWrapper>
-  );
+  return <div>{auth ? <Favorites /> : <LoginTriggerForm />}</div>;
 }
-
-const FavoritesPageWrapper = styled.div``;

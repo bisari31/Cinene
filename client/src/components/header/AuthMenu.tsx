@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 import { lighten, darken } from 'polished';
 
 import { Heart, Search } from 'assets';
+import { USER_IMAGE } from 'utils/imageUrls';
 
 import LogoutButton from 'components/common/LogoutButton';
-import { USER_IMAGE } from 'utils/imageUrls';
 
 interface Props {
   setIsVisible: () => void;
@@ -14,45 +14,45 @@ interface Props {
 
 export default function AuthMenu({ setIsVisible, auth }: Props) {
   return (
-    <AuthMenuWrapper>
+    <StyledWrapper>
       <ul>
-        <Icons className="search_icon_wrapper">
+        <StyledIcon className="search_icon_wrapper">
           <button type="button" onClick={setIsVisible}>
             <Search className="search_icon" />
           </button>
-        </Icons>
-        <Icons className="favorites_icon_wrapper">
+        </StyledIcon>
+        <StyledIcon className="favorites_icon_wrapper">
           <Link to="/favorites">
             <Heart className="favorites_icon" />
           </Link>
-        </Icons>
+        </StyledIcon>
         {auth ? (
           <>
-            <UserInfo>
+            <StyledUserInfo>
               <Link to="/mypage">
                 <img src={auth.img || USER_IMAGE} alt="user_image" />
               </Link>
-            </UserInfo>
-            <BtnMenu className="logout_button">
+            </StyledUserInfo>
+            <StyledButton className="logout_button">
               <LogoutButton />
-            </BtnMenu>
+            </StyledButton>
           </>
         ) : (
           <>
-            <LoginMenu>
+            <StyledLoginLi>
               <Link to="/login">로그인</Link>
-            </LoginMenu>
-            <BtnMenu>
+            </StyledLoginLi>
+            <StyledButton>
               <Link to="/register">회원가입</Link>
-            </BtnMenu>
+            </StyledButton>
           </>
         )}
       </ul>
-    </AuthMenuWrapper>
+    </StyledWrapper>
   );
 }
 
-const AuthMenuWrapper = styled.div`
+const StyledWrapper = styled.div`
   ul {
     align-items: center;
     display: flex;
@@ -75,7 +75,7 @@ const AuthMenuWrapper = styled.div`
   }
 `;
 
-const BtnMenu = styled.li`
+const StyledButton = styled.li`
   ${({ theme }) => css`
     a {
       display: inline-block;
@@ -100,7 +100,7 @@ const BtnMenu = styled.li`
     }
   `}
 `;
-const Icons = styled.li`
+const StyledIcon = styled.li`
   align-items: center;
   display: inline-flex;
   display: flex;
@@ -132,10 +132,9 @@ const Icons = styled.li`
   }
 `;
 
-const UserInfo = styled.li`
+const StyledUserInfo = styled.li`
   border-radius: 50%;
   margin-left: 1.7em;
-  /* margin-right: 2.7em; */
   overflow: hidden;
   a {
     border-radius: inherit;
@@ -154,7 +153,7 @@ const UserInfo = styled.li`
   }
 `;
 
-const LoginMenu = styled.li`
+const StyledLoginLi = styled.li`
   height: 35px;
   text-align: center;
   width: 90px;

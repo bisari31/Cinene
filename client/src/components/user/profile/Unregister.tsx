@@ -33,7 +33,7 @@ export default function Unregister() {
   };
 
   return (
-    <UnregisterWrapper>
+    <StyledWrapper>
       <Button type="submit" color="pink" size="fullWidth" onClick={toggleModal}>
         회원 탈퇴
       </Button>
@@ -52,11 +52,11 @@ export default function Unregister() {
         </Portal>
       )}
       {loginPortal.render()}
-    </UnregisterWrapper>
+    </StyledWrapper>
   );
 }
 
-const UnregisterWrapper = styled.div`
+const StyledWrapper = styled.div`
   align-items: center;
   display: flex;
   flex: 1;

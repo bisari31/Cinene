@@ -47,7 +47,7 @@ export default function ReviewItem({ review, onClick }: Props) {
         </div>
         <p>{comment}</p>
       </StyledItem>
-      <SvgWrapper>
+      <StyledButtonWrapper>
         {[1, 2, 3, 4, 5].map((star) => (
           <StyledButton
             isFilling={star <= rating}
@@ -58,13 +58,13 @@ export default function ReviewItem({ review, onClick }: Props) {
             <Star />
           </StyledButton>
         ))}
-      </SvgWrapper>
+      </StyledButtonWrapper>
       {loginPortal.render()}
     </StyledWrapper>
   );
 }
 
-const SvgWrapper = styled.div`
+const StyledButtonWrapper = styled.div`
   align-items: center;
   display: flex;
 `;

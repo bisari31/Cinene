@@ -122,16 +122,16 @@ function ReviewModal(
         buttonText={['닫기', hasReview ? '수정' : '등록']}
         color="pink"
       >
-        <ModalContent isError={isCommentError}>
+        <StyledContent isError={isCommentError}>
           <div>
             <RatingButtons
               rating={rating}
               onClick={handleRatingChange}
               previousRating={previousRating}
             />
-            <MessageWrapper>
+            <StyledMessage>
               <p>{message}</p>
-            </MessageWrapper>
+            </StyledMessage>
           </div>
           <input
             ref={inputRef}
@@ -140,7 +140,7 @@ function ReviewModal(
             value={comment}
             onChange={handleCommentChange}
           />
-        </ModalContent>
+        </StyledContent>
       </Modal>
       {loginPortal.render()}
     </Portal>
@@ -149,7 +149,7 @@ function ReviewModal(
 
 export default React.forwardRef(ReviewModal);
 
-const ModalContent = styled.div<{
+const StyledContent = styled.div<{
   isError: boolean;
 }>`
   display: flex;
@@ -173,7 +173,7 @@ const ModalContent = styled.div<{
   }
 `;
 
-const MessageWrapper = styled.div`
+const StyledMessage = styled.div`
   font-size: 0.95rem;
   height: 22.8px;
   margin: 1em 0 1em 0;

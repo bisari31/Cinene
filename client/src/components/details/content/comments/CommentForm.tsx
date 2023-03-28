@@ -53,7 +53,7 @@ export default function CommentForm({ responseId }: Props) {
   };
 
   return (
-    <CommentFormWrapper onSubmit={handleSubmit} color="navy50">
+    <StyledForm onSubmit={handleSubmit} color="navy50">
       <textarea
         rows={1}
         ref={textareaRef}
@@ -64,11 +64,11 @@ export default function CommentForm({ responseId }: Props) {
       />
       <button type="submit">등록</button>
       {loginPortal.render()}
-    </CommentFormWrapper>
+    </StyledForm>
   );
 }
 
-const CommentFormWrapper = styled.form`
+const StyledForm = styled.form`
   ${({ theme }) => css`
     display: flex;
     margin: 2em 0;

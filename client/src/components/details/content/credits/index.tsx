@@ -25,7 +25,7 @@ export default function Credits({ id, path }: Props) {
   if (!data?.cast.length && !data?.crew.length) return null;
 
   return (
-    <CreditsWrapper>
+    <StyledWrapper>
       <Slider title="감독 / 출연진">
         <ul>
           {directors?.map((crew) => (
@@ -38,10 +38,10 @@ export default function Credits({ id, path }: Props) {
           ))}
         </ul>
       </Slider>
-    </CreditsWrapper>
+    </StyledWrapper>
   );
 }
 
-const CreditsWrapper = styled.div`
+const StyledWrapper = styled.div`
   overflow: hidden;
 `;

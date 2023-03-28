@@ -16,15 +16,15 @@ export default function Profile({ children }: Props) {
   const createdAt = dayjs(auth?.createdAt).format(' YYYY년 MM월 DD일');
 
   return (
-    <UserProfileWrapper>
-      <Section>
-        <ImgWrapper>
+    <StyledDiv>
+      <StyledSection>
+        <StyledImgWrapper>
           <img src={auth?.img || USER_IMAGE} alt="profile" />
           <button type="button">
             <Upload />
           </button>
-        </ImgWrapper>
-        <NicknameWrapper>
+        </StyledImgWrapper>
+        <StyledNicknameWrapper>
           <div>
             <Nickname auth={auth} setAuth={setAuth} />
           </div>
@@ -35,18 +35,18 @@ export default function Profile({ children }: Props) {
               {createdAt}
             </span>
           </div>
-        </NicknameWrapper>
-      </Section>
+        </StyledNicknameWrapper>
+      </StyledSection>
       {children}
-    </UserProfileWrapper>
+    </StyledDiv>
   );
 }
 
-const UserProfileWrapper = styled.div`
+const StyledDiv = styled.div`
   margin-top: 5em;
 `;
 
-const Section = styled.section`
+const StyledSection = styled.section`
   align-items: center;
   display: flex;
   flex: 1;
@@ -69,7 +69,7 @@ const Section = styled.section`
   }
 `;
 
-const ImgWrapper = styled.div`
+const StyledImgWrapper = styled.div`
   ${({ theme }) => css`
     position: relative;
     img {
@@ -92,7 +92,7 @@ const ImgWrapper = styled.div`
   `}
 `;
 
-const NicknameWrapper = styled.div`
+const StyledNicknameWrapper = styled.div`
   ${({ theme }) => css`
     h3 {
       color: ${theme.colors.white};

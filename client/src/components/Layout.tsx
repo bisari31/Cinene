@@ -5,16 +5,16 @@ import Header from './header';
 
 export default function Layout() {
   return (
-    <LayoutWrapper>
+    <StyledWrapper>
       <Header />
       <main>
         <Outlet />
       </main>
-    </LayoutWrapper>
+    </StyledWrapper>
   );
 }
 
-const LayoutWrapper = styled.div`
+const StyledWrapper = styled.div`
   ${({ theme }) => css`
     padding: ${theme.config.padding};
     header {

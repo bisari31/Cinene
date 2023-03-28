@@ -22,23 +22,23 @@ export default function ImageModal({
   usePreventScrolling(isVisible);
 
   return (
-    <OutSide height={height}>
-      <Modal ref={modalRef}>
+    <StyledOutSide height={height}>
+      <StyledModal ref={modalRef}>
         <div />
         <img src={src} alt="poster" />
         <button type="button" onClick={() => toggleModal()}>
           <Close />
         </button>
-      </Modal>
-    </OutSide>
+      </StyledModal>
+    </StyledOutSide>
   );
 }
 
-const OutSide = styled.div<{ height: number | undefined }>`
+const StyledOutSide = styled.div<{ height: number | undefined }>`
   ${outside}
 `;
 
-const Modal = styled.div`
+const StyledModal = styled.div`
   ${({ theme }) => css`
     height: 80vh;
     position: relative;

@@ -37,7 +37,7 @@ function Reviews({ data }: Props, ref: ForwardedRef<HTMLHeadingElement>) {
   };
 
   return (
-    <ReviewsWrapper length={reivewData?.reviews?.length}>
+    <StyledWrapper length={reivewData?.reviews?.length}>
       <div>
         <h3 ref={ref}>리뷰</h3>
         {!reivewData?.hasReview && (
@@ -62,13 +62,13 @@ function Reviews({ data }: Props, ref: ForwardedRef<HTMLHeadingElement>) {
         />
       )}
       {loginPortal.render()}
-    </ReviewsWrapper>
+    </StyledWrapper>
   );
 }
 
 export default forwardRef(Reviews);
 
-const ReviewsWrapper = styled.div<{ length: number | undefined }>`
+const StyledWrapper = styled.div<{ length: number | undefined }>`
   ${({ theme, length }) => css`
     margin-bottom: 4em;
     & > div:first-child {

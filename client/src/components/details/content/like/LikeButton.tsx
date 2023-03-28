@@ -28,7 +28,7 @@ function LikeButton(
   };
 
   return (
-    <ButtonWrapper color="navy50">
+    <StyledWrapper color="navy50">
       <Button type="button" onClick={handleMoveToReview}>
         리뷰 {cinene?.votes}
       </Button>
@@ -41,13 +41,13 @@ function LikeButton(
         <Heart /> {data?.likes ?? '0'}
       </Button>
       {loginPortal.render()}
-    </ButtonWrapper>
+    </StyledWrapper>
   );
 }
 
 export default React.forwardRef(LikeButton);
 
-const ButtonWrapper = styled.div`
+const StyledWrapper = styled.div`
   display: flex;
   gap: 0 1em;
   margin-top: 1rem;

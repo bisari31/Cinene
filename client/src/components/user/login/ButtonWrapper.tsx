@@ -43,7 +43,7 @@ export default function ButtonWrapper({ type }: { type: PathName }) {
   };
 
   return (
-    <ButtonWrapperWrapper>
+    <StyledWrapper>
       <Button color="pink" size="fullWidth" type="submit">
         {type === 'login' ? '로그인' : '회원가입'}
       </Button>
@@ -58,11 +58,11 @@ export default function ButtonWrapper({ type }: { type: PathName }) {
           카카오톡 로그인
         </Button>
       )}
-    </ButtonWrapperWrapper>
+    </StyledWrapper>
   );
 }
 
-const ButtonWrapperWrapper = styled.div`
+const StyledWrapper = styled.div`
   & > button:nth-child(1) {
     margin-top: 3.5em;
   }

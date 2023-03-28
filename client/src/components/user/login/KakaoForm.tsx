@@ -29,7 +29,7 @@ export default function KakaoForm({ children }: { children: React.ReactNode }) {
   }, [focus]);
 
   return (
-    <KakaoFormWrapper onSubmit={handleSubmit}>
+    <StyledForm onSubmit={handleSubmit}>
       <Input
         value={location.state?.email}
         type="email"
@@ -47,11 +47,11 @@ export default function KakaoForm({ children }: { children: React.ReactNode }) {
         ref={nicknameRef}
       />
       {children}
-    </KakaoFormWrapper>
+    </StyledForm>
   );
 }
 
-const KakaoFormWrapper = styled.form`
+const StyledForm = styled.form`
   & > div:last-child {
   }
 `;

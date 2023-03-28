@@ -25,9 +25,9 @@ export default function LogoutButton() {
 
   return (
     <>
-      <Button color="pink" type="button" onClick={toggleModal}>
+      <StyledButton color="pink" type="button" onClick={toggleModal}>
         로그아웃
-      </Button>
+      </StyledButton>
       {isVisible && (
         <Portal>
           <Modal
@@ -46,7 +46,7 @@ export default function LogoutButton() {
   );
 }
 
-const Button = styled.button`
+const StyledButton = styled.button`
   ${buttonEffect}
   background-color: ${({ theme }) => theme.colors.pink};
 `;
