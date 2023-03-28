@@ -6,10 +6,8 @@ export default function MyPage() {
   useRedirection(true);
 
   return (
-    <div>
-      <Profile>
-        <Tab />
-      </Profile>
-    </div>
+    <Profile>
+      <Tab />
+    </Profile>
   );
 }
