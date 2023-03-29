@@ -3,6 +3,10 @@
     {
       "source": "/api/:path*",
       "destination": "https://cinene.herokuapp.com//:path*"
+    },
+    {
+      "source": "/api/:path*/",
+      "destination": "https://cinene.herokuapp.com//:path*/"
     }
   ]
 }
