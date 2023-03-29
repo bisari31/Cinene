@@ -1,7 +1,7 @@
 import Button from 'components/common/Button';
 import styled from 'styled-components';
 
-import { KAKAO_URI } from 'utils/api';
+import { KAKAO_URI } from 'utils/urls';
 import { AuthPagePathName } from 'pages/AuthPage';
 
 export default function AuthButton({ type }: { type: AuthPagePathName }) {

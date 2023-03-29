@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { logout } from 'services/user';
 import { buttonEffect } from 'styles/css';
 import { useAuth } from 'hooks/cinene';
-import { KAKAO_LOGOUT_URI } from 'utils/api';
+import { KAKAO_LOGOUT_URI } from 'utils/urls';
 
 import Modal from './Modal';
 import Portal from './Portal';
