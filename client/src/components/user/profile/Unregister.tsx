@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
-import { unregister } from 'services/user';
+import { kakaoUnregister, unregister } from 'services/user';
 import { useOutsideClick } from 'hooks';
 import { useAuth, useLoginPortal } from 'hooks/cinene';
 
@@ -10,13 +10,16 @@ import Portal from 'components/common/Portal';
 import Modal from 'components/common/Modal';
 
 export default function Unregister() {
-  const { setAuth } = useAuth();
+  const { auth, setAuth } = useAuth();
   const { openPortal, renderPortal } = useLoginPortal();
   const { ref, toggleModal, isVisible, isMotionVisible } = useOutsideClick(300);
   const navigate = useNavigate();
 
+  const conditionalUnRegister = () =>
+    auth?.kakao_id ? kakaoUnregister(auth?.kakao_id) : unregister();
+
   const handleUnregister = () => {
-    unregister()
+    conditionalUnRegister()
       .then(() => {
         setAuth(null);
         localStorage.removeItem('accessToken');

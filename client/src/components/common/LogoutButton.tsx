@@ -1,25 +1,29 @@
-import { authUserState } from 'atom/atom';
 import { useOutsideClick } from 'hooks';
-import { useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 import { logout } from 'services/user';
 import { buttonEffect } from 'styles/css';
+import { useAuth } from 'hooks/cinene';
+import { KAKAO_LOGOUT_URI } from 'utils/api';
 
 import Modal from './Modal';
 import Portal from './Portal';
 
 export default function LogoutButton() {
-  const setAuthUser = useSetRecoilState(authUserState);
+  const { auth, setAuth } = useAuth();
   const { ref, isVisible, isMotionVisible, toggleModal } = useOutsideClick(300);
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     toggleModal();
     try {
+      if (auth?.kakao_id) window.location.href = KAKAO_LOGOUT_URI;
       await logout();
+      navigate('/login');
     } finally {
       localStorage.removeItem('accessToken');
-      setAuthUser(null);
+      setAuth(null);
     }
   };
 

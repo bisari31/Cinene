@@ -1,10 +1,10 @@
 import { useAuth } from 'hooks/cinene';
 
 import Favorites from 'components/favorites';
-import LoginTriggerForm from 'components/LoginTriggerForm';
+import LoginPrompt from 'components/LoginPrompt';
 
 export default function FavoritesPage() {
   const { auth } = useAuth();
 
-  return auth ? <Favorites /> : <LoginTriggerForm />;
+  return auth ? <Favorites /> : <LoginPrompt />;
 }

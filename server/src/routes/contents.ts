@@ -66,7 +66,7 @@ router.get(
   async (req, res: CustomResponse<{ contents?: ContentInterface[] }>) => {
     try {
       const contents = await Content.find()
-        .sort({ average: -1 })
+        .sort({ votes: -1 })
         .limit(20)
         .lean();
       res.json({ success: true, contents });

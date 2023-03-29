@@ -11,8 +11,8 @@ interface Props {
   type: 'cinene' | 'tmdb';
 }
 const TITLE = {
-  cinene: '씨네네 최고 평점',
-  tmdb: 'TMDB 최고 평점',
+  cinene: '씨네네 인기 작품',
+  tmdb: 'TMDB 인기 작품',
 };
 
 export default function TopRated({ type }: Props) {

@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 
 import { Upload } from 'assets';
 import { USER_IMAGE } from 'utils/imageUrls';
-import { useAuth } from 'hooks/cinene';
+import { useAuth, useLoginPortal } from 'hooks/cinene';
 
 import Nickname from './Nickname';
 
@@ -13,14 +13,17 @@ interface Props {
 
 export default function Profile({ children }: Props) {
   const { auth, setAuth } = useAuth();
+  const { openPortal, renderPortal } = useLoginPortal();
   const createdAt = dayjs(auth?.createdAt).format(' YYYY년 MM월 DD일');
+
+  const hancdleImageChange = () => openPortal('서비스 준비중 입니다 😅');
 
   return (
     <StyledDiv>
       <StyledSection>
         <StyledImgWrapper>
           <img src={auth?.img || USER_IMAGE} alt="profile" />
-          <button type="button">
+          <button type="button" onClick={hancdleImageChange}>
             <Upload />
           </button>
         </StyledImgWrapper>
@@ -38,6 +41,7 @@ export default function Profile({ children }: Props) {
         </StyledNicknameWrapper>
       </StyledSection>
       {children}
+      {renderPortal()}
     </StyledDiv>
   );
 }
