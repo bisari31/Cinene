@@ -1,12 +1,10 @@
 import axios from 'axios';
 
-import { SERVER_HOST } from 'utils/api';
-
 export const getContent = async (type?: string, id?: number) => {
   if (!type) return null;
 
   const { data } = await axios.get<CustomResponse<{ content: CineneData }>>(
-    `${SERVER_HOST}/contents/${type}/${id}`,
+    `/api/contents/${type}/${id}`,
   );
   return data;
 };
@@ -19,15 +17,13 @@ export const createContent = async (body?: {
 }) => {
   if (!body) return null;
   const { data } = await axios.post<CustomResponse<{ content: CineneData }>>(
-    `${SERVER_HOST}/contents`,
+    '/api/contents',
     body,
   );
   return data;
 };
 
 export const getTopRated = async () => {
-  const { data } = await axios.get<TopRatedData>(
-    `${SERVER_HOST}/contents/top-rated`,
-  );
+  const { data } = await axios.get<TopRatedData>('/api/contents/top-rated');
   return data;
 };
