@@ -11,9 +11,9 @@ interface Props {
 
 function RatingButtons({ onClick, previousRating, rating }: Props) {
   return (
-    <RatingButtonsWrapper>
+    <StyledWrapper>
       {[1, 2, 3, 4, 5].map((value) => (
-        <Button
+        <StyledButton
           isIncreased={previousRating < rating}
           isFilled={rating >= value}
           onClick={() => onClick(value)}
@@ -21,21 +21,21 @@ function RatingButtons({ onClick, previousRating, rating }: Props) {
           type="button"
         >
           <Star />
-        </Button>
+        </StyledButton>
       ))}
-    </RatingButtonsWrapper>
+    </StyledWrapper>
   );
 }
 
 export default memo(RatingButtons);
 
-const RatingButtonsWrapper = styled.div`
+const StyledWrapper = styled.div`
   align-items: center;
   display: flex;
   justify-content: center;
 `;
 
-const Button = styled.button<{
+const StyledButton = styled.button<{
   isFilled: boolean;
   isIncreased: boolean;
 }>`

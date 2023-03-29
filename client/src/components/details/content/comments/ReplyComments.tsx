@@ -10,7 +10,7 @@ interface Props {
 
 export default function ReplyComments({ comments, responseId }: Props) {
   return (
-    <ReplyCommentsWrapper>
+    <StyledWrapper>
       {comments?.map((item) => (
         <CommentItem
           key={item._id}
@@ -19,11 +19,11 @@ export default function ReplyComments({ comments, responseId }: Props) {
         />
       ))}
       <CommentForm responseId={responseId} />
-    </ReplyCommentsWrapper>
+    </StyledWrapper>
   );
 }
 
-const ReplyCommentsWrapper = styled.div`
+const StyledWrapper = styled.div`
   align-items: flex-end;
   display: flex;
   flex-direction: column;

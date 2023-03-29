@@ -10,7 +10,7 @@ export interface UserInterface {
   nickname: string;
   img: string;
   refresh_token: string;
-  active: boolean;
+  kakao_id?: string;
 }
 
 export interface UserDocument extends UserInterface, Document {
@@ -53,9 +53,8 @@ const userSchema = new Schema<UserInterface>(
       type: String,
       default: '',
     },
-    active: {
-      type: Boolean,
-      default: true,
+    kakao_id: {
+      type: String,
     },
   },
   {

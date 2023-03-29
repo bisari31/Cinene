@@ -1,5 +1,3 @@
-export type RegexType = keyof typeof regexObj;
-
 export const emailRegex = /^[a-zA-Z0-9.-_]+@[a-zA-Z0-9.-_]+\.[a-zA-Z0-9]+$/;
 export const nicknameRegex = /^[a-zA-Z0-9가-힣]{2,10}$/;
 export const passwordRegex =

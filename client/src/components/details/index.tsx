@@ -14,7 +14,7 @@ import PersonContent from './PersonContent';
 export default function Details() {
   const setContentId = useSetRecoilState(contentIdState);
   const { ref, isVisible, toggleModal } = useOutsideClick();
-  const { id, path } = useCurrentPathName();
+  const { id, path } = useCurrentPathName<MediaType>();
   const { mediaData, personData, cineneData } = useDetailQuery(id, path);
   const { getImageUrl } = useImageUrl();
 
@@ -23,9 +23,9 @@ export default function Details() {
   }, [cineneData, setContentId]);
 
   return (
-    <DetailsWrapper src={getImageUrl(mediaData?.backdrop_path, 'full')}>
+    <StyledWrapper src={getImageUrl(mediaData?.backdrop_path, 'full')}>
       <div />
-      <Content>
+      <StyledContent>
         <div>
           <button type="button" onClick={toggleModal}>
             <img
@@ -53,7 +53,7 @@ export default function Details() {
             cineneData={cineneData}
           />
         )}
-      </Content>
+      </StyledContent>
       {isVisible && (
         <Portal>
           <ImageModal
@@ -68,11 +68,11 @@ export default function Details() {
           />
         </Portal>
       )}
-    </DetailsWrapper>
+    </StyledWrapper>
   );
 }
 
-const DetailsWrapper = styled.div<{ src: string }>`
+const StyledWrapper = styled.div<{ src: string }>`
   ${({ src }) => css`
     & > div:first-child {
       background: ${`linear-gradient(
@@ -89,7 +89,7 @@ const DetailsWrapper = styled.div<{ src: string }>`
     }
   `}
 `;
-const Content = styled.article`
+const StyledContent = styled.article`
   ${({ theme }) => css`
     display: flex;
     flex-direction: column;

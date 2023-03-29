@@ -2,9 +2,9 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { useQuery } from 'react-query';
 
-import useImageUrl from 'hooks/cinene/useImageUrl';
 import { queryOptions, tmdbKeys } from 'utils/queryOptions';
 import { getFilmography, getSimilarMedia } from 'services/tmdb';
+import { useImageUrl } from 'hooks/cinene';
 
 import Slider from 'components/common/Slider';
 
@@ -73,7 +73,7 @@ export default function SimilarMedia({ id, path, type }: Props) {
     <div>
       <Slider title={getTitle()}>
         {data?.map((item) => (
-          <List key={item.id}>
+          <StyledList key={item.id}>
             <Link
               to={`/${item.media_type ?? path}/${item.id}`}
               draggable="false"
@@ -85,14 +85,14 @@ export default function SimilarMedia({ id, path, type }: Props) {
               />
               <p>{'title' in item ? item.title : item.name}</p>
             </Link>
-          </List>
+          </StyledList>
         ))}
       </Slider>
     </div>
   );
 }
 
-const List = styled.li`
+const StyledList = styled.li`
   img {
     border-radius: 30px;
     height: 200px;

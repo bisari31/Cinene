@@ -8,7 +8,7 @@ import { slideDown, slideUp } from 'styles/css';
 import { queryOptions, tmdbKeys } from 'utils/queryOptions';
 import { useDebounce, useFocus } from 'hooks';
 
-import SearchItem, { List } from './SearchItem';
+import SearchItem, { StyledItem } from './SearchItem';
 
 interface Props {
   isVisible?: boolean;
@@ -27,7 +27,7 @@ function SearchBar(
   const totalIndexRef = useRef(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
-  const focus = useFocus(inputRef);
+  const { focus } = useFocus(inputRef);
   const handleDebounceChange = useDebounce<React.ChangeEvent<HTMLInputElement>>(
     (e) => setDebouncedKeyword(e.target.value),
     300,
@@ -96,11 +96,11 @@ function SearchBar(
   }, [data]);
 
   useEffect(() => {
-    focus.start();
+    focus();
   }, [focus]);
 
   return (
-    <SearchBarWrapper
+    <StyledWrapper
       isResultsVisible={isResultsVisible}
       isVisible={isVisible}
       hasData={!!data?.length}
@@ -118,11 +118,11 @@ function SearchBar(
 
         {keyword.length && keyword === debouncedKeyWord && !data?.length ? (
           <div>
-            <List noResults>
+            <StyledItem noResults>
               <button type="button">
                 <span>{debouncedKeyWord}의 검색 결과가 없습니다.</span>
               </button>
-            </List>
+            </StyledItem>
           </div>
         ) : (
           <div>
@@ -140,13 +140,13 @@ function SearchBar(
           </div>
         )}
       </div>
-    </SearchBarWrapper>
+    </StyledWrapper>
   );
 }
 
 export default React.forwardRef(SearchBar);
 
-const SearchBarWrapper = styled.div<{
+const StyledWrapper = styled.div<{
   hasData: boolean;
   isVisible: boolean;
   isResultsVisible: boolean;

@@ -4,14 +4,14 @@ import { useEffect } from 'react';
 
 import { autheticate, getAccessToken } from 'services/user';
 import { useOutsideClick } from 'hooks';
-import useAuthQuery from '../../hooks/cinene/useAuth';
+import { useAuth } from 'hooks/cinene';
 
 import AuthMenu from './AuthMenu';
 import SearchBar from './searchbar/SearchBar';
 import SideMenu from './SideMenu';
 
 export default function Header() {
-  const { auth, setAuth } = useAuthQuery();
+  const { auth, setAuth } = useAuth();
   const { ref, isVisible, toggleModal, isMotionVisible } = useOutsideClick(300);
 
   useEffect(() => {
@@ -29,34 +29,34 @@ export default function Header() {
   }, [setAuth]);
 
   return (
-    <HeaderWrapper>
-      <Logo>
+    <StyledHeader>
+      <StyledLogo>
         <SideMenu auth={auth} />
         <h1>
           <Link to="/">Cinene</Link>
         </h1>
-      </Logo>
+      </StyledLogo>
       {isVisible && (
-        <SearchWrapper isHidden={!isVisible}>
+        <StyledSearchWrapper isHidden={!isVisible}>
           <SearchBar
             ref={ref}
             isVisible={isMotionVisible}
             closeSearchBar={toggleModal}
           />
-        </SearchWrapper>
+        </StyledSearchWrapper>
       )}
       <AuthMenu auth={auth} setIsVisible={toggleModal} />
-    </HeaderWrapper>
+    </StyledHeader>
   );
 }
 
-const HeaderWrapper = styled.header`
+const StyledHeader = styled.header`
   align-items: center;
   display: flex;
   justify-content: space-between;
 `;
 
-const Logo = styled.div`
+const StyledLogo = styled.div`
   align-items: center;
   display: flex;
   flex: 1;
@@ -67,7 +67,7 @@ const Logo = styled.div`
   }
 `;
 
-const SearchWrapper = styled.div<{ isHidden: boolean }>`
+const StyledSearchWrapper = styled.div<{ isHidden: boolean }>`
   ${({ isHidden, theme }) => css`
     align-items: center;
     background-color: red;

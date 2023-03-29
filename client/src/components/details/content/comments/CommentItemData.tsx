@@ -15,14 +15,14 @@ interface Props {
 }
 
 function CommentItemData({ commentItem, openModal }: Props) {
-  const contentId = useRecoilValue(contentIdState);
-  const { auth } = useAuth();
   const [comment, setComment] = useState(commentItem?.comment ?? '');
   const [isEditing, setIsEditing] = useState(false);
-  const { queryClient, errorHandler } = useMutationOptions(openModal);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const resizeHeight = useResizeHeight(textareaRef);
-  const focus = useFocus(textareaRef);
+  const contentId = useRecoilValue(contentIdState);
+  const { auth } = useAuth();
+  const { queryClient, errorHandler } = useMutationOptions(openModal);
+  const { focusToEnd } = useFocus(textareaRef);
+  const { resetHeight, setScrollHeight } = useResizeHeight(textareaRef);
   const { mutate: deleteCommentMutate } = useMutation(deleteComment, {
     onSuccess: () =>
       queryClient.invalidateQueries(cineneKeys.comments(contentId)),
@@ -40,8 +40,8 @@ function CommentItemData({ commentItem, openModal }: Props) {
   const handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setComment(e.target.value);
     if (textareaRef.current) {
-      resizeHeight.reset();
-      resizeHeight.setScroll();
+      resetHeight();
+      setScrollHeight();
     }
   };
 
@@ -67,18 +67,19 @@ function CommentItemData({ commentItem, openModal }: Props) {
 
   useEffect(() => {
     if (isEditing) {
-      resizeHeight.setScroll();
-      focus.end();
+      setScrollHeight();
+      focusToEnd();
     }
-  }, [isEditing, resizeHeight, focus]);
+  }, [isEditing, setScrollHeight, focusToEnd]);
 
   return (
     <StyledItem
+      isDeletedUser={!commentItem?.author?.nickname}
       date={useGetRelativeTime(commentItem?.createdAt, commentItem?.updatedAt)}
     >
       <div>
-        <p>{commentItem?.author.nickname}</p>
-        {auth?._id === commentItem?.author._id && (
+        <p>{commentItem?.author?.nickname ?? '탈퇴 회원'}</p>
+        {auth && auth?._id === commentItem?.author?._id && (
           <>
             <button type="button" onClick={handleCommentEdit}>
               {isEditing ? '완료' : '수정'}
@@ -107,8 +108,8 @@ function CommentItemData({ commentItem, openModal }: Props) {
 
 export default memo(CommentItemData);
 
-export const StyledItem = styled.div<{ date: string }>`
-  ${({ theme, date }) => css`
+export const StyledItem = styled.div<{ date: string; isDeletedUser: boolean }>`
+  ${({ theme, date, isDeletedUser }) => css`
     flex: 1;
     line-height: 1.2;
     div {
@@ -117,7 +118,8 @@ export const StyledItem = styled.div<{ date: string }>`
       margin-bottom: 0.3em;
       p {
         font-size: 0.9rem;
-        font-weight: 500;
+        font-weight: ${isDeletedUser ? 400 : 500};
+        color: ${isDeletedUser && theme.colors.gray500};
         &::after {
           color: ${theme.colors.gray500};
           content: '${date && date}';

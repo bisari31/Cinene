@@ -1,11 +1,10 @@
 import { ReactNode, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useMutation } from 'react-query';
+import { useSetRecoilState } from 'recoil';
 
 import { useInput } from 'hooks/cinene';
-import { useMutation } from 'react-query';
 import { login, register } from 'services/user';
-import { useFocus } from 'hooks';
-import { useNavigate } from 'react-router-dom';
-import { useSetRecoilState } from 'recoil';
 import { authUserState } from 'atom/atom';
 
 import Input from 'components/common/Input';
@@ -17,32 +16,24 @@ interface Props {
   children: ReactNode;
 }
 
-export default function Form({ children, isLogin }: Props) {
+export default function AuthForm({ children, isLogin }: Props) {
   const password = useInput('password');
-  const confirmPassword = useInput('password', password.value);
+  const passwordConfirm = useInput('password', '', password.value);
   const nickname = useInput('nickname');
   const email = useInput('email');
   const [message, setMessage] = useState('');
-  const focus = useFocus(email.ref);
   const navigate = useNavigate();
   const setAuthUser = useSetRecoilState(authUserState);
 
   const { mutate: loginMutate } = useMutation(login, {
-    onSuccess: ({ accessToken, user }) => {
+    onSuccess: ({ user }) => {
       setAuthUser(user);
-      localStorage.setItem('accessToken', accessToken);
       navigate('/');
     },
     onError: (err: AxiosError) => {
-      const { data, status } = err.response;
-      if (status === 404) {
-        password.setValue('');
-        email.setValue('');
-        focus.start();
-      } else {
-        password.setError(' ');
-        password.setValue('');
-      }
+      const { data } = err.response;
+      password.setError(' ');
+      password.setValue('');
       setMessage(data.message ?? '');
     },
   });
@@ -66,38 +57,27 @@ export default function Form({ children, isLogin }: Props) {
     },
   });
 
-  const checkEmptyValue = () => {
-    const values = [
-      email.value,
-      password.value,
-      nickname.value,
-      confirmPassword.value,
-    ];
-    const setErrors = [
-      email.setError,
-      password.setError,
-      nickname.setError,
-      confirmPassword.setError,
-    ];
-    const result = values.filter((value, index) => {
-      if (index >= (isLogin ? 2 : 4)) return false;
-      if (!value) {
-        setErrors[index](EMPTY_ERROR_MESSAGE);
-        return true;
+  const checkEmptyValue = (...inputs: typeof email[]) =>
+    !!inputs.reduce((count, input, index) => {
+      if (index >= (isLogin ? 2 : inputs.length)) return count;
+      if (!input.value) {
+        input.setError(EMPTY_ERROR_MESSAGE);
+        return count + 1;
       }
-      return false;
-    }).length;
-    return !!result;
-  };
+      return count;
+    }, 0);
+
+  const checkError = (...inputs: typeof email[]) =>
+    inputs.some((input) => input.error);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const isEmpty = checkEmptyValue();
-    const isError =
-      email.error || password.error || nickname.error || confirmPassword.error;
+    const isEmpty = checkEmptyValue(email, password, nickname, passwordConfirm);
+    const isError = checkError(email, password, nickname, passwordConfirm);
     if (isEmpty || isError) return;
-    if (!isLogin && password.value !== confirmPassword.value) {
-      confirmPassword.setError('비밀번호가 일치하지 않습니다.');
+    if (!isLogin && password.value !== passwordConfirm.value) {
+      passwordConfirm.setError('비밀번호가 일치하지 않습니다.');
+      return;
     }
     const body = {
       email: email.value,
@@ -112,9 +92,7 @@ export default function Form({ children, isLogin }: Props) {
   };
 
   useEffect(() => {
-    if (password.value && message) {
-      setMessage('');
-    }
+    if (password.value && message) setMessage('');
   }, [message, setMessage, password.value]);
 
   return (
@@ -153,14 +131,14 @@ export default function Form({ children, isLogin }: Props) {
       />
       {!isLogin && (
         <Input
-          errorMessage={confirmPassword.error}
+          errorMessage={passwordConfirm.error}
           label="비밀번호 확인"
           placeholder="영문,숫자 포함 8~16자"
-          value={confirmPassword.value}
-          onChange={confirmPassword.handleChange}
+          value={passwordConfirm.value}
+          onChange={passwordConfirm.handleChange}
           type="password"
-          onBlur={confirmPassword.handleBlur}
-          ref={confirmPassword.ref}
+          onBlur={passwordConfirm.handleBlur}
+          ref={passwordConfirm.ref}
         />
       )}
       <p>{message}</p>

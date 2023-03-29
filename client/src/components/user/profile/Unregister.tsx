@@ -1,23 +1,25 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
-import { unregister } from 'services/user';
+import { kakaoUnregister, unregister } from 'services/user';
 import { useOutsideClick } from 'hooks';
-import useAuthQuery from 'hooks/cinene/useAuth';
-import { useLoginPortal } from 'hooks/cinene';
+import { useAuth, useLoginPortal } from 'hooks/cinene';
 
 import Button from 'components/common/Button';
 import Portal from 'components/common/Portal';
 import Modal from 'components/common/Modal';
 
 export default function Unregister() {
-  const { setAuth } = useAuthQuery();
-  const loginPortal = useLoginPortal();
+  const { auth, setAuth } = useAuth();
+  const { openPortal, renderPortal } = useLoginPortal();
   const { ref, toggleModal, isVisible, isMotionVisible } = useOutsideClick(300);
   const navigate = useNavigate();
 
+  const conditionalUnRegister = () =>
+    auth?.kakao_id ? kakaoUnregister(auth?.kakao_id) : unregister();
+
   const handleUnregister = () => {
-    unregister()
+    conditionalUnRegister()
       .then(() => {
         setAuth(null);
         localStorage.removeItem('accessToken');
@@ -26,15 +28,15 @@ export default function Unregister() {
       .catch((err: AxiosError) => {
         if (err.response.status === 401) {
           setAuth(null);
-          loginPortal.open();
+          openPortal();
         } else {
-          loginPortal.open(`${err.response.data.message} 😭`);
+          openPortal(`${err.response.data.message} 😭`);
         }
       });
   };
 
   return (
-    <UnregisterWrapper>
+    <StyledWrapper>
       <Button type="submit" color="pink" size="fullWidth" onClick={toggleModal}>
         회원 탈퇴
       </Button>
@@ -52,12 +54,12 @@ export default function Unregister() {
           </Modal>
         </Portal>
       )}
-      {loginPortal.render()}
-    </UnregisterWrapper>
+      {renderPortal()}
+    </StyledWrapper>
   );
 }
 
-const UnregisterWrapper = styled.div`
+const StyledWrapper = styled.div`
   align-items: center;
   display: flex;
   flex: 1;

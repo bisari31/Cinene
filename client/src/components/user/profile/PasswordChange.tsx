@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useMutation } from 'react-query';
 import styled from 'styled-components';
 import { useSetRecoilState } from 'recoil';
@@ -12,60 +12,52 @@ import Input from 'components/common/Input';
 
 export default function ChangePassword() {
   const setAuth = useSetRecoilState(authUserState);
-  const {
-    error: passwordError,
-    handleBlur: handlePasswordBlur,
-    value: password,
-    ref: passwordRef,
-    setError: setPasswordError,
-    handleChange: handlePasswordChange,
-    setValue: setPassword,
-  } = useInput('password');
-  const loginPortal = useLoginPortal();
+  const password = useInput('password');
+  const { openPortal, renderPortal } = useLoginPortal();
   const { mutate } = useMutation(changePassword, {
     onSuccess: () => {
-      loginPortal.open('비밀번호 변경 성공');
-      setPassword('');
-      passwordRef.current?.blur();
+      openPortal('비밀번호 변경 성공');
+      password.setValue('');
+      password.ref.current?.blur();
     },
     onError: ({ response }: AxiosError) => {
       if (response.status === 401) {
-        loginPortal.open();
+        openPortal();
         setAuth(null);
       } else {
-        setPasswordError('비밀번호 변경 실패');
+        password.setError('비밀번호 변경 실패');
       }
     },
   });
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (passwordError) return;
-    if (!password) {
-      setPasswordError('비밀번호를 입력해 주세요');
+    if (password.error) return;
+    if (!password.value) {
+      password.setError('비밀번호를 입력해 주세요');
       return;
     }
-    mutate(password);
+    mutate(password.value);
   };
 
   return (
     <StyledDiv>
       <form onSubmit={handleSubmit}>
         <Input
-          ref={passwordRef}
+          ref={password.ref}
           label="변경 비밀번호"
           type="password"
           placeholder="영문,숫자 포함 8~16자"
-          value={password}
-          onChange={handlePasswordChange}
-          errorMessage={passwordError}
-          onBlur={handlePasswordBlur}
+          value={password.value}
+          onChange={password.handleChange}
+          errorMessage={password.error}
+          onBlur={password.handleBlur}
         />
         <Button color="pink" size="fullWidth" type="submit">
           비밀번호 변경
         </Button>
       </form>
-      {loginPortal.render()}
+      {renderPortal()}
     </StyledDiv>
   );
 }

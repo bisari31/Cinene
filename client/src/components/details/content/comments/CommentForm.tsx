@@ -18,10 +18,10 @@ export default function CommentForm({ responseId }: Props) {
   const contentId = useRecoilValue(contentIdState);
   const [comment, setComment] = useState('');
   const { auth } = useAuth();
-  const loginPortal = useLoginPortal();
-  const { errorHandler, queryClient } = useMutationOptions(loginPortal.open);
+  const { openPortal, renderPortal } = useLoginPortal();
+  const { errorHandler, queryClient } = useMutationOptions(openPortal);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const resizeHeight = useResizeHeight(textareaRef);
+  const { resetHeight, setScrollHeight } = useResizeHeight(textareaRef);
 
   const { mutate } = useMutation(createComment, {
     onSuccess: () => {
@@ -36,7 +36,7 @@ export default function CommentForm({ responseId }: Props) {
     e.preventDefault();
     if (!comment) return;
     if (!auth) {
-      loginPortal.open();
+      openPortal();
       return;
     }
     mutate({
@@ -48,12 +48,12 @@ export default function CommentForm({ responseId }: Props) {
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setComment(e.target.value);
-    resizeHeight.reset();
-    resizeHeight.setScroll();
+    resetHeight();
+    setScrollHeight();
   };
 
   return (
-    <CommentFormWrapper onSubmit={handleSubmit} color="navy50">
+    <StyledForm onSubmit={handleSubmit} color="navy50">
       <textarea
         rows={1}
         ref={textareaRef}
@@ -63,12 +63,12 @@ export default function CommentForm({ responseId }: Props) {
         onChange={handleChange}
       />
       <button type="submit">등록</button>
-      {loginPortal.render()}
-    </CommentFormWrapper>
+      {renderPortal()}
+    </StyledForm>
   );
 }
 
-const CommentFormWrapper = styled.form`
+const StyledForm = styled.form`
   ${({ theme }) => css`
     display: flex;
     margin: 2em 0;

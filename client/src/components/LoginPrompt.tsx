@@ -1,8 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+
 import Button from './common/Button';
 
-export default function LoginTriggerForm() {
+export default function LoginPrompt() {
   const navigate = useNavigate();
   return (
     <StyledDiv>

@@ -25,12 +25,12 @@ export default function Genre({ data }: Props) {
 
   return (
     <StyledDiv>
-      <ReleaseIcon>{getReleaseDate()}</ReleaseIcon>
-      <ReleaseIcon>
+      <StyledRelease>{getReleaseDate()}</StyledRelease>
+      <StyledRelease>
         {isMovieDetails ? `${data.runtime}분` : `시즌 ${data?.seasons.length}`}
-      </ReleaseIcon>
+      </StyledRelease>
       {data?.genres.map(({ id, name }) => (
-        <GenreIcon key={id}>{name}</GenreIcon>
+        <StyledGenre key={id}>{name}</StyledGenre>
       ))}
     </StyledDiv>
   );
@@ -52,10 +52,10 @@ const StyledDiv = styled.div`
     }
   `}
 `;
-const ReleaseIcon = styled.p`
+const StyledRelease = styled.p`
   background-color: ${({ theme }) => theme.colors.pink};
 `;
 
-const GenreIcon = styled.p`
+const StyledGenre = styled.p`
   background-color: ${({ theme }) => theme.colors.navy50};
 `;

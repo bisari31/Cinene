@@ -4,7 +4,8 @@ declare namespace NodeJS {
       PORT: string;
       DB_URL: string;
       PRIVATE_KEY: string;
-      KAKAO_API_KEY: string;
+      KAKAO_REST_API_KEY: string;
+      KAKAO_ADMIN_KEY: string;
     };
   }
 }

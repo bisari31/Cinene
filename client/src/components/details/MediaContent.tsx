@@ -20,7 +20,7 @@ interface Props {
 function MediaContent({ path, tmdbData, id, cineneData }: Props) {
   const reviewRef = useRef<HTMLHeadingElement>(null);
   return (
-    <DescriptionWrapper>
+    <StyledWrapper>
       <Average
         tmdbAverage={tmdbData?.vote_average}
         cineneData={cineneData}
@@ -37,13 +37,13 @@ function MediaContent({ path, tmdbData, id, cineneData }: Props) {
       <Credits id={id} path={path} />
       <Reviews ref={reviewRef} data={cineneData} />
       <Comment />
-    </DescriptionWrapper>
+    </StyledWrapper>
   );
 }
 
 export default memo(MediaContent);
 
-const DescriptionWrapper = styled.div`
+const StyledWrapper = styled.div`
   ${({ theme }) => css`
     & > div:first-child {
       margin-bottom: 2em;

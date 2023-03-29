@@ -92,6 +92,7 @@ export default function Slider({ children, title }: Props) {
   };
 
   const setTranslateX = (pageX: number, element: HTMLElement) => {
+    if (Math.abs(startX - pageX) < 20) return;
     if (startX > pageX) {
       nextSlide(element);
     } else {
@@ -116,7 +117,7 @@ export default function Slider({ children, title }: Props) {
       setClientWidth(ref.current.clientWidth);
       setMaxWidth(ref.current.clientWidth - ref.current.scrollWidth);
     }
-  }, []);
+  }, [ref]);
 
   const getThrottleWidth = useThrottle(getWidth, 1000);
 
@@ -146,7 +147,7 @@ export default function Slider({ children, title }: Props) {
   });
 
   return (
-    <SliderWrapper disable={isDragging}>
+    <StyledWrapper disable={isDragging}>
       <h3>{title}</h3>
       <ul
         ref={ref}
@@ -162,20 +163,20 @@ export default function Slider({ children, title }: Props) {
         {children}
       </ul>
       {!!maxWidth && (
-        <ButtonWrapper color="navy50">
+        <StyledButtonWrapper color="navy50">
           <button type="button" onClick={prevSlide}>
             <ChevronLeft />
           </button>
           <button type="button" onClick={() => nextSlide(ref.current)}>
             <ChevronRight />
           </button>
-        </ButtonWrapper>
+        </StyledButtonWrapper>
       )}
-    </SliderWrapper>
+    </StyledWrapper>
   );
 }
 
-const SliderWrapper = styled.div<{ disable: boolean }>`
+const StyledWrapper = styled.div<{ disable: boolean }>`
   ${({ disable }) => css`
     margin-bottom: 4rem;
     overflow: hidden;
@@ -191,7 +192,7 @@ const SliderWrapper = styled.div<{ disable: boolean }>`
   `}
 `;
 
-const ButtonWrapper = styled.div`
+const StyledButtonWrapper = styled.div`
   ${({ theme }) => css`
     position: absolute;
     right: 0;

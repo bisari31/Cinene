@@ -13,12 +13,8 @@ function LikeButton(
   { cinene }: Props,
   ref: React.ForwardedRef<HTMLHeadingElement>,
 ) {
-  const loginPortal = useLoginPortal();
-  const { data, mutate } = useLikeQuery(
-    'content',
-    cinene?._id,
-    loginPortal.open,
-  );
+  const { openPortal, renderPortal } = useLoginPortal();
+  const { data, mutate } = useLikeQuery('content', cinene?._id, openPortal);
 
   const handleMoveToReview = () => {
     if (typeof ref === 'object' && ref) {
@@ -28,7 +24,7 @@ function LikeButton(
   };
 
   return (
-    <ButtonWrapper color="navy50">
+    <StyledWrapper color="navy50">
       <Button type="button" onClick={handleMoveToReview}>
         리뷰 {cinene?.votes}
       </Button>
@@ -40,14 +36,14 @@ function LikeButton(
       >
         <Heart /> {data?.likes ?? '0'}
       </Button>
-      {loginPortal.render()}
-    </ButtonWrapper>
+      {renderPortal()}
+    </StyledWrapper>
   );
 }
 
 export default React.forwardRef(LikeButton);
 
-const ButtonWrapper = styled.div`
+const StyledWrapper = styled.div`
   display: flex;
   gap: 0 1em;
   margin-top: 1rem;

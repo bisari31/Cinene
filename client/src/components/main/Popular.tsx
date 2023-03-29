@@ -39,45 +39,49 @@ export default function Popular() {
 
   return (
     <section>
-      <Background src={getImageUrl(currentData?.backdrop_path, 'full')} />
-      <Item>
+      <StyledBackdrop src={getImageUrl(currentData?.backdrop_path, 'full')} />
+      <StyledWrapper>
         <div>
-          <Category>
+          <StyledCategory>
             <Average
               tmdbAverage={currentData?.vote_average}
               cineneData={cineneData}
             />
-          </Category>
-          <Overview>
+          </StyledCategory>
+          <StyledOverview>
             <p>
               {mediaData && 'title' in mediaData
                 ? mediaData.title
                 : mediaData?.name}
             </p>
             <p>{mediaData?.overview}</p>
-          </Overview>
-          <ButtonWrapper color="pink">
+          </StyledOverview>
+          <StyledButtonWrapper color="pink">
             <Link to={`/${currentData?.media_type}/${currentData?.id}`}>
               자세히 보기
             </Link>
-            <Button
+            <StyledButton
               color="navy50"
               type="button"
               onClick={() => handleSlide(-1)}
             >
               <ChevronLeft />
-            </Button>
-            <Button color="navy50" type="button" onClick={() => handleSlide(1)}>
+            </StyledButton>
+            <StyledButton
+              color="navy50"
+              type="button"
+              onClick={() => handleSlide(1)}
+            >
               <ChevronRight />
-            </Button>
-          </ButtonWrapper>
+            </StyledButton>
+          </StyledButtonWrapper>
         </div>
-      </Item>
+      </StyledWrapper>
     </section>
   );
 }
 
-const Background = styled.div<{ src: string }>`
+const StyledBackdrop = styled.div<{ src: string }>`
   ${({ src }) => css`
     background: ${`linear-gradient(
         rgba(24, 25, 32, 0.5) 70vh,
@@ -93,7 +97,7 @@ const Background = styled.div<{ src: string }>`
   `}
 `;
 
-const Item = styled.div`
+const StyledWrapper = styled.div`
   ${({ theme }) => css`
     align-items: flex-end;
     display: flex;
@@ -115,7 +119,7 @@ const Item = styled.div`
   `}
 `;
 
-const Category = styled.div`
+const StyledCategory = styled.div`
   ${({ theme }) => css`
     display: flex;
     flex-direction: column;
@@ -131,7 +135,7 @@ const Category = styled.div`
   `}
 `;
 
-const Overview = styled.div`
+const StyledOverview = styled.div`
   display: flex;
   flex-direction: column;
 
@@ -159,7 +163,7 @@ const Overview = styled.div`
   }
 `;
 
-const ButtonWrapper = styled.div`
+const StyledButtonWrapper = styled.div`
   ${({ theme }) => css`
     align-items: center;
     display: flex;
@@ -182,7 +186,7 @@ const ButtonWrapper = styled.div`
   `}
 `;
 
-const Button = styled.button`
+const StyledButton = styled.button`
   background-color: ${({ theme }) => theme.colors.navy50};
   border: none;
   border-radius: 12px;

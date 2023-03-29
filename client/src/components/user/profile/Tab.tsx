@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 
 import { useDebounce } from 'hooks';
+
 import Unregister from './Unregister';
 import ChangePassword from './PasswordChange';
 
@@ -27,8 +28,8 @@ interface Item {
 export default function Tab() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [width, setWidth] = useState<number>(0);
-
   const liRef = useRef<HTMLLIElement>(null);
+
   const handleClick = (index: number) => setActiveIndex(index);
 
   const getElementWidth = () => {
@@ -46,27 +47,27 @@ export default function Tab() {
   }, [debouncedHandler]);
 
   return (
-    <Wrapper>
+    <StyledWrapper>
       <ul>
         {TAB.map((item, index) => (
-          <List key={item.id} isActive={index === activeIndex} ref={liRef}>
+          <StyledLi key={item.id} isActive={index === activeIndex} ref={liRef}>
             <button type="button" onClick={() => handleClick(index)}>
               {item.text}
             </button>
-          </List>
+          </StyledLi>
         ))}
-        <SlideBar index={activeIndex} width={width} />
+        <StyledSlideBar index={activeIndex} width={width} />
       </ul>
       {TAB[activeIndex].type === 'changePassword' ? (
         <ChangePassword />
       ) : (
         <Unregister />
       )}
-    </Wrapper>
+    </StyledWrapper>
   );
 }
 
-const Wrapper = styled.section`
+const StyledWrapper = styled.section`
   ${({ theme }) => css`
     margin-top: 3em;
     ul {
@@ -91,7 +92,7 @@ const Wrapper = styled.section`
   `}
 `;
 
-const List = styled.li<{ isActive: boolean }>`
+const StyledLi = styled.li<{ isActive: boolean }>`
   ${({ theme, isActive }) => css`
     display: flex;
     align-items: center;
@@ -109,7 +110,7 @@ const List = styled.li<{ isActive: boolean }>`
   `}
 `;
 
-const SlideBar = styled.div<{ index: number; width: number }>`
+const StyledSlideBar = styled.div<{ index: number; width: number }>`
   ${({ index, width }) => css`
     background-color: #fff;
     border-radius: 2px;

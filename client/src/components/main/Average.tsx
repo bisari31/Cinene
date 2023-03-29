@@ -17,7 +17,7 @@ export default function Average({
   const average = sliceAverage(tmdbAverage);
 
   return (
-    <AverageWrapper>
+    <StyledWrapper>
       <div>
         <Star />
         <span>
@@ -30,11 +30,11 @@ export default function Average({
           <span>TMDB {average}</span>
         </div>
       )}
-    </AverageWrapper>
+    </StyledWrapper>
   );
 }
 
-const AverageWrapper = styled.div`
+const StyledWrapper = styled.div`
   ${({ theme }) => css`
     align-items: center;
     display: flex;

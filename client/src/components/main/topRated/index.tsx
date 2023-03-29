@@ -1,4 +1,3 @@
-import styled from 'styled-components';
 import { useQuery } from 'react-query';
 
 import { getTopRatedMovie } from 'services/tmdb';
@@ -12,8 +11,8 @@ interface Props {
   type: 'cinene' | 'tmdb';
 }
 const TITLE = {
-  cinene: '씨네네 최고 평점',
-  tmdb: 'TMDB 최고 평점',
+  cinene: '씨네네 인기 작품',
+  tmdb: 'TMDB 인기 작품',
 };
 
 export default function TopRated({ type }: Props) {
@@ -26,7 +25,7 @@ export default function TopRated({ type }: Props) {
   });
 
   return (
-    <TopRatedWrapper>
+    <div>
       <Slider title={TITLE[type]}>
         <ul>
           {type === 'cinene'
@@ -36,8 +35,6 @@ export default function TopRated({ type }: Props) {
             : data?.map((item) => <TopRatedItem key={item.id} item={item} />)}
         </ul>
       </Slider>
-    </TopRatedWrapper>
+    </div>
   );
 }
-
-const TopRatedWrapper = styled.div``;

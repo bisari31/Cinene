@@ -5,11 +5,10 @@ import { useQuery } from 'react-query';
 import { getReviews } from 'services/review';
 import { buttonEffect } from 'styles/css';
 import { cineneKeys } from 'utils/queryOptions';
-import { useLoginPortal } from 'hooks/cinene';
-import useAuthQuery from 'hooks/cinene/useAuth';
+import { useAuth, useLoginPortal } from 'hooks/cinene';
+import { useOutsideClick } from 'hooks';
 
 import Button from 'components/common/Button';
-import { useOutsideClick } from 'hooks';
 import ReviewList from './ReviewList';
 import ReviewModal from './reviewModal/index';
 
@@ -18,8 +17,8 @@ interface Props {
 }
 
 function Reviews({ data }: Props, ref: ForwardedRef<HTMLHeadingElement>) {
-  const { auth } = useAuthQuery();
-  const loginPortal = useLoginPortal();
+  const { auth } = useAuth();
+  const { openPortal, renderPortal } = useLoginPortal();
   const {
     isMotionVisible,
     toggleModal,
@@ -34,11 +33,11 @@ function Reviews({ data }: Props, ref: ForwardedRef<HTMLHeadingElement>) {
 
   const handleCreateReview = () => {
     if (auth) toggleModal();
-    else loginPortal.open();
+    else openPortal();
   };
 
   return (
-    <ReviewsWrapper length={reivewData?.reviews?.length}>
+    <StyledWrapper length={reivewData?.reviews?.length}>
       <div>
         <h3 ref={ref}>리뷰</h3>
         {!reivewData?.hasReview && (
@@ -62,14 +61,14 @@ function Reviews({ data }: Props, ref: ForwardedRef<HTMLHeadingElement>) {
           ref={modalRef}
         />
       )}
-      {loginPortal.render()}
-    </ReviewsWrapper>
+      {renderPortal()}
+    </StyledWrapper>
   );
 }
 
 export default forwardRef(Reviews);
 
-const ReviewsWrapper = styled.div<{ length: number | undefined }>`
+const StyledWrapper = styled.div<{ length: number | undefined }>`
   ${({ theme, length }) => css`
     margin-bottom: 4em;
     & > div:first-child {

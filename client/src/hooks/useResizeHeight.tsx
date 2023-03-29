@@ -3,12 +3,12 @@ import { RefObject, useCallback } from 'react';
 export default function useResizeHeight<T extends HTMLElement>(
   ref: RefObject<T>,
 ) {
-  const reset = useCallback(() => {
+  const resetHeight = useCallback(() => {
     if (ref.current) ref.current.style.height = 'auto';
   }, [ref]);
-  const setScroll = useCallback(() => {
+  const setScrollHeight = useCallback(() => {
     if (ref.current) ref.current.style.height = `${ref.current.scrollHeight}px`;
   }, [ref]);
 
-  return { reset, setScroll };
+  return { resetHeight, setScrollHeight };
 }
