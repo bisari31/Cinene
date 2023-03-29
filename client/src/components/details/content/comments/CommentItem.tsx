@@ -44,7 +44,7 @@ export default function CommentItem({
   return (
     <>
       <StyledWrapper key={commentItem?._id} isResponse={isResponse}>
-        <img src={commentItem?.author.img || USER_IMAGE} alt="user_poster" />
+        <img src={commentItem?.author?.img || USER_IMAGE} alt="user_poster" />
         <CommentItemData openModal={openPortal} commentItem={commentItem} />
         <StyledButtonWrpper color="navy50">
           <Button

@@ -20,7 +20,7 @@ export default function ReviewItem({ review, onClick }: Props) {
   const { author, comment, rating, createdAt, updatedAt, _id } = review;
   const { openPortal, renderPortal } = useLoginPortal();
   const { auth } = useAuth();
-  const { id, path } = useCurrentPathName();
+  const { id, path } = useCurrentPathName<MediaType>();
   const { errorHandler, queryClient } = useMutationOptions(openPortal);
 
   const { mutate: handleDeleteReview } = useMutation(deleteReview, {
@@ -30,11 +30,14 @@ export default function ReviewItem({ review, onClick }: Props) {
 
   return (
     <StyledWrapper>
-      <img src={author.img || USER_IMAGE} alt="user_avatar" />
-      <StyledItem date={useGetRelativeTime(createdAt, updatedAt)}>
+      <img src={author?.img || USER_IMAGE} alt="user_avatar" />
+      <StyledItem
+        isDeletedUser={!author?.nickname}
+        date={useGetRelativeTime(createdAt, updatedAt)}
+      >
         <div>
-          <p>{author.nickname}</p>
-          {author._id === auth?._id && (
+          <p>{author?.nickname ?? '탈퇴 회원'}</p>
+          {auth && author?._id === auth?._id && (
             <>
               <button type="button" onClick={onClick}>
                 수정

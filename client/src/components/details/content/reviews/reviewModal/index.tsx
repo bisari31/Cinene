@@ -1,14 +1,14 @@
 import styled from 'styled-components';
 import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { useMutation } from 'react-query';
 
 import { usePrevious, useFocus } from 'hooks';
 import { useLoginPortal, useMutationOptions } from 'hooks/cinene';
+import { handleReview } from 'services/review';
+import { cineneKeys } from 'utils/queryOptions';
 
 import Modal from 'components/common/Modal';
 import Portal from 'components/common/Portal';
-import { useMutation } from 'react-query';
-import { handleReview } from 'services/review';
-import { cineneKeys } from 'utils/queryOptions';
 import RatingButtons from './RatingButtons';
 
 interface Props {
@@ -75,7 +75,7 @@ function ReviewModal(
     previousComment !== comment || previousRating !== rating;
 
   const checkEmptyValue = () => {
-    if (!comment) {
+    if (!comment || comment.length > 50) {
       setIsCommentError(true);
       return true;
     }
@@ -84,20 +84,15 @@ function ReviewModal(
       setIsRatingError(true);
       return true;
     }
-    if (comment.length > 50) {
-      setIsCommentError(true);
-      return true;
-    }
     return false;
   };
 
   const handleSubmit = () => {
-    if (checkEmptyValue()) return;
-    if (!checkValueChanged()) {
-      toggleReviewModal();
-      return;
-    }
-    mutate({
+    const isEmpty = checkEmptyValue();
+    if (isEmpty) return null;
+    const isChanged = checkValueChanged();
+    if (!isChanged) return toggleReviewModal();
+    return mutate({
       comment,
       rating,
       hasReview: hasReview?._id,

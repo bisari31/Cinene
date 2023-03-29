@@ -74,11 +74,12 @@ function CommentItemData({ commentItem, openModal }: Props) {
 
   return (
     <StyledItem
+      isDeletedUser={!commentItem?.author?.nickname}
       date={useGetRelativeTime(commentItem?.createdAt, commentItem?.updatedAt)}
     >
       <div>
-        <p>{commentItem?.author.nickname}</p>
-        {auth?._id === commentItem?.author._id && (
+        <p>{commentItem?.author?.nickname ?? '탈퇴 회원'}</p>
+        {auth && auth?._id === commentItem?.author?._id && (
           <>
             <button type="button" onClick={handleCommentEdit}>
               {isEditing ? '완료' : '수정'}
@@ -107,8 +108,8 @@ function CommentItemData({ commentItem, openModal }: Props) {
 
 export default memo(CommentItemData);
 
-export const StyledItem = styled.div<{ date: string }>`
-  ${({ theme, date }) => css`
+export const StyledItem = styled.div<{ date: string; isDeletedUser: boolean }>`
+  ${({ theme, date, isDeletedUser }) => css`
     flex: 1;
     line-height: 1.2;
     div {
@@ -117,7 +118,8 @@ export const StyledItem = styled.div<{ date: string }>`
       margin-bottom: 0.3em;
       p {
         font-size: 0.9rem;
-        font-weight: 500;
+        font-weight: ${isDeletedUser ? 400 : 500};
+        color: ${isDeletedUser && theme.colors.gray500};
         &::after {
           color: ${theme.colors.gray500};
           content: '${date && date}';
