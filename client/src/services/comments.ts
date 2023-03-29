@@ -1,4 +1,6 @@
 import axios from 'axios';
+
+import { SERVER_HOST } from 'utils/api';
 import { bearer, getAccessToken } from './user';
 
 interface Body {
@@ -10,7 +12,7 @@ interface Body {
 export const createComment = async (body: Body) => {
   if (!body.contentId) return null;
   const { data } = await axios.post<CustomResponse>(
-    '/comments',
+    `${SERVER_HOST}/comments`,
     body,
     bearer(),
   );
@@ -21,14 +23,17 @@ export const createComment = async (body: Body) => {
 export const getComments = async (id?: string) => {
   if (!id) return null;
   const { data } = await axios.get<CustomResponse<{ comments: Comment[] }>>(
-    `/comments/${id}`,
+    `${SERVER_HOST}/comments/${id}`,
   );
   return data;
 };
 
 export const deleteComment = async (id?: string) => {
   if (!id) return null;
-  const { data } = await axios.delete(`/comments/${id}`, bearer());
+  const { data } = await axios.delete(
+    `${SERVER_HOST}/comments/${id}`,
+    bearer(),
+  );
   getAccessToken(data);
   return data;
 };
@@ -36,7 +41,7 @@ export const deleteComment = async (id?: string) => {
 export const editComment = async (obj: { id?: string; comment: string }) => {
   if (!obj.id) return null;
   const { data } = await axios.patch(
-    `/comments/${obj.id}`,
+    `${SERVER_HOST}/comments/${obj.id}`,
     { comment: obj.comment },
     bearer(),
   );
