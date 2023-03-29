@@ -92,6 +92,7 @@ export default function Slider({ children, title }: Props) {
   };
 
   const setTranslateX = (pageX: number, element: HTMLElement) => {
+    if (Math.abs(startX - pageX) < 20) return;
     if (startX > pageX) {
       nextSlide(element);
     } else {
@@ -116,7 +117,7 @@ export default function Slider({ children, title }: Props) {
       setClientWidth(ref.current.clientWidth);
       setMaxWidth(ref.current.clientWidth - ref.current.scrollWidth);
     }
-  }, []);
+  }, [ref]);
 
   const getThrottleWidth = useThrottle(getWidth, 1000);
 
