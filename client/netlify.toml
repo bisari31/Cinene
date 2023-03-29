@@ -1,5 +1,5 @@
 [[redirects]]
 from = "/api/*"
-  to = "https://cinene-develop.netlify.app/:splat"  
+  to = "https://cinene.herokuapp.com/:splat"  
   status = 200
   force = true
