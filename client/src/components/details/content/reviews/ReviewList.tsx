@@ -1,5 +1,4 @@
 import { memo } from 'react';
-import styled from 'styled-components';
 
 import ReviewItem from './ReviewItem';
 
@@ -10,14 +9,12 @@ interface Props {
 
 function ReviewList({ reviews, ...rest }: Props) {
   return (
-    <ReviewListWrapper>
+    <ul>
       {reviews?.map((review) => (
         <ReviewItem key={review._id} review={review} {...rest} />
       ))}
-    </ReviewListWrapper>
+    </ul>
   );
 }
 
 export default memo(ReviewList);
-
-const ReviewListWrapper = styled.ul``;

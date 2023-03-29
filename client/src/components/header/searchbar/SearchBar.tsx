@@ -6,9 +6,9 @@ import styled, { css } from 'styled-components';
 import { getSearchResults } from 'services/tmdb';
 import { slideDown, slideUp } from 'styles/css';
 import { queryOptions, tmdbKeys } from 'utils/queryOptions';
-
 import { useDebounce, useFocus } from 'hooks';
-import SearchItem, { List } from './SearchItem';
+
+import SearchItem, { StyledItem } from './SearchItem';
 
 interface Props {
   isVisible?: boolean;
@@ -20,16 +20,16 @@ function SearchBar(
   ref: React.ForwardedRef<HTMLDivElement>,
 ) {
   const [keyword, setKeyword] = useState('');
-  const [debouncedText, setDebouncedText] = useState('');
-  const [currentIndex, setCurrentIndex] = useState(-1);
+  const [debouncedKeyWord, setDebouncedKeyword] = useState('');
   const [searchedKeyword, setSearchedKeyword] = useState('');
   const [isResultsVisible, setIsResultsVisible] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [currentIndex, setCurrentIndex] = useState(-1);
   const totalIndexRef = useRef(0);
+  const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
-  useFocus(inputRef);
+  const { focus } = useFocus(inputRef);
   const handleDebounceChange = useDebounce<React.ChangeEvent<HTMLInputElement>>(
-    (e) => setDebouncedText(e.target.value),
+    (e) => setDebouncedKeyword(e.target.value),
     300,
   );
 
@@ -47,8 +47,8 @@ function SearchBar(
   );
 
   const { data } = useQuery(
-    tmdbKeys.search(debouncedText),
-    () => getSearchResults(debouncedText),
+    tmdbKeys.search(debouncedKeyWord),
+    () => getSearchResults(debouncedKeyWord),
     {
       ...queryOptions,
       select: (results) => results.filter((item, index) => index < 6),
@@ -95,8 +95,12 @@ function SearchBar(
     if (data && totalIndexRef) totalIndexRef.current = data.length - 1;
   }, [data]);
 
+  useEffect(() => {
+    focus();
+  }, [focus]);
+
   return (
-    <SearchBarWrapper
+    <StyledWrapper
       isResultsVisible={isResultsVisible}
       isVisible={isVisible}
       hasData={!!data?.length}
@@ -112,13 +116,13 @@ function SearchBar(
           placeholder="영화,방송,인물을 검색할 수 있습니다."
         />
 
-        {keyword.length && keyword === debouncedText && !data?.length ? (
+        {keyword.length && keyword === debouncedKeyWord && !data?.length ? (
           <div>
-            <List noResults>
+            <StyledItem noResults>
               <button type="button">
-                <span>{debouncedText}의 검색 결과가 없습니다.</span>
+                <span>{debouncedKeyWord}의 검색 결과가 없습니다.</span>
               </button>
-            </List>
+            </StyledItem>
           </div>
         ) : (
           <div>
@@ -136,13 +140,13 @@ function SearchBar(
           </div>
         )}
       </div>
-    </SearchBarWrapper>
+    </StyledWrapper>
   );
 }
 
 export default React.forwardRef(SearchBar);
 
-const SearchBarWrapper = styled.div<{
+const StyledWrapper = styled.div<{
   hasData: boolean;
   isVisible: boolean;
   isResultsVisible: boolean;

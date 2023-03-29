@@ -1,11 +1,12 @@
 import styled, { css } from 'styled-components';
-import { useState } from 'react';
-import { useMutation, useQueryClient } from 'react-query';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useState, useRef } from 'react';
+import { useMutation } from 'react-query';
+import { useRecoilValue } from 'recoil';
 
-import { useLoginPortal } from 'hooks/cinene';
+import { useAuth, useLoginPortal, useMutationOptions } from 'hooks/cinene';
+import { useResizeHeight } from 'hooks';
 import { createComment } from 'services/comments';
-import { authUserState, contentIdState } from 'atom/atom';
+import { contentIdState } from 'atom/atom';
 import { buttonEffect } from 'styles/css';
 import { cineneKeys } from 'utils/queryOptions';
 
@@ -15,68 +16,72 @@ interface Props {
 
 export default function CommentForm({ responseId }: Props) {
   const contentId = useRecoilValue(contentIdState);
-  const [text, setText] = useState('');
-  const [auth, setAuth] = useRecoilState(authUserState);
-  const queryClient = useQueryClient();
-
-  const { openModal, renderPortal } = useLoginPortal();
+  const [comment, setComment] = useState('');
+  const { auth } = useAuth();
+  const { openPortal, renderPortal } = useLoginPortal();
+  const { errorHandler, queryClient } = useMutationOptions(openPortal);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const { resetHeight, setScrollHeight } = useResizeHeight(textareaRef);
 
   const { mutate } = useMutation(createComment, {
     onSuccess: () => {
       queryClient.invalidateQueries(cineneKeys.comments(contentId));
-      setText('');
+      setComment('');
+      if (textareaRef.current) textareaRef.current.style.height = 'auto';
     },
-    onError: ({ response }: AxiosError) => {
-      if (response.status === 401) {
-        setAuth(null);
-        openModal();
-      } else {
-        openModal(`${response.data.message} 😭`);
-      }
-    },
+    onError: (err: AxiosError) => errorHandler(err),
   });
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!text) return;
+    if (!comment) return;
     if (!auth) {
-      openModal();
-    } else {
-      mutate({
-        comment: text,
-        contentId,
-        responseTo: responseId,
-      });
+      openPortal();
+      return;
     }
+    mutate({
+      comment,
+      contentId,
+      responseTo: responseId,
+    });
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setText(e.target.value);
+    setComment(e.target.value);
+    resetHeight();
+    setScrollHeight();
   };
 
   return (
-    <CommentFormWrapper onSubmit={handleSubmit} color="navy50">
+    <StyledForm onSubmit={handleSubmit} color="navy50">
       <textarea
+        rows={1}
+        ref={textareaRef}
         readOnly={!auth}
         placeholder={auth ? '댓글을 입력해 주세요' : '로그인이 필요합니다'}
-        value={text}
+        value={comment}
         onChange={handleChange}
       />
       <button type="submit">등록</button>
       {renderPortal()}
-    </CommentFormWrapper>
+    </StyledForm>
   );
 }
 
-const CommentFormWrapper = styled.form`
+const StyledForm = styled.form`
   ${({ theme }) => css`
     display: flex;
     margin: 2em 0;
     textarea {
-      resize: none;
-      flex: 1;
-      padding: 1em 1.5em;
+      height: 20px;
+      line-height: 20px;
       overflow-y: hidden;
+      padding: 10px 16px;
+      resize: none;
+      width: 100%;
+      &::placeholder {
+        font-size: 95%;
+      }
     }
     button {
       margin-left: 3em;

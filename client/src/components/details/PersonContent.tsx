@@ -27,7 +27,7 @@ function PersonContent({ tmdbData, cineneData, path, id }: Props) {
   const koreanName = getKoreanName(tmdbData);
 
   return (
-    <PersonDescriptionWrapper>
+    <StyledWrapper>
       <Average cineneData={cineneData} />
       <h2>{koreanName}</h2>
       <LikeButton ref={reviewRef} cinene={cineneData} />
@@ -38,13 +38,13 @@ function PersonContent({ tmdbData, cineneData, path, id }: Props) {
       <SimilarMedia id={id} path={path} type="crew" />
       <Reviews ref={reviewRef} data={cineneData} />
       <Comments />
-    </PersonDescriptionWrapper>
+    </StyledWrapper>
   );
 }
 
 export default memo(PersonContent);
 
-const PersonDescriptionWrapper = styled.div`
+const StyledWrapper = styled.div`
   ${({ theme }) => css`
     & > div:nth-of-type(1) {
       margin-bottom: 2em;

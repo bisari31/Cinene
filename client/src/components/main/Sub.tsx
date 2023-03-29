@@ -5,16 +5,16 @@ import MovieDisplay from './MovieDisplay';
 
 export default function Sub() {
   return (
-    <SubWrapper>
+    <StyledWrapper>
       <MovieDisplay type="now" />
       <MovieDisplay type="upcoming" />
       <TopRated type="cinene" />
       <TopRated type="tmdb" />
-    </SubWrapper>
+    </StyledWrapper>
   );
 }
 
-const SubWrapper = styled.section`
+const StyledWrapper = styled.section`
   ${({ theme }) => css`
     background-color: ${theme.colors.navy};
     left: 0;

@@ -46,10 +46,10 @@ export const buttonEffect = css<{ color: ColorsKey }>`
 `;
 
 export const Button = styled.button<{
-  isZero?: boolean;
+  hasLikes?: boolean;
   isActive?: boolean;
 }>`
-  ${({ isActive, isZero }) => css`
+  ${({ isActive, hasLikes }) => css`
     align-items: center;
     background-color: ${theme.colors.navy50};
     border: ${isActive ? `1px solid ${theme.colors.pink}` : '#fff'};
@@ -61,7 +61,7 @@ export const Button = styled.button<{
     height: 27.45px;
     padding: 0 0.8em;
     svg {
-      fill: ${isActive || !isZero ? theme.colors.pink : ''};
+      fill: ${isActive || hasLikes ? theme.colors.pink : ''};
       height: 13px;
       margin-right: 0.3em;
       stroke: ${theme.colors.pink};

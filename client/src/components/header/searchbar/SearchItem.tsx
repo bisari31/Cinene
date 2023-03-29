@@ -1,7 +1,7 @@
 import React, { memo, useEffect, useMemo } from 'react';
 import styled, { css } from 'styled-components';
 
-import useImageUrl from 'hooks/cinene/useImageUrl';
+import { useImageUrl } from 'hooks/cinene';
 
 interface Props {
   data: SearchResults;
@@ -44,7 +44,7 @@ function SearchItem({
   }, [data, isActive, setKeyword]);
 
   return (
-    <List isActive={isActive}>
+    <StyledItem isActive={isActive}>
       <button
         onFocus={() => setCurrentIndex(index)}
         onMouseOver={() => setCurrentIndex(index)}
@@ -55,13 +55,13 @@ function SearchItem({
 
         <span>{title}</span>
       </button>
-    </List>
+    </StyledItem>
   );
 }
 
 export default memo(SearchItem);
 
-export const List = styled.div<{
+export const StyledItem = styled.div<{
   noResults?: boolean;
   isActive?: boolean;
 }>`

@@ -1,24 +1,43 @@
+import { useState } from 'react';
 import styled from 'styled-components';
+import { useQuery } from 'react-query';
 
-import Toggle from './Toggle';
+import { cineneKeys } from 'utils/queryOptions';
+import { getFavorites } from 'services/like';
+import { useAuth } from 'hooks/cinene';
+
 import FavoriteItem from './FavoriteItem';
-import useFavorites from './hooks/useFavorites';
+import Toggle from './Toggle';
 
 export default function Favorites() {
-  const { data, selectedType, setSelectedType } = useFavorites();
+  const { auth, setAuth } = useAuth();
+  const [selectedType, setSelectedType] = useState(0);
+
+  const { data } = useQuery(cineneKeys.favorites(), getFavorites, {
+    enabled: !!auth,
+    onError: ({ response }: AxiosError) => {
+      if (response.status === 401) setAuth(null);
+    },
+  });
+
+  const selectData = () =>
+    data?.contents?.filter(({ content: { content_type: type } }) =>
+      selectedType === 0 ? type !== 'person' : type === 'person',
+    );
+
   return (
-    <FavoritesWrapper>
+    <StyledWrapper>
       <Toggle selectedType={selectedType} setSelectedType={setSelectedType} />
       <ul>
-        {data?.map((item) => (
+        {selectData()?.map((item) => (
           <FavoriteItem key={item._id} data={item.content} />
         ))}
       </ul>
-    </FavoritesWrapper>
+    </StyledWrapper>
   );
 }
 
-const FavoritesWrapper = styled.div`
+const StyledWrapper = styled.div`
   ul {
     align-items: center;
     display: grid;

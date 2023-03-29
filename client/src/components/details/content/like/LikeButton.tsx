@@ -3,8 +3,7 @@ import styled from 'styled-components';
 
 import { Heart } from 'assets';
 import { Button, buttonEffect } from 'styles/css';
-import { useLoginPortal } from 'hooks/cinene';
-import useLikeQuery from '../../hooks/useLikeQuery';
+import { useLikeQuery, useLoginPortal } from 'hooks/cinene';
 
 interface Props {
   cinene?: CineneData;
@@ -14,8 +13,8 @@ function LikeButton(
   { cinene }: Props,
   ref: React.ForwardedRef<HTMLHeadingElement>,
 ) {
-  const { openModal, renderPortal } = useLoginPortal();
-  const { data, mutate } = useLikeQuery('content', cinene?._id, openModal);
+  const { openPortal, renderPortal } = useLoginPortal();
+  const { data, mutate } = useLikeQuery('content', cinene?._id, openPortal);
 
   const handleMoveToReview = () => {
     if (typeof ref === 'object' && ref) {
@@ -25,26 +24,26 @@ function LikeButton(
   };
 
   return (
-    <ButtonWrapper color="navy50">
+    <StyledWrapper color="navy50">
       <Button type="button" onClick={handleMoveToReview}>
         리뷰 {cinene?.votes}
       </Button>
       <Button
         type="button"
         isActive={data?.isLike}
-        isZero={!data?.likes}
+        hasLikes={!!data?.likes}
         onClick={() => mutate({ type: 'content', id: cinene?._id })}
       >
         <Heart /> {data?.likes ?? '0'}
       </Button>
       {renderPortal()}
-    </ButtonWrapper>
+    </StyledWrapper>
   );
 }
 
 export default React.forwardRef(LikeButton);
 
-const ButtonWrapper = styled.div`
+const StyledWrapper = styled.div`
   display: flex;
   gap: 0 1em;
   margin-top: 1rem;

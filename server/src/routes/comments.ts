@@ -6,6 +6,7 @@ import authenticate from '../utils/middleware';
 
 import Comment, { CommentInterface } from '../models/comment';
 import Like from '../models/Like';
+import { NotFoundError } from '../utils/error';
 
 interface Body {
   comment: string;
@@ -74,8 +75,28 @@ router.delete(
   },
 );
 
-router.patch('/:id', async (req: Request<{ id: string }>, res) => {
-  console.log(req.params.id);
-});
+router.patch(
+  '/:id',
+  authenticate,
+  async (
+    req: CustomRequest<{ id: string }, {}, { comment: string }>,
+    res: CustomResponse,
+  ) => {
+    try {
+      const comment = await Comment.findByIdAndUpdate(req.params.id, {
+        $set: { comment: req.body.comment },
+      });
+      if (!comment) throw new NotFoundError('댓글 삭제 실패');
+      res.json({ success: true, accessToken: req.accessToken });
+    } catch (err) {
+      if (err instanceof NotFoundError) {
+        res
+          .status(err.statusCode)
+          .json({ success: false, message: err.message });
+      }
+      res.status(500).json({ success: false, message: '서버 에러 ' });
+    }
+  },
+);
 
 export default router;

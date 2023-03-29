@@ -1,12 +1,14 @@
 import styled from 'styled-components';
-import { useRef, forwardRef, ForwardedRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { useMutation } from 'react-query';
 
 import { usePrevious, useFocus } from 'hooks';
-import { useLoginPortal } from 'hooks/cinene';
+import { useLoginPortal, useMutationOptions } from 'hooks/cinene';
+import { handleReview } from 'services/review';
+import { cineneKeys } from 'utils/queryOptions';
 
 import Modal from 'components/common/Modal';
 import Portal from 'components/common/Portal';
-import useReviewMutation from 'components/details/hooks/useReviewMutation';
 import RatingButtons from './RatingButtons';
 
 interface Props {
@@ -26,7 +28,7 @@ const RATING_MESSAGE = [
 
 function ReviewModal(
   { isMotionVisible, toggleReviewModal, data, hasReview }: Props,
-  ref: ForwardedRef<HTMLDivElement>,
+  ref: React.ForwardedRef<HTMLDivElement>,
 ) {
   const [rating, setRating] = useState(hasReview?.rating || 0);
   const [comment, setComment] = useState(hasReview?.comment || '');
@@ -36,9 +38,19 @@ function ReviewModal(
   const previousRating = usePrevious<number>(rating);
   const previousComment = usePrevious<string>(comment);
   const inputRef = useRef<HTMLInputElement>(null);
-  const { openModal, renderPortal } = useLoginPortal();
-  const mutate = useReviewMutation(toggleReviewModal, openModal, data);
-  useFocus(inputRef);
+  const { openPortal, renderPortal } = useLoginPortal();
+  const { errorHandler, queryClient } = useMutationOptions(openPortal);
+  const { focus } = useFocus(inputRef);
+
+  const { mutate } = useMutation(handleReview, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(
+        cineneKeys.detail(data?.content_type, data?.tmdbId),
+      );
+      toggleReviewModal();
+    },
+    onError: (err: AxiosError) => errorHandler(err),
+  });
 
   const handleCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setComment(e.target.value);
@@ -63,7 +75,7 @@ function ReviewModal(
     previousComment !== comment || previousRating !== rating;
 
   const checkEmptyValue = () => {
-    if (!comment) {
+    if (!comment || comment.length > 50) {
       setIsCommentError(true);
       return true;
     }
@@ -72,20 +84,15 @@ function ReviewModal(
       setIsRatingError(true);
       return true;
     }
-    if (comment.length > 50) {
-      setIsCommentError(true);
-      return true;
-    }
     return false;
   };
 
   const handleSubmit = () => {
-    if (checkEmptyValue()) return;
-    if (!checkValueChanged()) {
-      toggleReviewModal();
-      return;
-    }
-    mutate({
+    const isEmpty = checkEmptyValue();
+    if (isEmpty) return null;
+    const isChanged = checkValueChanged();
+    if (!isChanged) return toggleReviewModal();
+    return mutate({
       comment,
       rating,
       hasReview: hasReview?._id,
@@ -93,6 +100,10 @@ function ReviewModal(
       content_type: data?.content_type,
     });
   };
+
+  useEffect(() => {
+    focus();
+  }, [focus]);
 
   return (
     <Portal>
@@ -105,16 +116,16 @@ function ReviewModal(
         buttonText={['닫기', hasReview ? '수정' : '등록']}
         color="pink"
       >
-        <ModalContent isError={isCommentError}>
+        <StyledContent isError={isCommentError}>
           <div>
             <RatingButtons
               rating={rating}
               onClick={handleRatingChange}
               previousRating={previousRating}
             />
-            <MessageWrapper>
+            <StyledMessage>
               <p>{message}</p>
-            </MessageWrapper>
+            </StyledMessage>
           </div>
           <input
             ref={inputRef}
@@ -123,16 +134,16 @@ function ReviewModal(
             value={comment}
             onChange={handleCommentChange}
           />
-        </ModalContent>
+        </StyledContent>
       </Modal>
       {renderPortal()}
     </Portal>
   );
 }
 
-export default forwardRef(ReviewModal);
+export default React.forwardRef(ReviewModal);
 
-const ModalContent = styled.div<{
+const StyledContent = styled.div<{
   isError: boolean;
 }>`
   display: flex;
@@ -156,7 +167,7 @@ const ModalContent = styled.div<{
   }
 `;
 
-const MessageWrapper = styled.div`
+const StyledMessage = styled.div`
   font-size: 0.95rem;
   height: 22.8px;
   margin: 1em 0 1em 0;

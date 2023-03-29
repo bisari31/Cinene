@@ -16,7 +16,7 @@ export default function Comments() {
   );
 
   return (
-    <Wrapper length={data?.comments.length}>
+    <StyledWrapper length={data?.comments.length}>
       <h3>댓글</h3>
       {data?.comments
         .filter((item) => !item.responseTo)
@@ -28,11 +28,11 @@ export default function Comments() {
           />
         ))}
       <CommentForm />
-    </Wrapper>
+    </StyledWrapper>
   );
 }
 
-const Wrapper = styled.div<{ length?: number }>`
+const StyledWrapper = styled.div<{ length?: number }>`
   ${({ theme, length }) => css`
     margin-bottom: 3rem;
     h3 {

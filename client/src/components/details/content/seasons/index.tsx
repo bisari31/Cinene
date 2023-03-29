@@ -12,10 +12,10 @@ export default function Seasons({ data }: Props) {
   const { getImageUrl } = useImageUrl();
   if (!data || !data.seasons?.length) return null;
   return (
-    <SeasonsWrapper>
+    <StyledWrapper>
       <Slider title="시즌">
         {data.seasons?.map((season) => (
-          <List key={season.id}>
+          <StyledList key={season.id}>
             <img
               draggable="false"
               src={getImageUrl(season.poster_path, '200')}
@@ -25,15 +25,15 @@ export default function Seasons({ data }: Props) {
               {season.name}
               <time dateTime={season.air_date}>{` (${season.air_date})`}</time>
             </p>
-          </List>
+          </StyledList>
         ))}
       </Slider>
-    </SeasonsWrapper>
+    </StyledWrapper>
   );
 }
 
-const SeasonsWrapper = styled.div``;
-const List = styled.li`
+const StyledWrapper = styled.div``;
+const StyledList = styled.li`
   img {
     border-radius: 30px;
     height: 200px;

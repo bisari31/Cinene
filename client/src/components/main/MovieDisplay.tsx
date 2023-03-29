@@ -4,7 +4,9 @@ import dayjs from 'dayjs';
 
 import { useImageUrl } from 'hooks/cinene';
 import Slider from 'components/common/Slider';
-import useMovieDisplayQuery from './hooks/useMovieDisplayQuery';
+import { useQuery } from 'react-query';
+import { queryOptions, tmdbKeys } from 'utils/queryOptions';
+import { getNowPlayingMovie, getUpcomingMovie } from 'services/tmdb';
 
 interface Props {
   type: 'upcoming' | 'now';
@@ -12,7 +14,28 @@ interface Props {
 
 export default function MovieDisplay({ type }: Props) {
   const { getImageUrl } = useImageUrl();
-  const data = useMovieDisplayQuery(type);
+  const { data: upcomingMovieData } = useQuery(
+    tmdbKeys.upcoming(),
+    getUpcomingMovie,
+    {
+      ...queryOptions,
+      enabled: type === 'upcoming',
+      select: (prevData) => {
+        const day = dayjs();
+        return prevData
+          .sort((a, b) => dayjs(a.release_date).diff(b.release_date, 'd'))
+          .filter((item) => day.diff(item.release_date, 'd') < 1);
+      },
+    },
+  );
+  const { data: nowPlayingMovieData } = useQuery(
+    tmdbKeys.nowPlaying(),
+    getNowPlayingMovie,
+    {
+      ...queryOptions,
+      enabled: type === 'now',
+    },
+  );
 
   const getDday = (day: string) => {
     const today = dayjs().format('YYYY-MM-DD');
@@ -21,12 +44,14 @@ export default function MovieDisplay({ type }: Props) {
     return dday === 0 ? 'D-Day' : `D-${dday}`;
   };
 
+  const data = type === 'now' ? nowPlayingMovieData : upcomingMovieData;
+
   return (
-    <UpcommingWrapper>
+    <div>
       <Slider title={type === 'now' ? '상영작' : '개봉 예정작'}>
         <ul>
           {data?.map((movie) => (
-            <List key={movie.id}>
+            <StyledList key={movie.id}>
               <Link to={`/movie/${movie.id}`} draggable="false">
                 <img
                   draggable="false"
@@ -41,16 +66,15 @@ export default function MovieDisplay({ type }: Props) {
                   <p className="dday">{getDday(movie.release_date)}</p>
                 )}
               </Link>
-            </List>
+            </StyledList>
           ))}
         </ul>
       </Slider>
-    </UpcommingWrapper>
+    </div>
   );
 }
 
-const UpcommingWrapper = styled.div``;
-const List = styled.li`
+const StyledList = styled.li`
   ${({ theme }) => css`
     position: relative;
     img {

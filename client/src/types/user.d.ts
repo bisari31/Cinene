@@ -7,5 +7,5 @@ interface User {
   updatedAt: Date;
   __v: number;
   _id: string;
-  active: boolean;
+  kakao_id: string;
 }

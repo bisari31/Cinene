@@ -10,16 +10,16 @@ export default function SearchPage() {
   const navigate = useNavigate();
 
   return (
-    <SearchPageWrapper>
+    <StyledWrapper>
       <button type="button" onClick={() => navigate(-1)}>
         <ChevronLeft />
       </button>
       <SearchBar />
-    </SearchPageWrapper>
+    </StyledWrapper>
   );
 }
 
-const SearchPageWrapper = styled.div`
+const StyledWrapper = styled.div`
   ${({ theme }) => css`
     padding: 1em;
     & > div {

@@ -1,17 +1,22 @@
-import { Response, Router, Request } from 'express';
+import { Router, Request } from 'express';
 import bcrypt from 'bcrypt';
 import axios from 'axios';
-import { Error, MongooseError, ObjectId } from 'mongoose';
 
 import { KakaoTokenData, KakaoUserData } from '../types/oauth';
-import authenticate, { MiddlewareRequest } from '../utils/middleware';
+import authenticate from '../utils/middleware';
 import { CustomRequest, CustomResponse } from '../types/express';
-import { NotFoundError, UnauthorizedError } from '../utils/error';
+import { UnauthorizedError } from '../utils/error';
 
-import User, { UserDocument, UserInterface } from '../models/user';
+import User, { UserInterface } from '../models/user';
 
 const router = Router();
 const SALT_ROUNDS = 10;
+const KAKAO_HOST = 'https://kapi.kakao.com';
+
+interface KakaoRequest extends Request {
+  cookies: { kakao: string };
+  body: { nickname: string; email: string };
+}
 
 router.get(
   '/',
@@ -72,7 +77,6 @@ router.post(
     try {
       const { user } = await User.findUser(req.body.email, req.body.password);
       if (!user) throw new UnauthorizedError();
-      if (!user.active) throw new NotFoundError('탈퇴한 유저입니다.');
       const { accessToken, refreshToken } = await user.generateToken();
       const { password, ...userWithoutPassword } =
         user.toObject<UserInterface>();
@@ -88,10 +92,6 @@ router.post(
         });
     } catch (err) {
       if (err instanceof UnauthorizedError) {
-        res
-          .status(err.statusCode)
-          .json({ success: false, message: err.message });
-      } else if (err instanceof NotFoundError) {
         res
           .status(err.statusCode)
           .json({ success: false, message: err.message });
@@ -173,9 +173,7 @@ router.delete(
   authenticate,
   async (req: CustomRequest, res: CustomResponse) => {
     try {
-      await User.findByIdAndUpdate(req.user?._id, {
-        $set: { active: false, refresh_token: '' },
-      });
+      await User.deleteOne({ email: req.user?.email });
       res.json({ success: true });
     } catch (err) {
       res.status(500).json({ success: false, message: '회원 탈퇴 실패' });
@@ -183,84 +181,125 @@ router.delete(
   },
 );
 
-// router.get(
-//   '/kakao-login/:code',
-//   async (req, res: Response<CustomResponse>) => {
-//     try {
-//       const { data } = await axios.post<IKakaoTokenData>(
-//         `https://kauth.kakao.com/oauth/token`,
-//         null,
-//         {
-//           params: {
-//             grant_type: 'authorization_code',
-//             client_id: process.env.KAKAO_API_KEY,
-//             redirect_uri: 'http://localhost:3000/login',
-//             code: req.params.code,
-//           },
-//         },
-//       );
-//       const { data: userData } = await axios.get<IKakaoUserData>(
-//         `https://kapi.kakao.com/v2/user/me`,
-//         {
-//           headers: { Authorization: `Bearer ${data.access_token}` },
-//         },
-//       );
+router.get(
+  '/kakao/:code',
+  async (
+    req: Request<{ code: string }>,
+    res: CustomResponse<{
+      user?:
+        | Omit<UserInterface, 'password'>
+        | Pick<UserInterface, 'email' | 'nickname'>;
+    }>,
+  ) => {
+    try {
+      const { data } = await axios.post<KakaoTokenData>(
+        `https://kauth.kakao.com/oauth/token`,
+        null,
+        {
+          params: {
+            grant_type: 'authorization_code',
+            client_id: process.env.KAKAO_REST_API_KEY,
+            redirect_uri: 'http://localhost:3000/login',
+            code: req.params.code,
+          },
+        },
+      );
+      const { data: userData } = await axios.get<KakaoUserData>(
+        `${KAKAO_HOST}/v2/user/me`,
+        {
+          headers: { Authorization: `Bearer ${data.access_token}` },
+        },
+      );
+      const user = await User.findOne({ email: `${userData.id}@kakao.com` });
+      if (!user) {
+        res
+          .cookie('kakao', data.access_token, {
+            maxAge: 1000 * 60 * 60 * 24 * 14,
+            httpOnly: true,
+          })
+          .json({
+            success: true,
+            user: {
+              nickname: userData.properties?.nickname ?? '',
+              email: `${userData.id}@kakao.com`,
+            },
+          });
+        return;
+      }
+      const { accessToken, refreshToken } = await user.generateToken();
+      const { password, ...userWithoutPassword } =
+        user.toObject<UserInterface>();
+      res
+        .cookie('refreshToken', refreshToken, {
+          maxAge: 1000 * 60 * 60 * 24 * 14,
+          httpOnly: true,
+        })
+        .json({
+          success: true,
+          accessToken,
+          user: userWithoutPassword,
+        });
+    } catch (err) {
+      res.status(500).json({ success: false, message: '카카오 인증 오류' });
+    }
+  },
+);
 
-//       const user = await User.findOne({ email: `${userData.id}@kakao` });
-//       if (!user) {
-//         res.cookie('kakao', data.access_token).json({
-//           success: true,
-//           info: {
-//             nickname: userData.properties.nickname ?? '',
-//             email: `${userData.id}@kakao`,
-//           },
-//         });
-//         return;
-//       }
-//       const newUser = await user.generateToken();
-//       res
-//         .cookie('auth', newUser.token, {
-//           expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365),
-//         })
-//         .json({ success: true, user: newUser });
-//     } catch (err) {
-//       res.status(400).json({ success: false, message: '카카오 인증 오류 ' });
-//     }
-//   },
-// );
+router.post(
+  '/kakao',
+  async (req: KakaoRequest, res: CustomResponse<{ hasNickname?: boolean }>) => {
+    try {
+      if (!req.cookies.kakao) throw Error();
+      const { data } = await axios.get<KakaoUserData>(
+        `${KAKAO_HOST}/v2/user/me`,
+        {
+          headers: { Authorization: `Bearer ${req.cookies.kakao}` },
+        },
+      );
+      const hasNickname = await User.findOne({
+        nickname: req.body.nickname,
+      });
+      if (hasNickname) {
+        res.status(409).json({ success: false, hasNickname: true });
+      } else {
+        await User.create({
+          email: req.body.email,
+          img: data.properties?.thumbnail_image,
+          nickname: req.body.nickname,
+          kakao_id: data.id,
+        });
+        res.json({ success: true });
+      }
+    } catch (err) {
+      res.status(500).json({ success: false, message: '카카오 인증 오류' });
+    }
+  },
+);
 
-// router.post(
-//   '/kakao-register',
-//   async (
-//     req: CustomRequest<{ nickname: string }>,
-//     res: Response<CustomResponse>,
-//   ) => {
-//     try {
-//       if (!req.cookies.kakao) throw Error();
-//       const { data } = await axios.get<IKakaoUserData>(
-//         `https://kapi.kakao.com/v2/user/me`,
-//         {
-//           headers: { Authorization: `Bearer ${req.cookies.kakao}` },
-//         },
-//       );
-//       const { success, code } = await User.findUserInfo(req.body.nickname);
-//       if (code) {
-//         res.json({
-//           success,
-//           code,
-//         });
-//         return;
-//       }
-//       const user = await User.create({
-//         email: `${data.id}@kakao`,
-//         img: data.properties.profile_image ?? '',
-//         nickname: req.body.nickname,
-//       });
-//       res.json({ success: true, user });
-//     } catch (err) {
-//       res.json({ success: false, message: 'kakao 인증 오류' });
-//     }
-//   },
-// );
+router.delete(
+  '/kakao/:id',
+  authenticate,
+  async (req: CustomRequest<{ id: string }>, res: CustomResponse) => {
+    try {
+      await axios.post(
+        `${KAKAO_HOST}/v1/user/unlink`,
+        {},
+        {
+          headers: {
+            Authorization: `KakaoAK ${process.env.KAKAO_ADMIN_KEY}`,
+          },
+          params: {
+            target_id_type: 'user_id',
+            target_id: req.params.id,
+          },
+        },
+      );
+      await User.deleteOne({ email: req.user?.email });
+      res.json({ success: true });
+    } catch (err) {
+      res.status(500).json({ success: false, message: '회원 탈퇴 실패' });
+    }
+  },
+);
 
 export default router;

@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 
 import { Upload } from 'assets';
 import { USER_IMAGE } from 'utils/imageUrls';
-import useAuthQuery from 'hooks/cinene/useAuth';
+import { useAuth, useLoginPortal } from 'hooks/cinene';
 
 import Nickname from './Nickname';
 
@@ -12,19 +12,22 @@ interface Props {
 }
 
 export default function Profile({ children }: Props) {
-  const { auth, setAuth } = useAuthQuery();
+  const { auth, setAuth } = useAuth();
+  const { openPortal, renderPortal } = useLoginPortal();
   const createdAt = dayjs(auth?.createdAt).format(' YYYY년 MM월 DD일');
 
+  const hancdleImageChange = () => openPortal('서비스 준비중 입니다 😅');
+
   return (
-    <UserProfileWrapper>
-      <Section>
-        <ImgWrapper>
+    <StyledDiv>
+      <StyledSection>
+        <StyledImgWrapper>
           <img src={auth?.img || USER_IMAGE} alt="profile" />
-          <button type="button">
+          <button type="button" onClick={hancdleImageChange}>
             <Upload />
           </button>
-        </ImgWrapper>
-        <NicknameWrapper>
+        </StyledImgWrapper>
+        <StyledNicknameWrapper>
           <div>
             <Nickname auth={auth} setAuth={setAuth} />
           </div>
@@ -35,18 +38,19 @@ export default function Profile({ children }: Props) {
               {createdAt}
             </span>
           </div>
-        </NicknameWrapper>
-      </Section>
+        </StyledNicknameWrapper>
+      </StyledSection>
       {children}
-    </UserProfileWrapper>
+      {renderPortal()}
+    </StyledDiv>
   );
 }
 
-const UserProfileWrapper = styled.div`
+const StyledDiv = styled.div`
   margin-top: 5em;
 `;
 
-const Section = styled.section`
+const StyledSection = styled.section`
   align-items: center;
   display: flex;
   flex: 1;
@@ -69,7 +73,7 @@ const Section = styled.section`
   }
 `;
 
-const ImgWrapper = styled.div`
+const StyledImgWrapper = styled.div`
   ${({ theme }) => css`
     position: relative;
     img {
@@ -92,7 +96,7 @@ const ImgWrapper = styled.div`
   `}
 `;
 
-const NicknameWrapper = styled.div`
+const StyledNicknameWrapper = styled.div`
   ${({ theme }) => css`
     h3 {
       color: ${theme.colors.white};

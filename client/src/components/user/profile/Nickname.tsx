@@ -14,38 +14,38 @@ interface Props {
 }
 
 export default function Nickname({ auth, setAuth }: Props) {
-  const [isChanged, setIsChanged] = useState(false);
-  const [isChanging, setIsChanging] = useState(false);
-  const { openModal, renderPortal } = useLoginPortal();
   const {
     value: nickname,
+    error: nicknameError,
+    ref: nicknameRef,
     handleChange: handleNicknameChange,
+    setError: setNicknameError,
     setValue: setNickname,
-    ref: inputRef,
-    error,
-    setError,
   } = useInput('nickname');
+  const [isChanged, setIsChanged] = useState(false);
+  const [isChanging, setIsChanging] = useState(false);
+  const { openPortal, renderPortal } = useLoginPortal();
 
   const { mutate } = useMutation(changeNickname, {
     onSuccess: (data) => {
-      openModal('닉네임 변경 완료 🎉');
+      openPortal('닉네임 변경 완료 🎉');
       setAuth(data.user);
       setIsChanged(true);
     },
     onError: ({ response }: AxiosError<{ message: string }>) => {
       if (response.status === 401) {
         setAuth(null);
-        openModal();
+        openPortal();
       }
-      setError(response.data.message);
+      setNicknameError(response.data.message);
     },
   });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (error) return;
+    if (nicknameError) return;
     if (auth?.nickname === nickname) {
-      setError('닉네임이 같습니다.');
+      setNicknameError('닉네임이 같습니다.');
       return;
     }
     mutate(nickname);
@@ -59,18 +59,18 @@ export default function Nickname({ auth, setAuth }: Props) {
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === 'Escape') inputRef.current?.blur();
+      if (e.key === 'Escape') nicknameRef.current?.blur();
     },
-    [inputRef],
+    [nicknameRef],
   );
 
   const handleBlur = useCallback(
     (prevNickname?: string) => {
       if (!isChanged) setNickname(prevNickname ?? '');
-      setError('');
+      setNicknameError('');
       setIsChanging(false);
     },
-    [setError, setNickname, isChanged],
+    [isChanged, setNickname, setNicknameError],
   );
 
   useEffect(() => {
@@ -78,25 +78,29 @@ export default function Nickname({ auth, setAuth }: Props) {
   }, [auth, setNickname]);
 
   return (
-    <Form onSubmit={handleSubmit} isEmpty={!nickname.length} isError={!!error}>
+    <StyledForm
+      onSubmit={handleSubmit}
+      isEmpty={!nickname.length}
+      isError={!!nicknameError}
+    >
       <Input
         placeholder="특수문자 제외 2~10자"
         onKeyDown={handleKeyDown}
         onFocus={handleFocus}
         onBlur={() => handleBlur(auth?.nickname)}
-        errorMessage={error}
-        ref={inputRef}
+        errorMessage={nicknameError}
+        ref={nicknameRef}
         type="text"
         value={nickname}
         onChange={handleNicknameChange}
       />
       {isChanging ? <CheckMark className="svg-check-mark" /> : <Edit />}
       {renderPortal()}
-    </Form>
+    </StyledForm>
   );
 }
 
-const Form = styled.form<{ isError: boolean; isEmpty: boolean }>`
+const StyledForm = styled.form<{ isError: boolean; isEmpty: boolean }>`
   display: flex;
   height: 50px;
   justify-content: center;

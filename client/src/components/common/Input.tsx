@@ -19,7 +19,7 @@ function Input(
   ref: React.ForwardedRef<HTMLInputElement>,
 ) {
   return (
-    <InputWrapper>
+    <StyledDiv>
       <label htmlFor="">{label}</label>
       <StyledInput
         isError={!!errorMessage}
@@ -27,14 +27,14 @@ function Input(
         {...rest}
         disabled={isDisabled}
       />
-      <ErrorMessage>{errorMessage}</ErrorMessage>
-    </InputWrapper>
+      <StyledMessage>{errorMessage}</StyledMessage>
+    </StyledDiv>
   );
 }
 
 export default memo(forwardRef(Input));
 
-const InputWrapper = styled.div`
+const StyledDiv = styled.div`
   label {
     color: #fff;
     display: inline-block;
@@ -62,7 +62,7 @@ const StyledInput = styled.input<{ isError: boolean }>`
   `}
 `;
 
-const ErrorMessage = styled.span`
+const StyledMessage = styled.span`
   ${({ theme }) => css`
     color: ${theme.colors.red};
     display: block;

@@ -19,7 +19,7 @@ interface Props {
 
 export default function Toggle({ selectedType, setSelectedType }: Props) {
   return (
-    <ToggleWrapper selectedType={selectedType}>
+    <StyledWrapper selectedType={selectedType}>
       <div>
         {TOGGLE_OPTION.map(({ id, name }) => (
           <button key={id} type="button" onClick={() => setSelectedType(id)}>
@@ -28,11 +28,11 @@ export default function Toggle({ selectedType, setSelectedType }: Props) {
         ))}
         <div className="toggle_bar" />
       </div>
-    </ToggleWrapper>
+    </StyledWrapper>
   );
 }
 
-const ToggleWrapper = styled.div<{ selectedType: number }>`
+const StyledWrapper = styled.div<{ selectedType: number }>`
   margin-top: 1em;
   div {
     border: 1px solid ${({ theme }) => theme.colors.navy50};

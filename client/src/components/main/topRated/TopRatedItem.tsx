@@ -14,15 +14,15 @@ export default function TopRatedItem({ item }: Props) {
     'id' in item ? `movie/${item.id}` : `${item.content_type}/${item.tmdbId}`;
 
   return (
-    <List>
+    <StyledList>
       <Link to={link} draggable="false">
         <img draggable="false" src={getImageUrl(img, '300')} alt={item.title} />
       </Link>
-    </List>
+    </StyledList>
   );
 }
 
-const List = styled.li`
+const StyledList = styled.li`
   ${({ theme }) => css`
     img {
       border-radius: 30px;

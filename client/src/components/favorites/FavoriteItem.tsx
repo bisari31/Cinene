@@ -1,23 +1,49 @@
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { useMutation } from 'react-query';
 
 import { Heart } from 'assets';
 import { buttonEffect } from 'styles/css';
-import { useImageUrl, useLoginPortal } from 'hooks/cinene';
-
-import useLikeMutation from 'components/favorites/hooks/useLikeMutation';
+import { useImageUrl, useLoginPortal, useMutationOptions } from 'hooks/cinene';
+import { like } from 'services/like';
+import { cineneKeys } from 'utils/queryOptions';
 
 interface Props {
   data: CineneData;
 }
 
-export default function Favoritecontent({ data }: Props) {
-  const { openModal, renderPortal } = useLoginPortal();
-  const mutate = useLikeMutation(openModal);
+export default function FavoriteItem({ data }: Props) {
+  const { openPortal, renderPortal } = useLoginPortal();
+  const { errorHandler, queryClient } = useMutationOptions(openPortal);
   const { getImageUrl } = useImageUrl();
 
+  const { mutate } = useMutation(like, {
+    onMutate: async ({ id }) => {
+      await queryClient.cancelQueries(cineneKeys.favorites());
+      const previousData = queryClient.getQueryData<FavoritesData>(
+        cineneKeys.favorites(),
+      );
+      if (previousData) {
+        queryClient.setQueryData(cineneKeys.favorites(), {
+          ...previousData,
+          contents: previousData.contents.filter(
+            ({ content }) => content._id !== id,
+          ),
+        });
+      }
+      return { previousData };
+    },
+    onError: (err: AxiosError, variables, context) => {
+      errorHandler(err);
+      if (context?.previousData) {
+        queryClient.setQueryData(cineneKeys.favorites(), context.previousData);
+      }
+    },
+    onSettled: () => queryClient.invalidateQueries(cineneKeys.favorites()),
+  });
+
   return (
-    <FavoritecontentWrapper>
+    <StyledLi>
       <Link to={`/${data.content_type}/${data.tmdbId}`}>
         <img
           src={getImageUrl(
@@ -29,19 +55,19 @@ export default function Favoritecontent({ data }: Props) {
         />
         <span>{data.title}</span>
       </Link>
-      <Button
+      <StyledButton
         color="navy50"
         type="button"
         onClick={() => mutate({ type: 'content', id: data._id })}
       >
         <Heart />
-      </Button>
+      </StyledButton>
       {renderPortal()}
-    </FavoritecontentWrapper>
+    </StyledLi>
   );
 }
 
-const FavoritecontentWrapper = styled.li`
+const StyledLi = styled.li`
   display: flex;
   position: relative;
   a {
@@ -76,7 +102,7 @@ const FavoritecontentWrapper = styled.li`
   }
 `;
 
-const Button = styled.button`
+const StyledButton = styled.button`
   align-content: center;
   background-color: ${({ theme }) => theme.colors.navy50};
   border: none;

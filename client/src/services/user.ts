@@ -37,6 +37,7 @@ export const login = async (body: Body) => {
       user: User;
     }>
   >('/user/login', body);
+  getAccessToken(data);
   return data;
 };
 
@@ -75,12 +76,19 @@ export const changeNickname = async (nickname: string) => {
 };
 
 export const kakaoLogin = async (code: string) => {
-  const { data } = await axios.get<{
-    success: boolean;
-    user: User;
-    id: string;
-    info?: { nickname?: string; email: string };
-  }>(`/user/kakao-login/${code}`);
+  const { data } = await axios.get<CustomResponse<{ user: User }>>(
+    `/user/kakao/${code}`,
+  );
+  getAccessToken(data);
+  return data;
+};
 
+export const kakaoRegister = async (body: Omit<Body, 'password'>) => {
+  const { data } = await axios.post('/user/kakao', body);
+  return data;
+};
+
+export const kakaoUnregister = async (id?: string) => {
+  const { data } = await axios.delete(`/user/kakao/${id}`, bearer());
   return data;
 };

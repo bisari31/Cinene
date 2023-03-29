@@ -1,19 +1,20 @@
-import styled from 'styled-components';
+import { useEffect } from 'react';
+
+import { useRedirection } from 'hooks';
 
 import Tab from 'components/user/profile/Tab';
 import Profile from 'components/user/profile';
-import { useRedirection } from 'hooks';
 
 export default function MyPage() {
-  useRedirection(true);
+  const redirection = useRedirection(true);
+
+  useEffect(() => {
+    redirection();
+  }, [redirection]);
 
   return (
-    <MypageWrapper>
-      <Profile>
-        <Tab />
-      </Profile>
-    </MypageWrapper>
+    <Profile>
+      <Tab />
+    </Profile>
   );
 }
-
-const MypageWrapper = styled.div``;

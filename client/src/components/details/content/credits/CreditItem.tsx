@@ -12,7 +12,7 @@ export default function CreditItem({ item, isDirector = false }: Props) {
   const { getImageUrl } = useImageUrl();
   const character = 'character' in item ? `${item.character} 역` : '정보 없음';
   return (
-    <CreditItemWrapper>
+    <StyledWrapper>
       <Link to={`/person/${item.id}`} draggable="false">
         <div>
           <img
@@ -26,11 +26,11 @@ export default function CreditItem({ item, isDirector = false }: Props) {
           <span>{isDirector ? '감독' : character}</span>
         </div>
       </Link>
-    </CreditItemWrapper>
+    </StyledWrapper>
   );
 }
 
-const CreditItemWrapper = styled.li`
+const StyledWrapper = styled.li`
   a {
     align-items: center;
     display: flex;

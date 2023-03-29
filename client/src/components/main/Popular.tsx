@@ -1,19 +1,36 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
+import { useQuery } from 'react-query';
 
 import { ChevronLeft, ChevronRight } from 'assets';
 import { buttonEffect } from 'styles/css';
-import { useImageUrl } from 'hooks/cinene';
+import { useDetailQuery, useImageUrl } from 'hooks/cinene';
+import { getTrendingMedia } from 'services/tmdb';
+import { queryOptions, tmdbKeys } from 'utils/queryOptions';
 
-import useDetailQuery from 'components/details/hooks/useDetailQuery';
-import usePopular from './hooks/usePopular';
 import Average from './Average';
 
 export default function Popular() {
-  const { data, handleSlide } = usePopular();
-  const { mediaData, cineneData } = useDetailQuery(data?.id, data?.media_type);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const { getImageUrl } = useImageUrl();
+  const { data } = useQuery(tmdbKeys.popular(), getTrendingMedia, {
+    ...queryOptions,
+  });
+  const currentData = data?.[currentIndex];
+  const { mediaData, cineneData } = useDetailQuery(
+    currentData?.id,
+    currentData?.media_type,
+  );
+
+  const handleSlide = (index: number) => {
+    const maxIndex = data?.length;
+    if (!maxIndex) return;
+    let nextIndex = currentIndex + index;
+    if (nextIndex > maxIndex - 1) nextIndex = 0;
+    else if (nextIndex < 0) nextIndex = maxIndex - 1;
+    setCurrentIndex(nextIndex);
+  };
 
   useEffect(() => {
     const slider = setInterval(() => handleSlide(1), 10000);
@@ -22,40 +39,49 @@ export default function Popular() {
 
   return (
     <section>
-      <Background src={getImageUrl(data?.backdrop_path, 'full')} />
-      <Item>
+      <StyledBackdrop src={getImageUrl(currentData?.backdrop_path, 'full')} />
+      <StyledWrapper>
         <div>
-          <Category>
-            <Average tmdbAverage={data?.vote_average} cineneData={cineneData} />
-          </Category>
-          <Overview>
+          <StyledCategory>
+            <Average
+              tmdbAverage={currentData?.vote_average}
+              cineneData={cineneData}
+            />
+          </StyledCategory>
+          <StyledOverview>
             <p>
               {mediaData && 'title' in mediaData
                 ? mediaData.title
                 : mediaData?.name}
             </p>
             <p>{mediaData?.overview}</p>
-          </Overview>
-          <ButtonWrapper color="pink">
-            <Link to={`/${data?.media_type}/${data?.id}`}>자세히 보기</Link>
-            <Button
+          </StyledOverview>
+          <StyledButtonWrapper color="pink">
+            <Link to={`/${currentData?.media_type}/${currentData?.id}`}>
+              자세히 보기
+            </Link>
+            <StyledButton
               color="navy50"
               type="button"
               onClick={() => handleSlide(-1)}
             >
               <ChevronLeft />
-            </Button>
-            <Button color="navy50" type="button" onClick={() => handleSlide(1)}>
+            </StyledButton>
+            <StyledButton
+              color="navy50"
+              type="button"
+              onClick={() => handleSlide(1)}
+            >
               <ChevronRight />
-            </Button>
-          </ButtonWrapper>
+            </StyledButton>
+          </StyledButtonWrapper>
         </div>
-      </Item>
+      </StyledWrapper>
     </section>
   );
 }
 
-const Background = styled.div<{ src: string }>`
+const StyledBackdrop = styled.div<{ src: string }>`
   ${({ src }) => css`
     background: ${`linear-gradient(
         rgba(24, 25, 32, 0.5) 70vh,
@@ -71,7 +97,7 @@ const Background = styled.div<{ src: string }>`
   `}
 `;
 
-const Item = styled.div`
+const StyledWrapper = styled.div`
   ${({ theme }) => css`
     align-items: flex-end;
     display: flex;
@@ -93,7 +119,7 @@ const Item = styled.div`
   `}
 `;
 
-const Category = styled.div`
+const StyledCategory = styled.div`
   ${({ theme }) => css`
     display: flex;
     flex-direction: column;
@@ -109,7 +135,7 @@ const Category = styled.div`
   `}
 `;
 
-const Overview = styled.div`
+const StyledOverview = styled.div`
   display: flex;
   flex-direction: column;
 
@@ -137,7 +163,7 @@ const Overview = styled.div`
   }
 `;
 
-const ButtonWrapper = styled.div`
+const StyledButtonWrapper = styled.div`
   ${({ theme }) => css`
     align-items: center;
     display: flex;
@@ -160,7 +186,7 @@ const ButtonWrapper = styled.div`
   `}
 `;
 
-const Button = styled.button`
+const StyledButton = styled.button`
   background-color: ${({ theme }) => theme.colors.navy50};
   border: none;
   border-radius: 12px;

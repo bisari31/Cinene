@@ -1,9 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 
+import { useMutationOptions } from 'hooks/cinene';
 import { getLikes, like } from 'services/like';
 import { cineneKeys } from 'utils/queryOptions';
-
-import useAuthQuery from '../../../hooks/cinene/useAuth';
+import useAuthQuery from './useAuth';
 
 export default function useLikeQuery(
   type: 'comments' | 'content',
@@ -11,8 +11,8 @@ export default function useLikeQuery(
   openModal: (msg?: string) => void,
 ) {
   const { auth, setAuth } = useAuthQuery();
+  const { errorHandler, queryClient } = useMutationOptions(openModal);
   const IdType = type === 'comments' ? 'comment' : 'content';
-  const queryClient = useQueryClient();
 
   const { data } = useQuery(cineneKeys.likes(type, id, !!auth), () =>
     getLikes(IdType, id, auth?._id),
@@ -35,13 +35,8 @@ export default function useLikeQuery(
       }
       return { previousData };
     },
-    onError: ({ response }: AxiosError, variables, context) => {
-      if (response.status === 401) {
-        setAuth(null);
-        openModal();
-      } else {
-        openModal(`${response.data.message} 😭`);
-      }
+    onError: (err: AxiosError, variables, context) => {
+      errorHandler(err);
       if (context?.previousData) {
         queryClient.setQueryData(
           cineneKeys.likes(type, id, !!auth),
