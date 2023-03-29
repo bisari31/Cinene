@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useMutation } from 'react-query';
 import styled from 'styled-components';
 import { useSetRecoilState } from 'recoil';
