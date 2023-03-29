@@ -3,11 +3,11 @@ import { useLocation, useParams } from 'react-router-dom';
 
 const REGEXP = /[a-z]{1,}/;
 
-export default function useCurrentPathName() {
-  const { pathname } = useLocation();
+export default function useCurrentPathName<T>() {
+  const { pathname, search } = useLocation();
   const { id } = useParams();
 
   const path = useMemo(() => pathname.match(REGEXP) || '', [pathname]);
 
-  return { path: path[0] as MediaType, id: Number(id) };
+  return { path: path[0] as T, id: Number(id), search };
 }

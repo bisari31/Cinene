@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 
-import { EMPTY_ERROR_MESSAGE } from 'components/user/login/Form';
+import { EMPTY_ERROR_MESSAGE } from 'components/user/auth/AuthForm';
 import { regexObj } from 'utils/regex';
 import { useFocus } from 'hooks';
 
@@ -44,5 +44,8 @@ export default function useInput(
     if (error) focus();
   }, [error, focus]);
 
-  return { value, setValue, error, setError, handleChange, handleBlur, ref };
+  return useMemo(
+    () => ({ value, setValue, error, setError, handleChange, handleBlur, ref }),
+    [error, handleBlur, handleChange, value],
+  );
 }

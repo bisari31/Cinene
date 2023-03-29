@@ -14,17 +14,17 @@ interface Props {
 }
 
 export default function Nickname({ auth, setAuth }: Props) {
+  const {
+    value: nickname,
+    error: nicknameError,
+    ref: nicknameRef,
+    handleChange: handleNicknameChange,
+    setError: setNicknameError,
+    setValue: setNickname,
+  } = useInput('nickname');
   const [isChanged, setIsChanged] = useState(false);
   const [isChanging, setIsChanging] = useState(false);
   const { openPortal, renderPortal } = useLoginPortal();
-  const {
-    value: nickname,
-    handleChange: handleNicknameChange,
-    setValue: setNickname,
-    ref: inputRef,
-    error,
-    setError,
-  } = useInput('nickname');
 
   const { mutate } = useMutation(changeNickname, {
     onSuccess: (data) => {
@@ -37,15 +37,15 @@ export default function Nickname({ auth, setAuth }: Props) {
         setAuth(null);
         openPortal();
       }
-      setError(response.data.message);
+      setNicknameError(response.data.message);
     },
   });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (error) return;
+    if (nicknameError) return;
     if (auth?.nickname === nickname) {
-      setError('닉네임이 같습니다.');
+      setNicknameError('닉네임이 같습니다.');
       return;
     }
     mutate(nickname);
@@ -59,18 +59,18 @@ export default function Nickname({ auth, setAuth }: Props) {
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === 'Escape') inputRef.current?.blur();
+      if (e.key === 'Escape') nicknameRef.current?.blur();
     },
-    [inputRef],
+    [nicknameRef],
   );
 
   const handleBlur = useCallback(
     (prevNickname?: string) => {
       if (!isChanged) setNickname(prevNickname ?? '');
-      setError('');
+      setNicknameError('');
       setIsChanging(false);
     },
-    [setError, setNickname, isChanged],
+    [isChanged, setNickname, setNicknameError],
   );
 
   useEffect(() => {
@@ -81,15 +81,15 @@ export default function Nickname({ auth, setAuth }: Props) {
     <StyledForm
       onSubmit={handleSubmit}
       isEmpty={!nickname.length}
-      isError={!!error}
+      isError={!!nicknameError}
     >
       <Input
         placeholder="특수문자 제외 2~10자"
         onKeyDown={handleKeyDown}
         onFocus={handleFocus}
         onBlur={() => handleBlur(auth?.nickname)}
-        errorMessage={error}
-        ref={inputRef}
+        errorMessage={nicknameError}
+        ref={nicknameRef}
         type="text"
         value={nickname}
         onChange={handleNicknameChange}
