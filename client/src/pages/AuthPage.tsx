@@ -21,7 +21,6 @@ export default function AuthPage() {
   const { openPortal, renderPortal } = useLoginPortal();
   const { path, search } = useCurrentPathName<AuthPagePathName>();
 
-  console.log(search);
   useQuery(['auth'], () => kakaoLogin(search.replace(REGEX, '')), {
     enabled: REGEX.test(search),
     onSuccess: (res) => {
