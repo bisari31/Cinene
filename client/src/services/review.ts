@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { bearer, getAccessToken } from './user';
+import { bearer, setAccessToken } from './user';
 
 interface Body {
   comment: string;
@@ -39,13 +39,13 @@ export const deleteReview = async (id: string) => {
     `/reviews/${id}`,
     bearer(),
   );
-  getAccessToken(data);
+  setAccessToken(data);
   return data;
 };
 
 const createReview = async (obj: Body) => {
   const { data } = await axios.post<CustomResponse>(`/reviews`, obj, bearer());
-  getAccessToken(data);
+  setAccessToken(data);
   return data;
 };
 const updateReveiw = async (obj: Body) => {
@@ -54,6 +54,6 @@ const updateReveiw = async (obj: Body) => {
     obj,
     bearer(),
   );
-  getAccessToken(data);
+  setAccessToken(data);
   return data;
 };

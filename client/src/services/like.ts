@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { bearer, getAccessToken } from './user';
+import { bearer, setAccessToken } from './user';
 
 type Type = 'content' | 'comment';
 
@@ -23,12 +23,12 @@ export const like = async (body: { id?: string; type: Type }) => {
     null,
     bearer(),
   );
-  getAccessToken(data);
+  setAccessToken(data);
   return data;
 };
 
 export const getFavorites = async () => {
   const { data } = await axios.get<FavoritesData>('/likes/favorites', bearer());
-  getAccessToken(data);
+  setAccessToken(data);
   return data;
 };

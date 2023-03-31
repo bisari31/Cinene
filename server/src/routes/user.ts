@@ -3,9 +3,9 @@ import bcrypt from 'bcrypt';
 import axios from 'axios';
 
 import { KakaoTokenData, KakaoUserData } from '../types/oauth';
-import authenticate from '../utils/middleware';
 import { CustomRequest, CustomResponse } from '../types/express';
 import { UnauthorizedError } from '../utils/error';
+import authenticate from '../utils/middleware';
 
 import User, { UserInterface } from '../models/user';
 
@@ -20,7 +20,7 @@ interface KakaoRequest extends Request {
 
 router.get(
   '/',
-  authenticate,
+  () => authenticate(true),
   async (
     req: CustomRequest<{ name: string }>,
     res: CustomResponse<{

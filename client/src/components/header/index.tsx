@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { useEffect } from 'react';
 
-import { autheticate, getAccessToken } from 'services/user';
+import { autheticate, setAccessToken } from 'services/user';
 import { useOutsideClick } from 'hooks';
 import { useAuth } from 'hooks/cinene';
 
@@ -16,14 +16,13 @@ export default function Header() {
 
   useEffect(() => {
     const getAuth = async () => {
-      try {
-        const data = await autheticate();
+      const data = await autheticate();
+      if (data.user) {
         setAuth(data.user);
-        getAccessToken(data);
-      } catch (err) {
-        setAuth(null);
-        localStorage.removeItem('accessToken');
+        setAccessToken(data);
       }
+      setAuth(null);
+      localStorage.removeItem('accessToken');
     };
     getAuth();
   }, [setAuth]);

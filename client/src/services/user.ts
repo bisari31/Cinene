@@ -14,7 +14,7 @@ export const bearer = () => {
   return { headers: { authorization: `Bearer ${token}` } };
 };
 
-export const getAccessToken = (data: { accessToken?: string }) => {
+export const setAccessToken = (data: { accessToken?: string }) => {
   if (data.accessToken) {
     localStorage.setItem('accessToken', data.accessToken);
   }
@@ -40,7 +40,7 @@ export const login = async (body: Body) => {
       user: User;
     }>
   >('/user/login', body);
-  getAccessToken(data);
+  setAccessToken(data);
   return data;
 };
 
@@ -62,7 +62,7 @@ export const changePassword = async (password: string) => {
     { password },
     bearer(),
   );
-  getAccessToken(data);
+  setAccessToken(data);
   return data;
 };
 
@@ -74,7 +74,7 @@ export const changeNickname = async (nickname: string) => {
     },
     bearer(),
   );
-  getAccessToken(data);
+  setAccessToken(data);
   return data;
 };
 
@@ -82,7 +82,7 @@ export const kakaoLogin = async (code: string) => {
   const { data } = await axios.get<CustomResponse<{ user: User }>>(
     `/user/kakao/${code}`,
   );
-  getAccessToken(data);
+  setAccessToken(data);
   return data;
 };
 

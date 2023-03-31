@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { bearer, getAccessToken } from './user';
+import { bearer, setAccessToken } from './user';
 
 interface Body {
   comment: string;
@@ -15,7 +15,7 @@ export const createComment = async (body: Body) => {
     body,
     bearer(),
   );
-  getAccessToken(data);
+  setAccessToken(data);
   return data;
 };
 
@@ -30,7 +30,7 @@ export const getComments = async (id?: string) => {
 export const deleteComment = async (id?: string) => {
   if (!id) return null;
   const { data } = await axios.delete(`/comments/${id}`, bearer());
-  getAccessToken(data);
+  setAccessToken(data);
   return data;
 };
 
@@ -41,6 +41,6 @@ export const editComment = async (obj: { id?: string; comment: string }) => {
     { comment: obj.comment },
     bearer(),
   );
-  getAccessToken(data);
+  setAccessToken(data);
   return data;
 };
