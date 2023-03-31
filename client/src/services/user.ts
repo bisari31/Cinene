@@ -6,6 +6,7 @@ type Body = {
   nickname: string;
 };
 
+axios.defaults.withCredentials = true;
 axios.defaults.baseURL = process.env.REACT_APP_SERVER;
 
 export const bearer = () => {

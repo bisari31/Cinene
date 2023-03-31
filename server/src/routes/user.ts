@@ -214,7 +214,7 @@ router.get(
       if (!user) {
         res
           .cookie('kakao', data.access_token, {
-            maxAge: 1000 * 60 * 60 * 24 * 14,
+            maxAge: 1000 * 60 * 5,
             httpOnly: true,
           })
           .json({

@@ -22,12 +22,7 @@ mongoose.connect(DB_URI, { dbName: 'cinene' }, (err) => {
   console.log('db 연결 성공');
 });
 
-const corsConfig = {
-  origin: process.env.CLIENT_URL,
-  credentials: true,
-};
-
-app.use(cors(corsConfig));
+app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
 app.use(cookieParser());
 app.use(express.json());
 app.use(morgan('dev'));

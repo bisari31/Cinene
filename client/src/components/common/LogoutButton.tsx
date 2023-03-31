@@ -17,14 +17,11 @@ export default function LogoutButton() {
 
   const handleLogout = async () => {
     toggleModal();
-    try {
-      if (auth?.kakao_id) window.location.href = KAKAO_LOGOUT_URI;
-      await logout();
-      navigate('/login');
-    } finally {
-      localStorage.removeItem('accessToken');
-      setAuth(null);
-    }
+    if (auth?.kakao_id) window.location.href = KAKAO_LOGOUT_URI;
+    await logout();
+    localStorage.removeItem('accessToken');
+    setAuth(null);
+    navigate('/login');
   };
 
   return (
