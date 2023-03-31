@@ -17,12 +17,13 @@ export default function Header() {
   useEffect(() => {
     const getAuth = async () => {
       const data = await autheticate();
-      if (data.user) {
+      if (data.success) {
         setAuth(data.user);
         setAccessToken(data);
+      } else {
+        setAuth(null);
+        localStorage.removeItem('accessToken');
       }
-      setAuth(null);
-      localStorage.removeItem('accessToken');
     };
     getAuth();
   }, [setAuth]);

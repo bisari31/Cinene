@@ -18,7 +18,7 @@ const router = Router();
 
 router.post(
   '/',
-  authenticate,
+  authenticate(),
   async (req: CustomRequest<{}, {}, Body>, res: CustomResponse) => {
     try {
       await Comment.create({
@@ -55,7 +55,7 @@ router.get(
 
 router.delete(
   '/:id',
-  authenticate,
+  authenticate(),
   async (req: CustomRequest<{ id: string }>, res: CustomResponse) => {
     try {
       const hasComment = await Comment.findOne({ responseTo: req.params.id });
@@ -77,7 +77,7 @@ router.delete(
 
 router.patch(
   '/:id',
-  authenticate,
+  authenticate(),
   async (
     req: CustomRequest<{ id: string }, {}, { comment: string }>,
     res: CustomResponse,

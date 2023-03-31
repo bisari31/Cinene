@@ -20,7 +20,7 @@ interface KakaoRequest extends Request {
 
 router.get(
   '/',
-  () => authenticate(true),
+  authenticate(true),
   async (
     req: CustomRequest<{ name: string }>,
     res: CustomResponse<{
@@ -104,7 +104,7 @@ router.post(
 
 router.get(
   '/logout',
-  authenticate,
+  authenticate(),
   async (req: CustomRequest, res: CustomResponse) => {
     try {
       await User.findByIdAndUpdate(req.user?._id, {
@@ -119,7 +119,7 @@ router.get(
 
 router.patch(
   '/password',
-  authenticate,
+  authenticate(),
   async (
     req: CustomRequest<{}, {}, { password: string }>,
     res: CustomResponse,
@@ -141,7 +141,7 @@ router.patch(
 
 router.patch(
   '/nickname',
-  authenticate,
+  authenticate(),
   async (
     req: CustomRequest<{}, {}, { nickname: string }>,
     res: CustomResponse<{ user?: Omit<UserInterface, 'password'> }>,
@@ -170,7 +170,7 @@ router.patch(
 
 router.delete(
   '/',
-  authenticate,
+  authenticate(),
   async (req: CustomRequest, res: CustomResponse) => {
     try {
       await User.deleteOne({ email: req.user?.email });
@@ -278,7 +278,7 @@ router.post(
 
 router.delete(
   '/kakao/:id',
-  authenticate,
+  authenticate(),
   async (req: CustomRequest<{ id: string }>, res: CustomResponse) => {
     try {
       await axios.post(

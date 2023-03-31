@@ -13,9 +13,9 @@ export interface MiddlewareRequest extends Request {
 const authenticate = (autoLogin = false) => {
   return async (req: MiddlewareRequest, res: Response, next: NextFunction) => {
     const response = () => {
-      return autoLogin
-        ? res.status(200).json()
-        : res.status(401).json({ success: false, message: '로그인 실패' });
+      return res
+        .status(autoLogin ? 200 : 401)
+        .json({ success: false, message: '로그인 실패' });
     };
     try {
       const accessToken = req.headers.authorization?.split(' ')[1];
