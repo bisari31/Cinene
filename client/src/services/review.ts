@@ -27,7 +27,7 @@ export const getReviews = async (
 ) => {
   if (!contentId || !contentType) return null;
   const { data } = await axios.get<ReviewData>(
-    `/api/reviews/${contentType}/${contentId}`,
+    `/reviews/${contentType}/${contentId}`,
     { params: { userId } },
   );
 
@@ -36,7 +36,7 @@ export const getReviews = async (
 
 export const deleteReview = async (id: string) => {
   const { data } = await axios.delete<CustomResponse>(
-    `/api/reviews/${id}`,
+    `/reviews/${id}`,
     bearer(),
   );
   getAccessToken(data);
@@ -44,17 +44,13 @@ export const deleteReview = async (id: string) => {
 };
 
 const createReview = async (obj: Body) => {
-  const { data } = await axios.post<CustomResponse>(
-    `/api/reviews`,
-    obj,
-    bearer(),
-  );
+  const { data } = await axios.post<CustomResponse>(`/reviews`, obj, bearer());
   getAccessToken(data);
   return data;
 };
 const updateReveiw = async (obj: Body) => {
   const { data } = await axios.patch<ReviewData>(
-    `/api/reviews/${obj.hasReview}`,
+    `/reviews/${obj.hasReview}`,
     obj,
     bearer(),
   );

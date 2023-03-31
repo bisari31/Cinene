@@ -4,7 +4,7 @@ export const getContent = async (type?: string, id?: number) => {
   if (!type) return null;
 
   const { data } = await axios.get<CustomResponse<{ content: CineneData }>>(
-    `/api/contents/${type}/${id}`,
+    `/contents/${type}/${id}`,
   );
   return data;
 };
@@ -17,13 +17,13 @@ export const createContent = async (body?: {
 }) => {
   if (!body) return null;
   const { data } = await axios.post<CustomResponse<{ content: CineneData }>>(
-    '/api/contents',
+    '/contents',
     body,
   );
   return data;
 };
 
 export const getTopRated = async () => {
-  const { data } = await axios.get<TopRatedData>('/api/contents/top-rated');
+  const { data } = await axios.get<TopRatedData>('/contents/top-rated');
   return data;
 };

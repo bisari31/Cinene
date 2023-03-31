@@ -6,6 +6,8 @@ type Body = {
   nickname: string;
 };
 
+axios.defaults.baseURL = process.env.REACT_APP_SERVER;
+
 export const bearer = () => {
   const token = localStorage.getItem('accessToken');
   return { headers: { authorization: `Bearer ${token}` } };
@@ -19,17 +21,14 @@ export const getAccessToken = (data: { accessToken?: string }) => {
 
 export const autheticate = async () => {
   const { data } = await axios.get<CustomResponse<{ user: User }>>(
-    '/api/user',
+    '/user',
     bearer(),
   );
   return data;
 };
 
 export const logout = async () => {
-  const { data } = await axios.get<CustomResponse>(
-    '/api/user/logout',
-    bearer(),
-  );
+  const { data } = await axios.get<CustomResponse>('/user/logout', bearer());
   return data;
 };
 
@@ -39,7 +38,7 @@ export const login = async (body: Body) => {
       accessToken: string;
       user: User;
     }>
-  >('/api/user/login', body);
+  >('/user/login', body);
   getAccessToken(data);
   return data;
 };
@@ -47,18 +46,18 @@ export const login = async (body: Body) => {
 export const register = async (body: Body) => {
   const { data } = await axios.post<
     CustomResponse<{ hasNickname?: boolean; hasEmail?: boolean }>
-  >('/api/user/register', body);
+  >('/user/register', body);
   return data;
 };
 
 export const unregister = async () => {
-  const { data } = await axios.delete<CustomResponse>('/api/user', bearer());
+  const { data } = await axios.delete<CustomResponse>('/user', bearer());
   return data;
 };
 
 export const changePassword = async (password: string) => {
   const { data } = await axios.patch<CustomResponse>(
-    '/api/user/password',
+    '/user/password',
     { password },
     bearer(),
   );
@@ -68,7 +67,7 @@ export const changePassword = async (password: string) => {
 
 export const changeNickname = async (nickname: string) => {
   const { data } = await axios.patch<CustomResponse<{ user: User }>>(
-    '/api/user/nickname',
+    '/user/nickname',
     {
       nickname,
     },
@@ -80,18 +79,18 @@ export const changeNickname = async (nickname: string) => {
 
 export const kakaoLogin = async (code: string) => {
   const { data } = await axios.get<CustomResponse<{ user: User }>>(
-    `/api/user/kakao/${code}`,
+    `/user/kakao/${code}`,
   );
   getAccessToken(data);
   return data;
 };
 
 export const kakaoRegister = async (body: Omit<Body, 'password'>) => {
-  const { data } = await axios.post('/api/user/kakao', body);
+  const { data } = await axios.post('/user/kakao', body);
   return data;
 };
 
 export const kakaoUnregister = async (id?: string) => {
-  const { data } = await axios.delete(`/api/user/kakao/${id}`, bearer());
+  const { data } = await axios.delete(`/user/kakao/${id}`, bearer());
   return data;
 };

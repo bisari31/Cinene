@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 
 import userRouter from './routes/user';
 import contentsRouter from './routes/contents';
@@ -21,15 +22,21 @@ mongoose.connect(DB_URI, { dbName: 'cinene' }, (err) => {
   console.log('db 연결 성공');
 });
 
+const corsConfig = {
+  origin: 'http://localhost:3000',
+  credentials: true,
+};
+
+app.use(cors(corsConfig));
 app.use(cookieParser());
 app.use(express.json());
 app.use(morgan('dev'));
 
-app.use('/api/user', userRouter);
-app.use('/api/contents', contentsRouter);
-app.use('/api/comments', commentRouter);
-app.use('/api/likes', likesRouter);
-app.use('/api/reviews', reviewsRouter);
+app.use('/user', userRouter);
+app.use('/contents', contentsRouter);
+app.use('/comments', commentRouter);
+app.use('/likes', likesRouter);
+app.use('/reviews', reviewsRouter);
 
 app.use((req, res) => {
   res.status(404).send('not found');
