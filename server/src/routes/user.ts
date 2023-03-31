@@ -199,7 +199,7 @@ router.get(
           params: {
             grant_type: 'authorization_code',
             client_id: process.env.KAKAO_REST_API_KEY,
-            redirect_uri: 'http://localhost:3000/login',
+            redirect_uri: `${process.env.CLIENT_URL}/login`,
             code: req.params.code,
           },
         },
