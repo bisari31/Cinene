@@ -2,9 +2,11 @@ import dayjs from 'dayjs';
 import styled, { css } from 'styled-components';
 
 import { Upload } from 'assets';
-import { USER_IMAGE } from 'utils/imageUrls';
-import { useAuth, useLoginPortal } from 'hooks/cinene';
+import { useAuth, useLoginPortal, useMutationOptions } from 'hooks/cinene';
+import { uploadProfile } from 'services/profile';
 
+import React, { useRef } from 'react';
+import { useMutation } from 'react-query';
 import Nickname from './Nickname';
 
 interface Props {
@@ -13,17 +15,39 @@ interface Props {
 
 export default function Profile({ children }: Props) {
   const { auth, setAuth } = useAuth();
+  const inputRef = useRef<HTMLInputElement>(null);
   const { openPortal, renderPortal } = useLoginPortal();
+  const { errorHandler } = useMutationOptions(openPortal);
   const createdAt = dayjs(auth?.createdAt).format(' YYYY년 MM월 DD일');
 
-  const hancdleImageChange = () => openPortal('서비스 준비중 입니다 😅');
+  const { mutate } = useMutation(uploadProfile, {
+    onSuccess: (data) => {
+      if (data.user) setAuth(data.user);
+    },
+    onError: (err: AxiosError) => errorHandler(err),
+  });
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const formData = new FormData();
+      formData.append('img', e.target.files[0]);
+      mutate(formData);
+    }
+  };
+  const handleButtonClick = () => inputRef.current?.click();
 
   return (
     <StyledDiv>
       <StyledSection>
         <StyledImgWrapper>
-          <img src={auth?.img || USER_IMAGE} alt="profile" />
-          <button type="button" onClick={hancdleImageChange}>
+          <img src={auth?.img} alt="profile" />
+          <button type="button" onClick={handleButtonClick}>
+            <input
+              ref={inputRef}
+              onChange={handleImageChange}
+              type="file"
+              accept=".jpg, .jpeg, .png"
+            />
             <Upload />
           </button>
         </StyledImgWrapper>
@@ -87,7 +111,9 @@ const StyledImgWrapper = styled.div`
       bottom: 20px;
       position: absolute;
       right: -5px;
-
+      input {
+        display: none;
+      }
       svg {
         stroke: #fff;
         stroke-width: 1.5;

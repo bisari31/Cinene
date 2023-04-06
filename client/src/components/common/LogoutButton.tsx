@@ -16,7 +16,6 @@ export default function LogoutButton() {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
-    toggleModal();
     if (auth?.kakao_id) window.location.href = KAKAO_LOGOUT_URI;
     await logout();
     localStorage.removeItem('accessToken');
