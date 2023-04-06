@@ -1,12 +1,13 @@
+import React, { useRef } from 'react';
 import dayjs from 'dayjs';
 import styled, { css } from 'styled-components';
+import { useMutation } from 'react-query';
 
 import { Upload } from 'assets';
 import { useAuth, useLoginPortal, useMutationOptions } from 'hooks/cinene';
 import { uploadProfile } from 'services/profile';
 
-import React, { useRef } from 'react';
-import { useMutation } from 'react-query';
+import Loading from 'components/common/Loading';
 import Nickname from './Nickname';
 
 interface Props {
@@ -20,7 +21,7 @@ export default function Profile({ children }: Props) {
   const { errorHandler } = useMutationOptions(openPortal);
   const createdAt = dayjs(auth?.createdAt).format(' YYYY년 MM월 DD일');
 
-  const { mutate } = useMutation(uploadProfile, {
+  const { mutate, isLoading } = useMutation(uploadProfile, {
     onSuccess: (data) => {
       if (data.user) setAuth(data.user);
     },
@@ -36,6 +37,8 @@ export default function Profile({ children }: Props) {
   };
   const handleButtonClick = () => inputRef.current?.click();
 
+  if (isLoading) return <Loading />;
+
   return (
     <StyledDiv>
       <StyledSection>
@@ -46,7 +49,7 @@ export default function Profile({ children }: Props) {
               ref={inputRef}
               onChange={handleImageChange}
               type="file"
-              accept=".jpg, .jpeg, .png"
+              accept=".gif, .jpg, .jpeg, .png"
             />
             <Upload />
           </button>
