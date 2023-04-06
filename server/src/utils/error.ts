@@ -7,6 +7,15 @@ class NotFoundError extends Error {
   }
 }
 
+class CustomError extends Error {
+  statusCode: number;
+
+  constructor(message: string, statusCode: number) {
+    super(message);
+    this.statusCode = statusCode;
+  }
+}
+
 class UnauthorizedError extends Error {
   statusCode = 401;
 
@@ -16,4 +25,4 @@ class UnauthorizedError extends Error {
   }
 }
 
-export { NotFoundError, UnauthorizedError };
+export { NotFoundError, UnauthorizedError, CustomError };

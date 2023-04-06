@@ -10,6 +10,7 @@ import contentsRouter from './routes/contents';
 import commentRouter from './routes/comments';
 import reviewsRouter from './routes/reviews';
 import likesRouter from './routes/likes';
+import profileRouter from './routes/profile';
 
 dotenv.config();
 const app = express();
@@ -32,6 +33,7 @@ app.use('/contents', contentsRouter);
 app.use('/comments', commentRouter);
 app.use('/likes', likesRouter);
 app.use('/reviews', reviewsRouter);
+app.use('/profile', profileRouter);
 
 app.use((req, res) => {
   res.status(404).send('not found');

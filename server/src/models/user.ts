@@ -47,7 +47,8 @@ const userSchema = new Schema<UserInterface>(
     },
     img: {
       type: String,
-      default: '',
+      default:
+        'https://bbbwefmsdsd.s3.ap-northeast-2.amazonaws.com/default/image.png',
     },
     refresh_token: {
       type: String,
