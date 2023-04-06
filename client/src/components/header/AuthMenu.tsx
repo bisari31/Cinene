@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { lighten, darken } from 'polished';
 
 import { Heart, Search } from 'assets';
-import { USER_IMAGE } from 'utils/imageUrls';
 
 import LogoutButton from 'components/common/LogoutButton';
 
@@ -30,7 +29,7 @@ export default function AuthMenu({ setIsVisible, auth }: Props) {
           <>
             <StyledUserInfo>
               <Link to="/mypage">
-                <img src={auth.img || USER_IMAGE} alt="user_image" />
+                <img src={auth.img} alt="user_image" />
               </Link>
             </StyledUserInfo>
             <StyledButton className="logout_button">

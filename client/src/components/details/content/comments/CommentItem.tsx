@@ -1,11 +1,11 @@
 import { useState, useMemo } from 'react';
 import styled, { css } from 'styled-components';
 
-import { USER_IMAGE } from 'utils/imageUrls';
 import { Button, buttonEffect } from 'styles/css';
 import { Heart } from 'assets';
 import { useLikeQuery, useLoginPortal } from 'hooks/cinene';
 
+import { USER_IMAGE } from 'utils/imageUrls';
 import CommentItemData from './CommentItemData';
 import ReplyComments from './ReplyComments';
 
@@ -44,7 +44,7 @@ export default function CommentItem({
   return (
     <>
       <StyledWrapper key={commentItem?._id} isResponse={isResponse}>
-        <img src={commentItem?.author?.img || USER_IMAGE} alt="user_poster" />
+        <img src={commentItem?.author?.img ?? USER_IMAGE} alt="user_poster" />
         <CommentItemData openModal={openPortal} commentItem={commentItem} />
         <StyledButtonWrpper color="navy50">
           <Button
