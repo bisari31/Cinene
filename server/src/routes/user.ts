@@ -84,6 +84,8 @@ router.post(
         .cookie('refreshToken', refreshToken, {
           maxAge: 1000 * 60 * 60 * 24 * 14,
           httpOnly: true,
+          sameSite: 'none',
+          secure: true,
         })
         .json({
           success: true,
@@ -216,6 +218,8 @@ router.get(
           .cookie('kakao', data.access_token, {
             maxAge: 1000 * 60 * 5,
             httpOnly: true,
+            sameSite: 'none',
+            secure: true,
           })
           .json({
             success: true,
@@ -233,6 +237,8 @@ router.get(
         .cookie('refreshToken', refreshToken, {
           maxAge: 1000 * 60 * 60 * 24 * 14,
           httpOnly: true,
+          sameSite: 'none',
+          secure: true,
         })
         .json({
           success: true,
