@@ -38,14 +38,14 @@ export default function ReviewItem({ review, onClick }: Props) {
         <div>
           <p>{author?.nickname ?? '탈퇴 회원'}</p>
           {auth && author?._id === auth?._id && (
-            <>
+            <div>
               <button type="button" onClick={onClick}>
                 수정
               </button>
               <button type="button" onClick={() => handleDeleteReview(_id)}>
                 삭제
               </button>
-            </>
+            </div>
           )}
         </div>
         <p>{comment}</p>

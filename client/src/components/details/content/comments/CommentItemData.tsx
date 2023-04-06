@@ -80,14 +80,14 @@ function CommentItemData({ commentItem, openModal }: Props) {
       <div>
         <p>{commentItem?.author?.nickname ?? '탈퇴 회원'}</p>
         {auth && auth?._id === commentItem?.author?._id && (
-          <>
+          <div>
             <button type="button" onClick={handleCommentEdit}>
               {isEditing ? '완료' : '수정'}
             </button>
             <button type="button" onClick={handleCommentDelete}>
               {isEditing ? '취소' : '삭제'}
             </button>
-          </>
+          </div>
         )}
       </div>
       {isEditing ? (
@@ -111,15 +111,16 @@ export default memo(CommentItemData);
 export const StyledItem = styled.div<{ date: string; isDeletedUser: boolean }>`
   ${({ theme, date, isDeletedUser }) => css`
     flex: 1;
+    flex-direction: column;
     line-height: 1.2;
     div {
-      align-items: center;
       display: flex;
+      flex-direction: column;
       margin-bottom: 0.3em;
       p {
+        color: ${isDeletedUser && theme.colors.gray500};
         font-size: 0.9rem;
         font-weight: ${isDeletedUser ? 400 : 500};
-        color: ${isDeletedUser && theme.colors.gray500};
         &::after {
           color: ${theme.colors.gray500};
           content: '${date && date}';
@@ -128,22 +129,29 @@ export const StyledItem = styled.div<{ date: string; isDeletedUser: boolean }>`
           margin-right: 0.7em;
         }
       }
-      button {
-        background: none;
-        border: none;
-        color: ${theme.colors.gray300};
-        font-size: 0.78rem;
-        height: 15px;
-        padding: 0;
-      }
-      button + button {
-        margin-left: 0.5em;
+
+      div {
+        align-items: flex-start;
+        flex-direction: row;
+        margin-top: 3px;
+        button {
+          background: none;
+          border: none;
+          color: ${theme.colors.gray300};
+          font-size: 0.78rem;
+          height: 15px;
+          padding: 0;
+        }
+        button + button {
+          margin-left: 0.5em;
+        }
       }
     }
     & > p {
-      white-space: pre-line;
+      word-break: break-all;
       color: ${theme.colors.gray300};
       font-size: 0.9rem;
+      white-space: pre-line;
     }
 
     textarea {
@@ -156,6 +164,14 @@ export const StyledItem = styled.div<{ date: string; isDeletedUser: boolean }>`
       padding: 10px;
       resize: none;
       width: 95%;
+    }
+    @media ${theme.device.tablet} {
+      div {
+        flex-direction: row;
+        div {
+          margin-top: 0;
+        }
+      }
     }
   `}
 `;
