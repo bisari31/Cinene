@@ -3,9 +3,9 @@ import bcrypt from 'bcrypt';
 import axios from 'axios';
 
 import { KakaoTokenData, KakaoUserData } from '../types/oauth';
-import authenticate from '../utils/middleware';
 import { CustomRequest, CustomResponse } from '../types/express';
 import { UnauthorizedError } from '../utils/error';
+import authenticate from '../utils/middleware';
 
 import User, { UserInterface } from '../models/user';
 
@@ -20,7 +20,7 @@ interface KakaoRequest extends Request {
 
 router.get(
   '/',
-  authenticate,
+  authenticate(true),
   async (
     req: CustomRequest<{ name: string }>,
     res: CustomResponse<{
@@ -104,7 +104,7 @@ router.post(
 
 router.get(
   '/logout',
-  authenticate,
+  authenticate(),
   async (req: CustomRequest, res: CustomResponse) => {
     try {
       await User.findByIdAndUpdate(req.user?._id, {
@@ -119,7 +119,7 @@ router.get(
 
 router.patch(
   '/password',
-  authenticate,
+  authenticate(),
   async (
     req: CustomRequest<{}, {}, { password: string }>,
     res: CustomResponse,
@@ -141,7 +141,7 @@ router.patch(
 
 router.patch(
   '/nickname',
-  authenticate,
+  authenticate(),
   async (
     req: CustomRequest<{}, {}, { nickname: string }>,
     res: CustomResponse<{ user?: Omit<UserInterface, 'password'> }>,
@@ -170,7 +170,7 @@ router.patch(
 
 router.delete(
   '/',
-  authenticate,
+  authenticate(),
   async (req: CustomRequest, res: CustomResponse) => {
     try {
       await User.deleteOne({ email: req.user?.email });
@@ -199,7 +199,7 @@ router.get(
           params: {
             grant_type: 'authorization_code',
             client_id: process.env.KAKAO_REST_API_KEY,
-            redirect_uri: 'http://localhost:3000/login',
+            redirect_uri: `${process.env.CLIENT_URL}/login`,
             code: req.params.code,
           },
         },
@@ -214,7 +214,7 @@ router.get(
       if (!user) {
         res
           .cookie('kakao', data.access_token, {
-            maxAge: 1000 * 60 * 60 * 24 * 14,
+            maxAge: 1000 * 60 * 5,
             httpOnly: true,
           })
           .json({
@@ -278,7 +278,7 @@ router.post(
 
 router.delete(
   '/kakao/:id',
-  authenticate,
+  authenticate(),
   async (req: CustomRequest<{ id: string }>, res: CustomResponse) => {
     try {
       await axios.post(

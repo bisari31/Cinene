@@ -4,12 +4,13 @@ export const IMAGE_URL = 'http://image.tmdb.org/t/p';
 export const TMDB_HOST = 'https://api.themoviedb.org/3';
 
 const params = { language: 'ko', api_key: process.env.REACT_APP_API_KEY };
-
+const credentials = { withCredentials: false };
 export const getTrendingMedia = async () => {
   const { data } = await axios.get<TrendingData>(
     `${TMDB_HOST}/trending/all/week`,
     {
       params,
+      ...credentials,
     },
   );
   return data.results;
@@ -20,6 +21,7 @@ export const getMediaDetail = async (id?: number, type?: string) => {
   const { data } = await axios.get<MovieDetails | TvDetails>(
     `${TMDB_HOST}/${type}/${id}`,
     {
+      ...credentials,
       params,
     },
   );
@@ -32,6 +34,7 @@ export const getPersonDetail = async (id?: number, type?: string) => {
     `${TMDB_HOST}/${type}/${id}`,
     {
       params,
+      ...credentials,
     },
   );
   return data;
@@ -42,6 +45,7 @@ export const getFilmography = async (id: number) => {
     `${TMDB_HOST}/person/${id}/combined_credits`,
     {
       params,
+      ...credentials,
     },
   );
   return data;
@@ -52,6 +56,7 @@ export const getCasts = async (id: number, type: string) => {
     `${TMDB_HOST}/${type}/${id}/credits`,
     {
       params,
+      ...credentials,
     },
   );
   return data;
@@ -62,6 +67,7 @@ export const getSimilarMedia = async (id: number, type: string) => {
     `${TMDB_HOST}/${type}/${id}/similar`,
     {
       params,
+      ...credentials,
     },
   );
   return data.results;
@@ -73,6 +79,7 @@ export const getUpcomingMovie = async () => {
       region: 'KR',
       ...params,
     },
+    ...credentials,
   });
   return data.results;
 };
@@ -83,6 +90,7 @@ export const getTopRatedMovie = async () => {
       region: 'KR',
       ...params,
     },
+    ...credentials,
   });
   return data.results;
 };
@@ -95,6 +103,7 @@ export const getNowPlayingMovie = async () => {
         region: 'KR',
         ...params,
       },
+      ...credentials,
     },
   );
   return data.results;
@@ -105,6 +114,7 @@ export const getSearchResults = async (query: string) => {
       query,
       ...params,
     },
+    ...credentials,
   });
   return data.results;
 };

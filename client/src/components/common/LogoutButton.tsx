@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { logout } from 'services/user';
 import { buttonEffect } from 'styles/css';
 import { useAuth } from 'hooks/cinene';
-import { KAKAO_LOGOUT_URI } from 'utils/api';
+import { KAKAO_LOGOUT_URI } from 'utils/urls';
 
 import Modal from './Modal';
 import Portal from './Portal';
@@ -16,15 +16,11 @@ export default function LogoutButton() {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
-    toggleModal();
-    try {
-      if (auth?.kakao_id) window.location.href = KAKAO_LOGOUT_URI;
-      await logout();
-      navigate('/login');
-    } finally {
-      localStorage.removeItem('accessToken');
-      setAuth(null);
-    }
+    if (auth?.kakao_id) window.location.href = KAKAO_LOGOUT_URI;
+    await logout();
+    localStorage.removeItem('accessToken');
+    setAuth(null);
+    navigate('/login');
   };
 
   return (

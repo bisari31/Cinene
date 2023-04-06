@@ -8,7 +8,9 @@ import Input from 'components/common/Input';
 import { kakaoRegister } from 'services/user';
 import { useMutation } from 'react-query';
 
-type LocationProps = { state: { email: string; nickname: string } };
+type LocationProps = {
+  state: { email: string; nickname: string };
+};
 
 export default function KakaoForm({ children }: { children: React.ReactNode }) {
   const { state } = useLocation() as LocationProps;
@@ -24,7 +26,6 @@ export default function KakaoForm({ children }: { children: React.ReactNode }) {
       if (response.status === 409) {
         nickname.setError('가입된 닉네임이 이미 있습니다.');
       } else {
-        navigate('/login');
         openPortal(response.data.message);
       }
     },

@@ -39,7 +39,7 @@ router.get(
 
 router.post(
   '/:type/:id',
-  authenticate,
+  authenticate(),
   async (
     req: CustomRequest<{ type: string; id: string }>,
     res: CustomResponse,
@@ -66,7 +66,7 @@ router.post(
 
 router.get(
   '/favorites',
-  authenticate,
+  authenticate(),
   async (
     req: CustomRequest,
     res: CustomResponse<{ contents?: LikeInterface[] }>,

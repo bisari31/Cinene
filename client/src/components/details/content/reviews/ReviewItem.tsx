@@ -3,11 +3,11 @@ import { useMutation } from 'react-query';
 import styled from 'styled-components';
 
 import { deleteReview } from 'services/review';
-import { USER_IMAGE } from 'utils/imageUrls';
 import { cineneKeys } from 'utils/queryOptions';
 import { useCurrentPathName, useGetRelativeTime } from 'hooks';
 import { useAuth, useLoginPortal, useMutationOptions } from 'hooks/cinene';
 
+import { USER_IMAGE } from 'utils/imageUrls';
 import { StyledItem } from '../comments/CommentItemData';
 import { StyledWrapper } from '../comments/CommentItem';
 
@@ -30,7 +30,7 @@ export default function ReviewItem({ review, onClick }: Props) {
 
   return (
     <StyledWrapper>
-      <img src={author?.img || USER_IMAGE} alt="user_avatar" />
+      <img src={author?.img ?? USER_IMAGE} alt="user_avatar" />
       <StyledItem
         isDeletedUser={!author?.nickname}
         date={useGetRelativeTime(createdAt, updatedAt)}

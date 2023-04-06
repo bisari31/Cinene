@@ -1,7 +1,6 @@
 import axios from 'axios';
 
-import { SERVER_HOST } from 'utils/api';
-import { bearer, getAccessToken } from './user';
+import { bearer, setAccessToken } from './user';
 
 interface Body {
   comment: string;
@@ -28,7 +27,7 @@ export const getReviews = async (
 ) => {
   if (!contentId || !contentType) return null;
   const { data } = await axios.get<ReviewData>(
-    `${SERVER_HOST}/reviews/${contentType}/${contentId}`,
+    `/reviews/${contentType}/${contentId}`,
     { params: { userId } },
   );
 
@@ -37,28 +36,24 @@ export const getReviews = async (
 
 export const deleteReview = async (id: string) => {
   const { data } = await axios.delete<CustomResponse>(
-    `${SERVER_HOST}/reviews/${id}`,
+    `/reviews/${id}`,
     bearer(),
   );
-  getAccessToken(data);
+  setAccessToken(data);
   return data;
 };
 
 const createReview = async (obj: Body) => {
-  const { data } = await axios.post<CustomResponse>(
-    `${SERVER_HOST}/reviews`,
-    obj,
-    bearer(),
-  );
-  getAccessToken(data);
+  const { data } = await axios.post<CustomResponse>(`/reviews`, obj, bearer());
+  setAccessToken(data);
   return data;
 };
 const updateReveiw = async (obj: Body) => {
   const { data } = await axios.patch<ReviewData>(
-    `${SERVER_HOST}/reviews/${obj.hasReview}`,
+    `/reviews/${obj.hasReview}`,
     obj,
     bearer(),
   );
-  getAccessToken(data);
+  setAccessToken(data);
   return data;
 };

@@ -6,7 +6,7 @@ declare namespace NodeJS {
     PUBLIC_URL: string;
     REACT_APP_API_KEY: string;
     REACT_APP_KAKAO_REST_API_KEY: string;
-    REACT_APP_SERVER_HOST: string;
-    REACT_APP_HOST: string;
+    REACT_APP_LOCAL: string;
+    REACT_APP_SERVER: string;
   }
 }

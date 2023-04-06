@@ -10,7 +10,7 @@ const router = Router();
 
 router.post(
   '/',
-  authenticate,
+  authenticate(),
   async (
     req: CustomRequest<{}, {}, Omit<ReviewInterface, '_id' | 'author'>>,
     res: CustomResponse,
@@ -34,7 +34,7 @@ router.post(
 
 router.patch(
   '/:id',
-  authenticate,
+  authenticate(),
   async (
     req: CustomRequest<{ id: string }, {}, ReviewInterface>,
     res: CustomResponse,
@@ -90,7 +90,7 @@ router.get(
 
 router.delete(
   '/:id',
-  authenticate,
+  authenticate(),
   async (req: CustomRequest<{ id: string }>, res: CustomResponse) => {
     try {
       const review = await Review.findByIdAndDelete(req.params.id);

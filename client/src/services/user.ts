@@ -1,19 +1,20 @@
 import axios from 'axios';
 
-import { SERVER_HOST } from 'utils/api';
-
 type Body = {
   email: string;
   password: string;
   nickname: string;
 };
 
+axios.defaults.withCredentials = true;
+axios.defaults.baseURL = process.env.REACT_APP_SERVER;
+
 export const bearer = () => {
   const token = localStorage.getItem('accessToken');
   return { headers: { authorization: `Bearer ${token}` } };
 };
 
-export const getAccessToken = (data: { accessToken?: string }) => {
+export const setAccessToken = (data: { accessToken?: string }) => {
   if (data.accessToken) {
     localStorage.setItem('accessToken', data.accessToken);
   }
@@ -21,17 +22,14 @@ export const getAccessToken = (data: { accessToken?: string }) => {
 
 export const autheticate = async () => {
   const { data } = await axios.get<CustomResponse<{ user: User }>>(
-    `${SERVER_HOST}/user`,
+    '/user',
     bearer(),
   );
   return data;
 };
 
 export const logout = async () => {
-  const { data } = await axios.get<CustomResponse>(
-    `${SERVER_HOST}/user/logout`,
-    bearer(),
-  );
+  const { data } = await axios.get<CustomResponse>('/user/logout', bearer());
   return data;
 };
 
@@ -41,65 +39,59 @@ export const login = async (body: Body) => {
       accessToken: string;
       user: User;
     }>
-  >(`${SERVER_HOST}/user/login`, body);
-  getAccessToken(data);
+  >('/user/login', body);
+  setAccessToken(data);
   return data;
 };
 
 export const register = async (body: Body) => {
   const { data } = await axios.post<
     CustomResponse<{ hasNickname?: boolean; hasEmail?: boolean }>
-  >(`${SERVER_HOST}/user/register`, body);
+  >('/user/register', body);
   return data;
 };
 
 export const unregister = async () => {
-  const { data } = await axios.delete<CustomResponse>(
-    `${SERVER_HOST}/user`,
-    bearer(),
-  );
+  const { data } = await axios.delete<CustomResponse>('/user', bearer());
   return data;
 };
 
 export const changePassword = async (password: string) => {
   const { data } = await axios.patch<CustomResponse>(
-    `/${SERVER_HOST}user/password`,
+    '/user/password',
     { password },
     bearer(),
   );
-  getAccessToken(data);
+  setAccessToken(data);
   return data;
 };
 
 export const changeNickname = async (nickname: string) => {
   const { data } = await axios.patch<CustomResponse<{ user: User }>>(
-    `${SERVER_HOST}/user/nickname`,
+    '/user/nickname',
     {
       nickname,
     },
     bearer(),
   );
-  getAccessToken(data);
+  setAccessToken(data);
   return data;
 };
 
 export const kakaoLogin = async (code: string) => {
   const { data } = await axios.get<CustomResponse<{ user: User }>>(
-    `${SERVER_HOST}/user/kakao/${code}`,
+    `/user/kakao/${code}`,
   );
-  getAccessToken(data);
+  setAccessToken(data);
   return data;
 };
 
 export const kakaoRegister = async (body: Omit<Body, 'password'>) => {
-  const { data } = await axios.post(`${SERVER_HOST}/user/kakao`, body);
+  const { data } = await axios.post('/user/kakao', body);
   return data;
 };
 
 export const kakaoUnregister = async (id?: string) => {
-  const { data } = await axios.delete(
-    `${SERVER_HOST}/user/kakao/${id}`,
-    bearer(),
-  );
+  const { data } = await axios.delete(`/user/kakao/${id}`, bearer());
   return data;
 };

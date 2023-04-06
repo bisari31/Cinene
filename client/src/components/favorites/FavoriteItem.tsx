@@ -69,7 +69,9 @@ export default function FavoriteItem({ data }: Props) {
 
 const StyledLi = styled.li`
   display: flex;
+  height: 100%;
   position: relative;
+  width: 100%;
   a {
     height: 100%;
     width: 100%;
@@ -97,8 +99,6 @@ const StyledLi = styled.li`
         display: inline-block;
       }
     }
-  }
-  @media ${({ theme }) => theme.device.tablet} {
   }
 `;
 

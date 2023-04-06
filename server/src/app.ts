@@ -10,6 +10,7 @@ import contentsRouter from './routes/contents';
 import commentRouter from './routes/comments';
 import reviewsRouter from './routes/reviews';
 import likesRouter from './routes/likes';
+import profileRouter from './routes/profile';
 
 dotenv.config();
 const app = express();
@@ -22,12 +23,7 @@ mongoose.connect(DB_URI, { dbName: 'cinene' }, (err) => {
   console.log('db 연결 성공');
 });
 
-app.use(
-  cors({
-    origin: ['http://localhost:3000'],
-    credentials: true,
-  }),
-);
+app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
 app.use(cookieParser());
 app.use(express.json());
 app.use(morgan('dev'));
@@ -37,6 +33,7 @@ app.use('/contents', contentsRouter);
 app.use('/comments', commentRouter);
 app.use('/likes', likesRouter);
 app.use('/reviews', reviewsRouter);
+app.use('/profile', profileRouter);
 
 app.use((req, res) => {
   res.status(404).send('not found');
