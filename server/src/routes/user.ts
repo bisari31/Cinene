@@ -112,7 +112,14 @@ router.get(
       await User.findByIdAndUpdate(req.user?._id, {
         $set: { refresh_token: '' },
       });
-      res.status(200).clearCookie('refreshToken').json({ success: true });
+      res
+        .status(200)
+        .clearCookie('refreshToken', {
+          httpOnly: true,
+          sameSite: 'none',
+          secure: true,
+        })
+        .json({ success: true });
     } catch (err) {
       res.status(500).json({ success: false, message: '로그아웃 실패' });
     }
