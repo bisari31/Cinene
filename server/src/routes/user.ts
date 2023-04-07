@@ -115,7 +115,6 @@ router.get(
       res
         .status(200)
         .clearCookie('refreshToken', {
-          domain: process.env.CLIENT_URL,
           httpOnly: true,
           sameSite: 'none',
           secure: true,

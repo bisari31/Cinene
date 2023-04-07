@@ -1,6 +1,5 @@
 import { useOutsideClick } from 'hooks';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
 
 import { logout } from 'services/user';
 import { buttonEffect } from 'styles/css';
@@ -13,14 +12,12 @@ import Portal from './Portal';
 export default function LogoutButton() {
   const { auth, setAuth } = useAuth();
   const { ref, isVisible, isMotionVisible, toggleModal } = useOutsideClick(300);
-  const navigate = useNavigate();
 
   const handleLogout = async () => {
-    if (auth?.kakao_id) window.location.href = KAKAO_LOGOUT_URI;
     await logout();
+    if (auth?.kakao_id) window.location.href = KAKAO_LOGOUT_URI;
     localStorage.removeItem('accessToken');
     setAuth(null);
-    navigate('/login');
   };
 
   return (
