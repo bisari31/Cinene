@@ -82,9 +82,9 @@ export const StyledWrapper = styled.div<{ isResponse?: boolean }>`
     display: flex;
     padding: 1em;
     img {
-      margin-right: 1em;
       border-radius: 50%;
       height: 40px;
+      margin-right: 1em;
       width: 40px;
     }
 

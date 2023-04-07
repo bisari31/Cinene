@@ -84,6 +84,8 @@ router.post(
         .cookie('refreshToken', refreshToken, {
           maxAge: 1000 * 60 * 60 * 24 * 14,
           httpOnly: true,
+          sameSite: 'none',
+          secure: true,
         })
         .json({
           success: true,
@@ -110,7 +112,14 @@ router.get(
       await User.findByIdAndUpdate(req.user?._id, {
         $set: { refresh_token: '' },
       });
-      res.status(200).clearCookie('refreshToken').json({ success: true });
+      res
+        .status(200)
+        .clearCookie('refreshToken', {
+          httpOnly: true,
+          sameSite: 'none',
+          secure: true,
+        })
+        .json({ success: true });
     } catch (err) {
       res.status(500).json({ success: false, message: '로그아웃 실패' });
     }
@@ -216,6 +225,8 @@ router.get(
           .cookie('kakao', data.access_token, {
             maxAge: 1000 * 60 * 5,
             httpOnly: true,
+            sameSite: 'none',
+            secure: true,
           })
           .json({
             success: true,
@@ -233,6 +244,8 @@ router.get(
         .cookie('refreshToken', refreshToken, {
           maxAge: 1000 * 60 * 60 * 24 * 14,
           httpOnly: true,
+          sameSite: 'none',
+          secure: true,
         })
         .json({
           success: true,
